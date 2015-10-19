@@ -1,0 +1,6 @@
+
+GET     /hello                              controllers.App.hello
+GET     /testScan                              controllers.App.testScan
+
+# Management
+GET     /management/healthcheck             controllers.Management.healthCheck

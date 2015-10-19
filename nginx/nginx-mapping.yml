@@ -1,0 +1,4 @@
+name: tagmanager
+mappings:
+  - prefix: tagmanager
+    port: 9199
