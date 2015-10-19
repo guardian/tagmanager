@@ -2,10 +2,15 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import repositories.{TagSearchCriteria, TagRepository}
+import play.api.Logger
+import services.LogShipping
 
 object App extends Controller {
 
-  def hello = Action{
+  LogShipping.bootstrap
+
+  def hello = Action {
+    Logger.info("saying hello")
     Ok(views.html.Application.hello("Hello world"))
   }
 
