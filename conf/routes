@@ -1,6 +1,9 @@
 
 GET     /hello                              controllers.App.hello
-GET     /testScan                              controllers.App.testScan
+GET     /testScan                           controllers.App.testScan
+
+GET     /oauthCallback                      controllers.Login.oauthCallback
+GET     /logout                             controllers.Login.logout
 
 # Management
 GET     /management/healthcheck             controllers.Management.healthCheck
