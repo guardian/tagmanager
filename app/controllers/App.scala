@@ -5,11 +5,11 @@ import repositories.{TagSearchCriteria, TagRepository}
 import play.api.Logger
 import services.LogShipping
 
-object App extends Controller {
+object App extends Controller with PanDomainAuthActions {
 
   LogShipping.bootstrap
 
-  def hello = Action {
+  def hello = AuthAction {
     Logger.info("saying hello")
     Ok(views.html.Application.hello("Hello world"))
   }
