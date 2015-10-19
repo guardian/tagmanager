@@ -6,7 +6,7 @@ import repositories.{TagSearchCriteria, TagRepository}
 object App extends Controller {
 
   def hello = Action{
-    Ok("Hello world")
+    Ok(views.html.Application.hello("Hello world"))
   }
 
   def testScan = Action { req =>
