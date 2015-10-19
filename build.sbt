@@ -9,6 +9,7 @@ version := "1.0"
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.10.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
+  "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12"
 )

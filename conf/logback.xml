@@ -27,6 +27,6 @@
     <root level="WARN">
         <appender-ref ref="LOGFILE"/>
         <!-- uncomment to console log locally -->
-        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="STDOUT"/>-->
     </root>
 </configuration>
