@@ -1,0 +1,24 @@
+{
+  "defaultStacks": ["flexible"],
+  "packages":{
+    "tagmanager":{
+      "type":"autoscaling",
+      "data":{
+        "port":9000,
+        "bucket":"composer-dist",
+        "publicReadAcl": false
+      }
+    }
+  },
+  "recipes":{
+    "default":{
+      "depends" : ["artifactUploadOnly", "deployOnly"]
+    },
+    "deployOnly":{
+      "actionsPerHost": ["tagmanager.deploy"]
+    },
+    "artifactUploadOnly":{
+      "actionsBeforeApp": ["tagmanager.uploadArtifacts"]
+    }
+  }
+}
