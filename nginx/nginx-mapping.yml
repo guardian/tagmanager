@@ -1,4 +1,4 @@
 name: tagmanager
 mappings:
   - prefix: tagmanager
-    port: 9199
+    port: 8247

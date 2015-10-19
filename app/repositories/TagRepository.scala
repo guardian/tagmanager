@@ -8,8 +8,6 @@ import scala.collection.JavaConversions._
 
 object TagRepository {
 
-
-
   def search(criteria: TagSearchCriteria) = {
     Dynamo.tagTable.scan(criteria.asFilters: _*).map { item =>
       item.getString("internalName")
