@@ -79,9 +79,3 @@ object SassTask {
   val sassSettings = inConfig(Assets)(baseSassSettings)
 
 }
-
-//object TagManagerBuild extends Build {
-//
-//  lazy val root = Project("tagmanager", file(".")).settings(TagManager.settings: _*)
-//
-//}
