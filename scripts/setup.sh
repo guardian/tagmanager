@@ -10,7 +10,7 @@ npm install
 
 printf "\n\rInstalling JSPM packages... \n\r\n\r"
 
-jspm install
+node_modules/.bin/jspm install
 
 cd ..
 
