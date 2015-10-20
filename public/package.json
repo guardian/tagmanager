@@ -1,0 +1,25 @@
+{
+  "name": "tagmanager",
+  "version": "0.0.1",
+  "description": "Tool for managing Guardian tags",
+  "jspm": {
+    "dependencies": {
+      "react": "npm:react@^0.14.0",
+      "react-dom": "npm:react-dom@^0.14.0",
+      "reqwest": "github:ded/reqwest@^2.0.5"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    },
+    "buildConfig": {
+      "transpileES6": true,
+      "minify": true
+    }
+  },
+  "dependencies": {
+    "jspm": "^0.16.13",
+    "node-sass": "^3.3.3"
+  }
+}

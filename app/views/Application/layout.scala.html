@@ -1,0 +1,34 @@
+@(title: String)(content: Html)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>@title</title>
+        <script>
+        @{ /* this._tmConfig = @Html(config.toString); */ }
+        </script>
+        <link rel="icon" type="image/x-icon" href="@routes.Assets.versioned("favicon.ico")">
+        <link rel="apple-touch-icon-precomposed" sizes="128x128" href="@routes.Assets.versioned("favicon128.ico")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("main.min.css")"/>
+    </head>
+    <body>
+
+        <noscript class="logout__noscript">
+        @{ /*
+            @if(user.isEmpty) {
+                <a class="top-toolbar__user-link" href="@routes.Application.index">Log in</a>
+            } else {
+                <a class="top-toolbar__user-link" href="@routes.Login.logout" title="Logout">Logout</a>
+            }
+        */ }
+        </noscript>
+
+        @content
+@{ /*
+            <!-- build-commit-id: @build.BuildInfo.gitCommitId -->
+            <!-- build-number: @build.BuildInfo.buildNumber -->
+*/ }
+    </body>
+</html>

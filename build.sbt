@@ -17,7 +17,7 @@ lazy val dependencies = Seq(
 )
 
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
@@ -28,3 +28,4 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     scalaVersion in ThisBuild := "2.11.7",
     libraryDependencies ++= dependencies
   )
+  .settings(TagManager.settings: _*)
