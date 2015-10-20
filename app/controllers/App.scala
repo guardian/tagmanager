@@ -9,6 +9,10 @@ object App extends Controller with PanDomainAuthActions {
 
   LogShipping.bootstrap
 
+  def index = AuthAction {
+    Ok(views.html.Application.app("Tag Manager"))
+  }
+
   def hello = AuthAction {
     Logger.info("saying hello")
     Ok(views.html.Application.hello("Hello world"))

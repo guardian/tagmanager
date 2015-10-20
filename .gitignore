@@ -9,3 +9,7 @@ node_modules/
 logs/*
 
 .history
+
+public/jspm_packages
+public/node_modules
+public/npm-debug.log

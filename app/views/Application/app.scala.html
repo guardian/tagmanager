@@ -1,0 +1,33 @@
+@(title: String)
+
+@layout(title) {
+    <div id="react-mount" class="main">
+
+        <h1>Loading...</h1>
+
+    </div>
+
+
+    @*** SystemJS package manager setup ***@
+    @*** <script src="@routes.Assets.versioned("jspm_packages/github/jmcriffey/bower-traceur-runtime@0.0.91/traceur-runtime.min.js")"></script> ***@
+    <script src="@routes.Assets.versioned("jspm_packages/system.js")"></script>
+    <script src="@routes.Assets.versioned("config.js")"></script>
+    <script>
+    @*if ( System.bundles["app.bundle.js"] ) {*@
+    @*System.bundles["@routes.Assets.versioned("app.bundle.js")"] = System.bundles["app.bundle.js"];*@
+    @*delete System.bundles["app.bundle.js"];*@
+    @*}*@
+
+//    System.config({
+//    "map": {
+//    "presence-client": _wfConfig.presenceClientLib
+//    }
+//    });
+    System.import('reactBootstrap').catch(function(error) {
+        setTimeout(function() { throw error; }, 0);
+    });
+    </script>
+    <script async src="https://apis.google.com/js/client.js?onload=init"></script>
+
+    @*** <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("app.bundle.css")"/> ***@
+}
