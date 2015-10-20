@@ -20,6 +20,7 @@ System.config({
     "core-js": "npm:core-js@1.2.2",
     "react": "npm:react@0.14.0",
     "react-dom": "npm:react-dom@0.14.0",
+    "reqwest": "github:ded/reqwest@2.0.5",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
