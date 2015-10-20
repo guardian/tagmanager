@@ -1,9 +1,14 @@
 
-GET     /hello                              controllers.App.hello
-GET     /testScan                           controllers.App.testScan
+GET        /                              controllers.App.index
 
-GET     /oauthCallback                      controllers.Login.oauthCallback
-GET     /logout                             controllers.Login.logout
+GET        /hello                         controllers.App.hello
+GET        /testScan                      controllers.App.testScan
+
+GET        /oauthCallback                 controllers.Login.oauthCallback
+GET        /logout                        controllers.Login.logout
 
 # Management
-GET     /management/healthcheck             controllers.Management.healthCheck
+GET        /management/healthcheck        controllers.Management.healthCheck
+
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
