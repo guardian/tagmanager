@@ -2,11 +2,16 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec
+import model.Tag
 import services.Dynamo
 import scala.collection.JavaConversions._
 
 
 object TagRepository {
+  def getTag(id: Long) = {
+    Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
+  }
+
 
   def search(criteria: TagSearchCriteria) = {
     Dynamo.tagTable.scan(criteria.asFilters: _*).map { item =>

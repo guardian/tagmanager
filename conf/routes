@@ -2,6 +2,8 @@
 GET     /hello                              controllers.App.hello
 GET     /testScan                           controllers.App.testScan
 
+GET     /api/tag/:id                        controllers.TagManagementApi.getTag(id: Long)
+
 GET     /oauthCallback                      controllers.Login.oauthCallback
 GET     /logout                             controllers.Login.logout
 
