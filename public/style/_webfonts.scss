@@ -1,0 +1,39 @@
+/**
+ * Workflow webfonts definitions.
+ *
+ * Extracted from https://github.com/guardian/guss-webfonts v2.1.1 for compatibility with lib-sass.
+ */
+
+$fonts-base-path: "/assets/style/";
+
+@mixin gu-font-face($family, $filebase, $font-weight: 400, $font-style: normal) {
+  $file-path: $fonts-base-path + $family + "/" + $filebase;
+
+  @font-face {
+    font-family: $family;
+    src: url("#{$file-path}.eot"); // IE9 Compat Modes
+    src: url("#{$file-path}.eot?#iefix") format("embedded-opentype"), // IE6-IE8
+    url('#{$file-path}.woff2') format("woff2"), // Very Modern Browsers
+    url("#{$file-path}.woff") format("woff"), // Modern Browsers
+    url("#{$file-path}.ttf") format("truetype"), // Safari, Android, iOS
+    url("#{$file-path}.svg#GuardianAgateSans1Web") format("svg"); // Legacy iOS
+
+    font-weight: $font-weight;
+    font-style: $font-style;
+    font-stretch: normal;
+  }
+}
+
+//GuardianEgyptianWeb
+@include gu-font-face("GuardianTextEgyptianWeb", "GuardianTextEgyptianWeb-Medium");
+@include gu-font-face("GuardianTextEgyptianWeb", "GuardianTextEgyptianWeb-Regular");
+
+
+// GuardianAgateSans1Web
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-Regular");
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-RegularItalic", 400, italic);
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-Bold", 700);
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-BoldItalic", 700, italic);
+
+// GuardianTitlepieceWeb
+@include gu-font-face("GuardianTitlepieceWeb", "GuardianTitlepieceWeb-Regular");
