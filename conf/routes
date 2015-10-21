@@ -1,5 +1,7 @@
 
 GET        /                              controllers.App.index
+GET        /api/tag/:id                   controllers.TagManagementApi.getTag(id: Long)
+
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan
