@@ -37,7 +37,7 @@ export default class Header extends React.Component {
                         <span className="top-toolbar__letter-text">T</span>
                     </div>
                     <h1 className="top-toolbar__page-title">
-                        <span className="top-toolbar__page-title-text">Tag manager</span>
+                        <span className="top-toolbar__page-title-text">Tags</span>
                     </h1>
                     {this.renderTitleHoverState()}
                 </Link>
@@ -45,10 +45,10 @@ export default class Header extends React.Component {
                 <div className="header__children">
                     <ul className="links">
                         <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/batchTag">Batch tag</Link>
+                            <Link to="/batch">Batch tag</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/mergeTag">Merge tag</Link>
+                            <Link to="/merge">Merge tag</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">
                             <Link to="/status">Status</Link>
