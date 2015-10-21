@@ -1,5 +1,7 @@
 package repositories
 
+import java.util.concurrent.atomic.AtomicReference
+
 import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec
 import model.Tag
@@ -13,11 +15,13 @@ object TagRepository {
   }
 
 
-  def search(criteria: TagSearchCriteria) = {
+  def scanSearch(criteria: TagSearchCriteria) = {
     Dynamo.tagTable.scan(criteria.asFilters: _*).map { item =>
       item.getString("internalName")
     }
   }
+
+  def loadAllTags = Dynamo.tagTable.scan().map(Tag.fromItem)
 
 }
 
@@ -30,9 +34,76 @@ case class TagSearchCriteria(
   referenceToken: Option[String] = None
 ) {
 
+  type TagFilter = (List[Tag]) => List[Tag]
+
+  val filters: List[TagFilter] =  Nil ++
+    internalName.map(v => internalNameFilter(v.toLowerCase) _) ++
+    externalName.map(v => externalNameFilter(v.toLowerCase) _) ++
+    types.map(v => typeFilter(v.map(_.toLowerCase)) _) ++
+    q.map(v => queryFilter(v.toLowerCase) _) ++
+    referenceType.map(v => referenceTypeFilter(v.toLowerCase) _) ++
+    referenceToken.map(v => referenceTokenFilter(v.toLowerCase) _)
+
+  def execute(tags: List[Tag]): List[Tag] = {
+    filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
+  }
+
+  private def queryFilter(q: String)(tags: List[Tag]) = {
+    if (q.contains("*")) {
+      wildcardSearch(q)(tags)
+    } else {
+      prefixSearch(q)(tags)
+    }
+  }
+
+  private def prefixSearch(q: String)(tags: List[Tag]) = {
+    tags.filter { t => t.internalName.toLowerCase.startsWith(q) }
+  }
+
+  val regexEscapeChars = List("\\", "(", ")", ".", "?")
+
+  private def generateSearchRegex(q: String) = {
+    val escapedQuery = regexEscapeChars.fold(q){case (search, c) => search.replace(c, "\\" + c)}
+
+    (escapedQuery.replace("*", ".*") + ".*").r
+  }
+
+  private def wildcardSearch(q: String)(tags: List[Tag]) = {
+    val MatchesQuery = generateSearchRegex(q)
+
+    tags.filter { t =>
+      t.internalName.toLowerCase match {
+        case MatchesQuery() => true
+        case _ => false
+      }
+    }
+  }
+
+  private def typeFilter(types: List[String])(tags: List[Tag]) = tags.filter { t => types.contains(t.`type`.toLowerCase) }
+
+  private def internalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.internalName.toLowerCase == n }
+  private def externalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalName.toLowerCase == n }
+
+  private def referenceTypeFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.references.exists(_.`type`.toLowerCase == n) }
+  private def referenceTokenFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.references.exists(_.value.toLowerCase == n) }
+
+
   def asFilters = {
     Seq() ++
       q.map{query => new ScanFilter("internalName").beginsWith(query)} ++
       types.map{ts => new ScanFilter("type").in(ts: _*)}
+  }
+}
+
+object TagLookupCache {
+
+  val allTags = new AtomicReference[List[Tag]](Nil)
+
+  def refresh = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
+
+  refresh
+
+  def search(tagSearchCriteria: TagSearchCriteria) = {
+    tagSearchCriteria.execute(allTags.get())
   }
 }

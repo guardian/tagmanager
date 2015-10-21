@@ -1,5 +1,6 @@
 
 GET        /                              controllers.App.index
+GET        /api/tags                      controllers.TagManagementApi.search
 GET        /api/tag/:id                   controllers.TagManagementApi.getTag(id: Long)
 
 

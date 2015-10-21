@@ -26,7 +26,7 @@ object App extends Controller with PanDomainAuthActions {
     )
 
     val startTime = System.currentTimeMillis
-    val paths = TagRepository.search(criteria)
+    val paths = TagRepository.scanSearch(criteria)
     val time = System.currentTimeMillis - startTime
 
     paths foreach println
