@@ -1,0 +1,176 @@
+$size-header-height: 50px;
+
+
+.top-toolbar {
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  min-height: $size-header-height;
+  max-height: $size-header-height;
+  background-color: $c-alt-green;
+  z-index: 2;
+  line-height: 50px;
+}
+
+.header__children {
+  flex-grow: 2;
+}
+
+.top-toolbar__item,
+.top-toolbar__item--highlight {
+  position: relative;
+  padding: 0 15px;
+  @extend %f-data;
+  @extend %fs-data-3;
+  line-height: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  color: $c-grey-700;
+  &:hover {
+    background-color: $c-grey-400;
+  }
+  &--active:after {
+    content: " ";
+    display: block;
+    height: 3px;
+    width: 100%;
+    bottom: 47px;
+    left: 0;
+    background-color: $c-highlight-blue;
+    position: absolute;
+  }
+}
+
+.top-toolbar__item--highlight {
+
+  background-color: $c-composer-blue;
+  color: white;
+
+  a {
+    color: white !important;
+  }
+
+  &:hover {
+    background-color: $c-composer-dark-blue;
+  }
+}
+
+.top-toolbar__title {
+
+  flex: 0 0 160px;
+
+  position: relative;
+
+  font-size: 18px;
+  line-height: 50px;
+  background-color: $c-grey-350;
+  margin: 0;
+  border-right: 1px solid $c-grey-300;
+  display: flex;
+
+  text-decoration: none;
+  color: black;
+
+  .top-toolbar__letter {
+    border-right: 1px solid $c-grey-300;
+    padding: 0 10px;
+    font-size: 20px;
+    flex: 0 0 50px;
+    @extend %f-title;
+  }
+
+  .top-toolbar__page-title {
+
+    flex: 1 1 auto;
+    font-size: 18px;
+    margin: 0px;
+
+
+  }
+
+  .top-toolbar__title__hover-state {
+    display: none;
+  }
+}
+
+.top-toolbar__title:hover .top-toolbar__title__hover-state {
+
+  display: block;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: $c-grey-700;
+
+  line-height: 21px;
+
+  padding-left: 10px;
+  padding-top: 2px;
+
+  span {
+    color: white;
+  }
+
+  .top-toolbar__title__hover-state__title {
+    @extend %f-title;
+    @extend %fs-data-6;
+  }
+
+  .top-toolbar__title__hover-state__subtitle {
+    @extend %f-title;
+    @extend %fs-data-3;
+  }
+
+}
+
+.top-toolbar__letter, .top-toolbar__page-title {
+  display: inline-block;
+  text-align: center;
+  line-height: 55px;
+}
+
+.links {
+  display: block;
+  text-align: right;
+  .links__item {
+    vertical-align: middle;
+    display: inline-block;
+    vertical-align: top;
+    height: 50px;
+    line-height: 50px;
+    @extend %fs-data-4;
+    padding: 0 15px;
+
+    border-left: 1px solid $c-grey-400;
+
+    a {
+      display: inline-block;
+      text-decoration: none;
+      color: $c-grey-700;
+    }
+  }
+}
+
+.top-toolbar__right-align {
+  margin-left: auto;
+  display: flex;
+
+  .top-toolbar__user {
+    border-left: 1px solid $c-grey-400;
+    cursor: pointer;
+  }
+}
+
+.header__component {
+  display: inline-block;
+  height: 50px;
+  line-height: 50px;
+}

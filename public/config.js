@@ -20,6 +20,7 @@ System.config({
     "core-js": "npm:core-js@1.2.2",
     "react": "npm:react@0.14.0",
     "react-dom": "npm:react-dom@0.14.0",
+    "react-router": "npm:react-router@1.0.0-rc3",
     "reqwest": "github:ded/reqwest@2.0.5",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
@@ -95,8 +96,18 @@ System.config({
       "ua-parser-js": "npm:ua-parser-js@0.7.9",
       "whatwg-fetch": "npm:whatwg-fetch@0.9.0"
     },
+    "npm:history@1.12.3": {
+      "deep-equal": "npm:deep-equal@1.0.1",
+      "invariant": "npm:invariant@2.1.1",
+      "qs": "npm:qs@4.0.0",
+      "warning": "npm:warning@2.1.0"
+    },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:invariant@2.1.1": {
+      "loose-envify": "npm:loose-envify@1.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:jstransform@10.1.0": {
       "base62": "npm:base62@0.1.1",
@@ -124,6 +135,11 @@ System.config({
     },
     "npm:react-dom@0.14.0": {
       "react": "npm:react@0.14.0"
+    },
+    "npm:react-router@1.0.0-rc3": {
+      "history": "npm:history@1.12.3",
+      "invariant": "npm:invariant@2.1.1",
+      "warning": "npm:warning@2.1.0"
     },
     "npm:react@0.14.0": {
       "envify": "npm:envify@3.4.0",
@@ -163,6 +179,10 @@ System.config({
     },
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:warning@2.1.0": {
+      "loose-envify": "npm:loose-envify@1.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     }
   }

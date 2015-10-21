@@ -1,0 +1,31 @@
+html, body {
+  height: 100%;
+  color: $c-grey-700;
+}
+
+body {
+  @extend %f-data;
+  height: calc(100% - 50px);
+  width: 100%;
+}
+
+h1 {
+  @extend %f-title;
+}
+
+h2, h3, h4, h5, h6 {
+  @extend %f-heading;
+}
+
+.wrapper {
+  margin-top: 50px;
+  height: 100%;
+}
+
+a {
+  color: $c-grey-700;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
