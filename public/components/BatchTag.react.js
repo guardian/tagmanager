@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class ReactApp extends React.Component {
+export default class BatchTag extends React.Component {
 
     constructor(props) {
         super(props);

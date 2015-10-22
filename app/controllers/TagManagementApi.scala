@@ -20,7 +20,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       types = req.getQueryString("types").map(_.split(",").toList)
     )
 
-    val tags = TagLookupCache.search(criteria)
+    val tags = TagLookupCache.search(criteria) take 25
 
     Ok(Json.toJson(tags))
   }
