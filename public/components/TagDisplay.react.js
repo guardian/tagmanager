@@ -9,7 +9,7 @@ export default class TagDisplay extends React.Component {
     render () {
         return (
             <div className="editor">
-                <h2>Tag display.</h2>
+                <h2>Tag display for tag {this.props.params.tagId}.</h2>
                 {this.props.children}
             </div>
         );

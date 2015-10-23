@@ -10,7 +10,7 @@ import TagSearch    from '../components/TagSearch.react';
 
 export default [
     <Route path="/" component={ReactApp}>
-        <Route name="tagDisplay" path="/tag/:id" component={TagDisplay} />
+        <Route name="tagDisplay" path="/tag/:tagId" component={TagDisplay} />
         <Route name="batch" path="/batch" component={BatchTag} />
         <Route name="merge" path="/merge" component={MergeTag} />
         <Route name="status" path="/status" component={Status} />

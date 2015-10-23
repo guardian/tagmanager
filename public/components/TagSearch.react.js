@@ -1,5 +1,6 @@
 import React from 'react';
 import reqwest from 'reqwest';
+import { Link } from 'react-router';
 
 export default class TagSearch extends React.Component {
 
@@ -29,20 +30,21 @@ export default class TagSearch extends React.Component {
 
         var tagsList = this.state.tags.map(function(t) {
             return(
-                <ul>
-                    <li>{t.internalName}</li>
-                </ul>
+                <li className="search-suggestions__suggestion" key={t.id}><Link to={`/tag/${t.id}`}>{t.internalName}</Link></li>
             );
         });
 
         return (
-            <div className="editor">
+            <div className="search">
                 <h2>Tag search.</h2>
-                <form>
-                    <input type="text" value={this.state.searchString} onChange={this.handleChange.bind(this)} />
-                </form>
-                <p>search text is {this.state.searchString}</p>
-                {tagsList}
+                <div className="search-suggester">
+                    <form>
+                        <input className="search-suggester__field" type="text" value={this.state.searchString} onChange={this.handleChange.bind(this)} />
+                    </form>
+                    <div className="search-suggestions">
+                        <ul className="search-suggestions__list">{tagsList}</ul>
+                    </div>
+                </div>
                 {this.props.children}
             </div>
         );
