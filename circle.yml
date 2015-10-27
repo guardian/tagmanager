@@ -22,6 +22,8 @@ dependencies:
   override:
     - npm install:
         pwd: public
+    - npm run build-js:
+        pwd: public
     - sbt test:compile
 
 test:

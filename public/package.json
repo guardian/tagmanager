@@ -2,6 +2,9 @@
   "name": "tagmanager",
   "version": "0.0.1",
   "description": "Tool for managing Guardian tags",
+  "scripts": {
+    "build-js": "jspm i && jspm bundle reactBootstrap.js --inject --minify"
+  },
   "jspm": {
     "dependencies": {
       "react": "npm:react@^0.14.0",
@@ -22,5 +25,8 @@
   "dependencies": {
     "jspm": "^0.16.13",
     "node-sass": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^1.7.3"
   }
 }
