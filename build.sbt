@@ -23,6 +23,15 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     playDefaultPort := 8247,
     packageName in Universal := normalizedName.value,
     riffRaffPackageType := (packageZipTarball in config("universal")).value,
+    riffRaffPackageName := s"editorial-tools:${name.value}",
+    riffRaffManifestProjectName := riffRaffPackageName.value,
+    riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV"),
+    riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
+    riffRaffUploadManifestBucket := Option("riffraff-builds"),
+    riffRaffArtifactResources := Seq(
+      riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
+      baseDirectory.value / "deploy.json" -> "deploy.json"
+    ),
     doc in Compile <<= target.map(_ / "none"),
     scalaVersion := "2.11.7",
     scalaVersion in ThisBuild := "2.11.7",

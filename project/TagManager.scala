@@ -70,7 +70,7 @@ object SassTask {
         Seq(sassCmd.toString, "--include-path", destDir.toString, "--output-style", sassOutputStyle.value, src.toString, dest.toString, "--source-map true").!!(log)
 
         // return sequence of files generated
-        Seq(dest, file(dest + ".map"))
+        Seq(dest)//, file(dest + ".map"))
       }
     },
     resourceGenerators <+= sass
