@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Tool for managing Guardian tags",
   "scripts": {
-    "build-js": "jspm i && jspm bundle reactBootstrap.js --inject --minify"
+    "build-js": "jspm i --lock && jspm bundle reactBootstrap.js --inject --minify"
   },
   "jspm": {
     "dependencies": {
