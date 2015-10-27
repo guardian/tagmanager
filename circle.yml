@@ -18,7 +18,9 @@ dependencies:
     - "project/target/streams"
   # Compile all sources
   override:
+    - cd public
     - npm i
+    - cd ../
     - sbt test:compile
 
 test:
