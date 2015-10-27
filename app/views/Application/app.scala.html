@@ -10,6 +10,12 @@
     <script src="@routes.Assets.versioned("jspm_packages/system.js")"></script>
     <script src="@routes.Assets.versioned("config.js")"></script>
     <script>
+      if ( System.bundles['build.js'] ) {
+          System.bundles['@routes.Assets.versioned("build.js")'] = System.bundles['build.js'];
+          delete System.bundles['build.js'];
+      }
+    </script>
+    <script>
         System.import('reactBootstrap').catch(function(error) {
             setTimeout(function() { throw error; }, 0);
         });
