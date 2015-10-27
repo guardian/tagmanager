@@ -2,6 +2,8 @@ machine:
   timezone: UTC
   java:
     version: oraclejdk8
+  node:
+    version: 4.1.0
 
 # Collect build artifacts
 general:
