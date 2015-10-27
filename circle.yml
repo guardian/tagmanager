@@ -19,7 +19,7 @@ dependencies:
   # Compile all sources
   override:
     - npm install:
-      pwd: public
+        pwd: public
     - sbt test:compile
 
 test:
