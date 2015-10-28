@@ -224,11 +224,11 @@
         "Subnets": { "Ref": "PrivateVpcSubnets" },
         "Listeners" : [ {
           "LoadBalancerPort" : "80",
-          "InstancePort" : "8247",
+          "InstancePort" : "9000",
           "Protocol" : "HTTP"
         },{
           "LoadBalancerPort": "443",
-          "InstancePort": "8247",
+          "InstancePort": "9000",
           "Protocol": "HTTPS",
           "SSLCertificateId": {
             "Fn::FindInMap": [
