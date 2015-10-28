@@ -1,7 +1,7 @@
 {
   "defaultStacks": ["flexible"],
   "packages":{
-    "tagmanager":{
+    "tag-manager":{
       "type":"autoscaling",
       "data":{
         "port":9000,
@@ -15,10 +15,10 @@
       "depends" : ["artifactUploadOnly", "deployOnly"]
     },
     "deployOnly":{
-      "actionsPerHost": ["tagmanager.deploy"]
+      "actionsPerHost": ["tag-manager.deploy"]
     },
     "artifactUploadOnly":{
-      "actionsBeforeApp": ["tagmanager.uploadArtifacts"]
+      "actionsBeforeApp": ["tag-manager.uploadArtifacts"]
     }
   }
 }
