@@ -10,7 +10,12 @@
       "history": "npm:history@^1.12.6",
       "react": "npm:react@^0.14.0",
       "react-dom": "npm:react-dom@^0.14.0",
+      "react-redux": "npm:react-redux@^4.0.0",
       "react-router": "npm:react-router@^1.0.0-rc3",
+      "redux": "npm:redux@^3.0.4",
+      "redux-devtools": "npm:redux-devtools@^2.1.5",
+      "redux-logger": "npm:redux-logger@^2.0.4",
+      "redux-thunk": "npm:redux-thunk@^1.0.0",
       "reqwest": "github:ded/reqwest@^2.0.5"
     },
     "devDependencies": {
@@ -28,6 +33,7 @@
     "node-sass": "^3.3.3"
   },
   "devDependencies": {
-    "eslint": "^1.7.3"
+    "eslint": "^1.7.3",
+    "eslint-plugin-react": "^3.6.3"
   }
 }
