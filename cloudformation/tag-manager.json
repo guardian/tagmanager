@@ -180,14 +180,14 @@
         "SecurityGroupIngress": [
           {
             "IpProtocol": "tcp",
-            "FromPort": 9000,
-            "ToPort": 9000,
+            "FromPort": 8247,
+            "ToPort": 8247,
             "CidrIp": {"Ref": "GuardianIP"}
           },
           {
             "IpProtocol": "tcp",
-            "FromPort": 9000,
-            "ToPort": 9000,
+            "FromPort": 8247,
+            "ToPort": 8247,
             "SourceSecurityGroupId": { "Ref": "LoadBalancerSecurityGroup" }
           }
         ]
@@ -224,11 +224,11 @@
         "Subnets": { "Ref": "PrivateVpcSubnets" },
         "Listeners" : [ {
           "LoadBalancerPort" : "80",
-          "InstancePort" : "9000",
+          "InstancePort" : "8247",
           "Protocol" : "HTTP"
         },{
           "LoadBalancerPort": "443",
-          "InstancePort": "9000",
+          "InstancePort": "8247",
           "Protocol": "HTTPS",
           "SSLCertificateId": {
             "Fn::FindInMap": [
@@ -240,7 +240,7 @@
         }],
 
         "HealthCheck" : {
-          "Target" : "HTTP:9000/management/healthcheck",
+          "Target" : "HTTP:8247/management/healthcheck",
           "HealthyThreshold" : "2",
           "UnhealthyThreshold" : "2",
           "Interval" : "10",
