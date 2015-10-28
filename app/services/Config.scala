@@ -28,7 +28,7 @@ class DevConfig extends Config {
 }
 
 class CodeConfig extends Config {
-  override def tagsTableName: String = "tags-CODE"
+  override def tagsTableName: String = "tags-dev"
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "code.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
