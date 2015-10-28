@@ -180,14 +180,14 @@
         "SecurityGroupIngress": [
           {
             "IpProtocol": "tcp",
-            "FromPort": 8247,
-            "ToPort": 8247,
+            "FromPort": 9000,
+            "ToPort": 9000,
             "CidrIp": {"Ref": "GuardianIP"}
           },
           {
             "IpProtocol": "tcp",
-            "FromPort": 8247,
-            "ToPort": 8247,
+            "FromPort": 9000,
+            "ToPort": 9000,
             "SourceSecurityGroupId": { "Ref": "LoadBalancerSecurityGroup" }
           }
         ]
@@ -240,7 +240,7 @@
         }],
 
         "HealthCheck" : {
-          "Target" : "HTTP:8247/management/healthcheck",
+          "Target" : "HTTP:9000/management/healthcheck",
           "HealthyThreshold" : "2",
           "UnhealthyThreshold" : "2",
           "Interval" : "10",
