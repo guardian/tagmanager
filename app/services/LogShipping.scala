@@ -30,7 +30,7 @@ object LogShipping extends AwsInstanceTags {
 
       val appender = new KinesisAppender()
       appender.setBufferSize(1000)
-      appender.setEndpoint(AWS.region.getName)
+      appender.setRegion(AWS.region.getName)
       appender.setStreamName(streamName)
       appender.setContext(context)
       appender.setLayout(layout)
