@@ -30,7 +30,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     riffRaffUploadManifestBucket := Option("riffraff-builds"),
     riffRaffArtifactResources := Seq(
       riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
-      baseDirectory.value / "deploy.json" -> "deploy.json"
+      baseDirectory.value / "deploy.json" -> "deploy.json",
+      baseDirectory.value / "cloudformation" / "tag-manager.json" ->
+        "packages/cloudformation/tag-manager.json"
     ),
     doc in Compile <<= target.map(_ / "none"),
     scalaVersion := "2.11.7",

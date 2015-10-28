@@ -8,17 +8,32 @@
         "bucket":"composer-dist",
         "publicReadAcl": false
       }
+    },
+    "tag-manager-cloudformation" : {
+      "type": "cloud-formation",
+      "fileName": "cloudformation",
+      "data": {
+        "templatePath": "tag-manager.json",
+        "cloudFormationStackName": "TagManager",
+        "prependStackToCloudFormationStackName": false,
+        "templateParameters": {
+          "MachineImageAMI": "ami-5e75a92d"
+        }
+      }
     }
   },
   "recipes":{
     "default":{
-      "depends" : ["artifactUploadOnly", "deployOnly"]
+      "depends" : ["artifactUploadOnly", "tagManagerrCloudformation", "deployOnly"]
     },
     "deployOnly":{
       "actionsPerHost": ["tag-manager.deploy"]
     },
     "artifactUploadOnly":{
       "actionsBeforeApp": ["tag-manager.uploadArtifacts"]
+    },
+    "tagManagerrCloudformation": {
+      "actions": ["tag-manager-cloudformation.updateStack"]
     }
   }
 }
