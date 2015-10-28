@@ -97,6 +97,23 @@
       }
     },
 
+    "TagManagerPanDomainPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TagManagerPanDomainPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "TagManagerRole"}]
+      }
+    },
+
     "TagManagerCloudwatchPolicy" : {
       "Type": "AWS::IAM::Policy",
       "Properties": {
