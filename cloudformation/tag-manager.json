@@ -238,7 +238,7 @@
       "Properties" : {
         "SecurityGroups": [{ "Fn::GetAtt": ["LoadBalancerSecurityGroup", "GroupId"] }],
         "CrossZone": true,
-        "Subnets": { "Ref": "PrivateVpcSubnets" },
+        "Subnets": { "Ref": "PublicVpcSubnets" },
         "Listeners" : [ {
           "LoadBalancerPort" : "80",
           "InstancePort" : "9000",
