@@ -1,15 +1,19 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import loggerMiddleware from 'redux-logger';
-
 //import { devTools, persistState } from 'redux-devtools';
+import createLogger from 'redux-logger';
+
+const logger = createLogger({
+  level: 'info',
+  collapsed: true
+});
 
 import rootReducer from './reducers/rootReducer';
 
 const createStoreWithMiddleware = compose(
   applyMiddleware(
-    thunkMiddleware
-    //loggerMiddleware
+    thunkMiddleware,
+    logger
   )
   //devTools()
   // Lets you write ?debug_session=<name> in address bar to persist debug sessions

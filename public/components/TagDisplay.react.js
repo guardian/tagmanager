@@ -1,7 +1,5 @@
 import React from 'react';
 
-import {getTag} from '../actions/tagActions';
-
 class TagDisplay extends React.Component {
 
     constructor(props) {
