@@ -7,6 +7,7 @@ import play.api.libs.functional.syntax._
 case class Tag(
   id: Long,
   path: String,
+  pageId: Long,
   `type`: String,
   internalName: String,
   externalName: String,
@@ -24,6 +25,7 @@ object Tag {
   implicit val tagFormat: Format[Tag] = (
       (JsPath \ "id").format[Long] and
       (JsPath \ "path").format[String] and
+      (JsPath \ "pageId").format[Long] and
       (JsPath \ "type").format[String] and
       (JsPath \ "internalName").format[String] and
       (JsPath \ "externalName").format[String] and
