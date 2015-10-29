@@ -27,7 +27,6 @@ class ReactApp extends React.Component {
                 {this.renderErrorBar()}
                 <Header />
                 <div className="editor">
-                    <h1>React is running.</h1>
                     {this.props.children}
                 </div>
             </div>
