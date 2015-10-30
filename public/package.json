@@ -4,7 +4,7 @@
   "description": "Tool for managing Guardian tags",
   "scripts": {
     "build-js": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.prod.conf.js",
-    "build-js-dev": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.dev.conf.js",
+    "build-js-dev": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.dev.conf.js --watch",
     "dev-js": "node ./devserver.js"
   },
   "dependencies": {
