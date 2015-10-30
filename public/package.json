@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Tool for managing Guardian tags",
   "scripts": {
-    "build-js": "webpack ./app.js ./main.min.js --config ./build_config/webpack.prod.conf.js"
+    "build-js": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.prod.conf.js",
+    "dev-js": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.dev.conf.js --watch"
   },
   "dependencies": {
     "history": "^1.13.0",
