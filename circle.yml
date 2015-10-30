@@ -21,7 +21,7 @@ dependencies:
     - "public/node_modules"
   # Compile all sources
   override:
-    - npm install:
+    - npm install --production:
         pwd: public
     - npm run build-js:
         pwd: public
