@@ -4,6 +4,8 @@ GET        /tag/:id                       controllers.App.index(id)
 
 GET        /api/tags                      controllers.TagManagementApi.search
 GET        /api/tag/:id                   controllers.TagManagementApi.getTag(id: Long)
+PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag(id: Long)
+
 
 
 GET        /hello                         controllers.App.hello

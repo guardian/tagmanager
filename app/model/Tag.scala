@@ -37,5 +37,7 @@ object Tag {
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = Json.parse(item.toJSON).as[Tag]
+  def fromJson(json: JsValue) = json.as[Tag]
+
 }
 

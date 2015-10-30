@@ -3,8 +3,8 @@ package repositories
 import java.util.concurrent.atomic.AtomicReference
 
 import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
-import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec
 import model.Tag
+import play.api.libs.json.JsValue
 import services.Dynamo
 import scala.collection.JavaConversions._
 
@@ -14,6 +14,14 @@ object TagRepository {
     Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
   }
 
+  def updateTag(tagJson: JsValue) = {
+      try {
+        Dynamo.tagTable.putItem(Item.fromJSON(tagJson.toString()))
+        Some(Tag.fromJson(tagJson))
+      } catch {
+        case e: Error => None
+      }
+  }
 
   def scanSearch(criteria: TagSearchCriteria) = {
     Dynamo.tagTable.scan(criteria.asFilters: _*).map { item =>

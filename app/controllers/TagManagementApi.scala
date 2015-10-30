@@ -13,6 +13,18 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
+  def updateTag(id: Long) = APIAuthAction { req =>
+
+    req.body.asJson.map { json =>
+      TagRepository.updateTag(json).map{ tag =>
+        Ok(Json.toJson(tag))
+      }.getOrElse(BadRequest("Could not update tag"))
+
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
   def search = APIAuthAction { req =>
 
     val criteria = TagSearchCriteria(
