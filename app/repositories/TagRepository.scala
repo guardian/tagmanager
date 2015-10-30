@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
 import model.Tag
+import play.api.Logger
 import play.api.libs.json.JsValue
 import services.Dynamo
 import scala.collection.JavaConversions._
@@ -17,7 +18,9 @@ object TagRepository {
   def updateTag(tagJson: JsValue) = {
       try {
         Dynamo.tagTable.putItem(Item.fromJSON(tagJson.toString()))
-        Some(Tag.fromJson(tagJson))
+        val tag = Tag.fromJson(tagJson)
+        TagLookupCache.insertTag(tag)
+        Some(tag)
       } catch {
         case e: Error => None
       }
@@ -108,6 +111,14 @@ object TagLookupCache {
   val allTags = new AtomicReference[List[Tag]](Nil)
 
   def refresh = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
+
+  def insertTag(tag: Tag): Unit = {
+    val currentTags = allTags.get()
+    val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+
+    if (!allTags.compareAndSet(currentTags, newTags))
+      Logger.warn("failed to update cache")
+  }
 
   refresh
 
