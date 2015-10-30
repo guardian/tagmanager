@@ -1,1 +1,0 @@
-module.exports = require("npm:react-mixin@1.7.0/index");

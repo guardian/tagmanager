@@ -1,1 +1,0 @@
-module.exports = require("npm:redux@3.0.4/lib/index");

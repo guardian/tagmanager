@@ -1,1 +1,0 @@
-module.exports = require("npm:redux-logger@2.0.4/lib/index");
