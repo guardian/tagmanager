@@ -16,12 +16,12 @@
     "redux": "^3.0.4",
     "redux-logger": "^2.0.4",
     "redux-thunk": "^1.0.0",
-    "reqwest": "^2.0.5"
+    "reqwest": "^2.0.5",
+    "webpack": "^1.12.2"
   },
   "devDependencies": {
     "babel-loader": "^5.3.3",
     "eslint": "^1.7.3",
     "eslint-plugin-react": "^3.6.3",
-    "webpack": "^1.12.2"
   }
 }
