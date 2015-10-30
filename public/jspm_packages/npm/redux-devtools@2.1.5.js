@@ -1,0 +1,1 @@
+module.exports = require("npm:redux-devtools@2.1.5/lib/index");

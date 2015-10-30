@@ -1,0 +1,1 @@
+module.exports = require("npm:react-json-tree@0.1.9/lib/index");

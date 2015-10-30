@@ -1,0 +1,34 @@
+{
+  "name": "redux-thunk",
+  "version": "1.0.0",
+  "description": "Thunk middleware for Redux.",
+  "main": "lib/index.js",
+  "scripts": {
+    "prepublish": "rimraf lib && babel src --out-dir lib",
+    "test": "mocha --compilers js:babel/register --reporter spec test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gaearon/redux-thunk.git"
+  },
+  "homepage": "https://github.com/gaearon/redux-thunk",
+  "keywords": [
+    "redux",
+    "thunk",
+    "middleware",
+    "redux-middleware",
+    "flux"
+  ],
+  "author": "Dan Abramov <dan.abramov@me.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "babel-core": "^5.6.15",
+    "babel-eslint": "^3.1.20",
+    "chai": "^3.2.0",
+    "eslint": "^0.24.0",
+    "eslint-config-airbnb": "0.0.6",
+    "mocha": "^2.2.5",
+    "rimraf": "^2.4.3"
+  }
+}
