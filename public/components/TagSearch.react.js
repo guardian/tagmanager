@@ -17,8 +17,7 @@ export default class TagSearch extends React.Component {
             method: 'get',
             data: [ {name: 'q', value: event.target.value} ],
             type: 'json'
-        }).then(function(resp){
-            console.log(resp);
+        }).then(function(resp) {
             self.setState({tags: resp});
         }).fail(function(err, msg){
             console.log('failed', err, msg);
