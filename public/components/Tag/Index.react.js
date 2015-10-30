@@ -8,10 +8,11 @@ class TagIndex extends React.Component {
         super(props);
 
         this.isTagDirty = this.isTagDirty.bind(this);
+        this.isTagFetched = this.isTagFetched.bind(this);
     }
 
     componentDidMount() {
-      if (!this.props.tag) {
+      if (!this.isTagFetched()) {
         this.props.tagActions.getTag(this.props.routeParams.tagId);
       }
     }
@@ -28,8 +29,12 @@ class TagIndex extends React.Component {
       return this.props.saveState === 'SAVE_STATE_DIRTY';
     }
 
+    isTagFetched() {
+      return this.props.tag && (this.props.tag.id === parseInt(this.props.routeParams.tagId, 10));
+    }
+
     render () {
-      if (!this.props.tag) {
+      if (!this.isTagFetched()) {
         return (
           <div>Fetching Tag</div>
         );
