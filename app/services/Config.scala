@@ -15,6 +15,8 @@ object Config extends AwsInstanceTags {
 
 sealed trait Config {
   def tagsTableName: String
+  def sectionsTableName: String
+
   def logShippingStreamName: Option[String] = None
   def pandaDomain: String
   def pandaAuthCallback: String
@@ -22,6 +24,7 @@ sealed trait Config {
 
 class DevConfig extends Config {
   override def tagsTableName: String = "tags-dev"
+  override def sectionsTableName: String = "sections-dev"
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
   override def pandaDomain: String = "local.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.local.dev-gutools.co.uk/oauthCallback"
@@ -29,6 +32,7 @@ class DevConfig extends Config {
 
 class CodeConfig extends Config {
   override def tagsTableName: String = "tags-dev"
+  override def sectionsTableName: String = "sections-dev"
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "code.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
@@ -36,6 +40,7 @@ class CodeConfig extends Config {
 
 class ProdConfig extends Config {
   override def tagsTableName: String = "tags-PROD"
+  override def sectionsTableName: String = "sections-PROD"
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.gutools.co.uk/oauthCallback"
