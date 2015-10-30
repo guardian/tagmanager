@@ -10,7 +10,7 @@ npm install
 
 printf "\n\Compiling Javascript... \n\r\n\r"
 
-npm build-js
+npm run build-js
 
 cd ..
 

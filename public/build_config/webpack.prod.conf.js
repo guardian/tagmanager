@@ -1,8 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
 
-console.log(path.join(__dirname, '..', 'node_modules'));
-
 module.exports = {
   module: {
     loaders: [
