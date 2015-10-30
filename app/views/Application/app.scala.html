@@ -1,12 +1,11 @@
-@(title: String)
+@(title: String, jsLocation: String)
 
 @layout(title) {
     <div id="react-mount" class="main">
         <h1>Loading...</h1>
     </div>
 
-    <script src="@routes.Assets.versioned("app.compiled.js")"></script>
-    <!--<script src="https://tagmanager-devassets.local.dev-gutools.co.uk/assets/app.compiled.js"></script>-->
+    <script src="@jsLocation"></script>
 
     <script async src="https://apis.google.com/js/client.js?onload=init"></script>
 }

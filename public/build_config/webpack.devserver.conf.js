@@ -9,8 +9,8 @@ var webpack = require('webpack');
 // Config
 //
 
-var port = 3001;
-var addr = 'tagmanager-devassets.local.dev-gutools.co.uk';
+var port = 8248;
+var addr = 'tagmanager-assets.local.dev-gutools.co.uk';
 var host = 'https://' + addr;
 
 //

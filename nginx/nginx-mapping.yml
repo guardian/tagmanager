@@ -2,3 +2,6 @@ name: tagmanager
 mappings:
   - prefix: tagmanager
     port: 8247
+  - prefix: tagmanager-assets
+    port: 8248
+    websocket: /socket.io

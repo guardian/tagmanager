@@ -10,7 +10,15 @@ object App extends Controller with PanDomainAuthActions {
   LogShipping.bootstrap
 
   def index(id: String = "") = AuthAction {
-    Ok(views.html.Application.app("Tag Manager"))
+
+    val jsFileName = "app.compiled.js"
+
+    val jsLocation = sys.env.get("JS_ASSET_HOST") match {
+      case Some(assetHost) => assetHost + jsFileName
+      case None => routes.Assets.versioned(jsFileName).toString
+    }
+
+    Ok(views.html.Application.app("Tag Manager", jsLocation))
   }
 
   def hello = AuthAction {
