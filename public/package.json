@@ -3,37 +3,24 @@
   "version": "0.0.1",
   "description": "Tool for managing Guardian tags",
   "scripts": {
-    "build-js": "jspm i --lock && jspm bundle reactBootstrap.js --inject --minify"
-  },
-  "jspm": {
-    "dependencies": {
-      "history": "npm:history@^1.12.6",
-      "react": "npm:react@^0.14.0",
-      "react-dom": "npm:react-dom@^0.14.0",
-      "react-redux": "npm:react-redux@^4.0.0",
-      "react-router": "npm:react-router@^1.0.0-rc3",
-      "redux": "npm:redux@^3.0.4",
-      "redux-devtools": "npm:redux-devtools@^2.1.5",
-      "redux-logger": "npm:redux-logger@^2.0.4",
-      "redux-thunk": "npm:redux-thunk@^1.0.0",
-      "reqwest": "github:ded/reqwest@^2.0.5"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.8.24",
-      "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "core-js": "npm:core-js@^1.1.4"
-    },
-    "buildConfig": {
-      "transpileES6": true,
-      "minify": true
-    }
+    "build-js": "webpack ./app.js ./main.min.js --config ./build_config/webpack.prod.conf.js"
   },
   "dependencies": {
-    "jspm": "^0.16.13",
-    "node-sass": "^3.3.3"
+    "history": "^1.13.0",
+    "node-sass": "^3.3.3",
+    "react": "^0.14.1",
+    "react-dom": "^0.14.1",
+    "react-redux": "^4.0.0",
+    "react-router": "^1.0.0-rc3",
+    "redux": "^3.0.4",
+    "redux-logger": "^2.0.4",
+    "redux-thunk": "^1.0.0",
+    "reqwest": "^2.0.5"
   },
   "devDependencies": {
+    "babel-loader": "^5.3.3",
     "eslint": "^1.7.3",
-    "eslint-plugin-react": "^3.6.3"
+    "eslint-plugin-react": "^3.6.3",
+    "webpack": "^1.12.2"
   }
 }
