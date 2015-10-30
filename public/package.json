@@ -5,7 +5,7 @@
   "scripts": {
     "build-js": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.prod.conf.js",
     "build-js-dev": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.dev.conf.js --watch",
-    "dev-js": "node ./devserver.js"
+    "client-dev-js": "node ./devserver.js"
   },
   "dependencies": {
     "history": "^1.13.0",
