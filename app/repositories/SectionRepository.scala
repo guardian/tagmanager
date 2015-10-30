@@ -14,9 +14,8 @@ object SectionRepository {
 
   def updateSection(sectionJson: JsValue) = {
     try {
+      val section = Section.fromJson(sectionJson) // parsing input json here provides bugjet validation
       Dynamo.sectionTable.putItem(Item.fromJSON(sectionJson.toString()))
-      val section = Section.fromJson(sectionJson)
-     // TagLookupCache.insertTag(tag)
       Some(section)
     } catch {
       case e: Error => None
