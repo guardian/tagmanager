@@ -40,4 +40,5 @@ object Dynamo {
   lazy val dynamoDb = new DynamoDB(client)
 
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
+  lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
 }

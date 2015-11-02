@@ -2,7 +2,7 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import repositories.{TagLookupCache, TagSearchCriteria, TagRepository}
+import repositories.{SectionRepository, TagLookupCache, TagSearchCriteria, TagRepository}
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -25,7 +25,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def search = APIAuthAction { req =>
+  def searchTags = APIAuthAction { req =>
 
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
@@ -37,4 +37,26 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(tags))
   }
 
+  def getSection(id: Long) = APIAuthAction {
+
+    SectionRepository.getSection(id).map{ section =>
+      Ok(Json.toJson(section))
+    }.getOrElse(NotFound)
+  }
+
+  def updateSection(id: Long) = APIAuthAction { req =>
+
+    req.body.asJson.map { json =>
+      SectionRepository.updateSection(json).map{ section =>
+        Ok(Json.toJson(section))
+      }.getOrElse(BadRequest("Could not update section"))
+
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def listSections() = APIAuthAction {
+    Ok(Json.toJson(SectionRepository.loadAllSections))
+  }
 }
