@@ -5,7 +5,7 @@
   "scripts": {
     "build-js": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.prod.conf.js",
     "build-js-dev": "webpack ./app.js ./app.compiled.js --config ./build_config/webpack.dev.conf.js --watch",
-    "build-icons": "svg-sprite -w 16 -h 16 -v true --view-prefix .i-%s --view-dest . --vs ./images/icons.svg --vscss true --view-render-scss-template ./images/icons/scssTemplate.scss --view-render-scss-dest ./style/_icons.scss  ./images/icons/*.svg",
+    "build-icons": "svg-sprite -w 16 -h 16 -v true --view-bust false --view-prefix .i-%s --view-dest . --vs ./images/icons.svg --vscss true --view-render-scss-template ./images/icons/scssTemplate.scss --view-render-scss-dest ./style/_icons.scss  ./images/icons/*.svg",
     "client-dev-js": "node ./devserver.js"
   },
   "dependencies": {
