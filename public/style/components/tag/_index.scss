@@ -26,21 +26,3 @@
 .tag__column--sidebar {
   background-color: $c-grey-200;
 }
-
-.tag-edit {
-
-}
-
-.tag-edit__form__input-group {
-
-  padding: $standard-padding/2;
-
-  label {
-    display: block;
-
-    height: 24px;
-    line-height: 24px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-}

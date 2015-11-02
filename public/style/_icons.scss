@@ -1,0 +1,113 @@
+%svg-common {
+	background: url('/assets/images/icons.svg') no-repeat;
+	display: inline-block;
+	margin: 0 5px;
+	position: relative;
+	top: 2px;
+}
+
+.i-add-image {
+	@extend %svg-common;
+	background-position: 0 0;
+	width: 16px;
+	height: 16px;
+}
+
+.i-add-image-grey {
+	@extend %svg-common;
+	background-position: 33.333333333333336% 69.56521739130434%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-clock {
+	@extend %svg-common;
+	background-position: 0 34.78260869565217%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-cross {
+	@extend %svg-common;
+	background-position: 33.333333333333336% 34.78260869565217%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-cross-red {
+	@extend %svg-common;
+	background-position: 27.45098039215686% 97.95918367346938%;
+	width: 13px;
+	height: 13px;
+}
+
+.i-delete {
+	@extend %svg-common;
+	background-position: 66.66666666666667% 34.78260869565217%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-down-arrow {
+	@extend %svg-common;
+	background-position: 96% 66.66666666666667%;
+	width: 14px;
+	height: 14px;
+}
+
+.i-info-grey {
+	@extend %svg-common;
+	background-position: 0 100%;
+	width: 14px;
+	height: 14px;
+}
+
+.i-plus {
+	@extend %svg-common;
+	background-position: 66.66666666666667% 69.56521739130434%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-preview-eye {
+	@extend %svg-common;
+	background-position: 100% 0;
+	width: 16px;
+	height: 16px;
+}
+
+.i-publish {
+	@extend %svg-common;
+	background-position: 100% 34.78260869565217%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-publish-disabled {
+	@extend %svg-common;
+	background-position: 0 69.56521739130434%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-tick {
+	@extend %svg-common;
+	background-position: 66.66666666666667% 0;
+	width: 16px;
+	height: 16px;
+}
+
+.i-tick-green {
+	@extend %svg-common;
+	background-position: 52.94117647058823% 97.95918367346938%;
+	width: 13px;
+	height: 13px;
+}
+
+.i-tick-selected {
+	@extend %svg-common;
+	background-position: 33.333333333333336% 0;
+	width: 16px;
+	height: 16px;
+}
+

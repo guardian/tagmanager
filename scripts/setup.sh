@@ -12,6 +12,8 @@ printf "\n\Compiling Javascript... \n\r\n\r"
 
 npm run build-js
 
-cd ..
+printf "\n\Building Icons... \n\r\n\r"
+
+npm run build-icons
 
 printf "\n\rDone.\n\r\n\r"

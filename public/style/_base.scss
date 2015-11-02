@@ -29,3 +29,8 @@ a {
     text-decoration: underline;
   }
 }
+
+input {
+  @extend %f-data;
+  @extend %fs-data-3;
+}

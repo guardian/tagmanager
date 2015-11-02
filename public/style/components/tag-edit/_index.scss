@@ -1,3 +1,49 @@
+
 .tag-edit {
 
+}
+
+.tag-edit__input-group {
+  padding: $standard-padding/2;
+}
+
+.tag-edit__input {
+  width: 100%;
+  display: block;
+  background-color: $c-white;
+  padding: $standard-padding;
+  border: 1px solid $c-grey-300;
+}
+
+.tag-edit__linked-field {
+
+
+  label {
+
+  }
+
+  input {
+
+  }
+}
+
+
+%tag-edit__linked-field__link {
+  display: inline-block;
+  width: $standard-padding * 2;
+  height: $standard-padding * 2;
+  background-color: red;
+}
+
+.tag-edit__linked-field__link--corner,
+.tag-edit__linked-field__link--line,
+.tag-edit__linked-field__link--junction {
+  @extend %tag-edit__linked-field__link
+}
+
+.tag-edit__linked-field__lock {
+  display: inline-block;
+  width: $standard-padding * 2;
+  height: $standard-padding * 2;
+  background-color: blue;
 }
