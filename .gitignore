@@ -10,7 +10,8 @@ logs/*
 
 .history
 
-public/jspm_packages
+public/app.compiled.js
 public/node_modules
+
 
 npm-debug.log

@@ -8,9 +8,9 @@ printf "\n\rInstalling NPM packages... \n\r\n\r"
 
 npm install
 
-printf "\n\rInstalling JSPM packages... \n\r\n\r"
+printf "\n\Compiling Javascript... \n\r\n\r"
 
-node_modules/.bin/jspm install
+npm run build-js
 
 cd ..
 

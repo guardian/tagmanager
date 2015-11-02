@@ -47,10 +47,10 @@ class TagIndex extends React.Component {
               <TagEdit tag={this.props.tag} updateTag={this.props.tagActions.updateTag} />
             </div>
             <div className="tag__column">
-              Column two.
+              Column 2
             </div>
             <div className="tag__column">
-              Column three.
+              Column 3
             </div>
           </div>
           {this.isTagDirty() ? <SaveButton onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/> : false}

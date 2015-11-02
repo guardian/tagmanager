@@ -4,10 +4,8 @@ import { Provider } from 'react-redux';
 import Router from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 
-import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
-
 import routes from './routes/routes';
-import configureStore from './configureStore';
+import configureStore from './util/configureStore';
 
 const history = createBrowserHistory();
 const store = configureStore();

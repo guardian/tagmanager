@@ -8,7 +8,7 @@ const logger = createLogger({
   collapsed: true
 });
 
-import rootReducer from './reducers/rootReducer';
+import rootReducer from '../reducers/rootReducer';
 
 const createStoreWithMiddleware = compose(
   applyMiddleware(
