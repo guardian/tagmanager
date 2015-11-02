@@ -6,7 +6,7 @@ export const TAG_GET_ERROR = 'TAG_GET_ERROR';
 
 function requestTagGet() {
     return {
-        type:       TAG_GET_RECEIVE,
+        type:       TAG_GET_REQUEST,
         receivedAt: Date.now()
     };
 }
@@ -31,7 +31,7 @@ function errorTagGet(error) {
 export function getTag(id) {
     return dispatch => {
         dispatch(requestTagGet());
-        return tagManagerApi.get(id)
+        return tagManagerApi.getTag(id)
             .then(res => dispatch(recieveTagGet(res)))
             .fail(error => dispatch(errorTagGet(error)));
     };

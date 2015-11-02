@@ -31,7 +31,7 @@ function errorTagSave(error) {
 export function saveTag(tag) {
     return dispatch => {
         dispatch(requestTagSave());
-        return tagManagerApi.save(tag.id, tag)
+        return tagManagerApi.saveTag(tag.id, tag)
             .then(res => dispatch(recieveTagSave(res)))
             .fail(error => dispatch(errorTagSave(error)));
     };
