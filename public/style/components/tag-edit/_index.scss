@@ -1,4 +1,6 @@
 
+$tag-edit-linked-field-height: $standard-padding * 3;
+
 .tag-edit {
 
 }
@@ -17,8 +19,17 @@
 
 .tag-edit__linked-field {
 
+  height: $tag-edit-linked-field-height;
+
+  * {
+    vertical-align: top;
+  }
 
   label {
+    @extend %f-header;
+    @extend %fs-data-3;
+
+    font-weight: bold;
 
   }
 
@@ -30,20 +41,47 @@
 
 %tag-edit__linked-field__link {
   display: inline-block;
-  width: $standard-padding * 2;
-  height: $standard-padding * 2;
+  width: $tag-edit-linked-field-height;
+  height: $tag-edit-linked-field-height;
+
+  background-size: contain;
+}
+
+.tag-edit__linked-field__link {
+  @extend %tag-edit__linked-field__link;
+}
+
+.tag-edit__linked-field__link--corner {
+  @extend %tag-edit__linked-field__link;
+
+  background-image: url('/assets/images/connector-corner.svg');
+}
+
+.tag-edit__linked-field__link--line {
+  @extend %tag-edit__linked-field__link;
+
+  background-image: url('/assets/images/connector-line.svg');
+}
+
+.tag-edit__linked-field__link--junction {
+  @extend %tag-edit__linked-field__link;
+
+  background-image: url('/assets/images/connector-junction.svg');
+}
+
+
+%tag-edit__linked-field__lock {
+    display: inline-block;
+    width: $tag-edit-linked-field-height;
+    height: $tag-edit-linked-field-height;
+}
+
+.tag-edit__linked-field__lock ,
+.tag-edit__linked-field__lock--unlocked{
+  @extend %tag-edit__linked-field__lock;
   background-color: red;
 }
 
-.tag-edit__linked-field__link--corner,
-.tag-edit__linked-field__link--line,
-.tag-edit__linked-field__link--junction {
-  @extend %tag-edit__linked-field__link
-}
-
-.tag-edit__linked-field__lock {
-  display: inline-block;
-  width: $standard-padding * 2;
-  height: $standard-padding * 2;
-  background-color: blue;
+.tag-edit__linked-field__lock--unlocked {
+  background-color: green;
 }
