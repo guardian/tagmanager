@@ -4,7 +4,6 @@ export default class SectionSelect extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {sections: []};
   }
 
   render () {
