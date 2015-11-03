@@ -16,6 +16,7 @@ case class Tag(
   externalName: String,
   slug: String,
   hidden: Boolean = false,
+  legallySensitive: Boolean = false,
   comparableValue: String,
   section: Long,
   description: Option[String] = None,
@@ -34,6 +35,7 @@ object Tag {
       (JsPath \ "externalName").format[String] and
       (JsPath \ "slug").format[String] and
       (JsPath \ "hidden").format[Boolean] and
+      (JsPath \ "legallySensitive").format[Boolean] and
       (JsPath \ "comparableValue").format[String] and
       (JsPath \ "section").format[Long] and
       (JsPath \ "description").formatNullable[String] and
