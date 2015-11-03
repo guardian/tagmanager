@@ -1,38 +1,29 @@
 import React from 'react';
-import reqwest from 'reqwest';
 
 export default class SectionSelect extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {sections: []};
+  constructor(props) {
+    super(props);
+  }
+
+  render () {
+
+    if (!this.props.sections || !this.props.sections.length) {
+      return (
+        <select disabled="true">
+          <option>Fetching section names...</option>
+        </select>
+      );
     }
 
-    componentDidMount() {
-        var self = this;
-        reqwest({
-            url: '/api/sections',
-            method: 'get',
-            type: 'json'
-        }).then(function(resp) {
-            self.setState({sections: resp});
-        }).fail(function(err, msg){
-            console.log('failed', err, msg);
-        });
-    }
-
-    render () {
-
-        var sectionOptions = this.state.sections.map(function(s) {
-            return(
-                <option value={s.id} key={s.id} >{s.name}</option>
-            );
-        });
-
-        return (
-            <select value={this.props.selectedId} onChange={this.props.onChange}>
-                {sectionOptions}
-            </select>
-        );
-    }
+    return (
+      <select value={this.props.selectedId} onChange={this.props.onChange}>
+        {this.props.sections.map(function(s) {
+          return (
+            <option value={s.id} key={s.id} >{s.name}</option>
+          );
+        })}
+      </select>
+    );
+  }
 }

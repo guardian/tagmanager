@@ -2,19 +2,27 @@
 import Reqwest from 'reqwest';
 
 export default {
-  get: (id) => {
+  getTag: (id) => {
       return Reqwest({
           url: '/api/tag/' + id,
           contentType: 'application/json',
           method: 'get'
       });
   },
-  save: (id, tag) => {
+  saveTag: (id, tag) => {
     return Reqwest({
         url: '/api/tag/' + id,
         data: JSON.stringify(tag),
         contentType: 'application/json',
         method: 'put'
+    });
+  },
+
+  getSections: () => {
+    return Reqwest({
+      url: '/api/sections',
+      method: 'get',
+      type: 'json'
     });
   }
 };

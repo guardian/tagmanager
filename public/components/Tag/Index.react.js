@@ -15,6 +15,10 @@ class TagIndex extends React.Component {
       if (!this.isTagFetched()) {
         this.props.tagActions.getTag(this.props.routeParams.tagId);
       }
+
+      if (!this.props.sections || !this.props.sections.length) {
+        this.props.sectionActions.getSections();
+      }
     }
 
     saveTag() {
@@ -44,7 +48,7 @@ class TagIndex extends React.Component {
         <div className="tag">
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
-              <TagEdit tag={this.props.tag} updateTag={this.props.tagActions.updateTag} />
+              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} />
             </div>
             <div className="tag__column">
               Column 2
@@ -65,16 +69,21 @@ import { bindActionCreators } from 'redux';
 import * as getTag from '../../actions/getTag';
 import * as updateTag from '../../actions/updateTag';
 import * as saveTag from '../../actions/saveTag';
+import * as getSections from '../../actions/getSections';
 
 function mapStateToProps(state) {
   return {
     tag: state.tag,
+    sections: state.sections,
     saveState: state.saveState
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag), dispatch) };
+  return {
+    tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag), dispatch),
+    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TagIndex);

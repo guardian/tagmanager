@@ -1,6 +1,7 @@
 import {TAG_GET_REQUEST, TAG_GET_RECEIVE, TAG_GET_ERROR} from '../actions/getTag';
 import {TAG_UPDATE} from '../actions/updateTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/saveTag';
+import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/getSections';
 
 const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -15,6 +16,9 @@ export default function tag(state = {
   saveState: undefined
 }, action) {
   switch (action.type) {
+
+
+// TAG GET
 
   case TAG_GET_REQUEST:
     return Object.assign({}, state, {
@@ -32,13 +36,17 @@ export default function tag(state = {
       saveState: undefined
     });
 
+// TAG UPDATE
+
   case TAG_UPDATE:
     return Object.assign({}, state, {
       tag: action.tag,
       saveState: saveState.dirty
     });
 
-  case TAG_SAVE_RECEIVE:
+// TAG SAVE
+
+  case TAG_SAVE_REQUEST:
     return Object.assign({}, state, {
       saveState: saveState.inprogress
     });
@@ -48,6 +56,21 @@ export default function tag(state = {
       saveState: saveState.clean
     });
   case TAG_SAVE_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
+    });
+
+// SECTIONS GET
+
+  case SECTIONS_GET_REQUEST:
+    return Object.assign({}, state, {
+      sections: false
+    });
+  case SECTIONS_GET_RECEIVE:
+    return Object.assign({}, state, {
+      sections: action.sections
+    });
+  case SECTIONS_GET_ERROR:
     return Object.assign({}, state, {
       error: action.message
     });

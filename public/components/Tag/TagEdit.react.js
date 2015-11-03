@@ -15,7 +15,8 @@ export default class TagEdit extends React.Component {
 
     onUpdateExternalName(e) {
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        externalName: e.target.value
+        externalName: e.target.value,
+        slug: e.target.value.replace(/[^a-z0-9-]+$/i, '-')
       }));
     }
 
@@ -43,7 +44,7 @@ export default class TagEdit extends React.Component {
               <input type="text" value={this.props.tag.externalName} onChange={this.onUpdateExternalName.bind(this)}/>
             </div><div className="tag-edit__form__input-group">
               <label>Section</label>
-              <SectionSelect selectedId={this.props.tag.section} onChange={this.onUpdateSection.bind(this)}/>
+              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
             </div>
 
           </div>
