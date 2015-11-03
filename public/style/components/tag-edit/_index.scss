@@ -2,12 +2,25 @@
 $tag-edit-linked-field-height: $standard-padding * 4;
 $tag-edit-padding: $standard-padding/2;
 
-.tag-edit {
+.tag-edit__input-group {
+  padding: $standard-padding * 1.5;
+  border-bottom: 1px solid $c-grey-300;
 
+
+  select {
+    margin-top: $tag-edit-padding;
+    width: 100%;
+  }
 }
 
-.tag-edit__input-group {
-  padding: $standard-padding/2;
+.tag-edit__input-group__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  display: block;
+
 }
 
 .tag-edit__input {
@@ -35,7 +48,7 @@ $tag-edit-padding: $standard-padding/2;
     font-weight: bold;
     line-height: 30px;
 
-    flex: 0 0 120px;
+    flex: 0 0 105px;
 
     border: 1px solid $c-grey-300;
 
@@ -114,7 +127,7 @@ $tag-edit-padding: $standard-padding/2;
     @extend %fs-data-3;
 
     display: inline-block;
-    line-height: $tag-edit-linked-field-height;
+    line-height: $tag-edit-linked-field-height - 2px;
     padding-left: $tag-edit-padding;
     border: 1px solid $c-grey-300;
 

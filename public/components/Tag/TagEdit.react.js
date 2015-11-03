@@ -28,7 +28,7 @@ export default class TagEdit extends React.Component {
             <TagBasicInfo {...this.props}/>
 
             <div className="tag-edit__input-group">
-              <label>Section</label>
+              <label className="tag-edit__input-group__header">Section</label>
               <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
             </div>
           </div>
