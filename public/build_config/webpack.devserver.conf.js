@@ -41,7 +41,7 @@ module.exports = {
             {
                 test:    /\.jsx?$/,
                 exclude: /node_modules/,
-                loaders: ['react-hot', 'babel?presets[]=es2015&presets[]=react']
+                loaders: ['react-hot', 'babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
             },
             {
                 test:   require.resolve('react'),
