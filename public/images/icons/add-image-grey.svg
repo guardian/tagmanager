@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="25px" height="25px" viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.2 (12043) - http://www.bohemiancoding.com/sketch -->
+    <title>add-image</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="add-image" sketch:type="MSLayerGroup">
+            <g id="Group" transform="translate(15.000000, 0.000000)" fill="#BDBDBD" sketch:type="MSShapeGroup">
+                <rect id="Rectangle-path" x="0.48" y="3.701" width="9.517" height="2.114"></rect>
+                <rect id="Rectangle-path" x="4.182" y="0" width="2.114" height="9.515"></rect>
+            </g>
+            <path d="M0.003,9.142 L0.003,25 L15.861,25 L15.861,9.142 L0.003,9.142 L0.003,9.142 Z M11.098,10.936 L14.269,10.936 L14.269,14.108 L11.098,14.108 L11.098,10.936 L11.098,10.936 Z M4.768,23.203 L1.596,23.203 L1.596,20.032 L4.768,20.032 L4.768,23.203 L4.768,23.203 Z M4.768,18.656 L1.596,18.656 L1.596,15.485 L4.768,15.485 L4.768,18.656 L4.768,18.656 Z M4.768,14.107 L1.596,14.107 L1.596,10.935 L4.768,10.935 L4.768,14.107 L4.768,14.107 Z M9.518,23.203 L6.347,23.203 L6.347,20.032 L9.518,20.032 L9.518,23.203 L9.518,23.203 Z M9.518,18.656 L6.347,18.656 L6.347,15.485 L9.518,15.485 L9.518,18.656 L9.518,18.656 Z M9.518,14.107 L6.347,14.107 L6.347,10.935 L9.518,10.935 L9.518,14.107 L9.518,14.107 Z M14.418,23.353 L10.948,23.353 L10.948,19.883 L14.418,19.883 L14.418,23.353 L14.418,23.353 Z M14.418,18.806 L10.948,18.806 L10.948,15.336 L14.418,15.336 L14.418,18.806 L14.418,18.806 Z" id="Shape" fill="#BDBDBD" sketch:type="MSShapeGroup"></path>
+            <rect id="Rectangle-path" fill="#BDBDBD" sketch:type="MSShapeGroup" x="9.578" y="14.107" width="11.631" height="10.893"></rect>
+            <g id="Group" transform="translate(10.000000, 16.000000)" fill="#FFFFFF" sketch:type="MSShapeGroup">
+                <path d="M6.211,0.915 L7.033,0.915 L8.264,3.044 L9.902,5.888 L6.624,5.888 L3.343,5.888 L4.984,3.044 L6.211,0.915 Z" id="Shape"></path>
+                <path d="M2.109,3.755 L2.726,4.819 L3.343,5.888 L2.109,5.888 L0.879,5.888 L1.497,4.819 L2.109,3.755 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

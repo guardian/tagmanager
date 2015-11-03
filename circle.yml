@@ -25,6 +25,8 @@ dependencies:
         pwd: public
     - npm run build-js:
         pwd: public
+    - npm run build-icons:
+        pwd: public
     - sbt test:compile
 
 test:

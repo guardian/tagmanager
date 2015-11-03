@@ -7,7 +7,6 @@
 
 %tag__column {
   flex: 1 1 33%;
-  padding: $standard-padding;
   border-right: 1px solid $c-grey-300;
 
   overflow-y: auto;
@@ -25,22 +24,6 @@
 
 .tag__column--sidebar {
   background-color: $c-grey-200;
-}
 
-.tag-edit {
-
-}
-
-.tag-edit__form__input-group {
-
-  padding: $standard-padding/2;
-
-  label {
-    display: block;
-
-    height: 24px;
-    line-height: 24px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
+  flex: 1 0 370px;
 }

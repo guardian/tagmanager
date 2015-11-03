@@ -1,3 +1,135 @@
-.tag-edit {
 
+$tag-edit-linked-field-height: $standard-padding * 4;
+$tag-edit-padding: $standard-padding/2;
+
+.tag-edit__input-group {
+  padding: $standard-padding * 1.5;
+  border-bottom: 1px solid $c-grey-300;
+
+
+  select {
+    margin-top: $tag-edit-padding;
+    width: 100%;
+  }
+}
+
+.tag-edit__input-group__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  display: block;
+
+}
+
+.tag-edit__input {
+  width: 100%;
+  display: block;
+  background-color: $c-white;
+  padding: $standard-padding;
+  border: 1px solid $c-grey-300;
+}
+
+.tag-edit__linked-field {
+
+  display: flex;
+
+  height: $tag-edit-linked-field-height;
+
+  > * {
+    vertical-align: top;
+  }
+
+  label {
+    @extend %f-header;
+    @extend %fs-data-3;
+
+    font-weight: bold;
+    line-height: 30px;
+
+    flex: 0 0 105px;
+
+    border: 1px solid $c-grey-300;
+
+    padding: $tag-edit-padding;
+
+
+  }
+}
+
+
+%tag-edit__linked-field__link {
+  flex: 0 0 $tag-edit-linked-field-height;
+
+  background-size: contain;
+}
+
+.tag-edit__linked-field__link {
+  @extend %tag-edit__linked-field__link;
+}
+
+.tag-edit__linked-field__link--corner {
+  @extend %tag-edit__linked-field__link;
+
+  background-image: url('/assets/images/connector-corner.svg');
+}
+
+.tag-edit__linked-field__link--line {
+  @extend %tag-edit__linked-field__link;
+
+  background-image: url('/assets/images/connector-line.svg');
+}
+
+.tag-edit__linked-field__link--junction {
+  @extend %tag-edit__linked-field__link;
+
+  background-image: url('/assets/images/connector-junction.svg');
+}
+
+
+%tag-edit__linked-field__lock {
+    flex: 0 0 $tag-edit-linked-field-height;
+
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border: 1px solid $c-grey-300;
+
+}
+
+.tag-edit__linked-field__lock ,
+.tag-edit__linked-field__lock--unlocked{
+  @extend %tag-edit__linked-field__lock;
+  background-image: url('/assets/images/chain-connected.png');
+}
+
+.tag-edit__linked-field__lock--unlocked {
+  background-image: url('/assets/images/chain-disconnected.png');
+
+}
+
+.tag-edit__linked-field__input-container {
+  flex: 1 1;
+
+  display: flex;
+
+
+  input {
+
+    flex-grow: 1;
+    width: 100%;
+    height: $tag-edit-linked-field-height;
+  }
+
+  span {
+    @extend %f-header;
+    @extend %fs-data-3;
+
+    display: inline-block;
+    line-height: $tag-edit-linked-field-height - 2px;
+    padding-left: $tag-edit-padding;
+    border: 1px solid $c-grey-300;
+
+  }
 }
