@@ -1,3 +1,4 @@
+import history from '../routes/history';
 import tagManagerApi from '../util/tagManagerApi';
 
 export const TAG_CREATE_REQUEST = 'TAG_CREATE_REQUEST';
@@ -12,6 +13,7 @@ function requestTagCreate() {
 }
 
 function recieveTagCreate(tag) {
+    history.replaceState(null, '/tag/' + tag.id);
     return {
         type:       TAG_CREATE_RECEIVE,
         tag:        tag,
