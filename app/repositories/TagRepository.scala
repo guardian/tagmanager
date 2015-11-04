@@ -2,7 +2,8 @@ package repositories
 
 import java.util.concurrent.atomic.AtomicReference
 
-import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
+import com.amazonaws.services.dynamodbv2.document.{Item, ScanFilter}
+import com.amazonaws.services.dynamodbv2.model.{ReturnValue}
 import model.Tag
 import play.api.Logger
 import play.api.libs.json.JsValue
@@ -19,6 +20,24 @@ object TagRepository {
       try {
         val tag = Tag.fromJson(tagJson) // parsing input json here provides bugjet validation
         Dynamo.tagTable.putItem(Item.fromJSON(tagJson.toString()))
+        TagLookupCache.insertTag(tag)
+        Some(tag)
+      } catch {
+        case e: Error => None
+      }
+  }
+
+  def createTag(tagJson: JsValue) = {
+      try {
+
+        val nextTagId = loadAllTags.toList.sortBy((tag) => tag.id).last.id.+(1)
+
+        val tagItem = Item.fromJSON(tagJson.toString())
+          .withLong("id", nextTagId)
+        val tag = Tag.fromItem(tagItem)
+
+        Dynamo.tagTable.putItem(tagItem)
+
         TagLookupCache.insertTag(tag)
         Some(tag)
       } catch {

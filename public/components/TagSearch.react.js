@@ -19,7 +19,7 @@ export default class TagSearch extends React.Component {
             type: 'json'
         }).then(function(resp) {
             self.setState({tags: resp});
-        }).fail(function(err, msg){
+        }).fail(function(err, msg) {
             console.log('failed', err, msg);
         });
         this.setState({searchString: event.target.value});
@@ -28,7 +28,7 @@ export default class TagSearch extends React.Component {
     render () {
 
         var tagsList = this.state.tags.map(function(t) {
-            return(
+            return (
                 <li className="search-suggestions__suggestion" key={t.id}><Link to={`/tag/${t.id}`}>{t.internalName}</Link></li>
             );
         });
@@ -44,7 +44,7 @@ export default class TagSearch extends React.Component {
                         <ul className="search-suggestions__list">{tagsList}</ul>
                     </div>
                 </div>
-                {this.props.children}
+                <Link to="/tag/create">Create a new tag</Link>
             </div>
         );
     }

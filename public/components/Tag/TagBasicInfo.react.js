@@ -6,9 +6,9 @@ function slugify(text) {
 
 function inferStateFromProps(props) {
   return {
-    externalNameLocked: props.tag.externalName === props.tag.internalName,
-    comparableValueLocked: props.tag.comparableValue === props.tag.internalName.toLowerCase(),
-    slugLocked: props.tag.slug === slugify(props.tag.internalName)
+    externalNameLocked: !props.tag.externalName || props.tag.externalName === props.tag.internalName,
+    comparableValueLocked: !props.tag.comparableValue || props.tag.comparableValue === props.tag.internalName.toLowerCase(),
+    slugLocked: !props.tag.slug || props.tag.slug === slugify(props.tag.internalName)
   };
 }
 
@@ -96,10 +96,6 @@ export default class TagBasicInfo extends React.Component {
     }
   }
 
-  getPathWithoutSlug() {
-    return this.props.tag.path.substring(0, this.props.tag.path.lastIndexOf('/') + 1);
-  }
-
   render () {
     if (!this.props.tag) {
       console.log('TagEdit loaded without tag provided');
@@ -155,8 +151,7 @@ export default class TagBasicInfo extends React.Component {
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
             <label>Slug</label>
             <div className="tag-edit__linked-field__input-container">
-              <span>{this.getPathWithoutSlug()}</span>
-              <input type="text" value={this.props.tag.slug} onChange={this.onUpdateSlug.bind(this)}/>
+              {this.props.tag.path}
             </div>
           </div>
         </div>
