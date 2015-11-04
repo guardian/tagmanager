@@ -34,6 +34,7 @@ object TagRepository {
 
         val tagItem = Item.fromJSON(tagJson.toString())
           .withLong("id", nextTagId)
+
         val tag = Tag.fromItem(tagItem)
 
         Dynamo.tagTable.putItem(tagItem)
