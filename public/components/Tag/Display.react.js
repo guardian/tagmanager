@@ -2,7 +2,7 @@ import React from 'react';
 import TagEdit from './TagEdit.react';
 import SaveButton from '../utils/SaveButton.react';
 
-class TagIndex extends React.Component {
+class TagDisplay extends React.Component {
 
     constructor(props) {
         super(props);
@@ -86,4 +86,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TagIndex);
+export default connect(mapStateToProps, mapDispatchToProps)(TagDisplay);

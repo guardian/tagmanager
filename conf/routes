@@ -1,8 +1,12 @@
-
+# Handled by client side code
 GET        /                              controllers.App.index(id = "")
+GET        /tag/create                    controllers.App.index(id = "")
 GET        /tag/:id                       controllers.App.index(id)
 
+# API
 GET        /api/tags                      controllers.TagManagementApi.searchTags
+POST       /api/tag                       controllers.TagManagementApi.createTag
+
 GET        /api/tag/:id                   controllers.TagManagementApi.getTag(id: Long)
 PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag(id: Long)
 

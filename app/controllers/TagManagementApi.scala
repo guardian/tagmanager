@@ -25,6 +25,18 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
+  def createTag() = APIAuthAction { req =>
+
+    req.body.asJson.map { json =>
+      TagRepository.createTag(json).map{ tag =>
+        Ok(Json.toJson(tag))
+      }.getOrElse(BadRequest("Could not create tag"))
+
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
   def searchTags = APIAuthAction { req =>
 
     val criteria = TagSearchCriteria(
