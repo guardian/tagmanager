@@ -1,14 +1,15 @@
 import React from 'react';
 import TagEdit from './TagEdit.react';
+import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
+import {creatableTags} from '../../constants/tagTypes.js';
 
 const BLANK_TAG = {
   externalReferences: [],
   hidden: false,
   legallySensitive: false,
   pageId: 123456789,
-  parents: [],
-  type: 'TYPENOTPOPULATED'
+  parents: []
 };
 
 class TagCreate extends React.Component {
@@ -45,11 +46,21 @@ class TagCreate extends React.Component {
       });
     }
 
+    onUpdateType(type) {
+      this.setState({
+        newTag: Object.assign({}, this.state.newTag, {type: type})
+      });
+    }
+
     render () {
       return (
         <div className="tag">
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
+              <div className="tag-edit__input-group">
+                <label className="tag-edit__input-group__header">Tag Type</label>
+                <TypeSelect selectedType={this.state.newTag.type} types={creatableTags} onChange={this.onUpdateType.bind(this)}/>
+              </div>
               <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} unlockSlug={true} />
             </div>
             <div className="tag__column">

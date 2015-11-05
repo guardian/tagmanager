@@ -1,5 +1,6 @@
 import React from 'react';
-import TagBasicInfo from './TagBasicInfo.react';
+import TagNameEdit from './formComponents/TagName.react';
+import TagVisibility from './formComponents/TagVisibility.react';
 import SectionSelect from '../utils/SectionSelect.react';
 
 import * as tagTypes from '../../constants/tagTypes';
@@ -20,8 +21,16 @@ export default class TagEdit extends React.Component {
 
     //This will contain the logic for different tag forms (keyword vs contributor etc...)
     renderTagTypeSpecificFields() {
-      if (this.props.tagType === tagTypes.keyword) {
 
+      if (!this.props.tag.type) {
+        return false;
+      }
+
+      if (this.props.tag.type === tagTypes.topic) {
+        return (<div className="tag-edit__input-group">
+          <label className="tag-edit__input-group__header">Section</label>
+          <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+        </div>);
       }
     }
 
@@ -35,14 +44,12 @@ export default class TagEdit extends React.Component {
         <div className="tag-edit">
           <div className="tag-edit__form">
 
-            <TagBasicInfo {...this.props}/>
-
-            <div className="tag-edit__input-group">
-              <label className="tag-edit__input-group__header">Section</label>
-              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
-            </div>
+            <TagNameEdit {...this.props}/>
 
             {this.renderTagTypeSpecificFields()}
+
+            <TagVisibility {...this.props}/>
+
           </div>
         </div>
       );
