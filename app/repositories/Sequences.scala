@@ -1,8 +1,9 @@
-package services
+package repositories
 
-import com.amazonaws.services.dynamodbv2.document.{Table, Item, AttributeUpdate}
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
+import com.amazonaws.services.dynamodbv2.document.{AttributeUpdate, Item, Table}
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
+import services.Dynamo
 
 
 object Sequences {
