@@ -1,4 +1,5 @@
 import React from 'react';
+import {creatableTags} from '../../constants/tagTypes.js';
 
 export default class TypeSelect extends React.Component {
 
@@ -8,7 +9,7 @@ export default class TypeSelect extends React.Component {
 
   render () {
 
-    if (!this.props.types || !this.props.types.length) {
+    if (!creatableTags || !creatableTags) {
       return (
         <select disabled="true">
           <option>Fetching types...</option>
@@ -17,9 +18,9 @@ export default class TypeSelect extends React.Component {
     }
 
     return (
-      <select value={this.props.selectedType} onChange={this.props.onChange}>
+      <select value={this.props.selectedType} onChange={this.props.onChange} disabled={!!this.props.forceDisabled}>
         {!this.props.selectedType ? <option></option> : false}
-        {this.props.types.sort((a, b) => {return a > b ? 1 : -1;}).map(function(type) {
+        {creatableTags.sort((a, b) => {return a > b ? 1 : -1;}).map(function(type) {
           return (
             <option value={type} key={type}>{type}</option>
           );

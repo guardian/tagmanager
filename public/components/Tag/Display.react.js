@@ -1,5 +1,6 @@
 import React from 'react';
 import TagEdit from './TagEdit.react';
+import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
 
 class TagDisplay extends React.Component {
@@ -48,6 +49,10 @@ class TagDisplay extends React.Component {
         <div className="tag">
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
+              <div className="tag-edit__input-group">
+                <label className="tag-edit__input-group__header">Tag Type</label>
+                <TypeSelect selectedType={this.props.tag.type} forceDisabled={true}/>
+              </div>
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} />
             </div>
             <div className="tag__column">
