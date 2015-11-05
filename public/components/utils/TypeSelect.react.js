@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class SectionSelect extends React.Component {
+export default class TypeSelect extends React.Component {
 
   constructor(props) {
     super(props);
