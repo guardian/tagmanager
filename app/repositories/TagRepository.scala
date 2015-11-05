@@ -3,7 +3,6 @@ package repositories
 import java.util.concurrent.atomic.AtomicReference
 
 import com.amazonaws.services.dynamodbv2.document.{Item, ScanFilter}
-import com.amazonaws.services.dynamodbv2.model.{ReturnValue}
 import model.Tag
 import play.api.Logger
 import play.api.libs.json.JsValue
@@ -30,10 +29,8 @@ object TagRepository {
   def createTag(tagJson: JsValue) = {
       try {
 
-        val nextTagId = loadAllTags.toList.sortBy((tag) => tag.id).last.id.+(1)
-
         val tagItem = Item.fromJSON(tagJson.toString())
-          .withLong("id", nextTagId)
+          .withLong("id", Sequences.tagId.getNextId)
 
         val tag = Tag.fromItem(tagItem)
 

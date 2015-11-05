@@ -9,6 +9,7 @@ const BLANK_TAG = {
   hidden: false,
   legallySensitive: false,
   pageId: 123456789,
+  path: '/this/should/be/set/serverside',
   parents: []
 };
 
@@ -46,9 +47,9 @@ class TagCreate extends React.Component {
       });
     }
 
-    onUpdateType(type) {
+    onUpdateType(e) {
       this.setState({
-        newTag: Object.assign({}, this.state.newTag, {type: type})
+        newTag: Object.assign({}, this.state.newTag, {type: e.target.value})
       });
     }
 
