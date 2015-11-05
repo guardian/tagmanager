@@ -1,14 +1,14 @@
 import React from 'react';
 
 function slugify(text) {
-  return text.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+  return text ? text.toLowerCase().replace(/[^a-z0-9-]/g, '-') : '';
 }
 
-function inferStateFromProps(props) {
+function inferLockStateFromProps(props) {
   return {
-    externalNameLocked: !props.tag.externalName || props.tag.externalName === props.tag.internalName,
-    comparableValueLocked: !props.tag.comparableValue || props.tag.comparableValue === props.tag.internalName.toLowerCase(),
-    slugLocked: !props.tag.slug || props.tag.slug === slugify(props.tag.internalName)
+    externalNameLocked: props.tag.externalName === undefined || props.tag.externalName === props.tag.internalName,
+    comparableValueLocked: props.tag.comparableValue === undefined || props.tag.comparableValue === props.tag.internalName.toLowerCase(),
+    slugLocked: props.tag.slug === undefined || props.tag.slug === slugify(props.tag.internalName)
   };
 }
 
@@ -16,12 +16,12 @@ export default class TagBasicInfo extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = inferStateFromProps(props);
+    this.state = inferLockStateFromProps(props);
+    this.getPathPrefixForSection = this.getPathPrefixForSection.bind(this);
   }
 
   componentWillReceiveProps(props) {
-    this.setState(inferStateFromProps(props));
+    this.setState(inferLockStateFromProps(props));
   }
 
   onUpdateInternalName(e) {
@@ -46,6 +46,12 @@ export default class TagBasicInfo extends React.Component {
   }
 
   onUpdateSlug(e) {
+
+    //Prevent updating slug when locked
+    if (!this.props.unlockSlug) {
+      return;
+    }
+
     this.props.updateTag(Object.assign({}, this.props.tag, {
       slug: slugify(e.target.value)
     }));
@@ -93,6 +99,19 @@ export default class TagBasicInfo extends React.Component {
       this.props.updateTag(Object.assign({}, this.props.tag, {
         slug: slugify(this.props.tag.internalName)
       }));
+    }
+  }
+
+  getPathPrefixForSection() {
+    if (!this.props.sections || !this.props.tag.section) {
+      return '???/';
+    }
+    var section = this.props.sections.filter((section) => section.id === this.props.tag.section);
+
+    if (section) {
+      return section[0].wordsForUrl + '/';
+    } else {
+      return '/';
     }
   }
 
@@ -151,7 +170,8 @@ export default class TagBasicInfo extends React.Component {
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
             <label>Slug</label>
             <div className="tag-edit__linked-field__input-container">
-              {this.props.tag.path}
+              <span>{this.getPathPrefixForSection()}</span>
+              <input type="text" disabled={!this.props.unlockSlug} value={this.props.tag.slug} onChange={this.onUpdateSlug.bind(this)}/>
             </div>
           </div>
         </div>

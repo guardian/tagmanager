@@ -8,7 +8,6 @@ const BLANK_TAG = {
   legallySensitive: false,
   pageId: 123456789,
   parents: [],
-  path: 'PATHNOTPOPULATED',
   type: 'TYPENOTPOPULATED'
 };
 
@@ -51,7 +50,7 @@ class TagCreate extends React.Component {
         <div className="tag">
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
-              <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} />
+              <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} unlockSlug={true} />
             </div>
             <div className="tag__column">
               Column 2
