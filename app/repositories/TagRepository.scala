@@ -17,7 +17,7 @@ object TagRepository {
 
   def updateTag(tagJson: JsValue) = {
       try {
-        val tag = Tag.fromJson(tagJson) // parsing input json here provides bugjet validation
+        val tag = Tag.fromJson(tagJson) // parsing input json here provides budget validation
         Dynamo.tagTable.putItem(Item.fromJSON(tagJson.toString()))
         TagLookupCache.insertTag(tag)
         Some(tag)
