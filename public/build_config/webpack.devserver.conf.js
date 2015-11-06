@@ -30,8 +30,8 @@ module.exports = {
     },
     output: {
         path:       path.join(__dirname, '..'),
-        publicPath: host + '/assets/',
-        filename:   'app.compiled.js'
+        publicPath: host + '/assets/build/',
+        filename:   'app.js'
     },
     resolveLoader: {
         modulesDirectories: ['node_modules']
