@@ -2,7 +2,7 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import repositories.{SectionRepository, TagLookupCache, TagSearchCriteria, TagRepository}
+import repositories._
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -59,4 +59,6 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def listSections() = APIAuthAction {
     Ok(Json.toJson(SectionRepository.loadAllSections))
   }
+
+  def checkPathInUse(path: String) = APIAuthAction { Ok(Json.toJson(Map("inUse" -> PathManager.isPathInUse(path)))) }
 }
