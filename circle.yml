@@ -21,12 +21,9 @@ dependencies:
     - "node_modules"
   # Compile all sources
   override:
-    - npm install:
-        pwd: public
-    - npm run build:
-        pwd: public
-    - npm run build-icons:
-        pwd: public
+    - npm install
+    - npm run build
+    - npm run build-icons
     - sbt test:compile
 
 test:
