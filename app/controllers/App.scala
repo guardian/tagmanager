@@ -11,7 +11,7 @@ object App extends Controller with PanDomainAuthActions {
 
   def index(id: String = "") = AuthAction {
 
-    val jsFileName = "app.compiled.js"
+    val jsFileName = "build/app.js"
 
     val jsLocation = sys.env.get("JS_ASSET_HOST") match {
       case Some(assetHost) => assetHost + jsFileName

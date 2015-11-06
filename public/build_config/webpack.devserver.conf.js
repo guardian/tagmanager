@@ -46,6 +46,10 @@ module.exports = {
             {
                 test:   require.resolve('react'),
                 loader: 'expose?React'
+            },
+            {
+                test: /\.scss$/,
+                loaders: ['style', 'css', 'sass']
             }
         ]
     },

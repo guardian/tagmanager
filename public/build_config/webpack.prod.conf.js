@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   module: {
@@ -8,10 +9,15 @@ module.exports = {
         test:    /\.js$/,
         exclude: /node_modules/,
         loaders: ['babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
+      },
+      {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
       }
     ]
   },
   plugins: [
+    new ExtractTextPlugin('main.css'),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': '"production"'

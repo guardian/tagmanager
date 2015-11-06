@@ -18,12 +18,12 @@ dependencies:
     - "target/streams"
     - "project/target/resolution-cache"
     - "project/target/streams"
-    - "public/node_modules"
+    - "node_modules"
   # Compile all sources
   override:
     - npm install:
         pwd: public
-    - npm run build-js:
+    - npm run build:
         pwd: public
     - npm run build-icons:
         pwd: public
