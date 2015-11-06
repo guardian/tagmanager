@@ -18,6 +18,15 @@ export default {
     });
   },
 
+  createTag: (tag) => {
+    return Reqwest({
+        url: '/api/tag',
+        data: JSON.stringify(tag),
+        contentType: 'application/json',
+        method: 'post'
+    });
+  },
+
   getSections: () => {
     return Reqwest({
       url: '/api/sections',

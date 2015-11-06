@@ -43,11 +43,12 @@ object Tag {
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_))
     )(Tag.apply, unlift(Tag.unapply))
 
-  def fromItem(item: Item) = try{
+  def fromItem(item: Item) = try {
     Json.parse(item.toJSON).as[Tag]
   } catch {
-    case NonFatal(e) => Logger.error(s"failed to load tag ${item.toJSON}", e); throw e
-
+    case NonFatal(e) => {
+      Logger.error(s"failed to load tag ${item.toJSON}", e)
+    }; throw e
   }
   
   def fromJson(json: JsValue) = json.as[Tag]
