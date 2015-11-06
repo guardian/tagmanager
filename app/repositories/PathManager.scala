@@ -11,12 +11,12 @@ object PathManager {
 
   def registerPathAndGetPageId(path: String): Long = {
     Logger.info(s"registering path $path")
+
     val formBody = new FormEncodingBuilder()
       .add("path", path)
       .add("system", "tagmanager")
       .build()
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths").post(formBody).build
-
     val resp = httpClient.newCall(req).execute
 
     resp.code match {
@@ -35,9 +35,23 @@ object PathManager {
     }
   }
 
+  def removePathForId(id: Long) = {
+    Logger.info(s"removing path entries for $id")
+
+    val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths/$id").delete().build
+    val resp = httpClient.newCall(req).execute
+
+    resp.code match {
+      case 204 => Logger.info(s"path entries for $id removed")
+      case c => {
+        Logger.warn(s"failed to remove paths for $id. response code $c, message ${resp.body}")
+        throw new RuntimeException(s"failed to remove paths for $id. response code $c, message ${resp.body}")
+      }
+    }
+  }
+
   def isPathInUse(path: String): Boolean = {
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths?path=$path").build
-
     val resp = httpClient.newCall(req).execute
 
     resp.code match {
