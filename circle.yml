@@ -18,15 +18,12 @@ dependencies:
     - "target/streams"
     - "project/target/resolution-cache"
     - "project/target/streams"
-    - "public/node_modules"
+    - "node_modules"
   # Compile all sources
   override:
-    - npm install:
-        pwd: public
-    - npm run build-js:
-        pwd: public
-    - npm run build-icons:
-        pwd: public
+    - npm install
+    - npm run build
+    - npm run build-icons
     - sbt test:compile
 
 test:
