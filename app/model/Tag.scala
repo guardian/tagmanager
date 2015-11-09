@@ -22,7 +22,10 @@ case class Tag(
   description: Option[String] = None,
   parents: Set[Long] = Set(),
   references: List[Reference] = Nil
-)
+) {
+
+  def toItem = Item.fromJSON(Json.toJson(this).toString())
+}
 
 object Tag {
 

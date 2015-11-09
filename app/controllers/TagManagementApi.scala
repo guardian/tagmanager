@@ -1,6 +1,8 @@
 package controllers
 
-import play.api.libs.json.Json
+import model.command.CommandError._
+import model.command.CreateTagCommand
+import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
 
@@ -26,12 +28,12 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag() = APIAuthAction { req =>
-
     req.body.asJson.map { json =>
-      TagRepository.createTag(json).map{ tag =>
-        Ok(Json.toJson(tag))
-      }.getOrElse(BadRequest("Could not create tag"))
-
+      try {
+        json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
     }.getOrElse {
       BadRequest("Expecting Json data")
     }

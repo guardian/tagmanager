@@ -5,6 +5,10 @@ import play.api.Logger
 import play.api.libs.json.Json
 import services.Config
 
+
+case class PathRegistrationFailed(m: String) extends RuntimeException(m)
+case class PathRemoveFailed(m: String) extends RuntimeException(m)
+
 object PathManager {
 
   val httpClient = new OkHttpClient()
@@ -22,7 +26,7 @@ object PathManager {
     resp.code match {
       case 200 => {
         val responseJson = Json.parse(resp.body().string())
-        val pathId = (responseJson \ "data" \ "canonical" \ "identifier").as[Long]
+        val pathId = (responseJson \ "data" \ "canonical" \\ "identifier").head.as[Long]
 
         Logger.info(s"path $path registered with pathId $pathId")
 
@@ -30,7 +34,7 @@ object PathManager {
       }
       case c => {
         Logger.warn(s"failed to register $path. response code $c, message ${resp.body}")
-        throw new RuntimeException(s"failed to register $path. response code $c, message ${resp.body}")
+        throw PathRegistrationFailed(s"failed to register $path. response code $c, message ${resp.body}")
       }
     }
   }
@@ -45,7 +49,7 @@ object PathManager {
       case 204 => Logger.info(s"path entries for $id removed")
       case c => {
         Logger.warn(s"failed to remove paths for $id. response code $c, message ${resp.body}")
-        throw new RuntimeException(s"failed to remove paths for $id. response code $c, message ${resp.body}")
+        throw new PathRemoveFailed(s"failed to remove paths for $id. response code $c, message ${resp.body}")
       }
     }
   }
@@ -63,5 +67,4 @@ object PathManager {
       }
     }
   }
-
 }
