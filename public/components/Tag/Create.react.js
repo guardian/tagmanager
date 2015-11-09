@@ -2,6 +2,8 @@ import React from 'react';
 import TagEdit from './TagEdit.react';
 import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
+import TagValidationErrors from './TagValidation.react';
+import {validateTag} from '../../util/validateTag';
 import {creatableTags} from '../../constants/tagTypes.js';
 
 const BLANK_TAG = {
@@ -31,8 +33,6 @@ class TagCreate extends React.Component {
 
     saveTag() {
       this.props.tagActions.createTag(this.state.newTag);
-
-      //Redirect to page
     }
 
     updateTag(tag) {
@@ -45,6 +45,10 @@ class TagCreate extends React.Component {
       this.setState({
         newTag: BLANK_TAG
       });
+    }
+
+    isTagValid() {
+      return !validateTag(this.state.newTag).length;
     }
 
     onUpdateType(e) {
@@ -63,6 +67,7 @@ class TagCreate extends React.Component {
                 <TypeSelect selectedType={this.state.newTag.type} types={creatableTags} onChange={this.onUpdateType.bind(this)}/>
               </div>
               <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} unlockSlug={true} />
+              <TagValidationErrors validations={validateTag(this.state.newTag)} />
             </div>
             <div className="tag__column">
               Column 2
@@ -71,7 +76,7 @@ class TagCreate extends React.Component {
               Column 3
             </div>
           </div>
-          <SaveButton onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
+          {this.isTagValid() ? <SaveButton onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/> : false}
         </div>
       );
     }
