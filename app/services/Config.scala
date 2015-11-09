@@ -18,6 +18,8 @@ sealed trait Config {
   def sectionsTableName: String
   def sequenceTableName: String
 
+  def pathManagerUrl: String
+
   def logShippingStreamName: Option[String] = None
   def pandaDomain: String
   def pandaAuthCallback: String
@@ -27,6 +29,8 @@ class DevConfig extends Config {
   override def tagsTableName: String = "tags-dev"
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
+
+  override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
   override def pandaDomain: String = "local.dev-gutools.co.uk"
@@ -38,6 +42,8 @@ class CodeConfig extends Config {
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
 
+  override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
+
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "code.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
@@ -47,6 +53,8 @@ class ProdConfig extends Config {
   override def tagsTableName: String = "tags-PROD"
   override def sectionsTableName: String = "sections-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
+
+  override def pathManagerUrl: String = "http://pathmanager.gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "gutools.co.uk"
