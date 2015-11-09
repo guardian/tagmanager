@@ -1,7 +1,7 @@
 import React from 'react';
-import TagEdit from './TagEdit.react';
+import TagEdit from '../TagEdit/TagEdit.react';
 import SaveButton from '../utils/SaveButton.react';
-
+import ContextDisplay from '../ContextDisplay/ContextDisplay.react';
 class TagDisplay extends React.Component {
 
     constructor(props) {
@@ -18,6 +18,12 @@ class TagDisplay extends React.Component {
 
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
+      }
+    }
+
+    componentWillReceiveProps(props) {
+      if (props.tag.id !== parseInt(props.routeParams.tagId, 10)) {
+        props.tagActions.getTag(parseInt(props.routeParams.tagId, 10));
       }
     }
 
@@ -51,7 +57,7 @@ class TagDisplay extends React.Component {
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} />
             </div>
             <div className="tag__column">
-              Column 2
+              <ContextDisplay tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
             </div>
             <div className="tag__column">
               Column 3
