@@ -38,7 +38,7 @@ case class CreateTagCommand(
       hidden = hidden,
       legallySensitive = legallySensitive,
       comparableValue = comparableValue,
-      section = section.get,
+      section = section,
       description = description,
       parents = parents,
       references = references
