@@ -64,7 +64,7 @@ class TagCreate extends React.Component {
             <div className="tag__column--sidebar">
               <div className="tag-edit__input-group">
                 <label className="tag-edit__input-group__header">Tag Type</label>
-                <TypeSelect selectedType={this.state.newTag.type} types={creatableTags} onChange={this.onUpdateType.bind(this)}/>
+                <TypeSelect selectedType={this.state.newTag.type} onChange={this.onUpdateType.bind(this)}/>
               </div>
               <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} unlockSlug={true} />
               <TagValidationErrors validations={validateTag(this.state.newTag)} />
