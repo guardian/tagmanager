@@ -26,15 +26,9 @@ object TagRepository {
       }
   }
 
-  def createTag(tagJson: JsValue) = {
+  def createTag(tag: Tag) = {
       try {
-
-        val tagItem = Item.fromJSON(tagJson.toString())
-          .withLong("id", Sequences.tagId.getNextId)
-
-        val tag = Tag.fromItem(tagItem)
-
-        Dynamo.tagTable.putItem(tagItem)
+        Dynamo.tagTable.putItem(tag.toItem)
 
         TagLookupCache.insertTag(tag)
         Some(tag)
