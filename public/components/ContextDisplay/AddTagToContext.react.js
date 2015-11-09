@@ -1,5 +1,6 @@
 import React from 'react';
 import tagManagerApi from '../../util/tagManagerApi';
+import debounce from 'lodash.debounce';
 
 export default class AddTagToContext extends React.Component {
 
@@ -13,7 +14,7 @@ export default class AddTagToContext extends React.Component {
           selectedTag: undefined
         };
 
-        this.performSearch = this.performSearch.bind(this);
+        this.performSearch = debounce(this.performSearch.bind(this), 500);
     }
 
     contract() {
