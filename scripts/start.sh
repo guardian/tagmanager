@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
-cd public
-npm run build-js-dev &
-cd ..
+npm run build-dev &
 AWS_PROFILE=composer sbt run

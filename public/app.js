@@ -5,7 +5,9 @@ import Router from 'react-router';
 
 import routes from './routes/routes';
 import configureStore from './util/configureStore';
-import history from './routes/history'
+import history from './routes/history';
+
+import './style/main.scss';
 
 const store = configureStore();
 
