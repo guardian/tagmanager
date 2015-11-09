@@ -66,7 +66,7 @@ class TagDisplay extends React.Component {
               Column 3
             </div>
           </div>
-          {this.isTagDirty() && this.isTagValid() ? <SaveButton onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/> : false}
+          <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
         </div>
       );
     }
