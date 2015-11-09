@@ -1,6 +1,9 @@
 import React from 'react';
 import TagEdit from './TagEdit.react';
+import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
+import TagValidationErrors from './TagValidation.react';
+import {validateTag} from '../../util/validateTag';
 
 class TagDisplay extends React.Component {
 
@@ -9,6 +12,8 @@ class TagDisplay extends React.Component {
 
         this.isTagDirty = this.isTagDirty.bind(this);
         this.isTagFetched = this.isTagFetched.bind(this);
+        this.isTagValid = this.isTagValid.bind(this);
+
     }
 
     componentDidMount() {
@@ -37,6 +42,10 @@ class TagDisplay extends React.Component {
       return this.props.tag && (this.props.tag.id === parseInt(this.props.routeParams.tagId, 10));
     }
 
+    isTagValid() {
+      return !validateTag(this.props.tag).length;
+    }
+
     render () {
       if (!this.isTagFetched()) {
         return (
@@ -48,7 +57,12 @@ class TagDisplay extends React.Component {
         <div className="tag">
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
+              <div className="tag-edit__input-group">
+                <label className="tag-edit__input-group__header">Tag Type</label>
+                <TypeSelect selectedType={this.props.tag.type} forceDisabled={true}/>
+              </div>
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} />
+              <TagValidationErrors validations={validateTag(this.props.tag)} />
             </div>
             <div className="tag__column">
               Column 2
@@ -57,7 +71,7 @@ class TagDisplay extends React.Component {
               Column 3
             </div>
           </div>
-          {this.isTagDirty() ? <SaveButton onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/> : false}
+          <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
         </div>
       );
     }
