@@ -1,5 +1,7 @@
 import React from 'react';
 import TagNameEdit from './formComponents/TagName.react';
+import TagDescriptionEdit from './formComponents/TagDescription.react';
+
 import TagVisibility from './formComponents/TagVisibility.react';
 import SectionSelect from '../utils/SectionSelect.react';
 
@@ -45,6 +47,7 @@ export default class TagEdit extends React.Component {
           <div className="tag-edit__form">
 
             <TagNameEdit {...this.props}/>
+            <TagDescriptionEdit {...this.props}/>
 
             {this.renderTagTypeSpecificFields()}
 

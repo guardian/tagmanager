@@ -1,3 +1,5 @@
+$save-height: 100px;
+
 .save {
   position: fixed;
 
@@ -6,25 +8,56 @@
 
   display: block;
 
+  background-color: $c-grey-200;
+  border-top: 1px solid $c-grey-300;
+  width: 100%;
+
+  text-align: left;
+
 }
 
 %save__button {
+
+  @extend %f-header;
+  @extend %fs-data-4;
+
   display: inline-block;
 
   padding: $standard-padding;
   margin: $standard-padding;
+  min-width: 100px;
+
+  text-align:center;
+
+
+  background-color: $c-white;
+  cursor: pointer;
+
+  i {
+    margin-left: 0;
+  }
 }
 
 .save__button {
   @extend %save__button;
 
-  background-color: $c-blue;
-  color: white;
+  color:$c-green;
+  border: 1px solid $c-green;
+
 }
 
 .save__button--reset {
   @extend %save__button;
 
-  background-color: $c-red;
-  color: white;
+  color:$c-red;
+  border: 1px solid $c-red;
+}
+
+.save-transition-enter.save {
+  transform: translateY($save-height);
+}
+
+.save-transition-enter-active.save {
+  transform: translateY(0);
+  transition: transform 500ms ease-out;
 }
