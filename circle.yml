@@ -4,6 +4,8 @@ machine:
     version: oraclejdk8
   node:
     version: 4.1.0
+  environment:
+    NODE_ENV: production
 
 # Collect build artifacts
 general:
