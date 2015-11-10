@@ -4,6 +4,7 @@ import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
 import TagValidationErrors from './TagValidation.react';
 import {validateTag} from '../../util/validateTag';
+import CapiStats from '../CapiStats/CapiStats.react';
 
 class TagDisplay extends React.Component {
 
@@ -68,7 +69,7 @@ class TagDisplay extends React.Component {
               Column 2
             </div>
             <div className="tag__column">
-              Column 3
+              <CapiStats tag={this.props.tag} />
             </div>
           </div>
           <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
