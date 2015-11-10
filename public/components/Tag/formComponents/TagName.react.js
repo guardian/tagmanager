@@ -29,7 +29,7 @@ export default class TagNameEdit extends React.Component {
       internalName: e.target.value,
       externalName: this.state.externalNameLocked ? e.target.value : this.props.tag.externalName,
       comparableValue: this.state.comparableValueLocked ? e.target.value.toLowerCase() : this.props.tag.comparableValue,
-      slug: this.state.slugLocked ? slugify(e.target.value) : this.props.tag.slug
+      slug: (!this.props.pathLocked && this.state.slugLocked) ? slugify(e.target.value) : this.props.tag.slug
     }));
   }
 
@@ -88,6 +88,9 @@ export default class TagNameEdit extends React.Component {
   }
 
   toggleSlugLock() {
+    if (this.props.pathLocked) {
+      return;
+    }
 
     var newLockState = !this.state.slugLocked;
 
@@ -171,7 +174,7 @@ export default class TagNameEdit extends React.Component {
             <label>Slug</label>
             <div className="tag-edit__linked-field__input-container">
               <span>{this.getPathPrefixForSection()}</span>
-              <input type="text" disabled={!this.props.unlockSlug} value={this.props.tag.slug} onChange={this.onUpdateSlug.bind(this)}/>
+              <input type="text" disabled={this.props.pathLocked} value={this.props.tag.slug} onChange={this.onUpdateSlug.bind(this)}/>
             </div>
           </div>
         </div>
