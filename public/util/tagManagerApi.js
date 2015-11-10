@@ -33,5 +33,20 @@ export default {
       method: 'get',
       type: 'json'
     });
+  },
+
+  checkPathInUse: (type, slug, section) => {
+    const query = {type: type, slug: slug};
+
+    if(section) {
+      query.section = section;
+    }
+
+    return Reqwest({
+      url: '/api/checkPathInUse',
+      data: query,
+      method: 'get',
+      type: 'json'
+    });
   }
 };
