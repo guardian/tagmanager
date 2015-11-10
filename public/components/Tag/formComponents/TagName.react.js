@@ -47,8 +47,7 @@ export default class TagNameEdit extends React.Component {
 
   onUpdateSlug(e) {
 
-    //Prevent updating slug when locked
-    if (!this.props.unlockSlug) {
+    if (this.props.pathLocked) {
       return;
     }
 
