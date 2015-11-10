@@ -24,7 +24,7 @@ export default class SaveButton extends React.Component {
 
     fetchUseStats() {
 
-      const CAPI_DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS';
+      const CAPI_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
       const today = moment().subtract(1, 'days').format(CAPI_DATE_FORMAT);
       const yesterday = moment().subtract(2, 'days').format(CAPI_DATE_FORMAT);
       const thisweek = moment().subtract(7, 'days').format(CAPI_DATE_FORMAT);
@@ -66,21 +66,41 @@ export default class SaveButton extends React.Component {
     }
 
     render () {
+
+      var dayclass = 'capi-stats__stat__arrow';
+      if (this.state.dayUses > this.state.prevDayUses) {
+        dayclass += '--increase';
+      } else if (this.state.dayUses < this.state.prevDayUses) {
+        dayclass += '--decrease';
+      }
+
+      var weekclass = 'capi-stats__stat__arrow';
+      if (this.state.weekUses > this.state.prevWeekUses) {
+        weekclass += '--increase';
+      } else if (this.state.weekUses < this.state.prevWeekUses) {
+        weekclass += '--decrease';
+      }
+
       return (
         <div className="capi-stats">
           <div className="capi-stats__header">CAPI Stats</div>
           <div className="capi-stats__stat">
-            <div className="capi-stats__stat__header">Today</div>
-            <div className="capi-stats__stat__value">{this.state.dayUses !== undefined ? this.state.dayUses : '...'}</div>
-            <div className="capi-stats__stat__prev">(Yesterday {this.state.prevDayUses !== undefined ? this.state.prevDayUses : '...'}) </div>
+            <div className="capi-stats__stat__header">Last 24 Hours</div>
+            <div className="capi-stats__stat__value">
+              {this.state.dayUses !== undefined ? this.state.dayUses : '...'}
+              <span className={dayclass} title={'Previous 24hrs: ' + this.state.prevDayUses}></span>
+            </div>
           </div>
           <div className="capi-stats__stat">
             <div className="capi-stats__stat__header">This week</div>
-            <div className="capi-stats__stat__value">{this.state.weekUses !== undefined ? this.state.weekUses : '...'}</div>
-            <div className="capi-stats__stat__prev">(Last week {this.state.prevWeekUses !== undefined ? this.state.prevWeekUses : '...'}) </div>
+            <div className="capi-stats__stat__value">
+              {this.state.weekUses !== undefined ? this.state.weekUses : '...'}
+              <span className={weekclass} title={'Previous Week: ' + this.state.prevWeekUses}></span>
+
+            </div>
           </div>
           <div className="capi-stats__stat">
-            <div className="capi-stats__stat__header">Total</div>
+            <div className="capi-stats__stat__header">Total uses</div>
             <div className="capi-stats__stat__value">{this.state.totalUses !== undefined ? this.state.totalUses : '...'}</div>
           </div>
         </div>

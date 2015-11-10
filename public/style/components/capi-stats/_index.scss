@@ -41,3 +41,22 @@
   @extend %f-header;
   @extend %fs-data-1;
 }
+
+%capi-stats__stat__arrow {
+  display: inline-block;
+
+}
+
+.capi-stats__stat__arrow--increase::before {
+  @extend %capi-stats__stat__arrow;
+  
+  content: "▲";
+  color: $c-green;
+}
+
+.capi-stats__stat__arrow--decrease::before {
+  @extend %capi-stats__stat__arrow;
+
+  content: "▼";
+  color: $c-red;
+}
