@@ -40,37 +40,13 @@ class TagCreate extends React.Component {
     sectionChanged(updated) {
       const current = this.state.newTag
 
-      if(updated.section) {
-        if(current.section) {
-          return updated.section !== current.section;
-        } else {
-          return true;
-        }
-      } else {
-        if(current.section) {
-          return true;
-        } else {
-          return false;
-        }
-      }
+      return updated.section !== current.section;
     }
 
     slugChanged(updated) {
       const current = this.state.newTag
 
-      if(updated.slug) {
-        if(current.slug) {
-          return updated.slug !== current.slug;
-        } else {
-          return true;
-        }
-      } else {
-        if(current.slug) {
-          return true;
-        } else {
-          return false;
-        }
-      }
+      return updated.slug !== current.slug;
     }
 
     updateTag(tag) {
