@@ -1,5 +1,6 @@
 package model.command
 
+import com.gu.tagmanagement.{EventType, TagEvent}
 import model.{Tag, Reference}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -47,7 +48,7 @@ case class CreateTagCommand(
 
     val result = TagRepository.createTag(tag)
 
-    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, tag.asThrift)
+    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Create, tag.id, Some(tag.asThrift)))
 
     result
   }
