@@ -9,7 +9,7 @@ export default class TypeSelect extends React.Component {
 
   render () {
 
-    if (!creatableTags || !creatableTags) {
+    if (!creatableTags) {
       return (
         <select disabled="true">
           <option>Fetching types...</option>

@@ -40,35 +40,47 @@ export default class CapiStats extends React.Component {
       const thisweek = moment().subtract(7, 'days').format(CAPI_DATE_FORMAT);
       const lastweek = moment().subtract(14, 'days').format(CAPI_DATE_FORMAT);
 
-      capiClient.getByTag(this.props.tag, today)
-        .then(res => {
+      capiClient.getByTag(this.props.tag, {
+        'from-date': today,
+        'page-size': 0
+      }).then(res => {
           this.setState({
             dayUses: res.response.total
           });
         });
 
-      capiClient.getByTag(this.props.tag, thisweek)
-        .then(res => {
+      capiClient.getByTag(this.props.tag, {
+        'from-date': thisweek,
+        'page-size': 0
+      }).then(res => {
           this.setState({
             weekUses: res.response.total
           });
         });
-      capiClient.getByTag(this.props.tag, yesterday, today)
-        .then(res => {
+
+      capiClient.getByTag(this.props.tag, {
+        'from-date': yesterday,
+        'to-date': today,
+        'page-size': 0
+      }).then(res => {
           this.setState({
             prevDayUses: res.response.total
           });
         });
 
-      capiClient.getByTag(this.props.tag, lastweek, thisweek)
-        .then(res => {
+        capiClient.getByTag(this.props.tag, {
+          'from-date': lastweek,
+          'to-date': thisweek,
+          'page-size': 0
+        }).then(res => {
           this.setState({
             prevWeekUses: res.response.total
           });
         });
 
-      capiClient.getByTag(this.props.tag)
-        .then(res => {
+      capiClient.getByTag(this.props.tag, {
+        'page-size': 0
+      }).then(res => {
           this.setState({
             totalUses: res.response.total
           });
