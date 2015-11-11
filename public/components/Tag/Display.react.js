@@ -5,6 +5,7 @@ import SaveButton from '../utils/SaveButton.react';
 import TypeSelect from '../utils/TypeSelect.react';
 import TagValidationErrors from './TagValidation.react';
 import {validateTag} from '../../util/validateTag';
+import CapiStats from '../CapiStats/CapiStats.react';
 
 class TagDisplay extends React.Component {
 
@@ -74,7 +75,7 @@ class TagDisplay extends React.Component {
               <ContextDisplay tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
             </div>
             <div className="tag__column">
-              Column 3
+              <CapiStats tag={this.props.tag} config={this.props.config} />
             </div>
           </div>
           <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
@@ -95,7 +96,8 @@ function mapStateToProps(state) {
   return {
     tag: state.tag,
     sections: state.sections,
-    saveState: state.saveState
+    saveState: state.saveState,
+    config: state.config
   };
 }
 
