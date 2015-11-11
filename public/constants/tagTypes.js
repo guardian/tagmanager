@@ -1,5 +1,5 @@
-export const topic = 'topic';
-export const series = 'series';
-export const contributor = 'contributor';
+export const topic = 'Topic';
+export const series = 'Series';
+export const contributor = 'Contributor';
 
 export const creatableTags = [topic, series, contributor];
