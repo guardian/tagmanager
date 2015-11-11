@@ -1,0 +1,62 @@
+.capi-stats {
+  margin: $standard-padding / 2;
+  padding: $standard-padding;
+
+  background-color: $c-grey-100;
+  border: 1px solid $c-grey-200;
+}
+
+.capi-stats__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  margin-bottom: $standard-padding/2;
+
+}
+
+.capi-stats__stat {
+  display: inline-block;
+  width: 33%;
+
+  vertical-align: top;
+
+  text-align: center;
+
+  margin-bottom: $standard-padding/2;
+}
+
+.capi-stats__stat__header {
+  @extend %f-header;
+  @extend %fs-data-3;
+}
+
+.capi-stats__stat__value {
+  @extend %f-header;
+  @extend %fs-data-6;
+}
+
+.capi-stats__stat__prev {
+  @extend %f-header;
+  @extend %fs-data-1;
+}
+
+%capi-stats__stat__arrow {
+  display: inline-block;
+
+}
+
+.capi-stats__stat__arrow--increase::before {
+  @extend %capi-stats__stat__arrow;
+  
+  content: "▲";
+  color: $c-green;
+}
+
+.capi-stats__stat__arrow--decrease::before {
+  @extend %capi-stats__stat__arrow;
+
+  content: "▼";
+  color: $c-red;
+}

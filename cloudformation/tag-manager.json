@@ -96,7 +96,22 @@
         "Roles": [ { "Ref": "TagManagerRole" } ]
       }
     },
-
+    "TagManagerGetConfigPolicy" : {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TagManagerGetConfigPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [ "s3:GetObject" ],
+              "Resource": [ "arn:aws:s3:::guconf-flexible/tag-manager/*" ]
+            }
+          ]
+        },
+        "Roles": [ { "Ref": "TagManagerRole" } ]
+      }
+    },
     "TagManagerPanDomainPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
