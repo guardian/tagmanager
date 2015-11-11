@@ -33,5 +33,14 @@ export default {
       method: 'get',
       type: 'json'
     });
+  },
+
+  searchTags: (query) => {
+    return Reqwest({
+        url: '/api/tags',
+        method: 'get',
+        data: [ {name: 'q', value: query} ],
+        type: 'json'
+    });
   }
 };
