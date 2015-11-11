@@ -1,9 +1,11 @@
 import React from 'react';
-import TagEdit from './TagEdit.react';
-import TypeSelect from '../utils/TypeSelect.react';
+import TagEdit from '../TagEdit/TagEdit.react';
+import ContextDisplay from '../ContextDisplay/ContextDisplay.react';
 import SaveButton from '../utils/SaveButton.react';
+import TypeSelect from '../utils/TypeSelect.react';
 import TagValidationErrors from './TagValidation.react';
 import {validateTag} from '../../util/validateTag';
+import CapiStats from '../CapiStats/CapiStats.react';
 
 class TagDisplay extends React.Component {
 
@@ -13,7 +15,6 @@ class TagDisplay extends React.Component {
         this.isTagDirty = this.isTagDirty.bind(this);
         this.isTagFetched = this.isTagFetched.bind(this);
         this.isTagValid = this.isTagValid.bind(this);
-
     }
 
     componentDidMount() {
@@ -23,6 +24,12 @@ class TagDisplay extends React.Component {
 
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
+      }
+    }
+
+    componentWillReceiveProps(props) {
+      if (props.tag.id !== parseInt(props.routeParams.tagId, 10)) {
+        props.tagActions.getTag(parseInt(props.routeParams.tagId, 10));
       }
     }
 
@@ -65,10 +72,10 @@ class TagDisplay extends React.Component {
               <TagValidationErrors validations={validateTag(this.props.tag)} />
             </div>
             <div className="tag__column">
-              Column 2
+              <ContextDisplay tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
             </div>
             <div className="tag__column">
-              Column 3
+              <CapiStats tag={this.props.tag} config={this.props.config} />
             </div>
           </div>
           <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
@@ -89,7 +96,8 @@ function mapStateToProps(state) {
   return {
     tag: state.tag,
     sections: state.sections,
-    saveState: state.saveState
+    saveState: state.saveState,
+    config: state.config
   };
 }
 

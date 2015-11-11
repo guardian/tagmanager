@@ -1,6 +1,6 @@
 import React from 'react';
-import reqwest from 'reqwest';
 import { Link } from 'react-router';
+import tagManagerApi from '../util/tagManagerApi';
 
 export default class TagSearch extends React.Component {
 
@@ -12,12 +12,8 @@ export default class TagSearch extends React.Component {
     handleChange(event) {
         var self = this;
 
-        reqwest({
-            url: '/api/tags',
-            method: 'get',
-            data: [ {name: 'q', value: event.target.value} ],
-            type: 'json'
-        }).then(function(resp) {
+        tagManagerApi.searchTags(event.target.value)
+        .then(function(resp) {
             self.setState({tags: resp});
         }).fail(function(err, msg) {
             console.log('failed', err, msg);

@@ -1,0 +1,105 @@
+.context {
+  padding: $standard-padding;
+
+}
+
+.context__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  margin-bottom: $standard-padding;
+
+}
+
+.context__parents {
+  border: 1px solid $c-grey-300;
+  padding: $standard-padding;
+  min-height: 100px;
+}
+
+.context__tag {
+  @extend %fs-data-4;
+
+  vertical-align: top;
+
+  position: relative;
+
+  display: inline-block;
+  border: 1px solid $c-grey-300;
+  background-color: $c-grey-200;
+  padding: $standard-padding/2 $standard-padding;
+  margin-right: $standard-padding/2;
+  margin-bottom: $standard-padding/2;
+  padding-right: 5px;
+
+  &:before {
+    @extend .i-article;
+
+    content: " ";
+  }
+
+  &:hover {
+    text-decoration: none;
+    background-color: $c-grey-300;
+  }
+
+}
+
+.context__tag__remove {
+  transform: scale(0.8);
+  display: inline-block;
+  position: relative;
+  right: -5px;
+}
+
+%context__add {
+  display: inline-block;
+
+  position: relative;
+
+  margin-left: $standard-padding;
+}
+
+.context__add {
+  @extend %context__add;
+  line-height: 35px;
+
+}
+
+.context__add--expanded {
+  @extend %context__add;
+
+  width: 300px;
+
+}
+
+.context__add__input {
+
+}
+
+.context__add__suggestions {
+
+  position: absolute;
+  top: 20px;
+
+  border: 1px solid $c-grey-300;
+  background-color: $c-grey-100;
+
+
+  ul {
+
+  }
+
+  li {
+    display: block;
+    padding: $standard-padding/2 $standard-padding;
+
+    cursor: pointer;
+
+    &:nth-child(even) {
+      background-color: $c-white;
+    }
+  }
+}

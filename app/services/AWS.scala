@@ -6,6 +6,7 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.amazonaws.services.ec2.AmazonEC2Client
+import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.ec2.model.{Filter, DescribeTagsRequest}
 import com.amazonaws.services.kinesis.AmazonKinesisClient
 import com.amazonaws.util.EC2MetadataUtils
@@ -19,6 +20,7 @@ object AWS {
   lazy val EC2Client = region.createClient(classOf[AmazonEC2Client], null, null)
   lazy val CloudWatch = region.createClient(classOf[AmazonCloudWatchAsyncClient], null, null)
   lazy val Kinesis = region.createClient(classOf[AmazonKinesisClient], null, null)
+  lazy val S3Client = region.createClient(classOf[AmazonS3Client], null, null)
 
 }
 
