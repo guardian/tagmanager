@@ -67,7 +67,7 @@ class TagDisplay extends React.Component {
                 <label className="tag-edit__input-group__header">Tag Type</label>
                 <TypeSelect selectedType={this.props.tag.type} forceDisabled={true}/>
               </div>
-              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} />
+              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true}/>
               <TagValidationErrors validations={validateTag(this.props.tag)} />
             </div>
             <div className="tag__column">
