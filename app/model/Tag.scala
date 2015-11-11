@@ -18,6 +18,7 @@ case class Tag(
   hidden: Boolean = false,
   legallySensitive: Boolean = false,
   comparableValue: String,
+  category: Option[String],
   section: Option[Long],
   description: Option[String] = None,
   parents: Set[Long] = Set(),
@@ -40,6 +41,7 @@ object Tag {
       (JsPath \ "hidden").format[Boolean] and
       (JsPath \ "legallySensitive").format[Boolean] and
       (JsPath \ "comparableValue").format[String] and
+      (JsPath \ "category").formatNullable[String] and
       (JsPath \ "section").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
@@ -53,8 +55,7 @@ object Tag {
       Logger.error(s"failed to load tag ${item.toJSON}", e)
     }; throw e
   }
-  
+
   def fromJson(json: JsValue) = json.as[Tag]
 
 }
-

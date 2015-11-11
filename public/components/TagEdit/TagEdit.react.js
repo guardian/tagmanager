@@ -5,6 +5,8 @@ import TagDescriptionEdit from './formComponents/TagDescription.react';
 import TagVisibility from './formComponents/TagVisibility.react';
 import SectionSelect from '../utils/SectionSelect.react';
 
+import TopicCategories from './formComponents/topic/TopicCategories.js';
+
 import * as tagTypes from '../../constants/tagTypes';
 
 export default class TagEdit extends React.Component {
@@ -21,6 +23,12 @@ export default class TagEdit extends React.Component {
       }));
     }
 
+    onUpdateCategory(e) {
+      this.props.updateTag(Object.assign({}, this.props.tag, {
+        category: e.target.value
+      }));
+    }
+
     //This will contain the logic for different tag forms (keyword vs contributor etc...)
     renderTagTypeSpecificFields() {
 
@@ -29,10 +37,16 @@ export default class TagEdit extends React.Component {
       }
 
       if (this.props.tag.type === tagTypes.topic) {
-        return (<div className="tag-edit__input-group">
-          <label className="tag-edit__input-group__header">Section</label>
-          <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
-        </div>);
+        return [
+          (<div className="tag-edit__input-group" key="keyword-section">
+            <label className="tag-edit__input-group__header">Section</label>
+              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+          </div>),
+          (<div className="tag-edit__input-group" key="keyword-category">
+            <label className="tag-edit__input-group__header">Category</label>
+              <TopicCategories selectedCategory={this.props.tag.category} onChange={this.onUpdateCategory.bind(this)}/>
+          </div>)
+        ];
       }
     }
 
