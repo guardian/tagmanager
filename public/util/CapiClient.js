@@ -1,13 +1,18 @@
 import Reqwest from 'reqwest';
 
+function paramsObjectToQuery (params) {
+  return Object.keys(params).map((paramName) => {
+    return paramName + '=' + params[paramName];
+  }).join('&');
+}
+
 export default function(apiUrl, apiKey) {
 
-  const getByTag = (tag, fromDate, toDate) => {
-    const fromQuery = fromDate ? '&from-date=' + fromDate : '';
-    const toQuery = toDate ? '&to-date=' + toDate : '';
+  const getByTag = (tag, params) => {
+    const query = paramsObjectToQuery(params);
 
     return Reqwest({
-      url: apiUrl + '/search?api-key=' + apiKey + '&tag=' + tag.path + fromQuery + toQuery,
+      url: apiUrl + '/search?api-key=' + apiKey + '&tag=' + tag.path  + '&' + query,
       contentType: 'application/json',
       method: 'get'
     });
