@@ -1,9 +1,10 @@
 package controllers
 
+import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import repositories.{TagSearchCriteria, TagRepository}
 import play.api.Logger
-import services.LogShipping
+import services.{LogShipping, Config}
 
 object App extends Controller with PanDomainAuthActions {
 
@@ -18,7 +19,12 @@ object App extends Controller with PanDomainAuthActions {
       case None => routes.Assets.versioned(jsFileName).toString
     }
 
-    Ok(views.html.Application.app("Tag Manager", jsLocation))
+    val clientConfig = Map(
+      "capiUrl" -> Config().capiUrl,
+      "capiKey" -> Config().capiKey
+    )
+
+    Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
   }
 
   def hello = AuthAction {

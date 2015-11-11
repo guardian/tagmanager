@@ -11,10 +11,29 @@ import './style/main.scss';
 
 const store = configureStore();
 
+// Extract config from page
+
+const config = extractConfigFromPage();
+
+store.dispatch({
+    type:       'CONFIG_RECEIVED',
+    config:     config,
+    receivedAt: Date.now()
+});
+
 render(
     <Provider store={store}>
       <Router routes={routes} history={history}/>
     </Provider>
 , document.getElementById('react-mount'));
 
-window.store = store;
+function extractConfigFromPage() {
+
+  const configEl = document.getElementById('config');
+
+  if (!configEl) {
+    return {};
+  }
+
+  return JSON.parse(configEl.innerHTML);
+}

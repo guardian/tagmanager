@@ -1,5 +1,5 @@
 import React from 'react';
-import TagEdit from './TagEdit.react';
+import TagEdit from '../TagEdit/TagEdit.react';
 import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
 import TagValidationErrors from './TagValidation.react';

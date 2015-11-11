@@ -13,10 +13,17 @@ const saveState = {
 export default function tag(state = {
   tag: false,
   error: false,
-  saveState: undefined
+  saveState: undefined,
+  config: {}
 }, action) {
   switch (action.type) {
 
+// CONFIG
+
+  case 'CONFIG_RECEIVED':
+    return Object.assign({}, state, {
+      config: action.config
+    });
 
 // TAG GET
 

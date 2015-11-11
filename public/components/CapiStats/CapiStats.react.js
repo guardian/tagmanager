@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
-import capiApi from '../../util/capi.js';
+import CapiClient from '../../util/CapiClient.js';
 
-export default class SaveButton extends React.Component {
+export default class CapiStats extends React.Component {
 
     constructor(props) {
         super(props);
@@ -15,14 +15,24 @@ export default class SaveButton extends React.Component {
           totalUses: undefined
         };
 
-        this.fetchUseStats = this.fetchUseStats.bind(this);
+        if (this.props.config.capiUrl && this.props.config.capiKey) {
+          const capiClient = CapiClient(this.props.config.capiUrl, this.props.config.capiKey);
+          this.fetchUseStats = this.fetchUseStats.bind(this, capiClient);
+        } else {
+          console.log('No CAPI Keys found in state.config');
+        }
+
     }
 
     componentDidMount() {
       this.fetchUseStats();
     }
 
-    fetchUseStats() {
+    fetchUseStats(capiClient) {
+
+      if (!capiClient) {
+        return;
+      }
 
       const CAPI_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
       const today = moment().subtract(1, 'days').format(CAPI_DATE_FORMAT);
@@ -30,34 +40,34 @@ export default class SaveButton extends React.Component {
       const thisweek = moment().subtract(7, 'days').format(CAPI_DATE_FORMAT);
       const lastweek = moment().subtract(14, 'days').format(CAPI_DATE_FORMAT);
 
-      capiApi.getByTag(this.props.tag, today)
+      capiClient.getByTag(this.props.tag, today)
         .then(res => {
           this.setState({
             dayUses: res.response.total
           });
         });
 
-      capiApi.getByTag(this.props.tag, thisweek)
+      capiClient.getByTag(this.props.tag, thisweek)
         .then(res => {
           this.setState({
             weekUses: res.response.total
           });
         });
-      capiApi.getByTag(this.props.tag, yesterday, today)
+      capiClient.getByTag(this.props.tag, yesterday, today)
         .then(res => {
           this.setState({
             prevDayUses: res.response.total
           });
         });
 
-      capiApi.getByTag(this.props.tag, lastweek, thisweek)
+      capiClient.getByTag(this.props.tag, lastweek, thisweek)
         .then(res => {
           this.setState({
             prevWeekUses: res.response.total
           });
         });
 
-      capiApi.getByTag(this.props.tag)
+      capiClient.getByTag(this.props.tag)
         .then(res => {
           this.setState({
             totalUses: res.response.total
