@@ -11,3 +11,5 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
 
 addSbtPlugin("com.gu" % "sbt-riffraff-artifact" % "0.8.1")
+
+addSbtPlugin("com.twitter" %% "scrooge-sbt-plugin" % "4.1.0")

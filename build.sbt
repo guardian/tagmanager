@@ -11,12 +11,22 @@ lazy val dependencies = Seq(
   "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.8",
   ws, // for panda
   "com.squareup.okhttp" % "okhttp" % "2.4.0",
+  "org.apache.thrift" % "libthrift" % "0.8.0",
+  "com.twitter" %% "scrooge-core" % "4.1.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12"
 )
 
+lazy val thriftSettings = Seq(
+  scroogeThriftSourceFolder in Compile <<= baseDirectory {
+    base => base / "thrift"
+  },
+  scroogeThriftOutputFolder in Compile <<= sourceManaged { srcManaged =>
+    srcManaged / "thrift_src_managed"
+  }
+)
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb)
   .settings(Defaults.coreDefaultSettings: _*)
@@ -40,4 +50,4 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     scalaVersion in ThisBuild := "2.11.7",
     libraryDependencies ++= dependencies
   )
-  .settings(TagManager.settings: _*)
+  .settings(TagManager.settings: _*).settings(thriftSettings: _*)

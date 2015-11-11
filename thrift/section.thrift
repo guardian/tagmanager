@@ -30,5 +30,5 @@ struct Section {
     6: required string wordsForUrl;
 
     /** A map of editionalised versions of the section front keyed off the edition, normally empty */
-    7: required Map<string, EditionalisedPage> editions;
+    7: required map<string, EditionalisedPage> editions;
 }
