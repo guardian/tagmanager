@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import com.gu.tagmanagement.{Tag => ThriftTag, TagType}
 
 import scala.util.control.NonFatal
 
@@ -25,6 +26,23 @@ case class Tag(
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
+
+  def asThrift = ThriftTag(
+    id                = id,
+    path              = path,
+    pageId            = pageId,
+    `type`            = TagType.valueOf(`type`).get,
+    internalName      = internalName,
+    externalName      = externalName,
+    slug              = slug,
+    hidden            = hidden,
+    legallySensitive  = legallySensitive,
+    comparableValue   = comparableValue,
+    section           = section,
+    description       = description,
+    parents           = parents,
+    references        = references.map(_.asThrift)
+  )
 }
 
 object Tag {
@@ -56,5 +74,22 @@ object Tag {
   
   def fromJson(json: JsValue) = json.as[Tag]
 
+  def apply(thriftTag: ThriftTag): Tag =
+    Tag(
+      id                = thriftTag.id,
+      path              = thriftTag.path,
+      pageId            = thriftTag.pageId,
+      `type`            = thriftTag.`type`.name,
+      internalName      = thriftTag.internalName,
+      externalName      = thriftTag.externalName,
+      slug              = thriftTag.slug,
+      hidden            = thriftTag.hidden,
+      legallySensitive  = thriftTag.legallySensitive,
+      comparableValue   = thriftTag.comparableValue,
+      section           = thriftTag.section,
+      description       = thriftTag.description,
+      parents           = thriftTag.parents.toSet,
+      references        = thriftTag.references.map(Reference(_)).toList
+    )
 }
 

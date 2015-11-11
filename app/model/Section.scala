@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
+import com.gu.tagmanagement.{Section => ThriftSection}
 
 import scala.util.control.NonFatal
 
@@ -15,7 +16,18 @@ case class Section(
                     wordsForUrl: String,
                     pageId: Long,
                     editions: Map[String, EditionalisedPage] = Map()
-                    )
+                    ) {
+
+  def asThrift = ThriftSection(
+    id            = id,
+    sectionTagId  = sectionTagId,
+    name          = name,
+    path          = path,
+    wordsForUrl   = wordsForUrl,
+    pageId        = pageId,
+    editions      = editions.mapValues(_.asThift)
+  )
+}
 
 object Section {
 
@@ -37,5 +49,16 @@ object Section {
   }
 
   def fromJson(json: JsValue) = json.as[Section]
+
+  def apply(thriftSection: ThriftSection): Section =
+    Section(
+      id            = thriftSection.id,
+      sectionTagId  = thriftSection.sectionTagId,
+      name          = thriftSection.name,
+      path          = thriftSection.path,
+      wordsForUrl   = thriftSection.wordsForUrl,
+      pageId        = thriftSection.pageId,
+      editions      = thriftSection.editions.mapValues(EditionalisedPage(_)).toMap
+    )
 
 }
