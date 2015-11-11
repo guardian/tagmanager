@@ -3,6 +3,7 @@ import TagEdit from '../TagEdit/TagEdit.react';
 import TypeSelect from '../utils/TypeSelect.react';
 import SaveButton from '../utils/SaveButton.react';
 import TagValidationErrors from './TagValidation.react';
+import tagManagerApi from '../../util/tagManagerApi';
 import {validateTag} from '../../util/validateTag';
 import {creatableTags} from '../../constants/tagTypes.js';
 
@@ -21,7 +22,8 @@ class TagCreate extends React.Component {
         super(props);
 
         this.state = {
-          newTag: BLANK_TAG
+          newTag: BLANK_TAG,
+          pathInUse: false
         };
     }
 
@@ -35,10 +37,28 @@ class TagCreate extends React.Component {
       this.props.tagActions.createTag(this.state.newTag);
     }
 
+    sectionChanged(updated) {
+      const current = this.state.newTag
+
+      return updated.section !== current.section;
+    }
+
+    slugChanged(updated) {
+      const current = this.state.newTag
+
+      return updated.slug !== current.slug;
+    }
+
     updateTag(tag) {
+      const shouldCheckPath = tag.slug && (this.sectionChanged(tag) || this.slugChanged(tag));
+
       this.setState({
         newTag: tag
       });
+
+      if(shouldCheckPath) {
+        this.checkPathInUse(tag);
+      }
     }
 
     resetTag() {
@@ -48,7 +68,26 @@ class TagCreate extends React.Component {
     }
 
     isTagValid() {
-      return !validateTag(this.state.newTag).length;
+      return !validateTag(this.state.newTag).length && !this.state.pathInUse;
+    }
+
+    generateValidationErrors() {
+      const validationErrors = validateTag(this.state.newTag)
+
+      if(this.state.pathInUse) {
+        validationErrors.push({
+          fieldName: 'slug',
+          message: 'Path is already in use'
+        });
+      }
+
+      return validationErrors;
+    }
+
+    checkPathInUse(tag) {
+      tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section)
+        .then(res => this.setState({pathInUse: res.inUse}))
+        .fail(error => this.setState({pathInUse: true}));
     }
 
     onUpdateType(e) {
@@ -67,7 +106,7 @@ class TagCreate extends React.Component {
                 <TypeSelect selectedType={this.state.newTag.type} onChange={this.onUpdateType.bind(this)}/>
               </div>
               <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} />
-              <TagValidationErrors validations={validateTag(this.state.newTag)} />
+              <TagValidationErrors validations={this.generateValidationErrors()} />
             </div>
             <div className="tag__column">
               Column 2
