@@ -5,6 +5,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
 import CommandError._
+import services.KinesisStreams
 
 
 case class CreateTagCommand(
@@ -44,7 +45,11 @@ case class CreateTagCommand(
       references = references
     )
 
-    TagRepository.createTag(tag)
+    val result = TagRepository.createTag(tag)
+
+    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, tag.asThrift)
+
+    result
   }
 
   def calculatePath = `type` match {
