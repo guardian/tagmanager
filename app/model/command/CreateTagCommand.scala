@@ -1,11 +1,13 @@
 package model.command
 
+import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
 import model.{Tag, Reference}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
 import CommandError._
+import services.KinesisStreams
 
 
 case class CreateTagCommand(
@@ -45,7 +47,11 @@ case class CreateTagCommand(
       references = references
     )
 
-    TagRepository.createTag(tag)
+    val result = TagRepository.createTag(tag)
+
+    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Create, tag.id, Some(tag.asThrift)))
+
+    result
   }
 }
 

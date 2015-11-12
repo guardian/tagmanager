@@ -67,6 +67,8 @@ sealed trait Config {
   def sectionsTableName: String
   def sequenceTableName: String
 
+  def tagUpdateStreamName: String
+
   def pathManagerUrl: String
 
   def logShippingStreamName: Option[String] = None
@@ -81,6 +83,8 @@ class DevConfig extends Config {
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
 
+  override def tagUpdateStreamName: String = "tag-update-stream-dev"
+
   override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
@@ -94,6 +98,8 @@ class CodeConfig extends Config {
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
 
+  override def tagUpdateStreamName: String = "tag-update-stream-dev"
+
   override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
@@ -106,6 +112,8 @@ class ProdConfig extends Config {
   override def tagsTableName: String = "tags-PROD"
   override def sectionsTableName: String = "sections-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
+
+  override def tagUpdateStreamName: String = "tag-update-stream-PROD"
 
   override def pathManagerUrl: String = "http://pathmanager.gutools.co.uk/"
 

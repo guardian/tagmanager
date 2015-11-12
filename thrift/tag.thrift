@@ -1,0 +1,68 @@
+namespace scala com.gu.tagmanagement
+
+/** the types of tags supported */
+enum TagType {
+    TOPIC = 0,
+    CONTRIBUTOR = 1,
+    SERIES = 2,
+    BLOG = 3,
+    TONE = 4,
+    CONTENT_TYPE = 5,
+    PUBLICATION = 6,
+    NEWSPAPER_BOOK = 7,
+    NEWSPAPER_BOOK_SECTION = 8
+}
+
+struct Reference {
+    /** the type of the the reference, e.g. musicbrainz, imdb, pa football team etc. */
+    1: required string type;
+
+    /** the value to the reference */
+    2: required string value;
+}
+
+struct Tag {
+
+    /** the id of the tag */
+    1: required i64 id;
+
+    /** the path of the canonical page for this tag - also used as api identifier*/
+    2: required string path;
+
+    /** the page id for the path as asigned by the path manager */
+    3: required i64 pageId;
+
+    /** the type of this tag */
+    4: required TagType type;
+
+    /** the internal label for the tag */
+    5: required string internalName;
+
+    /** the publicly displayed name for the tag */
+    6: required string externalName;
+
+    /** the tag owned url slug, the path is derived from this, the section and the tag type */
+    7: required string slug;
+
+    /** the tag is not displayed on the site if hidden is true */
+    8: required bool hidden;
+
+    /** legally sensitive tags surpress content showing related content and showing up in related content results */
+    9: required bool legallySensitive;
+
+    /** The natural sort key used for ordering tag lists, puts surname first, removes 'the' etc. */
+    10: required string comparableValue;
+
+    /** the id of the section this tag belongs to, if missing the tag is in the 'Global' pseudosection */
+    11: optional i64 section;
+
+    /** a description of the tag, rendered on tag pages, this could be a topic precis or a contributor's profile */
+    12: optional string description;
+
+    /** a set of parent tag ids. NB a tag can have multiple parents, but more often the set will be empty */
+    13: required set<i64> parents;
+
+    /** the reference mappings for this tag */
+    14: required list<Reference> references;
+
+}
