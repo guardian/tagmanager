@@ -51,24 +51,18 @@ export default {
       });
   },
 
-  searchTags: (query, orderByField) => {
+  searchTags: (textQuery, orderByField) => {
 
-    const queries = [{
-      name: 'q',
-      value: query
-    }];
+    const query = {q: textQuery};
 
     if (orderByField) {
-      queries.push({
-        name: 'orderBy',
-        value: orderByField
-      });
+      query.orderBy = orderByField;
     }
 
     return Reqwest({
         url: '/api/tags',
         method: 'get',
-        data: queries,
+        data: query,
         type: 'json'
     });
   }
