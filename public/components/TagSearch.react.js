@@ -1,47 +1,89 @@
 import React from 'react';
 import { Link } from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
+import TagsList from './TagList/TagList.react';
 
-export default class TagSearch extends React.Component {
+export class TagSearch extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchString: '', tags: []};
+
+        this.state = {
+          searchString: '',
+          tags: [],
+          sortResultsBy: 'internalName'
+        };
+
+        this.sortBy = this.sortBy.bind(this);
+        this.searchTags = this.searchTags.bind(this);
+
+        if (!this.props.sections || !this.props.sections.length) {
+          this.props.sectionActions.getSections();
+        }
+
+        this.searchTags();
+    }
+
+    searchTags(searchString, sortBy) {
+
+      var self = this;
+
+      tagManagerApi.searchTags(searchString, sortBy)
+      .then(function(resp) {
+          self.setState({tags: resp});
+      }).fail(function(err, msg) {
+          console.log('failed', err, msg);
+      });
+
+      this.setState({
+        searchString: searchString,
+        sortBy: sortBy
+      });
     }
 
     handleChange(event) {
-        var self = this;
+      this.searchTags(event.target.value, this.state.sortBy);
+    }
 
-        tagManagerApi.searchTags(event.target.value)
-        .then(function(resp) {
-            self.setState({tags: resp});
-        }).fail(function(err, msg) {
-            console.log('failed', err, msg);
-        });
-        this.setState({searchString: event.target.value});
+    sortBy(fieldName) {
+      this.searchTags(this.state.searchString, fieldName);
     }
 
     render () {
-
-        var tagsList = this.state.tags.map(function(t) {
-            return (
-                <li className="search-suggestions__suggestion" key={t.id}><Link to={`/tag/${t.id}`}>{t.internalName}</Link></li>
-            );
-        });
-
         return (
-            <div className="search">
-                <h2>Tag search.</h2>
-                <div className="search-suggester">
-                    <form>
-                        <input className="search-suggester__field" type="text" value={this.state.searchString} onChange={this.handleChange.bind(this)} />
-                    </form>
-                    <div className="search-suggestions">
-                        <ul className="search-suggestions__list">{tagsList}</ul>
+            <div className="tag-search">
+                <div className="tag-search__filters">
+                    <div className="tag-search__filters__group">
+                        <label>Filter by name</label>
+                        <input className="tag-search__input" type="text" value={this.state.searchString} onChange={this.handleChange.bind(this)} />
                     </div>
+
+                    <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
+
                 </div>
-                <Link to="/tag/create">Create a new tag</Link>
+                <div className="tag-search__suggestions">
+                    <TagsList tags={this.state.tags} sections={this.props.sections} sortBy={this.sortBy} />
+                </div>
             </div>
         );
     }
 }
+
+//REDUX CONNECTIONS
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as getSections from '../actions/getSections';
+
+function mapStateToProps(state) {
+  return {
+    sections: state.sections
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TagSearch);

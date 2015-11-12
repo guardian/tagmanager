@@ -2,6 +2,8 @@ package controllers
 
 import model.command.CommandError._
 import model.command.{PathUsageCheck, CreateTagCommand}
+import model.Tag
+import model.Section
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
@@ -46,9 +48,19 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       types = req.getQueryString("types").map(_.split(",").toList)
     )
 
-    val tags = TagLookupCache.search(criteria) take 25
+    val orderBy = req.getQueryString("orderBy").getOrElse("internalName");
 
-    Ok(Json.toJson(tags))
+    val tags = TagLookupCache.search(criteria)
+
+    val orderedTags: List[Tag] = orderBy match {
+      case("internalName") => tags.sortBy(_.internalName)
+      case("externalName") => tags.sortBy(_.externalName)
+      case("path") => tags.sortBy(_.path)
+      case("id") => tags.sortBy(_.id)
+      case(_) => tags.sortBy(_.comparableValue)
+    }
+
+    Ok(Json.toJson(orderedTags take 25))
   }
 
   def getSection(id: Long) = APIAuthAction {
