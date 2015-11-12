@@ -37,7 +37,7 @@ export function validateTag(tag) {
   let booleanFields = ['hidden', 'legallySensitive'];
 
   if (tag.type === tagTypes.topic) {
-    mandatoryFields = mandatoryFields.concat(['section', 'category']);
+    mandatoryFields = mandatoryFields.concat(['section']);
   }
 
   return []

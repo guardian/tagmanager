@@ -15,7 +15,7 @@ case class CreateTagCommand(
                       hidden: Boolean = false,
                       legallySensitive: Boolean = false,
                       comparableValue: String,
-                      category: Option[String] = None,
+                      categories: Set[String] = Set(),
                       section: Option[Long],
                       description: Option[String] = None,
                       parents: Set[Long] = Set(),
@@ -40,7 +40,7 @@ case class CreateTagCommand(
       legallySensitive = legallySensitive,
       comparableValue = comparableValue,
       section = section,
-      category = category,
+      categories = categories,
       description = description,
       parents = parents,
       references = references
@@ -73,7 +73,7 @@ object CreateTagCommand {
       (JsPath \ "hidden").format[Boolean] and
       (JsPath \ "legallySensitive").format[Boolean] and
       (JsPath \ "comparableValue").format[String] and
-      (JsPath \ "category").formatNullable[String] and
+      (JsPath \ "categories").formatNullable[Set[String]].inmap[Set[String]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "section").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and

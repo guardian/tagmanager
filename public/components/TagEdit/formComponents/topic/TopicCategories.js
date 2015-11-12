@@ -5,19 +5,51 @@ export default class TopicCategories extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.isSelected = this.isSelected.bind(this);
+    this.addCategory = this.addCategory.bind(this);
+    this.removeCategory = this.removeCategory.bind(this);
+  }
+
+  removeCategory(category) {
+    this.props.onChange(this.props.selectedCategories.filter(selectedCat => {
+      return selectedCat !== category;
+    }));
+  }
+
+  addCategory(category) {
+    if (this.props.selectedCategories) {
+      this.props.onChange(this.props.selectedCategories.concat([category]));
+    } else {
+      this.props.onChange([category]);
+    }
+  }
+
+  onChecked(category) {
+    if (this.isSelected(category)) {
+      this.removeCategory(category);
+    } else {
+      this.addCategory(category);
+    }
+  }
+
+  isSelected(category) {
+    return !!this.props.selectedCategories && this.props.selectedCategories.indexOf(category) !== -1;
   }
 
   render () {
 
     return (
-      <select value={this.props.selectedCategory} onChange={this.props.onChange} disabled={!!this.props.forceDisabled}>
-        {!this.props.selectedCategory ? <option></option> : false}
-        {topicCategories.sort((a, b) => {return a > b ? 1 : -1;}).map(function(type) {
+      <div>
+        {topicCategories.map(category => {
           return (
-            <option value={type} key={type}>{type}</option>
+            <span key={category}>
+              <input type="checkbox" checked={this.isSelected(category)} onChange={this.onChecked.bind(this, category)}/>
+              {category}
+            </span>
           );
         })}
-      </select>
+      </div>
     );
   }
 }

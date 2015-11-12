@@ -23,9 +23,9 @@ export default class TagEdit extends React.Component {
       }));
     }
 
-    onUpdateCategory(e) {
+    onUpdateCategory(selectedCategories) {
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        category: e.target.value
+        categories: selectedCategories
       }));
     }
 
@@ -44,7 +44,7 @@ export default class TagEdit extends React.Component {
           </div>),
           (<div className="tag-edit__input-group" key="keyword-category">
             <label className="tag-edit__input-group__header">Category</label>
-              <TopicCategories selectedCategory={this.props.tag.category} onChange={this.onUpdateCategory.bind(this)}/>
+              <TopicCategories selectedCategories={this.props.tag.categories} onChange={this.onUpdateCategory.bind(this)}/>
           </div>)
         ];
       }
