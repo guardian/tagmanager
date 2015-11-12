@@ -46,7 +46,7 @@ export default class TagList extends React.Component {
                 <tr>
                   <th onClick={this.sortBy.bind(this, 'type')}>Type</th>
                   <th onClick={this.sortBy.bind(this, 'internalName')}>Tag Name</th>
-                  <th onClick={this.sortBy.bind(this, 'section')}>Section</th>
+                  <th onClick={this.sortBy.bind(this, 'path')}>Section</th>
                   <th onClick={this.sortBy.bind(this, 'path')}>Path</th>
                 </tr>
               </thead>

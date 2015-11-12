@@ -56,7 +56,6 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       case("internalName") => tags.sortBy(_.internalName)
       case("externalName") => tags.sortBy(_.externalName)
       case("path") => tags.sortBy(_.path)
-      case("section") => tags.sortBy(_.path)
       case("id") => tags.sortBy(_.id)
       case(_) => tags.sortBy(_.comparableValue)
     }
