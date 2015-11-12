@@ -1,6 +1,7 @@
 package model.command
 
 import com.gu.tagmanagement.{EventType, TagEvent}
+import model.command.logic.TagPathCalculator
 import model.{Tag, Reference}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -25,7 +26,7 @@ case class CreateTagCommand(
 
   def process = {
 
-    val calculatedPath = calculatePath
+    val calculatedPath = TagPathCalculator.calculatePath(`type`, slug, section)
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
@@ -52,19 +53,6 @@ case class CreateTagCommand(
 
     result
   }
-
-  def calculatePath = `type` match {
-    case "type" => s"type/$slug"
-    case "tone" => s"tone/$slug"
-    case "contributor" => s"profile/$slug"
-    case "publication" => s"publication/$slug"
-    case "series" => s"${sectionPathPrefix}series/$slug"
-    case _ => sectionPathPrefix + slug
-  }
-
-  lazy val loadedSection = section.map(SectionRepository.getSection(_).getOrElse(SectionNotFound))
-
-  def sectionPathPrefix = loadedSection.map(_.wordsForUrl + "/").getOrElse("")
 }
 
 object CreateTagCommand {

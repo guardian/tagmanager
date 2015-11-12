@@ -14,7 +14,7 @@ GET        /api/sections                  controllers.TagManagementApi.listSecti
 GET        /api/section/:id               controllers.TagManagementApi.getSection(id: Long)
 PUT        /api/section/:id               controllers.TagManagementApi.updateSection(id: Long)
 
-GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(path: String)
+GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long])
 
 
 

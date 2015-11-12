@@ -1,7 +1,7 @@
 package controllers
 
 import model.command.CommandError._
-import model.command.CreateTagCommand
+import model.command.{PathUsageCheck, CreateTagCommand}
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
@@ -74,5 +74,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(SectionRepository.loadAllSections))
   }
 
-  def checkPathInUse(path: String) = APIAuthAction { Ok(Json.toJson(Map("inUse" -> PathManager.isPathInUse(path)))) }
+  def checkPathInUse(`type`: String, slug: String, section: Option[Long]) = APIAuthAction { req =>
+    try {
+      new PathUsageCheck(`type`, slug, section).process.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
+    } catch {
+      commandErrorAsResult
+    }
+  }
 }
