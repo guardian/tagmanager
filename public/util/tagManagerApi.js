@@ -9,7 +9,7 @@ export default {
           method: 'get'
       });
   },
-    
+
   saveTag: (id, tag) => {
     return Reqwest({
         url: '/api/tag/' + id,
@@ -51,11 +51,24 @@ export default {
       });
   },
 
-  searchTags: (query) => {
+  searchTags: (query, orderByField) => {
+
+    const queries = [{
+      name: 'q',
+      value: query
+    }];
+
+    if (orderByField) {
+      queries.push({
+        name: 'orderBy',
+        value: orderByField
+      });
+    }
+
     return Reqwest({
         url: '/api/tags',
         method: 'get',
-        data: [ {name: 'q', value: query} ],
+        data: queries,
         type: 'json'
     });
   }
