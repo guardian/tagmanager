@@ -7,7 +7,8 @@ name := "tag-manager"
 version := "1.0"
 
 lazy val dependencies = Seq(
-  "com.amazonaws" % "aws-java-sdk" % "1.10.6",
+  "com.amazonaws" % "aws-java-sdk" % "1.10.33",
+  "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
   "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.8",
   ws, // for panda
   "com.squareup.okhttp" % "okhttp" % "2.4.0",

@@ -30,7 +30,7 @@ object TagRepository {
       try {
         Dynamo.tagTable.putItem(tag.toItem)
 
-        TagLookupCache.insertTag(tag)
+       // TagLookupCache.insertTag(tag)
         Some(tag)
       } catch {
         case e: Error => None
@@ -126,6 +126,14 @@ object TagLookupCache {
   def insertTag(tag: Tag): Unit = {
     val currentTags = allTags.get()
     val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+
+    if (!allTags.compareAndSet(currentTags, newTags))
+      Logger.warn("failed to update cache")
+  }
+
+  def removeTag(tagId: Long): Unit = {
+    val currentTags = allTags.get()
+    val newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
 
     if (!allTags.compareAndSet(currentTags, newTags))
       Logger.warn("failed to update cache")
