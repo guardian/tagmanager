@@ -3,9 +3,8 @@ include "tag.thrift"
 namespace scala com.gu.tagmanagement
 
 enum EventType {
-    CREATE = 0,
-    UPDATE = 1,
-    DELETE = 2
+    UPDATE = 0,
+    DELETE = 1
 }
 
 struct TagEvent {

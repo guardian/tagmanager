@@ -49,7 +49,7 @@ case class CreateTagCommand(
 
     val result = TagRepository.createTag(tag)
 
-    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Create, tag.id, Some(tag.asThrift)))
+    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
     result
   }
