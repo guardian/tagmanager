@@ -1,23 +1,15 @@
-package modules
+package modules.clustersync
 
 import com.amazonaws.services.kinesis.model.Record
-import com.google.inject.AbstractModule
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.Tag
 import play.api.Logger
 import repositories.TagLookupCache
-import services.{KinesisConsumer, KinesisStreamRecordProcessor}
+import services.KinesisStreamRecordProcessor
 
-class TagUpdateSync extends AbstractModule {
-  override def configure {
-    Logger.info("registering sync consumer")
-    new KinesisConsumer("tag-update-stream-dev", "tagmanager-sync-dev", TagUpdateProcessor)
-  }
-}
+object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor {
 
-object TagUpdateProcessor extends KinesisStreamRecordProcessor {
-
-  import services.KinesisRecordPayloadConversions.kinesisRecordAsThriftCompactProtocol
+  import services.KinesisRecordPayloadConversions._
 
   override def process(record: Record) {
     val tagEvent = TagEvent.decode(record)

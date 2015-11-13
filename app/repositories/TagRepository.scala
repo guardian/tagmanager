@@ -139,8 +139,6 @@ object TagLookupCache {
       Logger.warn("failed to update cache")
   }
 
-  refresh
-
   def search(tagSearchCriteria: TagSearchCriteria) = {
     tagSearchCriteria.execute(allTags.get())
   }
