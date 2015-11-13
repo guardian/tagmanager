@@ -21,7 +21,7 @@ export default class TagVisibilityEdit extends React.Component {
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Description</label>
         <div>
-          <textarea onChange={this.updateDescription.bind(this)} value={this.props.tag.description}/>
+          <textarea onChange={this.updateDescription.bind(this)} value={this.props.tag.description || ''}/>
         </div>
       </div>
     );
