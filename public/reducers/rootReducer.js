@@ -2,6 +2,7 @@ import {TAG_GET_REQUEST, TAG_GET_RECEIVE, TAG_GET_ERROR} from '../actions/getTag
 import {TAG_UPDATE} from '../actions/updateTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/saveTag';
 import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/getSections';
+import {TAG_POPULATE_BLANK} from '../actions/createTag';
 
 const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -49,6 +50,12 @@ export default function tag(state = {
     return Object.assign({}, state, {
       tag: action.tag,
       saveState: saveState.dirty
+    });
+
+  case TAG_POPULATE_BLANK:
+    return Object.assign({}, state, {
+      tag: action.tag,
+      saveState: saveState.clean
     });
 
 // TAG SAVE

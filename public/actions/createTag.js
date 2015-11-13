@@ -4,6 +4,15 @@ import tagManagerApi from '../util/tagManagerApi';
 export const TAG_CREATE_REQUEST = 'TAG_CREATE_REQUEST';
 export const TAG_CREATE_RECEIVE = 'TAG_CREATE_RECEIVE';
 export const TAG_CREATE_ERROR = 'TAG_CREATE_ERROR';
+export const TAG_POPULATE_BLANK = 'TAG_POPULATE_BLANK';
+
+const BLANK_TAG = {
+  type: undefined,
+  externalReferences: [],
+  hidden: false,
+  legallySensitive: false,
+  parents: []
+};
 
 function requestTagCreate() {
     return {
@@ -37,4 +46,12 @@ export function createTag(tag) {
             .then(res => dispatch(recieveTagCreate(res)))
             .fail(error => dispatch(errorTagCreate(error)));
     };
+}
+
+export function populateEmptyTag(tag) {
+  return {
+      type:       TAG_POPULATE_BLANK,
+      tag:        Object.assign({}, BLANK_TAG),
+      receivedAt: Date.now()
+  };
 }
