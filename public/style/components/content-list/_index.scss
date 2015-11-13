@@ -1,0 +1,38 @@
+$taglist-border-color: $c-grey-300;
+
+.contentlist {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  width: 100%;
+
+  td, th {
+    padding: $standard-padding/2 $standard-padding;
+  }
+
+}
+
+.contentlist__header {
+  background-color: $c-grey-200;
+
+  font-weight: bold;
+
+  border: 1px solid $taglist-border-color;
+  border-width: 0 1px;
+}
+
+.contentlist__results {
+
+}
+
+.contentlist__results-item {
+
+  border: 1px solid $taglist-border-color;
+  cursor: pointer;
+
+  td {
+    border-right: 1px solid $taglist-border-color;
+  }
+
+}
