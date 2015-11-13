@@ -7,74 +7,60 @@ import tagManagerApi from '../../util/tagManagerApi';
 import {validateTag} from '../../util/validateTag';
 import {creatableTags} from '../../constants/tagTypes.js';
 
-const BLANK_TAG = {
-  externalReferences: [],
-  hidden: false,
-  legallySensitive: false,
-  pageId: 123456789,
-  path: '/this/should/be/set/serverside',
-  parents: []
-};
-
 class TagCreate extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-          newTag: BLANK_TAG,
           pathInUse: false
         };
+
     }
 
     componentDidMount() {
+
+      this.props.tagActions.populateEmptyTag();
+
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }
     }
 
     saveTag() {
-      this.props.tagActions.createTag(this.state.newTag);
+      this.props.tagActions.createTag(this.props.tag);
     }
 
     sectionChanged(updated) {
-      const current = this.state.newTag
-
-      return updated.section !== current.section;
+      return updated.section !== this.props.tag.section;
     }
 
     slugChanged(updated) {
-      const current = this.state.newTag
-
-      return updated.slug !== current.slug;
+      return updated.slug !== this.props.tag.slug;
     }
 
     updateTag(tag) {
       const shouldCheckPath = tag.slug && (this.sectionChanged(tag) || this.slugChanged(tag));
 
-      this.setState({
-        newTag: tag
-      });
+      this.props.tagActions.updateTag(tag);
 
-      if(shouldCheckPath) {
+      if (shouldCheckPath) {
         this.checkPathInUse(tag);
       }
     }
 
     resetTag() {
-      this.setState({
-        newTag: BLANK_TAG
-      });
+      this.props.tagActions.populateEmptyTag();
     }
 
     isTagValid() {
-      return !validateTag(this.state.newTag).length && !this.state.pathInUse;
+      return !validateTag(this.props.tag).length && !this.state.pathInUse;
     }
 
     generateValidationErrors() {
-      const validationErrors = validateTag(this.state.newTag)
+      const validationErrors = validateTag(this.props.tag)
 
-      if(this.state.pathInUse) {
+      if (this.state.pathInUse) {
         validationErrors.push({
           fieldName: 'slug',
           message: 'Path is already in use'
@@ -91,21 +77,24 @@ class TagCreate extends React.Component {
     }
 
     onUpdateType(e) {
-      this.setState({
-        newTag: Object.assign({}, this.state.newTag, {type: e.target.value})
-      });
+      this.props.tagActions.updateTag(Object.assign({}, this.props.tag, {type: e.target.value}));
     }
 
     render () {
+
+      if (!this.props.tag) {
+        return false;
+      }
+
       return (
         <div className="tag">
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
               <div className="tag-edit__input-group">
                 <label className="tag-edit__input-group__header">Tag Type</label>
-                <TypeSelect selectedType={this.state.newTag.type} onChange={this.onUpdateType.bind(this)}/>
+                <TypeSelect selectedType={this.props.tag.type} onChange={this.onUpdateType.bind(this)}/>
               </div>
-              <TagEdit tag={this.state.newTag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} />
+              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} />
               <TagValidationErrors validations={this.generateValidationErrors()} />
             </div>
             <div className="tag__column">
@@ -125,17 +114,19 @@ class TagCreate extends React.Component {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as createTag from '../../actions/createTag';
+import * as updateTag from '../../actions/updateTag';
 import * as getSections from '../../actions/getSections';
 
 function mapStateToProps(state) {
   return {
-    sections: state.sections
+    sections: state.sections,
+    tag: state.tag
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    tagActions: bindActionCreators(Object.assign({}, createTag), dispatch),
+    tagActions: bindActionCreators(Object.assign({}, updateTag, createTag), dispatch),
     sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
   };
 }

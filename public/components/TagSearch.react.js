@@ -20,24 +20,26 @@ export class TagSearch extends React.Component {
         if (!this.props.sections || !this.props.sections.length) {
           this.props.sectionActions.getSections();
         }
+    }
 
-        this.searchTags();
+    componentDidMount() {
+      this.searchTags();
     }
 
     searchTags(searchString, sortBy) {
 
       var self = this;
 
+      this.setState({
+        searchString: searchString,
+        sortBy: sortBy
+      });
+
       tagManagerApi.searchTags(searchString, sortBy)
       .then(function(resp) {
           self.setState({tags: resp});
       }).fail(function(err, msg) {
           console.log('failed', err, msg);
-      });
-
-      this.setState({
-        searchString: searchString,
-        sortBy: sortBy
       });
     }
 
