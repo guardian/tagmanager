@@ -2,6 +2,7 @@ import React from 'react';
 import CapiClient from '../util/CapiClient';
 import debounce from 'lodash.debounce';
 import ContentList from './ContentList/ContentList';
+import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
 
 export class BatchTag extends React.Component {
 
@@ -33,9 +34,9 @@ export class BatchTag extends React.Component {
       var self = this;
 
       this.capiClient.searchContent(searchString || this.state.searchString, {
-        'page-size': 200
-      })
-      .then(function(resp) {
+        'page-size': 200,
+        'show-tags': 'all'
+      }).then(function(resp) {
           self.setState({
             content: resp.response.results,
             selectedContent: []
@@ -87,6 +88,9 @@ export class BatchTag extends React.Component {
                     content={this.state.content}
                     selectedContent={this.state.selectedContent}
                     contentClicked={this.toggleContentSelected.bind(this)} />
+                </div>
+                <div className="batch-tag__status">
+                  <BatchTagStatus selectedContent={this.state.selectedContent} />
                 </div>
             </div>
         );

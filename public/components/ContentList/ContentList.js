@@ -1,27 +1,10 @@
 import React from 'react';
+import ContentListItem from './ContentListItem';
 
 export default class ContentList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.renderListItem = this.renderListItem.bind(this);
-    }
-
-    renderListItem(content) {
-
-      var isChecked = this.props.selectedContent.indexOf(content.id) !== -1;
-
-      return (
-          <tr key={content.id} className="taglist__results-item" onClick={this.onContentClick.bind(this, content)}>
-            <td>
-              <input type="checkbox" checked={isChecked}/>
-            </td>
-            <td>{content.type}</td>
-            <td>{content.webTitle}</td>
-            <td>{content.webPublicationDate}</td>
-            <td>{content.id}</td>
-          </tr>
-      );
     }
 
     onContentClick(content) {
@@ -43,10 +26,17 @@ export default class ContentList extends React.Component {
                   <th>Headline</th>
                   <th>Pub. Date</th>
                   <th>Path</th>
+                  <th>Tags</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody className="taglist__results">
-                {this.props.content.map(this.renderListItem)}
+                {this.props.content.map((content) => {
+                  const isChecked = this.props.selectedContent.indexOf(content.id) !== -1;
+                  return (
+                    <ContentListItem key={content.id + '_' + isChecked} content={content} isChecked={isChecked} contentClicked={this.onContentClick.bind(this, content)} />
+                  );
+                })}
               </tbody>
             </table>
         );
