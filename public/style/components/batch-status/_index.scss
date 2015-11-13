@@ -1,4 +1,4 @@
-$save-height: 100px;
+$batch-status-height: 100px;
 
 .batch-status__container {
   position: fixed;
@@ -53,7 +53,7 @@ $save-height: 100px;
 }
 
 .batch-status-transition-enter.batch-status__container {
-  transform: translateY($save-height);
+  transform: translateY($batch-status-height);
 }
 
 .batch-status-transition-enter-active.batch-status__container {
@@ -66,6 +66,6 @@ $save-height: 100px;
 }
 
 .batch-status-transition-leave-active.batch-status__container {
-  transform: translateY($save-height);
+  transform: translateY($batch-status-height);
   transition: transform 500ms ease-out;
 }

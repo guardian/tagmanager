@@ -4,6 +4,8 @@ import debounce from 'lodash.debounce';
 import ContentList from './ContentList/ContentList';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
 
+const CAPI_PAGE_SIZE = 200
+
 export class BatchTag extends React.Component {
 
     constructor(props) {
@@ -12,7 +14,8 @@ export class BatchTag extends React.Component {
         this.state = {
           searchString: '',
           content: [],
-          selectedContent: []
+          selectedContent: [],
+          resultsCount: 0
         };
 
         this.capiClient = CapiClient(props.config.capiUrl, props.config.capiKey);
@@ -34,11 +37,12 @@ export class BatchTag extends React.Component {
       var self = this;
 
       this.capiClient.searchContent(searchString || this.state.searchString, {
-        'page-size': 200,
+        'page-size': CAPI_PAGE_SIZE,
         'show-tags': 'all'
       }).then(function(resp) {
           self.setState({
             content: resp.response.results,
+            resultsCount: resp.response.total,
             selectedContent: []
           });
       }).fail(function(err, msg) {
@@ -70,6 +74,18 @@ export class BatchTag extends React.Component {
       });
     }
 
+    renderTooManyResults() {
+      if (this.state.resultsCount <= CAPI_PAGE_SIZE) {
+        return false;
+      }
+
+      return (
+        <div className="batch-tag__error">
+          Over {CAPI_PAGE_SIZE} results found, please refine the search.
+        </div>
+      );
+    }
+
     render () {
         return (
             <div className="batch-tag">
@@ -83,6 +99,7 @@ export class BatchTag extends React.Component {
                         <span onClick={this.deselectAllContent.bind(this)}>Unselect All</span>
                     </div>
                 </div>
+                {this.renderTooManyResults()}
                 <div className="batch-tag__content">
                   <ContentList
                     content={this.state.content}

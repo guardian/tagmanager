@@ -3,6 +3,8 @@
   margin: 0 auto;
   padding: $standard-padding;
 
+  padding-bottom: 100px;
+
 }
 
 .batch-tag__filters {
@@ -15,6 +17,18 @@
   border: 1px solid $c-grey-300;
 
   padding: $standard-padding;
+}
+
+.batch-tag__error {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  background-color: $c-red;
+  text-align: center;
+  color: $c-white;
+  padding: $standard-padding/2;
+
 }
 
 
