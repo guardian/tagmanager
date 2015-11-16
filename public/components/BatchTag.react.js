@@ -53,6 +53,18 @@ export class BatchTag extends React.Component {
       });
     }
 
+    onAddTagToContentTop () {
+      console.log("This is where it'd add the tag to the top")
+    }
+
+    onAddTagToContentBottom() {
+      console.log("This is where it'd add the tag to the bottom")
+    }
+
+    onRemoveTagFromContent() {
+      console.log("This is where it'd remove the tag")
+    }
+
     renderTooManyResults() {
 
       if (!this.props.capiSearch.resultCount || this.props.capiSearch.resultCount <= CAPI_PAGE_SIZE) {
@@ -101,7 +113,12 @@ export class BatchTag extends React.Component {
                     contentClicked={this.toggleContentSelected.bind(this)} />
                 </div>
                 <div className="batch-tag__status">
-                  <BatchTagStatus selectedContent={this.state.selectedContent} />
+                  <BatchTagStatus
+                    selectedContent={this.state.selectedContent}
+                    onAddTagToContentTop={this.onAddTagToContentTop}
+                    onAddTagToContentBottom={this.onAddTagToContentBottom}
+                    onRemoveTagFromContent={this.onRemoveTagFromContent}
+                  />
                 </div>
             </div>
         );

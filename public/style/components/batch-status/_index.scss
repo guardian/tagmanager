@@ -22,34 +22,17 @@ $batch-status-height: 100px;
   margin: 0 auto;
 }
 
-%batch-status__button {
-
-  @extend %f-header;
-  @extend %fs-data-4;
-
+.batch-status__info {
   display: inline-block;
-
-  padding: $standard-padding;
-  margin: $standard-padding;
-  min-width: 100px;
-
-  text-align:center;
-
-
-  background-color: $c-white;
-  cursor: pointer;
-
-  i {
-    margin-left: 0;
-  }
 }
 
+
 .batch-status__button {
-  @extend %batch-status__button;
+  @extend %button--green;
+}
 
-  color:$c-green;
-  border: 1px solid $c-green;
-
+.batch-status__button--remove {
+  @extend %button--red;
 }
 
 .batch-status-transition-enter.batch-status__container {

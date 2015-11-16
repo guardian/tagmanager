@@ -74,32 +74,3 @@
   width: 300px;
 
 }
-
-.context__add__input {
-
-}
-
-.context__add__suggestions {
-
-  position: absolute;
-  top: 20px;
-
-  border: 1px solid $c-grey-300;
-  background-color: $c-grey-100;
-
-
-  ul {
-
-  }
-
-  li {
-    display: block;
-    padding: $standard-padding/2 $standard-padding;
-
-    cursor: pointer;
-
-    &:nth-child(even) {
-      background-color: $c-white;
-    }
-  }
-}
