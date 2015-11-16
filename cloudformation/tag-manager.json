@@ -347,7 +347,6 @@
           "Fn::Base64":{
             "Fn::Join":["", [
               "#!/bin/bash -ev\n",
-              "/opt/features/gnm-dns/install.sh\n",
               "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
             ]]
           }
