@@ -4,7 +4,7 @@ import debounce from 'lodash.debounce';
 import ContentList from './ContentList/ContentList';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
 
-const CAPI_PAGE_SIZE = 200
+const CAPI_PAGE_SIZE = 200;
 
 export class BatchTag extends React.Component {
 
@@ -33,20 +33,9 @@ export class BatchTag extends React.Component {
     }
 
     searchContent(searchString) {
-
-      var self = this;
-
-      this.capiClient.searchContent(searchString || this.state.searchString, {
-        'page-size': CAPI_PAGE_SIZE,
-        'show-tags': 'all'
-      }).then(function(resp) {
-          self.setState({
-            content: resp.response.results,
-            resultsCount: resp.response.total,
-            selectedContent: []
-          });
-      }).fail(function(err, msg) {
-          console.log('failed', err, msg);
+      this.props.capiActions.searchCapi(this.capiClient, searchString, {
+        'show-tags': 'all',
+        'page-size': CAPI_PAGE_SIZE
       });
     }
 
@@ -64,7 +53,7 @@ export class BatchTag extends React.Component {
 
     selectAllContent() {
       this.setState({
-        selectedContent: this.state.content.map(content => content.id)
+        selectedContent: this.props.capiSearch.results.map(content => content.id)
       });
     }
 
@@ -102,7 +91,7 @@ export class BatchTag extends React.Component {
                 {this.renderTooManyResults()}
                 <div className="batch-tag__content">
                   <ContentList
-                    content={this.state.content}
+                    content={this.props.capiSearch.results}
                     selectedContent={this.state.selectedContent}
                     contentClicked={this.toggleContentSelected.bind(this)} />
                 </div>
@@ -117,17 +106,18 @@ export class BatchTag extends React.Component {
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as updateTag from '../actions/updateTag';
+import * as searchCapi from '../actions/searchCapi';
 
 function mapStateToProps(state) {
   return {
-    config: state.config
+    config: state.config,
+    capiSearch: state.capiSearch
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    tagActions: bindActionCreators(Object.assign({}, updateTag), dispatch)
+    capiActions: bindActionCreators(Object.assign({}, searchCapi), dispatch)
   };
 }
 
