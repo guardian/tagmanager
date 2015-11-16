@@ -1,6 +1,5 @@
 import React from 'react';
 import CapiClient from '../util/CapiClient';
-import debounce from 'lodash.debounce';
 import ContentList from './ContentList/ContentList';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
 
