@@ -15,11 +15,9 @@ object TagRepository {
     Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
   }
 
-  def updateTag(tagJson: JsValue) = {
+  def updateTag(tag: Tag) = {
       try {
-        val tag = Tag.fromJson(tagJson) // parsing input json here provides budget validation
-        Dynamo.tagTable.putItem(Item.fromJSON(tagJson.toString()))
-        TagLookupCache.insertTag(tag)
+        Dynamo.tagTable.putItem(tag.toItem)
         Some(tag)
       } catch {
         case e: Error => None
@@ -29,8 +27,6 @@ object TagRepository {
   def createTag(tag: Tag) = {
       try {
         Dynamo.tagTable.putItem(tag.toItem)
-
-       // TagLookupCache.insertTag(tag)
         Some(tag)
       } catch {
         case e: Error => None
