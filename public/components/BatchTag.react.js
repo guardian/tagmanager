@@ -12,24 +12,15 @@ export class BatchTag extends React.Component {
         super(props);
 
         this.state = {
-          searchString: '',
-          content: [],
           selectedContent: [],
-          resultsCount: 0
         };
 
         this.capiClient = CapiClient(props.config.capiUrl, props.config.capiKey);
-        this.searchContent = debounce(this.searchContent.bind(this), 500);
+        this.searchContent = this.searchContent.bind(this)
     }
 
     searchFieldChange(e) {
-      const searchString = e.target.value;
-
-      this.setState({
-        searchString: searchString
-      });
-
-      this.searchContent(searchString);
+      this.searchContent(e.target.value);
     }
 
     searchContent(searchString) {
@@ -64,7 +55,8 @@ export class BatchTag extends React.Component {
     }
 
     renderTooManyResults() {
-      if (this.state.resultsCount <= CAPI_PAGE_SIZE) {
+
+      if (!this.props.capiSearch.resultCount || this.props.capiSearch.resultCount <= CAPI_PAGE_SIZE) {
         return false;
       }
 
@@ -75,19 +67,33 @@ export class BatchTag extends React.Component {
       );
     }
 
+    renderSearchStatus() {
+
+      if (this.props.capiSearch.fetchState !== 'FETCH_STATE_DIRTY') {
+        return false;
+      }
+
+      return (
+        <div className="batch-tag__info">
+          Searching...
+        </div>
+      );
+    }
+
     render () {
         return (
             <div className="batch-tag">
                 <div className="batch-tag__filters">
                     <div className="batch-tag__filters__group">
                         <label>Search by name</label>
-                        <input className="batch-tag__input" type="text" value={this.state.searchString} onChange={this.searchFieldChange.bind(this)} />
+                        <input className="batch-tag__input" type="text" value={this.props.capiSearch.searchTerm || ''} onChange={this.searchFieldChange.bind(this)} />
                     </div>
                     <div className="batch-tag__filters__group">
-                        <span onClick={this.selectAllContent.bind(this)}>Select All</span>
-                        <span onClick={this.deselectAllContent.bind(this)}>Unselect All</span>
+                        <span className="batch-tag__filter--selectall" onClick={this.selectAllContent.bind(this)}>Select All</span>
+                        <span className="batch-tag__filter--clear" onClick={this.deselectAllContent.bind(this)}>Clear Selection</span>
                     </div>
                 </div>
+                {this.renderSearchStatus()}
                 {this.renderTooManyResults()}
                 <div className="batch-tag__content">
                   <ContentList

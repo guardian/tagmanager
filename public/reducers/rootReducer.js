@@ -12,6 +12,11 @@ const saveState = {
   error: 'SAVE_STATE_ERROR'
 };
 
+const fetchState = {
+  dirty: 'FETCH_STATE_DIRTY',
+  clean: 'FETCH_STATE_CLEAN'
+};
+
 export default function tag(state = {
   tag: false,
   error: false,
@@ -96,7 +101,8 @@ export default function tag(state = {
   case CAPI_SEARCH_REQUEST:
     return Object.assign({}, state, {
       capiSearch: Object.assign({}, state.capiSearch, {
-        searchTerm: action.searchTerm
+        searchTerm: action.searchTerm,
+        fetchState: fetchState.dirty
       })
     });
 
@@ -104,7 +110,8 @@ export default function tag(state = {
     return Object.assign({}, state, {
       capiSearch: Object.assign({}, state.capiSearch, {
         results: action.results,
-        count: action.resultsCount
+        count: action.resultsCount,
+        fetchState: fetchState.clean //Add logic to ensure this is results for current search Term;
       })
     });
 

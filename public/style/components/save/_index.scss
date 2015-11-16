@@ -16,41 +16,12 @@ $save-height: 100px;
 
 }
 
-%save__button {
-
-  @extend %f-header;
-  @extend %fs-data-4;
-
-  display: inline-block;
-
-  padding: $standard-padding;
-  margin: $standard-padding;
-  min-width: 100px;
-
-  text-align:center;
-
-
-  background-color: $c-white;
-  cursor: pointer;
-
-  i {
-    margin-left: 0;
-  }
-}
-
 .save__button {
-  @extend %save__button;
-
-  color:$c-green;
-  border: 1px solid $c-green;
-
+  @extend %button--green;
 }
 
 .save__button--reset {
-  @extend %save__button;
-
-  color:$c-red;
-  border: 1px solid $c-red;
+  @extend %button--red;
 }
 
 .save-transition-enter.save {

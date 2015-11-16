@@ -31,6 +31,18 @@
 
 }
 
+.batch-tag__info {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  background-color: $c-blue;
+  text-align: center;
+  color: $c-white;
+  padding: $standard-padding/2;
+
+}
+
 
 .batch-tag__filters__group {
   display: inline-block;
@@ -47,4 +59,14 @@
   input {
     display: block;
   }
+}
+
+
+
+.batch-tag__filter--selectall {
+  @extend %button--green;
+}
+
+.batch-tag__filter--clear {
+  @extend %button--red;
 }
