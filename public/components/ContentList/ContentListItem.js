@@ -1,14 +1,23 @@
 import React from 'react';
 import moment from 'moment';
 
+const TAG_LIMIT = 3;
+
 export default class ContentListItem extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+          showAllTags: false
+        };
     }
 
     renderTags(content) {
-      return content.tags.map((tag) => {
+
+      const tags = this.state.showAllTags ?
+
+      return tags.map((tag) => {
         return (<div key={tag.id} className="taglist__results-item__tag">
           {tag.webTitle},
         </div>);
