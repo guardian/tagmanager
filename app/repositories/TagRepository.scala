@@ -15,16 +15,7 @@ object TagRepository {
     Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
   }
 
-  def updateTag(tag: Tag) = {
-      try {
-        Dynamo.tagTable.putItem(tag.toItem)
-        Some(tag)
-      } catch {
-        case e: Error => None
-      }
-  }
-
-  def createTag(tag: Tag) = {
+  def upsertTag(tag: Tag) = {
       try {
         Dynamo.tagTable.putItem(tag.toItem)
         Some(tag)

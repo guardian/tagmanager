@@ -11,7 +11,7 @@ case class UpdateTagCommand(tag: Tag) extends Command[Tag] {
   override def process: Option[Tag] = {
     Logger.info(s"updating tag ${tag.id}")
 
-    val result = TagRepository.updateTag(tag)
+    val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
