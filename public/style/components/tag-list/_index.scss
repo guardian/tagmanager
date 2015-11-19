@@ -34,5 +34,12 @@ $taglist-border-color: $c-grey-300;
   td {
     border-right: 1px solid $taglist-border-color;
   }
+}
 
+.taglist__results-item__tag--showall {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 3px;
+  background-color: $c-grey-150;
+  text-align: center;
 }

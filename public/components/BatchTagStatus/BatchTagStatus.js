@@ -15,6 +15,8 @@ export default class BatchTagStatus extends React.Component {
           mode: undefined,
           selectedTag: undefined
         };
+
+        this.resetMode = this.resetMode.bind(this);
     }
 
     switchMode(mode) {
@@ -27,6 +29,13 @@ export default class BatchTagStatus extends React.Component {
     selectTag(tag) {
       this.setState({
         selectedTag: tag
+      });
+    }
+
+    resetMode() {
+      this.setState({
+        mode: undefined,
+        selectedTag: undefined
       });
     }
 
@@ -62,6 +71,7 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__button">
               <i className="i-tick-green"></i> Confirm
             </div>
+            <i className="i-cross" onClick={this.resetMode}></i>
           </div>
         );
       }
@@ -69,9 +79,10 @@ export default class BatchTagStatus extends React.Component {
       return (
           <div className="batch-status__mode">
             <div className="batch-status__info">
-              Add Tags
+              Add Tag
             </div>
             <TagSelect onTagClick={this.selectTag.bind(this)} showResultsAbove={true} />
+            <i className="i-cross" onClick={this.resetMode}></i>
           </div>
       );
     }
@@ -90,6 +101,7 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__button--remove">
               <i className="i-cross-red"></i> Confirm
             </div>
+            <i className="i-cross" onClick={this.resetMode}></i>
           </div>
         );
       }
@@ -97,9 +109,11 @@ export default class BatchTagStatus extends React.Component {
       return (
           <div className="batch-status__mode">
             <div className="batch-status__info">
-              Remove Tags
+              Remove Tag
             </div>
             <TagSelect onTagClick={this.selectTag.bind(this)} showResultsAbove={true} />
+            <i className="i-cross" onClick={this.resetMode}></i>
+
           </div>
       );
     }

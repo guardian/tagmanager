@@ -67,7 +67,7 @@ export class BatchTag extends React.Component {
 
     renderTooManyResults() {
 
-      if (!this.props.capiSearch.resultCount || this.props.capiSearch.resultCount <= CAPI_PAGE_SIZE) {
+      if (!this.props.capiSearch.count || this.props.capiSearch.count <= CAPI_PAGE_SIZE) {
         return false;
       }
 
