@@ -3,6 +3,7 @@ import {TAG_UPDATE} from '../actions/updateTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/saveTag';
 import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/getSections';
 import {TAG_POPULATE_BLANK} from '../actions/createTag';
+import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST} from '../actions/searchCapi';
 
 const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -11,11 +12,17 @@ const saveState = {
   error: 'SAVE_STATE_ERROR'
 };
 
+const fetchState = {
+  dirty: 'FETCH_STATE_DIRTY',
+  clean: 'FETCH_STATE_CLEAN'
+};
+
 export default function tag(state = {
   tag: false,
   error: false,
   saveState: undefined,
-  config: {}
+  config: {},
+  capiSearch: {}
 }, action) {
   switch (action.type) {
 
@@ -88,6 +95,26 @@ export default function tag(state = {
     return Object.assign({}, state, {
       error: action.message
     });
+
+  //CAPI SEARCH
+
+  case CAPI_SEARCH_REQUEST:
+    return Object.assign({}, state, {
+      capiSearch: Object.assign({}, state.capiSearch, {
+        searchTerm: action.searchTerm,
+        fetchState: fetchState.dirty
+      })
+    });
+
+  case CAPI_SEARCH_RECEIVE:
+    return Object.assign({}, state, {
+      capiSearch: Object.assign({}, state.capiSearch, {
+        results: action.results,
+        count: action.resultsCount,
+        fetchState: fetchState.clean //Add logic to ensure this is results for current search Term;
+      })
+    });
+
   default:
     return state;
   }

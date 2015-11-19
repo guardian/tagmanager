@@ -1,0 +1,26 @@
+.filterlist {
+  position: relative;
+}
+
+.filterlist__dropdown {
+  position: absolute;
+
+  top: $size-header-height;
+  right: 0;
+
+  background-color: $c-white;
+  border: 1px solid $c-grey-200;
+
+  line-height: 20px;
+
+  text-align: left;
+
+}
+
+.filterlist__item {
+  padding: 10px;
+  border-bottom: 1px solid $c-grey-200;
+
+  text-transform: capitalize;
+
+}

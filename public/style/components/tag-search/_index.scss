@@ -19,20 +19,11 @@
 
 .tag-search__create {
 
-  @extend %f-header;
-  @extend %fs-data-3;
+  @extend %button--green;
 
   position: absolute;
-  right: $standard-padding;
-  top: $standard-padding;
-  padding: $standard-padding/2 $standard-padding;
-  background-color: $c-white;
-  border: 1px solid $c-green;
-
-  &:hover {
-    background-color: $c-grey-100;
-    text-decoration: none;
-  }
+  right: 0;
+  top: 0;
 }
 
 

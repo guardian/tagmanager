@@ -1,0 +1,72 @@
+.batch-tag {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: $standard-padding;
+
+  padding-bottom: 100px;
+
+}
+
+.batch-tag__filters {
+  width: 100%;
+
+  position: relative;
+
+
+  background-color: $c-grey-100;
+  border: 1px solid $c-grey-300;
+
+  padding: $standard-padding;
+}
+
+.batch-tag__error {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  background-color: $c-red;
+  text-align: center;
+  color: $c-white;
+  padding: $standard-padding/2;
+
+}
+
+.batch-tag__info {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  background-color: $c-blue;
+  text-align: center;
+  color: $c-white;
+  padding: $standard-padding/2;
+
+}
+
+
+.batch-tag__filters__group {
+  display: inline-block;
+
+  label {
+    @extend %f-header;
+    @extend %fs-data-2;
+
+    font-weight: bold;
+
+    display: block;
+  }
+
+  input {
+    display: block;
+  }
+}
+
+
+
+.batch-tag__filter--selectall {
+  @extend %button--green;
+}
+
+.batch-tag__filter--clear {
+  @extend %button--red;
+}

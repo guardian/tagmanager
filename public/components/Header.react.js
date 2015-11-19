@@ -13,19 +13,6 @@ export default class Header extends React.Component {
         }
     }
 
-    renderTitleHoverState() {
-        if (this.props.suppressTitleLink) {
-            return false;
-        }
-
-        return (
-            <div className="top-toolbar__title__hover-state">
-                <span className="top-toolbar__title__hover-state__subtitle">Back to</span><br />
-                <span className="top-toolbar__title__hover-state__title">Dashboard</span>
-            </div>
-        );
-    }
-
     render () {
         var self = this;
 
@@ -39,7 +26,6 @@ export default class Header extends React.Component {
                     <h1 className="top-toolbar__page-title">
                         <span className="top-toolbar__page-title-text">Tags</span>
                     </h1>
-                    {this.renderTitleHoverState()}
                 </Link>
 
                 <div className="header__children">
