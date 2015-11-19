@@ -2,6 +2,7 @@ import React from 'react';
 import CapiClient from '../util/CapiClient';
 import ContentList from './ContentList/ContentList';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
+import tagManagerApi from '../util/tagManagerApi';
 
 const CAPI_PAGE_SIZE = 200;
 
@@ -53,16 +54,19 @@ export class BatchTag extends React.Component {
       });
     }
 
-    onAddTagToContentTop () {
-      console.log("This is where it'd add the tag to the top")
+    onAddTagToContentTop(tag) {
+      console.log("This is where it'd add the tag to the top");
+      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'addToTop');
     }
 
-    onAddTagToContentBottom() {
-      console.log("This is where it'd add the tag to the bottom")
+    onAddTagToContentBottom(tag) {
+      console.log("This is where it'd add the tag to the bottom");
+      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'addToBottom');
     }
 
-    onRemoveTagFromContent() {
-      console.log("This is where it'd remove the tag")
+    onRemoveTagFromContent(tag) {
+      console.log("This is where it'd remove the tag");
+      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'removeTag');
     }
 
     renderTooManyResults() {
@@ -115,9 +119,9 @@ export class BatchTag extends React.Component {
                 <div className="batch-tag__status">
                   <BatchTagStatus
                     selectedContent={this.state.selectedContent}
-                    onAddTagToContentTop={this.onAddTagToContentTop}
-                    onAddTagToContentBottom={this.onAddTagToContentBottom}
-                    onRemoveTagFromContent={this.onRemoveTagFromContent}
+                    onAddTagToContentTop={this.onAddTagToContentTop.bind(this)}
+                    onAddTagToContentBottom={this.onAddTagToContentBottom.bind(this)}
+                    onRemoveTagFromContent={this.onRemoveTagFromContent.bind(this)}
                   />
                 </div>
             </div>
