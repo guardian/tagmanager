@@ -1,17 +1,19 @@
-package services
+package modules
 
-import com.gu.logback.appender.kinesis.KinesisAppender
-import org.slf4j.{Logger => SLFLogger, LoggerFactory}
 import ch.qos.logback.classic.{Logger => LogbackLogger}
+import com.google.inject.AbstractModule
+import com.gu.logback.appender.kinesis.KinesisAppender
 import net.logstash.logback.layout.LogstashLayout
+import org.slf4j.{Logger => SLFLogger, LoggerFactory}
 import play.api.Logger
+import services.{AWS, AwsInstanceTags, Config}
 
 
-object LogShipping extends AwsInstanceTags {
+class LogShipping extends AbstractModule with AwsInstanceTags {
 
   val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
 
-  def bootstrap {
+  def configure {
     rootLogger.info("bootstrapping kinesis appender if configured correctly")
     for (
       stack <- readTag("Stack");

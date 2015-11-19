@@ -1,7 +1,8 @@
 package controllers
 
 import model.command.CommandError._
-import model.command.{PathUsageCheck, CreateTagCommand}
+import model.command.{PathUsageCheck, CreateTagCommand, UpdateTagCommand}
+import play.api.Logger
 import model.Tag
 import model.Section
 import play.api.libs.json._
@@ -20,10 +21,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def updateTag(id: Long) = APIAuthAction { req =>
 
     req.body.asJson.map { json =>
-      TagRepository.updateTag(json).map{ tag =>
-        Ok(Json.toJson(tag))
-      }.getOrElse(BadRequest("Could not update tag"))
-
+      try {
+        UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
     }.getOrElse {
       BadRequest("Expecting Json data")
     }

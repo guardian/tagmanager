@@ -48,6 +48,7 @@ object Dynamo {
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
   lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
   lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
+  lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
 }
 
 class KinesisStreamProducer(streamName: String) {

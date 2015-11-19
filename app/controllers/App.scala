@@ -4,11 +4,9 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import repositories.{TagSearchCriteria, TagRepository}
 import play.api.Logger
-import services.{LogShipping, Config}
+import services.Config
 
 object App extends Controller with PanDomainAuthActions {
-
-  LogShipping.bootstrap
 
   def index(id: String = "") = AuthAction {
 

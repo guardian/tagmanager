@@ -15,22 +15,9 @@ object TagRepository {
     Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
   }
 
-  def updateTag(tagJson: JsValue) = {
-      try {
-        val tag = Tag.fromJson(tagJson) // parsing input json here provides budget validation
-        Dynamo.tagTable.putItem(Item.fromJSON(tagJson.toString()))
-        TagLookupCache.insertTag(tag)
-        Some(tag)
-      } catch {
-        case e: Error => None
-      }
-  }
-
-  def createTag(tag: Tag) = {
+  def upsertTag(tag: Tag) = {
       try {
         Dynamo.tagTable.putItem(tag.toItem)
-
-        TagLookupCache.insertTag(tag)
         Some(tag)
       } catch {
         case e: Error => None
@@ -131,7 +118,13 @@ object TagLookupCache {
       Logger.warn("failed to update cache")
   }
 
-  refresh
+  def removeTag(tagId: Long): Unit = {
+    val currentTags = allTags.get()
+    val newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
+
+    if (!allTags.compareAndSet(currentTags, newTags))
+      Logger.warn("failed to update cache")
+  }
 
   def search(tagSearchCriteria: TagSearchCriteria) = {
     tagSearchCriteria.execute(allTags.get())
