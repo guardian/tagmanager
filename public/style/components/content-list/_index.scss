@@ -1,6 +1,6 @@
 $taglist-border-color: $c-grey-300;
 
-.taglist {
+.contentlist {
 
   @extend %f-header;
   @extend %fs-data-3;
@@ -13,7 +13,7 @@ $taglist-border-color: $c-grey-300;
 
 }
 
-.taglist__header {
+.contentlist__header {
   background-color: $c-grey-200;
 
   font-weight: bold;
@@ -22,11 +22,11 @@ $taglist-border-color: $c-grey-300;
   border-width: 0 1px;
 }
 
-.taglist__results {
+.contentlist__results {
 
 }
 
-.taglist__results-item {
+.contentlist__results-item {
 
   border: 1px solid $taglist-border-color;
   cursor: pointer;
@@ -34,12 +34,5 @@ $taglist-border-color: $c-grey-300;
   td {
     border-right: 1px solid $taglist-border-color;
   }
-}
 
-.taglist__results-item__tag--showall {
-  font-weight: bold;
-  cursor: pointer;
-  padding: 3px;
-  background-color: $c-grey-150;
-  text-align: center;
 }

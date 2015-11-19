@@ -1,0 +1,29 @@
+.tag-select,
+.tag-select--results-above {
+  display: inline-block;
+}
+.tag-select__suggestions {
+
+  position: absolute;
+  top: 20px;
+
+  border: 1px solid $c-grey-300;
+  background-color: $c-grey-100;
+
+
+  li {
+    display: block;
+    padding: $standard-padding/2 $standard-padding;
+
+    cursor: pointer;
+
+    &:nth-child(even) {
+      background-color: $c-white;
+    }
+  }
+
+  .tag-select--results-above & {
+    top: auto;
+    bottom: 20px;
+  }
+}

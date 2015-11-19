@@ -1,6 +1,5 @@
 import React from 'react';
-import tagManagerApi from '../../util/tagManagerApi';
-import debounce from 'lodash.debounce';
+import TagSelect from '../utils/TagSelect';
 
 export default class AddTagToContext extends React.Component {
 
@@ -8,21 +7,8 @@ export default class AddTagToContext extends React.Component {
         super(props);
 
         this.state = {
-          searchTerm: '',
-          expanded: false,
-          suggestions: [],
-          selectedTag: undefined
+          expanded: false
         };
-
-        this.performSearch = debounce(this.performSearch.bind(this), 500);
-    }
-
-    contract() {
-      this.setState({
-        expanded: false,
-        searchTerm: '',
-        suggestions: []
-      });
     }
 
     expand() {
@@ -31,29 +17,9 @@ export default class AddTagToContext extends React.Component {
       });
     }
 
-    performSearch() {
-      tagManagerApi.searchTags(this.state.searchTerm)
-        .then((tags) => {
-          this.setState({
-            suggestions: tags
-          });
-        }).fail(error => {
-          console.log('Could not get suggestions for: ', this.state.searchTerm, error);
-        });
-    }
-
     onAddTag(tag) {
       this.props.onAddTag(tag.id);
       this.contract();
-    }
-
-    onUpdateSearchField(e) {
-      var searchTerm = e.target.value;
-      this.setState({
-        searchTerm: searchTerm
-      });
-
-      this.performSearch();
     }
 
     render () {
@@ -68,16 +34,8 @@ export default class AddTagToContext extends React.Component {
 
       return (
         <div className="context__add--expanded">
-          <input className="context__add__input" type="text" autoFocus={true} value={this.state.inputValue} onChange={this.onUpdateSearchField.bind(this)}/>
-          <i className="i-cross" onClick={this.contract.bind(this)}/>
-          <div className="context__add__suggestions">
-            <ul>
-              {this.state.suggestions.map(tag => {
-                return <li key={tag.id} onClick={this.onAddTag.bind(this, tag)}>{tag.internalName}</li>;
-              })}
-            </ul>
-          </div>
-
+          <TagSelect onTagClick={this.onAddTag.bind(this)}/>
+          <i className="i-cross" onClick={this.contract.bind(this)}></i>
         </div>
       );
     }

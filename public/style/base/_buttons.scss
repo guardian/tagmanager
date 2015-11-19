@@ -1,0 +1,41 @@
+%button {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  font-weight: bold;
+
+  display: inline-block;
+
+  padding: $standard-padding/2 $standard-padding;
+  margin: $standard-padding;
+  min-width: 100px;
+
+  text-align:center;
+
+  color:$c-grey-500;
+  border: 1px solid $c-grey-500;
+
+  background-color: $c-white;
+  cursor: pointer;
+
+  i {
+    margin-left: 0;
+  }
+
+}
+
+%button--green {
+  @extend %button;
+
+  color:$c-green;
+  border: 1px solid $c-green;
+}
+
+%button--red {
+  @extend %button;
+
+  color:$c-red;
+  border: 1px solid $c-red;
+
+}

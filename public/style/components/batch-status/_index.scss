@@ -1,0 +1,67 @@
+$batch-status-height: 30px;
+
+.batch-status__container {
+  position: fixed;
+
+  bottom: 0;
+  left: 0;
+
+  display: block;
+
+  background-color: $c-grey-200;
+  border-top: 1px solid $c-grey-300;
+  width: 100%;
+
+  text-align: left;
+  padding: 10px;
+
+}
+
+.batch-status {
+  max-width: 800px;
+
+  margin: 0 auto;
+}
+
+.batch-status__info {
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  display: inline-block;
+
+  padding-right: $standard-padding;
+}
+
+
+.batch-status__button {
+  @extend %button--green;
+
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.batch-status__button--remove {
+  @extend %button--red;
+
+  margin-top: 0;
+  margin-bottom: 0;
+
+}
+
+.batch-status-transition-enter.batch-status__container {
+  transform: translateY($batch-status-height);
+}
+
+.batch-status-transition-enter-active.batch-status__container {
+  transform: translateY(0);
+  transition: transform 500ms ease-out;
+}
+
+.batch-status-transition-leave.batch-status__container {
+  transform: translateY(0);
+}
+
+.batch-status-transition-leave-active.batch-status__container {
+  transform: translateY($batch-status-height);
+  transition: transform 500ms ease-out;
+}
