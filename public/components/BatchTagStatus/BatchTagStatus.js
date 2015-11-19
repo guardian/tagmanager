@@ -68,7 +68,7 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__info">
               Add "{this.state.selectedTag.internalName}" to {this.props.selectedContent.length} {pluralContent} of content?
             </div>
-            <div className="batch-status__button">
+            <div className="batch-status__button" onClick={this.props.onAddTagToContentTop} >
               <i className="i-tick-green"></i> Confirm
             </div>
             <i className="i-cross" onClick={this.resetMode}></i>
@@ -98,7 +98,7 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__info">
               Remove "{this.state.selectedTag.internalName}" from {this.props.selectedContent.length} {pluralContent} of content?
             </div>
-            <div className="batch-status__button--remove">
+            <div className="batch-status__button--remove" onClick={this.props.onRemoveTagFromContentexit}>
               <i className="i-cross-red"></i> Confirm
             </div>
             <i className="i-cross" onClick={this.resetMode}></i>
