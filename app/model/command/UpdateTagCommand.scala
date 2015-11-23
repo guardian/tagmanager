@@ -7,7 +7,10 @@ import repositories.TagRepository
 import services.KinesisStreams
 
 
-case class UpdateTagCommand(tag: Tag) extends Command[Tag] {
+case class UpdateTagCommand(tag: Tag) extends Command {
+
+  type T = Tag
+
   override def process: Option[Tag] = {
     Logger.info(s"updating tag ${tag.id}")
 
