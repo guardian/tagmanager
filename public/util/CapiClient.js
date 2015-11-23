@@ -1,6 +1,6 @@
 import Reqwest from 'reqwest';
 
-import {store} from '../app';
+import {getStore} from '../util/storeAccessor';
 
 function paramsObjectToQuery (params) {
 
@@ -14,6 +14,7 @@ function paramsObjectToQuery (params) {
 }
 
 function getCapiUrl() {
+  const store = getStore();
   return store.getState().config.capiUrl + '/search?api-key=' + store.getState().config.capiKey;
 }
 

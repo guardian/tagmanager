@@ -43,3 +43,18 @@
     display: inline-block;
   }
 }
+
+.batch-filters__custom-date {
+
+  display: inline-block;
+
+  .batch-filters__label {
+    margin-right: 5px;
+  }
+
+   .rw-datetimepicker {
+
+    margin-right: 10px;
+    display: inline-block;
+  }
+}

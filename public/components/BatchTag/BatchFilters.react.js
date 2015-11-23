@@ -4,6 +4,10 @@ import R from 'ramda';
 
 import TagSelect from '../utils/TagSelect';
 
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+import momentLocalizer from 'react-widgets/lib/localizers/moment';
+momentLocalizer(moment);
+
 const CAPI_DATE_FORMAT = 'YYYY-MM-DD';
 
 const PREDEFINED_VALUES = {
@@ -52,6 +56,19 @@ export default class BatchFilters extends React.Component {
     isThisMonthActive() {
       return this.props.filters['to-date'] === PREDEFINED_VALUES.thismonth['to-date'] &&
               this.props.filters['from-date'] === PREDEFINED_VALUES.thismonth['from-date'];
+
+    }
+
+    setFromDate(date, string) {
+      this.props.updateFilters(Object.assign({}, this.props.filters, {
+        'from-date': moment(string, 'DD/MM/YYYY').format(CAPI_DATE_FORMAT)
+      }));
+    }
+
+    setToDate(date) {
+      this.props.updateFilters(Object.assign({}, this.props.filters, {
+        'to-date': moment(date).format(CAPI_DATE_FORMAT)
+      }));
 
     }
 
@@ -105,6 +122,21 @@ export default class BatchFilters extends React.Component {
                   <div className="batch-filters__option__clear" onClick={this.clearDateFilter.bind(this)}>
                     <i className="i-cross"></i>
                   </div>
+                </div>
+
+                <div className="batch-filters__custom-date">
+                  <span className="batch-filters__label">From:</span>
+                  <DateTimePicker
+                    format={"DD/MM/YYYY"}
+                    time={false}
+                    value={ this.props.filters['from-date'] ? new Date(this.props.filters['from-date']) : null}
+                    onChange={this.setFromDate.bind(this)}/>
+                  <span className="batch-filters__label">To:</span>
+                    <DateTimePicker
+                      format={"DD/MM/YYYY"}
+                      time={false}
+                      value={ this.props.filters['to-date'] ? new Date(this.props.filters['to-date']) : null}
+                      onChange={this.setToDate.bind(this)}/>
                 </div>
               </div>
               <div className="batch-filters__filter">

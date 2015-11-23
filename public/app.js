@@ -6,6 +6,7 @@ import Router from 'react-router';
 import routes from './routes/routes';
 import configureStore from './util/configureStore';
 import history from './routes/history';
+import {setStore} from './util/storeAccessor';
 
 import './style/main.scss';
 
@@ -20,8 +21,10 @@ const configEl = document.getElementById('config');
   return JSON.parse(configEl.innerHTML);
 }
 
-export const store = configureStore();
-export const config = extractConfigFromPage();
+const store = configureStore();
+const config = extractConfigFromPage();
+
+setStore(store);
 
 store.dispatch({
     type:       'CONFIG_RECEIVED',
