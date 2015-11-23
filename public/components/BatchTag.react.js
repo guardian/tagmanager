@@ -114,9 +114,9 @@ export class BatchTag extends React.Component {
                         <input className="batch-tag__input" type="text" value={this.props.capiSearch.searchTerm || ''} onChange={this.searchFieldChange.bind(this)} />
                     </div>
                 </div>
+                <BatchFilters filters={this.props.capiSearch.filters || {}} updateFilters={this.applyFilters.bind(this)}/>
                 {this.renderSearchStatus()}
                 {this.renderTooManyResults()}
-                <BatchFilters filters={this.props.capiSearch.filters} updateFilters={this.applyFilters.bind(this)}/>
                 <div className="batch-tag__content">
                   <ContentList
                     content={this.props.capiSearch.results}

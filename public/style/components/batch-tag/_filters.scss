@@ -1,0 +1,43 @@
+.batch-filters {
+  background-color: $c-grey-200;
+  border: 1px solid $c-grey-300;
+  border-top-width: 0;
+}
+
+.batch-filters__filter {
+  @extend %f-data;
+  @extend %fs-data-4;
+
+  padding: $standard-padding;
+}
+
+.batch-filters__header {
+
+  @extend %f-data;
+  @extend %fs-data-3;
+
+  font-weight: bold;
+}
+
+.batch-filters__option,
+.batch-filters__option--active {
+  display: inline-block;
+
+  line-height: 22px;
+  margin-right: 10px;
+
+  .batch-filters__option__clear {
+    display: none;
+    transform: scale(0.7);
+    position: relative;
+    top: 1px;
+  }
+}
+
+.batch-filters__option--active {
+  font-weight: bold;
+
+  .batch-filters__option__clear {
+    display: inline-block;
+  }
+}

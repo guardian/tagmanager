@@ -1,7 +1,9 @@
 .tag-select,
 .tag-select--results-above {
   display: inline-block;
+  position: relative;
 }
+
 .tag-select__suggestions {
 
   position: absolute;

@@ -24,7 +24,13 @@ export default class TagSelect extends React.Component {
         tagSearchTerm: searchTerm
       });
 
-      this.performSearch(searchTerm);
+      if (searchTerm.length !== 0) {
+        this.performSearch(searchTerm);
+      } else {
+         this.setState({
+           suggestions: []
+         });
+      }
     }
 
     onClickTag(tag) {
