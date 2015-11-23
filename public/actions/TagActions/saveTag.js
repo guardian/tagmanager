@@ -1,4 +1,4 @@
-import tagManagerApi from '../util/tagManagerApi';
+import tagManagerApi from '../../util/tagManagerApi';
 
 export const TAG_SAVE_REQUEST = 'TAG_SAVE_REQUEST';
 export const TAG_SAVE_RECEIVE = 'TAG_SAVE_RECEIVE';

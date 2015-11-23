@@ -1,7 +1,8 @@
 import React from 'react';
-import CapiClient from '../util/CapiClient';
 import ContentList from './ContentList/ContentList';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
+import BatchFilters from './BatchTag/BatchFilters.react';
+import R from 'ramda';
 
 const CAPI_PAGE_SIZE = 200;
 
@@ -12,21 +13,28 @@ export class BatchTag extends React.Component {
 
         this.state = {
           selectedContent: [],
+          activeFilters: {}
         };
 
-        this.capiClient = CapiClient(props.config.capiUrl, props.config.capiKey);
-        this.searchContent = this.searchContent.bind(this)
+        this.searchContent = this.searchContent.bind(this);
     }
 
     searchFieldChange(e) {
       this.searchContent(e.target.value);
     }
 
-    searchContent(searchString) {
-      this.props.capiActions.searchCapi(this.capiClient, searchString, {
+    searchContent(searchString, filters) {
+      const params = Object.assign({}, filters || this.props.capiSearch.filters, {
         'show-tags': 'all',
         'page-size': CAPI_PAGE_SIZE
       });
+
+      this.props.capiActions.searchCapi(searchString, params);
+    }
+
+    applyFilters(filters) {
+      this.props.capiActions.updateFilters(filters);
+      this.searchContent(this.props.capiSearch.searchTerm, filters);
     }
 
     toggleContentSelected(content) {
@@ -53,16 +61,14 @@ export class BatchTag extends React.Component {
       });
     }
 
-    onAddTagToContentTop () {
-      console.log("This is where it'd add the tag to the top")
-    }
+    toggleAllSelected() {
+      const notSelectedResults = R.exclude(R.any(this.state.selectedContent));
 
-    onAddTagToContentBottom() {
-      console.log("This is where it'd add the tag to the bottom")
-    }
-
-    onRemoveTagFromContent() {
-      console.log("This is where it'd remove the tag")
+      if (notSelectedResults.length) {
+        this.selectAllContent();
+      } else {
+        this.deselectAllContent();
+      }
     }
 
     renderTooManyResults() {
@@ -80,15 +86,23 @@ export class BatchTag extends React.Component {
 
     renderSearchStatus() {
 
-      if (this.props.capiSearch.fetchState !== 'FETCH_STATE_DIRTY') {
-        return false;
+      if (this.props.capiSearch.fetchState === 'FETCH_STATE_DIRTY') {
+        return (
+          <div className="batch-tag__info">
+            Searching...
+          </div>
+        );
       }
 
-      return (
-        <div className="batch-tag__info">
-          Searching...
-        </div>
-      );
+      if (this.props.capiSearch.fetchState === 'FETCH_STATE_CLEAN' && this.props.capiSearch.results.length === 0) {
+        return (
+          <div className="batch-tag__error">
+            No results found
+          </div>
+        );
+      }
+
+      return false;
     }
 
     render () {
@@ -99,18 +113,17 @@ export class BatchTag extends React.Component {
                         <label>Search by name</label>
                         <input className="batch-tag__input" type="text" value={this.props.capiSearch.searchTerm || ''} onChange={this.searchFieldChange.bind(this)} />
                     </div>
-                    <div className="batch-tag__filters__group">
-                        <span className="batch-tag__filter--selectall" onClick={this.selectAllContent.bind(this)}>Select All</span>
-                        <span className="batch-tag__filter--clear" onClick={this.deselectAllContent.bind(this)}>Clear Selection</span>
-                    </div>
                 </div>
                 {this.renderSearchStatus()}
                 {this.renderTooManyResults()}
+                <BatchFilters filters={this.props.capiSearch.filters} updateFilters={this.applyFilters.bind(this)}/>
                 <div className="batch-tag__content">
                   <ContentList
                     content={this.props.capiSearch.results}
                     selectedContent={this.state.selectedContent}
-                    contentClicked={this.toggleContentSelected.bind(this)} />
+                    contentClicked={this.toggleContentSelected.bind(this)}
+                    toggleAllSelected={this.toggleAllSelected.bind(this)}
+                   />
                 </div>
                 <div className="batch-tag__status">
                   <BatchTagStatus
@@ -128,7 +141,7 @@ export class BatchTag extends React.Component {
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as searchCapi from '../actions/searchCapi';
+import * as searchCapi from '../actions/CapiActions/searchCapi';
 
 function mapStateToProps(state) {
   return {

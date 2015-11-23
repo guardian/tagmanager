@@ -9,11 +9,19 @@ import history from './routes/history';
 
 import './style/main.scss';
 
-const store = configureStore();
+function extractConfigFromPage() {
 
-// Extract config from page
+const configEl = document.getElementById('config');
 
-const config = extractConfigFromPage();
+  if (!configEl) {
+    return {};
+  }
+
+  return JSON.parse(configEl.innerHTML);
+}
+
+export const store = configureStore();
+export const config = extractConfigFromPage();
 
 store.dispatch({
     type:       'CONFIG_RECEIVED',
@@ -26,14 +34,3 @@ render(
       <Router routes={routes} history={history}/>
     </Provider>
 , document.getElementById('react-mount'));
-
-function extractConfigFromPage() {
-
-  const configEl = document.getElementById('config');
-
-  if (!configEl) {
-    return {};
-  }
-
-  return JSON.parse(configEl.innerHTML);
-}
