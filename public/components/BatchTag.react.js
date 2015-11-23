@@ -13,7 +13,8 @@ export class BatchTag extends React.Component {
 
         this.state = {
           selectedContent: [],
-          activeFilters: {}
+          activeFilters: {},
+          showFilters: false
         };
 
         this.searchContent = this.searchContent.bind(this);
@@ -24,7 +25,10 @@ export class BatchTag extends React.Component {
     }
 
     searchContent(searchString, filters) {
-      const params = Object.assign({}, filters || this.props.capiSearch.filters, {
+
+      const applyFilters = this.state.showFilters ? filters || this.props.capiSearch.filters : {};
+
+      const params = Object.assign({}, applyFilters, {
         'show-tags': 'all',
         'page-size': CAPI_PAGE_SIZE
       });
@@ -35,6 +39,12 @@ export class BatchTag extends React.Component {
     applyFilters(filters) {
       this.props.capiActions.updateFilters(filters);
       this.searchContent(this.props.capiSearch.searchTerm, filters);
+    }
+
+    toggleFilters() {
+      this.setState({
+        showFilters: !this.state.showFilters
+      });
     }
 
     toggleContentSelected(content) {
@@ -106,6 +116,7 @@ export class BatchTag extends React.Component {
     }
 
     render () {
+
         return (
             <div className="batch-tag">
                 <div className="batch-tag__filters">
@@ -113,8 +124,11 @@ export class BatchTag extends React.Component {
                         <label>Search by name</label>
                         <input className="batch-tag__input" type="text" value={this.props.capiSearch.searchTerm || ''} onChange={this.searchFieldChange.bind(this)} />
                     </div>
+                    <div className="batch-tag__show-filters" onClick={this.toggleFilters.bind(this)}>
+                      { this.state.showFilters ? 'Hide Filters' : 'Show Filters'}
+                    </div>
                 </div>
-                <BatchFilters filters={this.props.capiSearch.filters || {}} updateFilters={this.applyFilters.bind(this)}/>
+                {this.state.showFilters ? <BatchFilters filters={this.props.capiSearch.filters || {}} updateFilters={this.applyFilters.bind(this)}/> : false}
                 {this.renderSearchStatus()}
                 {this.renderTooManyResults()}
                 <div className="batch-tag__content">

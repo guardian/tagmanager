@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import R from 'ramda';
 
 import TagSelect from '../utils/TagSelect';
 
@@ -71,7 +72,7 @@ export default class BatchFilters extends React.Component {
 
     addTag(tag) {
       this.props.updateFilters(Object.assign({}, this.props.filters, {
-        'tag': this.getTagArray().concat([tag.path]).join(',')
+        'tag': R.uniq(this.getTagArray().concat([tag.path])).join(',')
       }));
     }
 
@@ -113,7 +114,7 @@ export default class BatchFilters extends React.Component {
                 <div className="batch-filters__taglist">
                   {this.getTagArray().map(tag => {
                     return (
-                      <div className='batch-filters__option--active'>
+                      <div className='batch-filters__option--active' key={tag}>
                         {tag}
                         <div className="batch-filters__option__clear" onClick={this.removeTag.bind(this, tag)}>
                           <i className="i-cross"></i>

@@ -1,7 +1,8 @@
 .batch-filters {
   background-color: $c-grey-200;
-  border: 1px solid $c-grey-300;
-  border-top-width: 0;
+  border-color: $c-grey-300;
+  border-style: solid;
+  border-width: 0 1px 0 1px;
 }
 
 .batch-filters__filter {
@@ -9,6 +10,7 @@
   @extend %fs-data-4;
 
   padding: $standard-padding;
+  border-bottom: 1px solid $c-grey-300;
 }
 
 .batch-filters__header {
