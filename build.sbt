@@ -15,6 +15,7 @@ lazy val dependencies = Seq(
   "org.apache.thrift" % "libthrift" % "0.8.0",
   "com.twitter" %% "scrooge-core" % "4.1.0",
   "com.google.guava" % "guava" % "18.0",
+  "com.gu" %% "content-api-client" % "7.7",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
