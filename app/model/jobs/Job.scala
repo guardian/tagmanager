@@ -1,14 +1,18 @@
 package model.jobs
 
+import com.amazonaws.services.dynamodbv2.document.Item
 import model.command.Command
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import repositories.ContentAPI
+import repositories.JobRepository
+
+import scala.util.control.NonFatal
 
 case class Job(id: Long, `type`: String, started: DateTime, startedBy: Option[String], command: Command, steps: List[Step]) {
 
+  def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
 object Job {
@@ -20,6 +24,16 @@ object Job {
       (JsPath \ "command").format[Command] and
       (JsPath \ "steps").formatNullable[List[Step]].inmap[List[Step]](_.getOrElse(Nil), Some(_))
     )(Job.apply, unlift(Job.unapply))
+
+
+  def fromItem(item: Item) = try {
+    Json.parse(item.toJSON).as[Job]
+  } catch {
+    case NonFatal(e) => {
+      Logger.error(s"failed to load job ${item.toJSON}", e)
+      throw e
+    }
+  }
 }
 
 object JobRunner {
@@ -29,15 +43,15 @@ object JobRunner {
     job.steps match {
       case Nil => {
         Logger.info(s"job $job complete")
-        // delete job from DB
+        JobRepository.deleteJob(job.id)
         None
       }
       case s :: ss => {
         s.process match {
           case Some(updatedStep) => {
             val updatedJob = job.copy(steps = updatedStep :: ss)
-            // persist job state
-            Some(job.copy(steps = updatedStep :: ss))
+            JobRepository.upsertJob(updatedJob)
+            Some(updatedJob)
           }
           case None => run(job.copy(steps = ss))
         }
