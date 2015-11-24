@@ -71,6 +71,8 @@ sealed trait Config {
 
   def tagUpdateStreamName: String
 
+  def jobQueueName: String
+
   def pathManagerUrl: String
 
   def logShippingStreamName: Option[String] = None
@@ -89,6 +91,8 @@ class DevConfig extends Config {
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
 
+  override def jobQueueName: String = "tag-manager-job-queue-dev"
+
   override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
@@ -106,6 +110,8 @@ class CodeConfig extends Config {
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
 
+  override def jobQueueName: String = "tag-manager-job-queue-dev"
+
   override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
@@ -122,6 +128,8 @@ class ProdConfig extends Config {
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
 
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
+
+  override def jobQueueName: String = "tag-manager-job-queue-PROD"
 
   override def pathManagerUrl: String = "http://pathmanager.gutools.co.uk/"
 

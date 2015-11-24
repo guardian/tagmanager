@@ -49,11 +49,15 @@ object JobRunner {
       case s :: ss => {
         s.process match {
           case Some(updatedStep) => {
+            Logger.info(s"job $job step $s not yet complete, updating state")
             val updatedJob = job.copy(steps = updatedStep :: ss)
             JobRepository.upsertJob(updatedJob)
             Some(updatedJob)
           }
-          case None => run(job.copy(steps = ss))
+          case None => {
+            Logger.info(s"job $job step $s complete, processing next step")
+            run(job.copy(steps = ss))
+          }
         }
       }
     }
