@@ -27,8 +27,8 @@ object Image {
 
 
 
-case class ImageAsset(imageUrl: String, width: Long, height: Long, contentType: String) {
-  def asThrift = ThriftImageAsset(imageUrl, width, height, contentType)
+case class ImageAsset(imageUrl: String, width: Long, height: Long, mimeType: String) {
+  def asThrift = ThriftImageAsset(imageUrl, width, height, mimeType)
 }
 
 object ImageAsset {
@@ -36,7 +36,7 @@ object ImageAsset {
       (JsPath \ "imageUrl").format[String] and
       (JsPath \ "width").format[Long] and
       (JsPath \ "height").format[Long] and
-      (JsPath \ "contentType").format[String]
+      (JsPath \ "mimeType").format[String]
 
     )(ImageAsset.apply, unlift(ImageAsset.unapply))
 
@@ -44,6 +44,6 @@ object ImageAsset {
     imageUrl = thriftImageAsset.imageUrl,
     width = thriftImageAsset.width,
     height = thriftImageAsset.height,
-    contentType = thriftImageAsset.contentType
+    mimeType = thriftImageAsset.mimeType
   )
 }

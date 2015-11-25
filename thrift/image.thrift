@@ -11,8 +11,8 @@ struct ImageAsset {
     /** the height of the asset */
     3: required i64 height;
 
-    /** the height of the asset */
-    4: required string contentType;
+    /** the mimeType of the asset */
+    4: required string mimeType;
 }
 
 
