@@ -55,18 +55,22 @@ export class BatchTag extends React.Component {
     }
 
     onAddTagToContentTop(tag) {
-      console.log("This is where it'd add the tag to the top");
-      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'addToTop');
+      this.performBatchTag(tag, 'addToTop');
     }
 
     onAddTagToContentBottom(tag) {
-      console.log("This is where it'd add the tag to the bottom");
-      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'addToBottom');
+      this.performBatchTag(tag, 'addToBottom');
     }
 
     onRemoveTagFromContent(tag) {
-      console.log("This is where it'd remove the tag");
-      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'remove');
+      this.performBatchTag(tag, 'remove');
+    }
+
+    performBatchTag(tag, operation) {
+      tagManagerApi.batchTag(this.state.selectedContent, tag.id, operation);
+      this.setState({
+        selectedContent: []
+      });
     }
 
     renderTooManyResults() {
