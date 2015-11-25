@@ -5,12 +5,13 @@ import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata}
 
 case class PodcastMetadata( linkUrl: String,
-                            copyrightText: String,
-                            authorText: String,
+                            copyrightText: Option[String],
+                            authorText: Option[String],
                             iTunesUrl: String,
                             iTunesBlock: Boolean,
                             clean: Boolean,
-                            explicit: Boolean
+                            explicit: Boolean,
+                            image: Option[Image] = None
 ) {
 
   def asThrift = ThriftPodcastMetadata(
@@ -20,7 +21,8 @@ case class PodcastMetadata( linkUrl: String,
     iTunesUrl =         iTunesUrl,
     iTunesBlock =       iTunesBlock,
     clean =             clean,
-    explicit =          explicit
+    explicit =          explicit,
+    image =             image.map(_.asThrift)
   )
 }
 
@@ -28,12 +30,13 @@ object PodcastMetadata {
 
   implicit val podcastMetadataFormat: Format[PodcastMetadata] = (
       (JsPath \ "linkUrl").format[String] and
-        (JsPath \ "copyrightText").format[String] and
-        (JsPath \ "authorText").format[String] and
+        (JsPath \ "copyrightText").formatNullable[String] and
+        (JsPath \ "authorText").formatNullable[String] and
         (JsPath \ "iTunesUrl").format[String] and
         (JsPath \ "iTunesBlock").format[Boolean] and
         (JsPath \ "clean").format[Boolean] and
-        (JsPath \ "explicit").format[Boolean]
+        (JsPath \ "explicit").format[Boolean] and
+        (JsPath \ "image").formatNullable[Image]
     )(PodcastMetadata.apply, unlift(PodcastMetadata.unapply))
 
   def apply(thriftPodcastMetadata: ThriftPodcastMetadata): PodcastMetadata =
@@ -44,7 +47,8 @@ object PodcastMetadata {
       iTunesUrl =         thriftPodcastMetadata.iTunesUrl,
       iTunesBlock =       thriftPodcastMetadata.iTunesBlock,
       clean =             thriftPodcastMetadata.clean,
-      explicit =          thriftPodcastMetadata.explicit
+      explicit =          thriftPodcastMetadata.explicit,
+      image =             thriftPodcastMetadata.image.map(Image(_))
     )
 }
 

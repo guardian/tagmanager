@@ -1,3 +1,6 @@
+include "image.thrift"
+
+
 namespace scala com.gu.tagmanagement
 
 /** the types of tags supported */
@@ -18,10 +21,10 @@ struct PodcastMetadata {
     1: required string linkUrl;
 
     /** The iTunes copyright text **/
-    2: required string copyrightText;
+    2: optional string copyrightText;
 
     /** The iTunes author text **/
-    3: required string authorText;
+    3: optional string authorText;
 
     /** The iTunes url for the podcast **/
     4: required string iTunesUrl;
@@ -34,6 +37,10 @@ struct PodcastMetadata {
 
     /** Should the podcast be marked as explicit in iTunes **/
     7: required bool explicit;
+
+    /** iTunes podcast image **/
+    8: optional image.Image image
+
 }
 
 
