@@ -66,7 +66,7 @@ export class BatchTag extends React.Component {
 
     onRemoveTagFromContent(tag) {
       console.log("This is where it'd remove the tag");
-      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'removeTag');
+      tagManagerApi.batchTag(this.state.selectedContent, tag.id , 'remove');
     }
 
     renderTooManyResults() {

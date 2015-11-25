@@ -10,6 +10,7 @@ object Sequences {
 
   val tagId = new DynamoSequence(Dynamo.sequenceTable, "tagId")
   val sectionId = new DynamoSequence(Dynamo.sequenceTable, "sectionId")
+  val jobId = new DynamoSequence(Dynamo.sequenceTable, "jobId")
 
 }
 

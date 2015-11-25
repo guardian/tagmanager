@@ -70,6 +70,7 @@ sealed trait Config {
   def clusterStatusTableName: String
 
   def tagUpdateStreamName: String
+  def taggingOperationsStreamName: String
 
   def jobQueueName: String
 
@@ -90,6 +91,7 @@ class DevConfig extends Config {
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
+  override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
 
@@ -109,6 +111,7 @@ class CodeConfig extends Config {
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
+  override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
 
@@ -128,6 +131,7 @@ class ProdConfig extends Config {
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
 
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
+  override def taggingOperationsStreamName: String = "tagging-operations-stream-PROD"
 
   override def jobQueueName: String = "tag-manager-job-queue-PROD"
 

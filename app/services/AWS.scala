@@ -81,4 +81,5 @@ class KinesisStreamProducer(streamName: String) {
 
 object KinesisStreams {
   lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName)
+  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName)
 }
