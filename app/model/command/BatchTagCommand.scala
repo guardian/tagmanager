@@ -32,6 +32,7 @@ case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: Str
       `type` = "Batch tag",
       started = new DateTime,
       startedBy = user.map(_.email),
+      tagIds = List(tagId),
       command = this,
       steps = operation match {
         case "remove" => List(BatchTagRemoveCompleteCheck(contentIds, tag.path))

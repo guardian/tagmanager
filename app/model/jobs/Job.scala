@@ -10,7 +10,14 @@ import repositories.JobRepository
 
 import scala.util.control.NonFatal
 
-case class Job(id: Long, `type`: String, started: DateTime, startedBy: Option[String], command: Command, steps: List[Step]) {
+case class Job(
+  id: Long,
+  `type`: String,
+  started: DateTime,
+  startedBy: Option[String],
+  tagIds: List[Long],
+  command: Command,
+  steps: List[Step]) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
@@ -21,6 +28,7 @@ object Job {
       (JsPath \ "type").format[String] and
       (JsPath \ "started").format[Long].inmap[DateTime](new DateTime(_), _.getMillis) and
       (JsPath \ "startedBy").formatNullable[String] and
+      (JsPath \ "tagIds").formatNullable[List[Long]].inmap[List[Long]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "command").format[Command] and
       (JsPath \ "steps").formatNullable[List[Step]].inmap[List[Step]](_.getOrElse(Nil), Some(_))
     )(Job.apply, unlift(Job.unapply))

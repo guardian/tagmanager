@@ -110,5 +110,13 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       BadRequest("Expecting Json data")
     }
   }
+  
+  def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 
+    val jobs = tagIdParam match {
+      case Some(tagId) => JobRepository.findJobsForTag(tagId)
+      case None => JobRepository.loadAllJobs
+    }
+    Ok(Json.toJson(jobs))
+  }
 
 }

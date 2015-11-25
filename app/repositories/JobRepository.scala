@@ -1,6 +1,6 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
 import model.Section
 import model.jobs.Job
 import play.api.libs.json.JsValue
@@ -31,6 +31,10 @@ object JobRepository {
     Dynamo.jobTable.deleteItem("id", jobId)
   }
 
-  def loadAllTags = Dynamo.jobTable.scan().map(Job.fromItem)
+  def loadAllJobs = Dynamo.jobTable.scan().map(Job.fromItem).toList
+
+  def findJobsForTag(tagId: Long): List[Job] = {
+    Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).map(Job.fromItem).toList
+  }
 
 }
