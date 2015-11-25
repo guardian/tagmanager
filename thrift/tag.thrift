@@ -13,6 +13,30 @@ enum TagType {
     NEWSPAPER_BOOK_SECTION = 8
 }
 
+struct PodcastMetadata {
+    /** The iTunes link URL **/
+    1: required string linkUrl;
+
+    /** The iTunes copyright text **/
+    2: required string copyrightText;
+
+    /** The iTunes author text **/
+    3: required string authorText;
+
+    /** The iTunes url for the podcast **/
+    4: required string iTunesUrl;
+
+    /** Should the podcast appear in iTunes **/
+    5: required bool iTunesBlock;
+
+    /** Should the podcast be marked as clean in iTunes **/
+    6: required bool clean;
+
+    /** Should the podcast be marked as explicit in iTunes **/
+    7: required bool explicit;
+}
+
+
 struct Reference {
     /** the type of the the reference, e.g. musicbrainz, imdb, pa football team etc. */
     1: required string type;
@@ -64,5 +88,8 @@ struct Tag {
 
     /** the reference mappings for this tag */
     14: required list<Reference> references;
+
+    /** Any Podcast Metadata associated with this tag */
+    15: optional PodcastMetadata podcastMetadata;
 
 }
