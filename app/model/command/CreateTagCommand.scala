@@ -3,7 +3,7 @@ package model.command
 import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
-import model.{Tag, Reference}
+import model.{PodcastMetadata, Tag, Reference}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
@@ -23,7 +23,8 @@ case class CreateTagCommand(
                       section: Option[Long],
                       description: Option[String] = None,
                       parents: Set[Long] = Set(),
-                      references: List[Reference] = Nil
+                      references: List[Reference] = Nil,
+                      podcastMetadata: Option[PodcastMetadata]
                       ) extends Command {
 
   type T = Tag
@@ -49,9 +50,10 @@ case class CreateTagCommand(
       categories = categories,
       description = description,
       parents = parents,
-      references = references
+      references = references,
+      podcastMetadata = podcastMetadata
     )
-
+    
     val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
@@ -74,6 +76,7 @@ object CreateTagCommand {
       (JsPath \ "section").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
-      (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_))
+      (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
+      (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata]
     )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
 }

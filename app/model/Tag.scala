@@ -23,7 +23,8 @@ case class Tag(
   section: Option[Long],
   description: Option[String] = None,
   parents: Set[Long] = Set(),
-  references: List[Reference] = Nil
+  references: List[Reference] = Nil,
+  podcastMetadata: Option[PodcastMetadata] = None
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -42,7 +43,8 @@ case class Tag(
     section           = section,
     description       = description,
     parents           = parents,
-    references        = references.map(_.asThrift)
+    references        = references.map(_.asThrift),
+    podcastMetadata   = podcastMetadata.map(_.asThrift)
   )
 }
 
@@ -63,7 +65,9 @@ object Tag {
       (JsPath \ "section").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
-      (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_))
+      (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
+      (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata]
+
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = try {
@@ -92,6 +96,7 @@ object Tag {
       section           = thriftTag.section,
       description       = thriftTag.description,
       parents           = thriftTag.parents.toSet,
-      references        = thriftTag.references.map(Reference(_)).toList
+      references        = thriftTag.references.map(Reference(_)).toList,
+      podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_))
     )
 }
