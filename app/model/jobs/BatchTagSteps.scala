@@ -39,7 +39,7 @@ object BatchTagAddCompleteCheck {
   implicit val batchTagAddCompleteCheck: Format[BatchTagAddCompleteCheck] = (
     (JsPath \ "contentIds").formatNullable[List[String]].inmap[List[String]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "apiTagId").format[String] and
-      (JsPath \ "completes").format[Int]
+      (JsPath \ "completed").format[Int]
     )(BatchTagAddCompleteCheck.apply, unlift(BatchTagAddCompleteCheck.unapply))
 }
 
@@ -47,6 +47,6 @@ object BatchTagRemoveCompleteCheck {
   implicit val batchTagRemoveCompleteCheck: Format[BatchTagRemoveCompleteCheck] = (
     (JsPath \ "contentIds").formatNullable[List[String]].inmap[List[String]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "apiTagId").format[String] and
-      (JsPath \ "completes").format[Int]
+      (JsPath \ "completed").format[Int]
     )(BatchTagRemoveCompleteCheck.apply, unlift(BatchTagRemoveCompleteCheck.unapply))
 }

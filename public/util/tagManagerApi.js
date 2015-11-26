@@ -76,5 +76,22 @@ export default {
       contentType: 'application/json',
       method: 'post'
     });
+  },
+
+  getJobsByTag: (tagId) => {
+    return Reqwest({
+      url: '/api/jobs',
+      method: 'get',
+      data: {tagId: tagId},
+      type: 'json'
+    });
+  },
+
+  getAllJobs: () => {
+    return Reqwest({
+      url: '/api/jobs',
+      method: 'get',
+      type: 'json'
+    });
   }
 };

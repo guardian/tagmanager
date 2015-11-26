@@ -1,0 +1,32 @@
+.job-status {
+  margin: $standard-padding / 2;
+  padding: $standard-padding;
+
+  background-color: $c-grey-100;
+  border: 1px solid $c-grey-200;
+}
+
+.job-status__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  margin-bottom: $standard-padding/2;
+
+}
+
+.job-status__job {
+
+  vertical-align: top;
+
+  margin-bottom: $standard-padding;
+  border-top: 1px solid #dcdcdc;
+}
+
+.job-status__job__progress {
+
+  vertical-align: top;
+  margin-left: $standard-padding;
+  margin-bottom: $standard-padding/2;
+}
