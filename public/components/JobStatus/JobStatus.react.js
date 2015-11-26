@@ -15,6 +15,8 @@ export default class JobStatus extends React.Component {
 
   componentDidMount() {
     this.fetchJobs();
+
+    setInterval(this.fetchJobs.bind(this), 5000);
   }
 
   fetchJobs() {
@@ -61,7 +63,6 @@ export default class JobStatus extends React.Component {
   }
 
   describeJob(job) {
-    console.log(job);
     return (
       <div className="job-status__job" key={job.id} >
         {this.describeCommand(job)}<br />
