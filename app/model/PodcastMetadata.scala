@@ -7,7 +7,7 @@ import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata}
 case class PodcastMetadata( linkUrl: String,
                             copyrightText: Option[String],
                             authorText: Option[String],
-                            iTunesUrl: String,
+                            iTunesUrl: Option[String],
                             iTunesBlock: Boolean,
                             clean: Boolean,
                             explicit: Boolean,
@@ -32,7 +32,7 @@ object PodcastMetadata {
       (JsPath \ "linkUrl").format[String] and
         (JsPath \ "copyrightText").formatNullable[String] and
         (JsPath \ "authorText").formatNullable[String] and
-        (JsPath \ "iTunesUrl").format[String] and
+        (JsPath \ "iTunesUrl").formatNullable[String] and
         (JsPath \ "iTunesBlock").format[Boolean] and
         (JsPath \ "clean").format[Boolean] and
         (JsPath \ "explicit").format[Boolean] and
