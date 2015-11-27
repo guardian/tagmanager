@@ -34,6 +34,24 @@ $tag-edit-padding: $standard-padding/2;
   background-color: $c-white;
   padding: $standard-padding;
   border: 1px solid $c-grey-300;
+
+}
+
+.tag-edit__visibility {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}
+
+.tag-edit__field {
+  margin: $standard-padding/2 0;
+}
+
+.tag-edit__label {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  margin-right: 10px;
 }
 
 .tag-edit__linked-field {

@@ -49,7 +49,7 @@ export default class TagEdit extends React.Component {
           </div>)
         ];
       } else if (this.props.tag.type === tagTypes.series) {
-        return <PodcastMetadata tag={this.props.tag}/>
+        return <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>;
       }
     }
 

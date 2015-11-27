@@ -40,13 +40,13 @@ export default class TopicCategories extends React.Component {
   render () {
 
     return (
-      <div>
+      <div className="tag-edit__visibility">
         {topicCategories.map(category => {
           return (
-            <span key={category}>
+            <div className="tag-edit__field" key={category}>
               <input type="checkbox" checked={this.isSelected(category)} onChange={this.onChecked.bind(this, category)}/>
-              {category}
-            </span>
+              <label className="tag-edit__label"> {category}</label>
+            </div>
           );
         })}
       </div>
