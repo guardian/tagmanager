@@ -15,12 +15,6 @@ export default class CapiStats extends React.Component {
           totalUses: undefined
         };
 
-        if (props.config.capiUrl && props.config.capiKey) {
-          this.fetchUseStats = this.fetchUseStats.bind(this, capiClient);
-        } else {
-          console.log('No CAPI Keys found in state.config');
-        }
-
     }
 
     componentDidMount() {

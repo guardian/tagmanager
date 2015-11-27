@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'Ramda';
+import R from 'ramda';
 
 export default class PodcastMetadata extends React.Component {
 
