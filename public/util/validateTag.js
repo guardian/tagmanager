@@ -1,6 +1,5 @@
 import * as tagTypes from '../constants/tagTypes';
 
-
 function validateMandatoryFields(mandatoryFields, object) {
 
   const mandatoryFieldErrors = [];
@@ -25,7 +24,7 @@ function validateBooleanFields(booleanFields, object) {
     if (object[fieldName] !== true && object[fieldName] !== false) {
       booleanFieldErrors.push({
         fieldName: fieldName,
-        message: 'Boolean field \'' + fieldName + '\' is set to \'' + tag[fieldName]
+        message: 'Boolean field \'' + fieldName + '\' is set to \'' + object[fieldName]
       });
     }
   });
