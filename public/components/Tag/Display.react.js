@@ -1,6 +1,6 @@
 import React from 'react';
 import TagEdit from '../TagEdit/TagEdit.react';
-import ContextDisplay from '../ContextDisplay/ContextDisplay.react';
+import TagContext from '../TagContext/TagContext.react';
 import SaveButton from '../utils/SaveButton.react';
 import TypeSelect from '../utils/TypeSelect.react';
 import TagValidationErrors from './TagValidation.react';
@@ -72,7 +72,7 @@ class TagDisplay extends React.Component {
               <TagValidationErrors validations={validateTag(this.props.tag)} />
             </div>
             <div className="tag__column">
-              <ContextDisplay tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
+              <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
