@@ -5,6 +5,7 @@
 @import "colours";
 @import "base";
 @import "vars";
+@import "datepicker";
 @import "base/buttons";
 @import "base/table";
 
@@ -20,5 +21,6 @@
 @import "components/tag-search/index";
 @import "components/tag-select/index";
 @import "components/batch-tag/index";
+@import "components/batch-tag/filters";
 @import "components/content-list/index";
 @import "components/batch-status/index";

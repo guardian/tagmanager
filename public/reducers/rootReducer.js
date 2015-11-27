@@ -1,9 +1,9 @@
-import {TAG_GET_REQUEST, TAG_GET_RECEIVE, TAG_GET_ERROR} from '../actions/getTag';
-import {TAG_UPDATE} from '../actions/updateTag';
-import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/saveTag';
-import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/getSections';
-import {TAG_POPULATE_BLANK} from '../actions/createTag';
-import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST} from '../actions/searchCapi';
+import {TAG_GET_REQUEST, TAG_GET_RECEIVE, TAG_GET_ERROR} from '../actions/TagActions/getTag';
+import {TAG_UPDATE} from '../actions/TagActions/updateTag';
+import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/TagActions/saveTag';
+import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/SectionsActions/getSections';
+import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
+import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
 
 const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -112,6 +112,13 @@ export default function tag(state = {
         results: action.results,
         count: action.resultsCount,
         fetchState: fetchState.clean //Add logic to ensure this is results for current search Term;
+      })
+    });
+
+  case CAPI_FILTERS_UPDATE:
+    return Object.assign({}, state, {
+      capiSearch: Object.assign({}, state.capiSearch, {
+        filters: action.filters
       })
     });
 

@@ -87,10 +87,10 @@ class TagDisplay extends React.Component {
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as getTag from '../../actions/getTag';
-import * as updateTag from '../../actions/updateTag';
-import * as saveTag from '../../actions/saveTag';
-import * as getSections from '../../actions/getSections';
+import * as getTag from '../../actions/TagActions/getTag';
+import * as updateTag from '../../actions/TagActions/updateTag';
+import * as saveTag from '../../actions/TagActions/saveTag';
+import * as getSections from '../../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {

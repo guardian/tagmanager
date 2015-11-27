@@ -74,7 +74,7 @@ export class TagSearch extends React.Component {
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as getSections from '../actions/getSections';
+import * as getSections from '../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {

@@ -19,6 +19,27 @@
   padding: $standard-padding;
 }
 
+.batch-tag__show-filters {
+
+  @extend %f-data;
+  @extend %fs-data-3;
+
+  position: absolute;
+
+
+  right: $standard-padding;
+  bottom: -1px;
+
+  color: $c-white;
+  background-color: $c-grey-650;
+
+  padding: 2px 10px;
+
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
+}
+
 .batch-tag__error {
 
   @extend %f-header;

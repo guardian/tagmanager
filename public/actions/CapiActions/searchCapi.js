@@ -1,8 +1,10 @@
 import debounce from 'lodash.debounce';
+import {searchContent} from '../../util/capiClient';
 
 export const CAPI_SEARCH_REQUEST = 'CAPI_SEARCH_REQUEST';
 export const CAPI_SEARCH_RECEIVE = 'CAPI_SEARCH_RECEIVE';
 export const CAPI_SEARCH_ERROR = 'CAPI_SEARCH_ERROR';
+export const CAPI_FILTERS_UPDATE = 'CAPI_FILTERS_UPDATE';
 
 function requestCapiSearch(searchTerm) {
     return {
@@ -31,17 +33,25 @@ function errorCapiSearch(error) {
     };
 }
 
-function _searchFn (dispatch, authedCapi, searchString, params) {
-    return authedCapi.searchContent(searchString, params)
+function _searchFn (dispatch, searchString, params) {
+    return searchContent(searchString, params)
         .then(res => dispatch(recieveCapiSearch(res, searchString)))
         .fail(error => dispatch(errorCapiSearch(error)));
 }
 
 const _debouncedSearch = debounce(_searchFn, 500);
 
-export function searchCapi(authedCapi, searchString, params) {
+export function searchCapi(searchString, params) {
     return dispatch => {
         dispatch(requestCapiSearch(searchString));
-        return _debouncedSearch(dispatch, authedCapi, searchString, params);
+        return _debouncedSearch(dispatch, searchString, params);
     };
+}
+
+export function updateFilters(filters) {
+  return {
+      type:       CAPI_FILTERS_UPDATE,
+      filters:    filters,
+      receivedAt: Date.now()
+  };
 }
