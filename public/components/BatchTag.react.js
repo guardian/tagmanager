@@ -48,13 +48,16 @@ export class BatchTag extends React.Component {
     }
 
     toggleContentSelected(content) {
+      const addSelectedContent = R.append(content.id);
+      const removeSelectedContent = R.reject(R.equals(content.id));
+
       if (this.state.selectedContent.indexOf(content.id) === -1) {
         this.setState({
-          selectedContent: this.state.selectedContent.concat([content.id])
+          selectedContent: addSelectedContent(this.state.selectedContent)
         });
       } else {
         this.setState({
-          selectedContent: this.state.selectedContent.filter(selectedContentId => selectedContentId !== content.id)
+          selectedContent: removeSelectedContent(this.state.selectedContent)
         });
       }
     }

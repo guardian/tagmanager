@@ -1,7 +1,7 @@
 import React from 'react';
-import TagSelect from '../utils/TagSelect';
+import TagSelect from '../../utils/TagSelect';
 
-export default class AddTagToContext extends React.Component {
+export default class AddRelationship extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,25 +17,31 @@ export default class AddTagToContext extends React.Component {
       });
     }
 
+    minimise() {
+      this.setState({
+        expanded: false
+      });
+    }
+
     onAddTag(tag) {
       this.props.onAddTag(tag.id);
-      this.contract();
+      this.minimise();
     }
 
     render () {
 
       if (!this.state.expanded) {
         return (
-          <div className="context__add" onClick={this.expand.bind(this)}>
+          <div className="tag-relationship__add" onClick={this.expand.bind(this)}>
             <i className="i-plus" />
           </div>
         );
       }
 
       return (
-        <div className="context__add--expanded">
+        <div className="tag-relationship__add--expanded">
           <TagSelect onTagClick={this.onAddTag.bind(this)}/>
-          <i className="i-cross" onClick={this.contract.bind(this)}></i>
+          <i className="i-cross" onClick={this.minimise.bind(this)}></i>
         </div>
       );
     }
