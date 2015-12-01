@@ -1,4 +1,5 @@
 include "tag.thrift"
+include "section.thrift"
 
 namespace scala com.gu.tagmanagement
 
@@ -19,6 +20,16 @@ enum OperationType {
     REINDEX = 5
 }
 
+/** tuple with a tag and the denormalised section (as specified by the tag's section id) */
+struct TagWithSection {
+
+    /** the tag */
+    1: required tag.Tag tag;
+
+    /** the section, note this can be missing which some systems might need to pretend is the non-indexed 'global' section */
+    2: optional section.Section section;
+}
+
 struct TaggingOperation {
     /** the tagging operation this represents */
     1: required OperationType operation;
@@ -27,8 +38,9 @@ struct TaggingOperation {
     2: required string contentPath;
 
     /** the full representation of the tag in this operation (I.E. being added, removed or merged.) */
-    3: optional tag.Tag tag;
+    3: optional TagWithSection tag;
 
     /** used for merge tag operation this is the tag to be used insted of the tag defined in the tag field */
-    4: optional tag.Tag destinationTag;
+    4: optional TagWithSection destinationTag;
 }
+

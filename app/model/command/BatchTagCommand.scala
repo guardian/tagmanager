@@ -1,13 +1,13 @@
 package model.command
 
 import com.gu.pandomainauth.model.User
-import com.gu.tagmanagement.{OperationType, TaggingOperation}
+import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
 import model.jobs.{BatchTagAddCompleteCheck, BatchTagRemoveCompleteCheck, Job}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
-import repositories.{JobRepository, Sequences, TagRepository}
+import repositories.{SectionRepository, JobRepository, Sequences, TagRepository}
 import CommandError._
 import services.{SQS, KinesisStreams}
 
@@ -16,12 +16,13 @@ case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: Str
 
   override def process()(implicit user: Option[User] = None): Option[Long] = {
     val tag = TagRepository.getTag(tagId) getOrElse(TagNotFound)
+    val section = tag.section.flatMap( SectionRepository.getSection(_) )
 
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
         operation = OperationType.valueOf(operation).get,
         contentPath = contentPath,
-        tag = Some(tag.asThrift)
+        tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
       Logger.info(s"raising $operation for $tagId on $contentPath operation")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
