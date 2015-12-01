@@ -1,5 +1,6 @@
 import React from 'react';
 import {topicCategories} from '../../../../constants/topicCategories';
+import R from 'ramda';
 
 export default class TopicCategories extends React.Component {
 
@@ -12,14 +13,16 @@ export default class TopicCategories extends React.Component {
   }
 
   removeCategory(category) {
-    this.props.onChange(this.props.selectedCategories.filter(selectedCat => {
-      return selectedCat !== category;
-    }));
+    const removeCategory = R.reject(R.equals(category));
+
+    this.props.onChange(removeCategory(this.props.selectedCategories));
   }
 
   addCategory(category) {
+    const addCategory = R.append(category);
+
     if (this.props.selectedCategories) {
-      this.props.onChange(this.props.selectedCategories.concat([category]));
+      this.props.onChange(addCategory(this.props.selectedCategories));
     } else {
       this.props.onChange([category]);
     }
@@ -40,13 +43,13 @@ export default class TopicCategories extends React.Component {
   render () {
 
     return (
-      <div>
+      <div className="tag-edit__visibility">
         {topicCategories.map(category => {
           return (
-            <span key={category}>
+            <div className="tag-edit__field" key={category}>
               <input type="checkbox" checked={this.isSelected(category)} onChange={this.onChecked.bind(this, category)}/>
-              {category}
-            </span>
+              <label className="tag-edit__label"> {category}</label>
+            </div>
           );
         })}
       </div>

@@ -1,9 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router';
-import tagManagerApi from '../../util/tagManagerApi';
-import AddTagToContext from './AddTagToContext.react';
+import R from 'ramda';
+import tagManagerApi from '../../../util/tagManagerApi';
+import AddTagToContext from './AddRelationship.react';
 
-export default class ContextDisplay extends React.Component {
+export default class TagRelationship extends React.Component {
 
     constructor(props) {
         super(props);
@@ -52,16 +53,19 @@ export default class ContextDisplay extends React.Component {
     }
 
     addParentTag(tagId) {
-      //Add check if it's already added
+      const addParentTag = R.append(tagId);
 
+      //Add check if it's already added
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        parents: this.props.tag.parents.concat([tagId])
+        parents: addParentTag(this.props.tag.parents)
       }));
     }
 
     removeParentTag(tag) {
+      const removeParentTag = R.reject(R.equals(tag.id));
+
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        parents: this.props.tag.parents.filter(tagId => tagId !== tag.id)
+        parents: removeParentTag(this.props.tag.parents)
       }));
     }
 
@@ -74,9 +78,9 @@ export default class ContextDisplay extends React.Component {
       }
 
       return (
-        <div key={tag.id} className="context__tag">
+        <div key={tag.id} className="tag-relationship__tag">
           <Link to={`/tag/${tag.id}`}>{tag.internalName}</Link>
-          <div className="context__tag__remove" onClick={this.removeParentTag.bind(this, tag)}>
+          <div className="tag-relationship__tag__remove" onClick={this.removeParentTag.bind(this, tag)}>
             <i className="i-delete" />
           </div>
         </div>
@@ -89,18 +93,18 @@ export default class ContextDisplay extends React.Component {
         return false;
       }
 
-      if (!this.props.tag.parents.length) {
+      if (!this.props.tag.parents) {
         return (
-          <div className="context--nocontext">
+          <div className="tag-context__item">
             No parent tags found
           </div>
         );
       }
 
       return (
-        <div className="context">
-          <div className="context__header">Parents</div>
-          <div className="context__parents">
+        <div className="tag-context__item">
+          <div className="tag-context__header">Parents</div>
+          <div className="tag-relationship">
               {this.props.tag.parents.map(this.renderTag)}
               <AddTagToContext onAddTag={this.addParentTag.bind(this)}/>
           </div>

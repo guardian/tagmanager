@@ -1,5 +1,5 @@
-import history from '../routes/history';
-import tagManagerApi from '../util/tagManagerApi';
+import history from '../../routes/history';
+import tagManagerApi from '../../util/tagManagerApi';
 
 export const TAG_CREATE_REQUEST = 'TAG_CREATE_REQUEST';
 export const TAG_CREATE_RECEIVE = 'TAG_CREATE_RECEIVE';

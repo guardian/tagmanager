@@ -1,5 +1,6 @@
 import React from 'react';
 import ContentListItem from './ContentListItem';
+import R from 'ramda';
 
 export default class ContentList extends React.Component {
 
@@ -17,11 +18,16 @@ export default class ContentList extends React.Component {
           return false;
         }
 
+        const contentIds = this.props.content.map(content => content.id);
+        const unselectedContent = R.difference(contentIds, this.props.selectedContent);
+
         return (
             <table className="taglist">
               <thead className="taglist__header">
                 <tr>
-                  <th></th>
+                  <th>
+                    <input type="checkbox" checked={unselectedContent.length === 0} />
+                  </th>
                   <th>Type</th>
                   <th>Headline</th>
                   <th>Pub. Date</th>

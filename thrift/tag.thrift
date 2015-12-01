@@ -27,7 +27,7 @@ struct PodcastMetadata {
     3: optional string authorText;
 
     /** The iTunes url for the podcast **/
-    4: required string iTunesUrl;
+    4: optional string iTunesUrl;
 
     /** Should the podcast appear in iTunes **/
     5: required bool iTunesBlock;

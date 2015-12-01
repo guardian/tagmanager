@@ -6,6 +6,7 @@ import TagVisibility from './formComponents/TagVisibility.react';
 import SectionSelect from '../utils/SectionSelect.react';
 
 import TopicCategories from './formComponents/topic/TopicCategories.js';
+import PodcastMetadata from  './formComponents/series/PodcastMetadata.react';
 
 import * as tagTypes from '../../constants/tagTypes';
 
@@ -47,6 +48,8 @@ export default class TagEdit extends React.Component {
               <TopicCategories selectedCategories={this.props.tag.categories} onChange={this.onUpdateCategory.bind(this)}/>
           </div>)
         ];
+      } else if (this.props.tag.type === tagTypes.series) {
+        return <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>;
       }
     }
 

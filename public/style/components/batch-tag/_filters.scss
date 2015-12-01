@@ -1,0 +1,60 @@
+.batch-filters {
+  background-color: $c-grey-200;
+  border-color: $c-grey-300;
+  border-style: solid;
+  border-width: 0 1px 0 1px;
+}
+
+.batch-filters__filter {
+  @extend %f-data;
+  @extend %fs-data-4;
+
+  padding: $standard-padding;
+  border-bottom: 1px solid $c-grey-300;
+}
+
+.batch-filters__header {
+
+  @extend %f-data;
+  @extend %fs-data-3;
+
+  font-weight: bold;
+}
+
+.batch-filters__option,
+.batch-filters__option--active {
+  display: inline-block;
+
+  line-height: 22px;
+  margin-right: 10px;
+
+  .batch-filters__option__clear {
+    display: none;
+    transform: scale(0.7);
+    position: relative;
+    top: 1px;
+  }
+}
+
+.batch-filters__option--active {
+  font-weight: bold;
+
+  .batch-filters__option__clear {
+    display: inline-block;
+  }
+}
+
+.batch-filters__custom-date {
+
+  display: inline-block;
+
+  .batch-filters__label {
+    margin-right: 5px;
+  }
+
+   .rw-datetimepicker {
+
+    margin-right: 10px;
+    display: inline-block;
+  }
+}

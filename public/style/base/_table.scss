@@ -1,0 +1,25 @@
+$table-border-color: $c-grey-300;
+
+%table {
+  td, th {
+    padding: $standard-padding/2 $standard-padding;
+    border: 1px solid $table-border-color;
+  }
+}
+
+%table-head {
+  @extend %table;
+  background-color: $c-grey-200;
+
+  font-weight: bold;
+
+}
+
+%table-body {
+
+  @extend %table;
+  border: 1px solid $table-border-color;
+  cursor: pointer;
+
+
+}

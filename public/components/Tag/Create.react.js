@@ -5,7 +5,6 @@ import SaveButton from '../utils/SaveButton.react';
 import TagValidationErrors from './TagValidation.react';
 import tagManagerApi from '../../util/tagManagerApi';
 import {validateTag} from '../../util/validateTag';
-import {creatableTags} from '../../constants/tagTypes.js';
 
 class TagCreate extends React.Component {
 
@@ -58,7 +57,7 @@ class TagCreate extends React.Component {
     }
 
     generateValidationErrors() {
-      const validationErrors = validateTag(this.props.tag)
+      const validationErrors = validateTag(this.props.tag);
 
       if (this.state.pathInUse) {
         validationErrors.push({
@@ -113,9 +112,9 @@ class TagCreate extends React.Component {
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as createTag from '../../actions/createTag';
-import * as updateTag from '../../actions/updateTag';
-import * as getSections from '../../actions/getSections';
+import * as createTag from '../../actions/TagActions/createTag';
+import * as updateTag from '../../actions/TagActions/updateTag';
+import * as getSections from '../../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {

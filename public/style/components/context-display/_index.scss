@@ -1,9 +1,7 @@
-.context {
-  padding: $standard-padding;
-
+.tag-context {
 }
 
-.context__header {
+.tag-context__header {
   @extend %f-header;
   @extend %fs-data-4;
 
@@ -13,13 +11,20 @@
 
 }
 
-.context__parents {
+.tag-context__item {
+  padding: $standard-padding;
+
+}
+
+
+
+.tag-relationship {
   border: 1px solid $c-grey-300;
   padding: $standard-padding;
   min-height: 100px;
 }
 
-.context__tag {
+.tag-relationship__tag {
   @extend %fs-data-4;
 
   vertical-align: top;
@@ -47,7 +52,7 @@
 
 }
 
-.context__tag__remove {
+.tag-relationship__tag__remove {
   transform: scale(0.8);
   display: inline-block;
   position: relative;
@@ -62,15 +67,26 @@
   margin-left: $standard-padding;
 }
 
-.context__add {
+.tag-relationship__add {
   @extend %context__add;
   line-height: 35px;
 
 }
 
-.context__add--expanded {
+.tag-relationship__add--expanded {
   @extend %context__add;
 
   width: 300px;
 
+}
+
+.tag-references__header {
+  @extend %table-head;
+}
+
+.tag-references__references {
+  @extend %table-body;
+}
+
+.tag-references__addrow {
 }

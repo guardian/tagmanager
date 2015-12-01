@@ -1,6 +1,6 @@
 import React from 'react';
 import TagEdit from '../TagEdit/TagEdit.react';
-import ContextDisplay from '../ContextDisplay/ContextDisplay.react';
+import TagContext from '../TagContext/TagContext.react';
 import SaveButton from '../utils/SaveButton.react';
 import TypeSelect from '../utils/TypeSelect.react';
 import TagValidationErrors from './TagValidation.react';
@@ -73,7 +73,7 @@ class TagDisplay extends React.Component {
               <TagValidationErrors validations={validateTag(this.props.tag)} />
             </div>
             <div className="tag__column">
-              <ContextDisplay tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
+              <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
@@ -89,10 +89,10 @@ class TagDisplay extends React.Component {
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as getTag from '../../actions/getTag';
-import * as updateTag from '../../actions/updateTag';
-import * as saveTag from '../../actions/saveTag';
-import * as getSections from '../../actions/getSections';
+import * as getTag from '../../actions/TagActions/getTag';
+import * as updateTag from '../../actions/TagActions/updateTag';
+import * as saveTag from '../../actions/TagActions/saveTag';
+import * as getSections from '../../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {

@@ -1,5 +1,7 @@
 import Reqwest from 'reqwest';
 
+import {getStore} from '../util/storeAccessor';
+
 function paramsObjectToQuery (params) {
 
   if (!params) {
@@ -7,34 +9,33 @@ function paramsObjectToQuery (params) {
   }
 
   return Object.keys(params).map((paramName) => {
-    return paramName + '=' + params[paramName];
-  }).join('&');
+    return params[paramName] ? paramName + '=' + params[paramName] : false;
+  }).filter(a => a).join('&');
 }
 
-export default function(apiUrl, apiKey) {
+function getCapiUrl() {
+  const store = getStore();
+  return store.getState().config.capiUrl + '/search?api-key=' + store.getState().config.capiKey;
+}
 
-  const getByTag = (tag, params) => {
+export function getByTag (tag, params) {
     const query = paramsObjectToQuery(params);
 
     return Reqwest({
-      url: apiUrl + '/search?api-key=' + apiKey + '&tag=' + tag.path  + '&' + query,
+      url: getCapiUrl() + '&tag=' + tag.path  + '&' + query,
       contentType: 'application/json',
+      crossOrigin: true,
       method: 'get'
     });
-  };
+}
 
-  const searchContent = (searchString, params) => {
+export function searchContent (searchString, params) {
     const query = paramsObjectToQuery(params);
 
     return Reqwest({
-      url: apiUrl + '/search?api-key=' + apiKey + '&q=' + searchString  + '&' + query,
+      url: getCapiUrl() + '&q=' + searchString  + '&' + query,
       contentType: 'application/json',
+      crossOrigin: true,
       method: 'get'
     });
-  };
-
-  return {
-    getByTag: getByTag,
-    searchContent: searchContent
-  };
 }

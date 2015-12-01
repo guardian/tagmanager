@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import CapiClient from '../../util/CapiClient.js';
+import {getByTag} from '../../util/capiClient.js';
 
 export default class CapiStats extends React.Component {
 
@@ -15,24 +15,13 @@ export default class CapiStats extends React.Component {
           totalUses: undefined
         };
 
-        if (props.config.capiUrl && props.config.capiKey) {
-          const capiClient = CapiClient(props.config.capiUrl, props.config.capiKey);
-          this.fetchUseStats = this.fetchUseStats.bind(this, capiClient);
-        } else {
-          console.log('No CAPI Keys found in state.config');
-        }
-
     }
 
     componentDidMount() {
       this.fetchUseStats();
     }
 
-    fetchUseStats(capiClient) {
-
-      if (!capiClient) {
-        return;
-      }
+    fetchUseStats() {
 
       const CAPI_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
       const today = moment().subtract(1, 'days').format(CAPI_DATE_FORMAT);
@@ -40,7 +29,7 @@ export default class CapiStats extends React.Component {
       const thisweek = moment().subtract(7, 'days').format(CAPI_DATE_FORMAT);
       const lastweek = moment().subtract(14, 'days').format(CAPI_DATE_FORMAT);
 
-      capiClient.getByTag(this.props.tag, {
+      getByTag(this.props.tag, {
         'from-date': today,
         'page-size': 0
       }).then(res => {
@@ -49,7 +38,7 @@ export default class CapiStats extends React.Component {
           });
         });
 
-      capiClient.getByTag(this.props.tag, {
+      getByTag(this.props.tag, {
         'from-date': thisweek,
         'page-size': 0
       }).then(res => {
@@ -58,7 +47,7 @@ export default class CapiStats extends React.Component {
           });
         });
 
-      capiClient.getByTag(this.props.tag, {
+      getByTag(this.props.tag, {
         'from-date': yesterday,
         'to-date': today,
         'page-size': 0
@@ -68,7 +57,7 @@ export default class CapiStats extends React.Component {
           });
         });
 
-        capiClient.getByTag(this.props.tag, {
+        getByTag(this.props.tag, {
           'from-date': lastweek,
           'to-date': thisweek,
           'page-size': 0
@@ -78,7 +67,7 @@ export default class CapiStats extends React.Component {
           });
         });
 
-      capiClient.getByTag(this.props.tag, {
+      getByTag(this.props.tag, {
         'page-size': 0
       }).then(res => {
           this.setState({

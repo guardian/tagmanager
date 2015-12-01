@@ -1,11 +1,11 @@
 import * as tagTypes from '../constants/tagTypes';
 
-function validateMandatoryFields(mandatoryFields, tag) {
+function validateMandatoryFields(mandatoryFields, object) {
 
   const mandatoryFieldErrors = [];
 
   mandatoryFields.forEach((fieldName) => {
-    if (!tag[fieldName]) {
+    if (!object[fieldName]) {
       mandatoryFieldErrors.push({
         fieldName: fieldName,
         message: 'Mandatory field \'' + fieldName + '\' is empty.'
@@ -16,15 +16,15 @@ function validateMandatoryFields(mandatoryFields, tag) {
   return mandatoryFieldErrors;
 }
 
-function validateBooleanFields(booleanFields, tag) {
+function validateBooleanFields(booleanFields, object) {
 
   const booleanFieldErrors = [];
 
   booleanFields.forEach((fieldName) => {
-    if (tag[fieldName] !== true && tag[fieldName] !== false) {
+    if (object[fieldName] !== true && object[fieldName] !== false) {
       booleanFieldErrors.push({
         fieldName: fieldName,
-        message: 'Boolean field \'' + fieldName + '\' is set to \'' + tag[fieldName]
+        message: 'Boolean field \'' + fieldName + '\' is set to \'' + object[fieldName]
       });
     }
   });
@@ -32,15 +32,30 @@ function validateBooleanFields(booleanFields, tag) {
   return booleanFieldErrors;
 }
 
+function validatePodcast(tag) {
+  if (!tag.podcastMetadata) {
+    return []; //No podcast metadata
+  }
+
+  const mandatoryPodcastFields = ['linkUrl'];
+
+  return validateMandatoryFields(mandatoryPodcastFields, tag.podcastMetadata);
+}
+
 export function validateTag(tag) {
   let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
   let booleanFields = ['hidden', 'legallySensitive'];
 
+  let additionalErrors = []; //Use this to store other validation errors
+
   if (tag.type === tagTypes.topic) {
     mandatoryFields = mandatoryFields.concat(['section']);
+  } else if (tag.type === tagTypes.series) {
+    additionalErrors = additionalErrors.concat(validatePodcast(tag));
   }
 
   return []
     .concat(validateMandatoryFields(mandatoryFields, tag))
-    .concat(validateBooleanFields(booleanFields, tag));
+    .concat(validateBooleanFields(booleanFields, tag))
+    .concat(additionalErrors);
 }
