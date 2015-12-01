@@ -16,7 +16,12 @@ export default class JobStatus extends React.Component {
   componentDidMount() {
     this.fetchJobs();
 
-    setInterval(this.fetchJobs.bind(this), 5000);
+    const intervalId = setInterval(this.fetchJobs.bind(this), 5000);
+    this.setState({jobCheckInterval: intervalId});
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.jobCheckInterval);
   }
 
   fetchJobs() {
