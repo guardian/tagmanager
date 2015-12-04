@@ -111,6 +111,14 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       BadRequest("Expecting Json data")
     }
   }
+
+  def getAuditForTag(tagId: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(TagAuditRepository.getAuditTrailForTag(tagId)))
+  }
+
+  def getAuditForOperation(op: String) = APIAuthAction { req =>
+    Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
+  }
   
   def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 
     val jobs = tagIdParam match {
