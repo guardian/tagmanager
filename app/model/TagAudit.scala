@@ -1,6 +1,7 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
+import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
@@ -42,6 +43,24 @@ object TagAudit {
       throw e
     }
   }
+
+  def created(tag: Tag)(implicit user: Option[User] = None): TagAudit = {
+    TagAudit(tag.id, "created", new DateTime(), user.map(_.email).getOrElse("default user"), s"tag '${tag.internalName}' created", TagSummary(tag), None)
+  }
+
+  def updated(tag: Tag)(implicit user: Option[User] = None): TagAudit = {
+    TagAudit(tag.id, "updated", new DateTime(), user.map(_.email).getOrElse("default user"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
+  }
+
+  def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[User] = None): TagAudit = {
+    val message = operation match {
+      case "remove" => s"tag '${tag.internalName}' removed from $contentCount items(s)"
+      case _ => s"tag '${tag.internalName}' added to $contentCount items(s)"
+    }
+    TagAudit(tag.id, "batchtag", new DateTime(), user.map(_.email).getOrElse("default user"), message, TagSummary(tag), None)
+  }
+
+
 }
 
 case class TagSummary(

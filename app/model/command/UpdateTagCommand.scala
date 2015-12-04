@@ -2,9 +2,9 @@ package model.command
 
 import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
-import model.Tag
+import model.{TagAudit, Tag}
 import play.api.Logger
-import repositories.TagRepository
+import repositories.{TagAuditRepository, TagRepository}
 import services.KinesisStreams
 
 
@@ -18,6 +18,8 @@ case class UpdateTagCommand(tag: Tag) extends Command {
     val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
+
+    TagAuditRepository.upsertTagAudit(TagAudit.updated(tag))
 
     result
   }
