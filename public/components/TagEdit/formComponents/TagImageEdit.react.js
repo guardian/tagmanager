@@ -38,13 +38,15 @@ export default class TagImageEdit extends React.Component {
   }
 
   updateInputUrl(e) {
+    const url = e.target.value.replace('http://static.guim.co.uk', 'https://static.guim.co.uk')
+
     this.setState({
-      inputUrl: e.target.value,
+      inputUrl: url,
       currentMetadata: false,
       metadataFetchStatus: FETCH_STATES.fetching
     });
 
-    this.fetchMetadata(e.target.value);
+    this.fetchMetadata(url);
   }
 
   addImage() {
@@ -100,7 +102,12 @@ export default class TagImageEdit extends React.Component {
     }
 
     if (this.state.metadataFetchStatus === FETCH_STATES.error) {
-      return (<div className="tag-edit__image__add--error"><i className="i-cross-red" />Url Not Valid</div>);
+      return (
+        <div className="tag-edit__image__add--error">
+          <i className="i-cross-red" />
+          Url Not Valid. The image should be located on https://static.guim.co.uk
+        </div>
+      );
     }
 
     if (this.state.metadataFetchStatus === FETCH_STATES.success) {
