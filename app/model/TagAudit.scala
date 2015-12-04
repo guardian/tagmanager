@@ -1,9 +1,13 @@
 package model
 
+import com.amazonaws.services.dynamodbv2.document.Item
 import org.joda.time.DateTime
+import play.api.Logger
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Json, JsPath, Format}
 import repositories.SectionRepository
+
+import scala.util.control.NonFatal
 
 
 case class TagAudit(
@@ -14,12 +18,14 @@ case class TagAudit(
   description: String,
   tagSummary: TagSummary,
   secondaryTagSummary: Option[TagSummary]
-)
+) {
+  def toItem = Item.fromJSON(Json.toJson(this).toString())
+}
 
 object TagAudit {
 
   implicit val tagAuditFormat: Format[TagAudit] = (
-    (JsPath \ "id").format[Long] and
+    (JsPath \ "tagId").format[Long] and
       (JsPath \ "operation").format[String] and
       (JsPath \ "date").format[DateTime] and
       (JsPath \ "user").format[String] and
@@ -27,6 +33,15 @@ object TagAudit {
       (JsPath \ "tagSummary").format[TagSummary] and
       (JsPath \ "secondaryTagSummary").formatNullable[TagSummary]
     )(TagAudit.apply, unlift(TagAudit.unapply))
+
+  def fromItem(item: Item) = try {
+    Json.parse(item.toJSON).as[TagAudit]
+  } catch {
+    case NonFatal(e) => {
+      Logger.error(s"failed to load tag Audit ${item.toJSON}", e)
+      throw e
+    }
+  }
 }
 
 case class TagSummary(

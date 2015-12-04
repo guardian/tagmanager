@@ -67,6 +67,7 @@ sealed trait Config {
   def sectionsTableName: String
   def sequenceTableName: String
   def jobTableName: String
+  def tagAuditTableName: String
   def clusterStatusTableName: String
 
   def tagUpdateStreamName: String
@@ -88,6 +89,7 @@ class DevConfig extends Config {
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def jobTableName: String = "tag-manager-jobs-dev"
+  override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
@@ -108,6 +110,7 @@ class CodeConfig extends Config {
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def jobTableName: String = "tag-manager-jobs-dev"
+  override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
@@ -128,6 +131,7 @@ class ProdConfig extends Config {
   override def sectionsTableName: String = "sections-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
   override def jobTableName: String = "tag-manager-jobs-PROD"
+  override def tagAuditTableName: String = "tag-manager-tag-audit-PROD"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
 
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
