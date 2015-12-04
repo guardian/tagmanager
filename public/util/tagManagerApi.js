@@ -65,5 +65,33 @@ export default {
         data: query,
         type: 'json'
     });
+  },
+
+  batchTag: (contentIds, tagId, operation) => {
+    const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation}
+
+    return Reqwest({
+      url: '/api/batchTag',
+      data: JSON.stringify(batchTagCommand),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
+  getJobsByTag: (tagId) => {
+    return Reqwest({
+      url: '/api/jobs',
+      method: 'get',
+      data: {tagId: tagId},
+      type: 'json'
+    });
+  },
+
+  getAllJobs: () => {
+    return Reqwest({
+      url: '/api/jobs',
+      method: 'get',
+      type: 'json'
+    });
   }
 };

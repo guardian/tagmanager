@@ -31,7 +31,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
 
   def initialise {
     try {
-      Logger.info("starting sync compoents...")
+      Logger.info("starting sync components...")
       val ns = NodeStatusRepository.register()
       reservation.set(Some(ns))
 

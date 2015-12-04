@@ -1,6 +1,7 @@
 import React from 'react';
 import ContentList from './ContentList/ContentList';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
+import tagManagerApi from '../util/tagManagerApi';
 import BatchFilters from './BatchTag/BatchFilters.react';
 import R from 'ramda';
 
@@ -84,6 +85,25 @@ export class BatchTag extends React.Component {
       }
     }
 
+    onAddTagToContentTop(tag) {
+      this.performBatchTag(tag, 'addToTop');
+    }
+
+    onAddTagToContentBottom(tag) {
+      this.performBatchTag(tag, 'addToBottom');
+    }
+
+    onRemoveTagFromContent(tag) {
+      this.performBatchTag(tag, 'remove');
+    }
+
+    performBatchTag(tag, operation) {
+      tagManagerApi.batchTag(this.state.selectedContent, tag.id, operation);
+      this.setState({
+        selectedContent: []
+      });
+    }
+
     renderTooManyResults() {
 
       if (!this.props.capiSearch.count || this.props.capiSearch.count <= CAPI_PAGE_SIZE) {
@@ -145,9 +165,9 @@ export class BatchTag extends React.Component {
                 <div className="batch-tag__status">
                   <BatchTagStatus
                     selectedContent={this.state.selectedContent}
-                    onAddTagToContentTop={this.onAddTagToContentTop}
-                    onAddTagToContentBottom={this.onAddTagToContentBottom}
-                    onRemoveTagFromContent={this.onRemoveTagFromContent}
+                    onAddTagToContentTop={this.onAddTagToContentTop.bind(this)}
+                    onAddTagToContentBottom={this.onAddTagToContentBottom.bind(this)}
+                    onRemoveTagFromContent={this.onRemoveTagFromContent.bind(this)}
                   />
                 </div>
             </div>

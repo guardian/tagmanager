@@ -6,6 +6,7 @@ import TypeSelect from '../utils/TypeSelect.react';
 import TagValidationErrors from './TagValidation.react';
 import {validateTag} from '../../util/validateTag';
 import CapiStats from '../CapiStats/CapiStats.react';
+import JobStatus from '../JobStatus/JobStatus.react';
 
 class TagDisplay extends React.Component {
 
@@ -76,6 +77,7 @@ class TagDisplay extends React.Component {
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
+              <JobStatus tagId={this.props.tag.id} />
             </div>
           </div>
           <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>

@@ -75,7 +75,8 @@ object Tag {
   } catch {
     case NonFatal(e) => {
       Logger.error(s"failed to load tag ${item.toJSON}", e)
-    }; throw e
+      throw e
+    }
   }
 
   def fromJson(json: JsValue) = json.as[Tag]

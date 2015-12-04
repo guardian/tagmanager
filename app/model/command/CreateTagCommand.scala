@@ -1,5 +1,6 @@
 package model.command
 
+import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
 import model.{PodcastMetadata, Tag, Reference}
@@ -24,9 +25,11 @@ case class CreateTagCommand(
                       parents: Set[Long] = Set(),
                       references: List[Reference] = Nil,
                       podcastMetadata: Option[PodcastMetadata]
-                      ) extends Command[Tag] {
+                      ) extends Command {
 
-  def process = {
+  type T = Tag
+
+  def process()(implicit user: Option[User] = None): Option[Tag] = {
 
     val calculatedPath = TagPathCalculator.calculatePath(`type`, slug, section)
 
@@ -61,7 +64,7 @@ case class CreateTagCommand(
 
 object CreateTagCommand {
 
-  implicit val tagFormat: Format[CreateTagCommand] = (
+  implicit val createTagCommandFormat: Format[CreateTagCommand] = (
     (JsPath \ "type").format[String] and
       (JsPath \ "internalName").format[String] and
       (JsPath \ "externalName").format[String] and

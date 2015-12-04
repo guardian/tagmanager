@@ -9,6 +9,7 @@ import com.amazonaws.services.ec2.AmazonEC2Client
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.ec2.model.{Filter, DescribeTagsRequest}
 import com.amazonaws.services.kinesis.AmazonKinesisClient
+import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.util.EC2MetadataUtils
 import com.twitter.scrooge.ThriftStruct
 import scala.collection.JavaConverters._
@@ -21,6 +22,7 @@ object AWS {
   lazy val CloudWatch = region.createClient(classOf[AmazonCloudWatchAsyncClient], null, null)
   lazy val Kinesis = region.createClient(classOf[AmazonKinesisClient], null, null)
   lazy val S3Client = region.createClient(classOf[AmazonS3Client], null, null)
+
 
 }
 
@@ -48,7 +50,14 @@ object Dynamo {
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
   lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
   lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
+  lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
   lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
+}
+
+object SQS {
+  lazy val SQSClient = AWS.region.createClient(classOf[AmazonSQSClient], null, null)
+
+  lazy val jobQueue = new SQSQueue(Config().jobQueueName)
 }
 
 class KinesisStreamProducer(streamName: String) {
@@ -72,4 +81,5 @@ class KinesisStreamProducer(streamName: String) {
 
 object KinesisStreams {
   lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName)
+  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName)
 }

@@ -19,6 +19,9 @@ GET        /api/section/:id               controllers.TagManagementApi.getSectio
 PUT        /api/section/:id               controllers.TagManagementApi.updateSection(id: Long)
 
 GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long])
+POST       /api/batchTag                  controllers.TagManagementApi.batchTag
+
+GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
 
 

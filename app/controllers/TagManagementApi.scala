@@ -1,7 +1,9 @@
 package controllers
 
 import model.command.CommandError._
-import model.command.{PathUsageCheck, CreateTagCommand, UpdateTagCommand}
+import model.command.{BatchTagCommand, PathUsageCheck, CreateTagCommand, UpdateTagCommand}
+import model.jobs.{BatchTagAddCompleteCheck, Job}
+import org.joda.time.DateTime
 import play.api.Logger
 import model.Tag
 import model.Section
@@ -95,4 +97,26 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       commandErrorAsResult
     }
   }
+
+  def batchTag = APIAuthAction { req =>
+    implicit val user = req.user
+    req.body.asJson.map { json =>
+      try {
+        json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+  
+  def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 
+    val jobs = tagIdParam match {
+      case Some(tagId) => JobRepository.findJobsForTag(tagId)
+      case None => JobRepository.loadAllJobs
+    }
+    Ok(Json.toJson(jobs))
+  }
+
 }
