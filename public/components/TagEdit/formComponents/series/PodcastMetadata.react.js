@@ -1,6 +1,8 @@
 import React from 'react';
 import R from 'ramda';
 
+import TagImageEdit from '../TagImageEdit.react';
+
 export default class PodcastMetadata extends React.Component {
 
   constructor(props) {
@@ -59,6 +61,12 @@ export default class PodcastMetadata extends React.Component {
     }));
   }
 
+  updateImage(image) {
+    this.props.updateTag(R.merge(this.props.tag, {
+      podcastMetadata: R.merge(this.props.tag.podcastMetadata, {image: image})
+    }));
+  }
+
   renderMetadataForm() {
     if (!this.tagHasPodcast()) {
       return false;
@@ -94,6 +102,7 @@ export default class PodcastMetadata extends React.Component {
           <input type="checkbox" onChange={this.updateExplicit.bind(this)} checked={this.props.tag.podcastMetadata.explicit || false}/>
           <label className="tag-edit__label"> Explicit</label>
         </div>
+        <TagImageEdit tagImage={this.props.tag.podcastMetadata.image} label="Podcast Image" onChange={this.updateImage.bind(this)}/>
       </div>
     );
   }
