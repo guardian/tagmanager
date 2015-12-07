@@ -16,28 +16,14 @@ export default class JobStatus extends React.Component {
     this.fetchAudit();
   }
 
-
   fetchAudit() {
     tagManagerApi.getAuditForTag(this.props.tagId).then(res =>
         this.setState({audit: res})
     );
   }
 
-  renderAuditTrail() {
-    const self = this;
-    return (
-      <table>
-        <tbody>
-        {this.state.audit.map( function(a) {
-          return self.renderAuditRow(a);
-        })}
-        </tbody>
-      </table>
-    );
-  }
-
   renderAuditRow(a) {
-    return(
+    return (
       <tr>
         <td>{a.date}</td>
         <td>{a.description}</td>
@@ -47,11 +33,14 @@ export default class JobStatus extends React.Component {
   }
 
   render () {
-    const self = this;
     return (
       <div className="job-status">
         <div className="job-status__header">Tag history</div>
-        <div>{self.renderAuditTrail()} </div>
+          <table>
+            <tbody>
+            {this.state.audit.map(this.renderAuditRow, this)}
+            </tbody>
+          </table>
       </div>
     );
   }
