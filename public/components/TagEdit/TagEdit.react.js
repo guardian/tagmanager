@@ -47,7 +47,15 @@ export default class TagEdit extends React.Component {
     }
 
     renderSeriesFields() {
-      return <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>;
+      return (
+        <div>
+          <div className="tag-edit__input-group" key="series-section">
+            <label className="tag-edit__input-group__header">Category</label>
+              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+          </div>
+          <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>
+        </div>
+      );
     }
 
     renderContributorFields() {
