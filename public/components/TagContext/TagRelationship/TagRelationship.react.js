@@ -53,19 +53,19 @@ export default class TagRelationship extends React.Component {
     }
 
     addParentTag(tagId) {
-      const addParentTag = R.append(tagId);
+      const addParentTagFn = R.append(tagId);
 
       //Add check if it's already added
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        parents: addParentTag(this.props.tag.parents)
+        parents: addParentTagFn(this.props.tag.parents)
       }));
     }
 
     removeParentTag(tag) {
-      const removeParentTag = R.reject(R.equals(tag.id));
+      const removeParentTagFn = R.reject(R.equals(tag.id));
 
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        parents: removeParentTag(this.props.tag.parents)
+        parents: removeParentTagFn(this.props.tag.parents)
       }));
     }
 
