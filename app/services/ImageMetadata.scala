@@ -41,7 +41,7 @@ object ImageMetadataService {
   }
 
 
-  def fetch(uri: String): Option[ImageMetadata] = try {
+  def fetch(uri: String): Option[ImageMetadata] = {
 
     val imageRequest = new Builder().url(uri).build()
     val response = httpClient.newCall(imageRequest).execute()
@@ -61,7 +61,5 @@ object ImageMetadataService {
         throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message ${response.body}")
       }
     }
-  } catch {
-    case NonFatal(e) => None
   }
 }
