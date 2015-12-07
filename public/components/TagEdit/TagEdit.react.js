@@ -46,10 +46,18 @@ export default class TagEdit extends React.Component {
           (<div className="tag-edit__input-group" key="keyword-category">
             <label className="tag-edit__input-group__header">Category</label>
               <TopicCategories selectedCategories={this.props.tag.categories} onChange={this.onUpdateCategory.bind(this)}/>
-          </div>)
+          </div>
+        )
         ];
       } else if (this.props.tag.type === tagTypes.series) {
-        return <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>;
+        return [
+            (<PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag} key="series-podcast"/>),
+            (<div className="tag-edit__input-group" key="series-section">
+              <label className="tag-edit__input-group__header">Category</label>
+                <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+            </div>
+          )
+        ];
       }
     }
 
