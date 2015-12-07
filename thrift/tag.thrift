@@ -99,4 +99,19 @@ struct Tag {
     /** Any Podcast Metadata associated with this tag */
     15: optional PodcastMetadata podcastMetadata;
 
+    /** Any RCS id associated with the tag e.g. for contributors */
+    16: optional string rcsId;
+
+    /** Any byline image associated with the tag e.g. for contributors  */
+    17: optional image.Image bylineImage;
+
+    /** Any Large byline image associated with the tag e.g. for contributors */
+    18: optional image.Image largeBylineImage;
+
+    /** Twitter Handle associated with the tag e.g. for contributors */
+    19: optional string twitterHandle;
+
+    /** Twitter Handle associated with the tag e.g. for contributors */
+    20: optional string contactEmail;
+
 }
