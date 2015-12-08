@@ -110,7 +110,7 @@ export default class TagNameEdit extends React.Component {
     }
     var section = this.props.sections.filter((section) => section.id === this.props.tag.section);
 
-    if (section) {
+    if (section.length) {
       return section[0].wordsForUrl + '/';
     } else {
       return '/';

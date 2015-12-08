@@ -26,7 +26,7 @@ export default class TagImageEdit extends React.Component {
 
   getMainAsset() {
 
-    if (!this.props.tagImage.assets) {
+    if (!this.props.tagImage || !this.props.tagImage.assets) {
       return false;
     }
 
@@ -34,7 +34,7 @@ export default class TagImageEdit extends React.Component {
   }
 
   removeImage() {
-    this.props.onChange({});
+    this.props.onChange(undefined);
   }
 
   updateInputUrl(e) {
