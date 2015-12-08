@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import tagManagerApi from '../../util/tagManagerApi.js';
 
-export default class JobStatus extends React.Component {
+export default class TagAudit extends React.Component {
 
   constructor(props) {
     super(props);
@@ -25,7 +25,7 @@ export default class JobStatus extends React.Component {
   renderAuditRow(a) {
     return (
       <tr>
-        <td>{a.date}</td>
+        <td>{moment(a.date).format('DD/MM/YYYY HH:mm:ss')}</td>
         <td>{a.description}</td>
         <td>{a.user}</td>
       </tr>
@@ -34,11 +34,18 @@ export default class JobStatus extends React.Component {
 
   render () {
     return (
-      <div className="job-status">
-        <div className="job-status__header">Tag history</div>
+      <div className="tag-audit">
+        <div className="tag-audit__header">Tag history</div>
           <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Event</th>
+                <th>User</th>
+              </tr>
+            </thead>
             <tbody>
-            {this.state.audit.map(this.renderAuditRow, this)}
+            {this.state.audit.sort((a,b) => a.date < b.date).map(this.renderAuditRow, this)}
             </tbody>
           </table>
       </div>
