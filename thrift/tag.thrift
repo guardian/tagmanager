@@ -44,16 +44,16 @@ struct PodcastMetadata {
 }
 
 struct ContributorInformation {
-    /** Any RCS id associated with the tag e.g. for contributors */
+    /** Any RCS id associated with the tag */
     1: optional string rcsId;
 
-    /** Any byline image associated with the tag e.g. for contributors  */
+    /** Any byline image associated with the tag   */
     2: optional image.Image bylineImage;
 
-    /** Any Large byline image associated with the tag e.g. for contributors */
+    /** Any Large byline image associated with the tag */
     3: optional image.Image largeBylineImage;
 
-    /** Twitter Handle associated with the tag e.g. for contributors */
+    /** Twitter Handle associated with the tag */
     4: optional string twitterHandle;
 
     /** Contact Email for contributors */
