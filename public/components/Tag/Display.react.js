@@ -2,7 +2,7 @@ import React from 'react';
 import TagEdit from '../TagEdit/TagEdit.react';
 import TagContext from '../TagContext/TagContext.react';
 import SaveButton from '../utils/SaveButton.react';
-import TypeSelect from '../utils/TypeSelect.react';
+import TypeSelect from './TypeSelect.react';
 import TagValidationErrors from './TagValidation.react';
 import {validateTag} from '../../util/validateTag';
 import CapiStats from '../CapiStats/CapiStats.react';
@@ -67,7 +67,7 @@ class TagDisplay extends React.Component {
             <div className="tag__column--sidebar">
               <div className="tag-edit__input-group">
                 <label className="tag-edit__input-group__header">Tag Type</label>
-                <TypeSelect selectedType={this.props.tag.type} forceDisabled={true}/>
+                <TypeSelect selectedType={this.props.tag.type} types={this.props.config.tagTypes} forceDisabled={true}/>
               </div>
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true}/>
               <TagValidationErrors validations={validateTag(this.props.tag)} />
