@@ -42,6 +42,24 @@ struct PodcastMetadata {
 
 }
 
+struct ContributorInformation {
+    /** Any RCS id associated with the tag */
+    1: optional string rcsId;
+
+    /** Any byline image associated with the tag   */
+    2: optional image.Image bylineImage;
+
+    /** Any Large byline image associated with the tag */
+    3: optional image.Image largeBylineImage;
+
+    /** Twitter Handle associated with the tag */
+    4: optional string twitterHandle;
+
+    /** Contact Email for contributors */
+    5: optional string contactEmail;
+
+}
+
 
 struct Reference {
     /** the type of the the reference, e.g. musicbrainz, imdb, pa football team etc. */
@@ -97,5 +115,8 @@ struct Tag {
 
     /** Any Podcast Metadata associated with this tag */
     15: optional PodcastMetadata podcastMetadata;
+
+    /** Any Contributor Information associated with this tag */
+    16: optional ContributorInformation contributorInformation;
 
 }
