@@ -24,7 +24,7 @@ export default class TagAudit extends React.Component {
 
   renderAuditRow(a) {
     return (
-      <tr>
+      <tr key={a.date}>
         <td>{moment(a.date).format('DD/MM/YYYY HH:mm:ss')}</td>
         <td>{a.description}</td>
         <td>{a.user}</td>
