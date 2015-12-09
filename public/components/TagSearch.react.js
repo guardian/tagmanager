@@ -11,7 +11,7 @@ const searchFields = {
   'Path': 'path'
 };
 
-export class Dashboard extends React.Component {
+export class TagSearch extends React.Component {
 
     constructor(props) {
         super(props);
@@ -79,7 +79,7 @@ export class Dashboard extends React.Component {
                           })}
                         </select>
                     </div>
-
+                    
                     <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
 
                 </div>
@@ -108,4 +108,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(TagSearch);
