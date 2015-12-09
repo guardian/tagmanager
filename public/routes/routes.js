@@ -7,7 +7,7 @@ import TagDisplay   from '../components/Tag/Display.react';
 import BatchTag     from '../components/BatchTag.react';
 import MergeTag     from '../components/MergeTag.react';
 import Status       from '../components/Status.react';
-import TagSearch    from '../components/TagSearch.react';
+import Dashboard    from '../components/Dashboard.react';
 
 export default [
     <Route path="/" component={ReactApp}>
@@ -16,6 +16,6 @@ export default [
         <Route name="batch" path="/batch" component={BatchTag} />
         <Route name="merge" path="/merge" component={MergeTag} />
         <Route name="status" path="/status" component={Status} />
-        <IndexRoute component={TagSearch}/>
+        <IndexRoute component={Dashboard}/>
     </Route>
 ];

@@ -40,7 +40,8 @@ case class TagSearchCriteria(
   internalName: Option[String] = None,
   externalName: Option[String] = None,
   referenceType: Option[String] = None,
-  referenceToken: Option[String] = None
+  referenceToken: Option[String] = None,
+  searchField: Option[String] = None
 ) {
 
   type TagFilter = (List[Tag]) => List[Tag]
@@ -57,6 +58,16 @@ case class TagSearchCriteria(
     filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
   }
 
+  private def getSearchField(t: Tag ) = {
+    searchField.getOrElse("internalName") match {
+      case "externalName" => t.externalName.toLowerCase
+      case "id" => t.id.toString
+      case "`type`" => t.`type`.toLowerCase
+      case "path" => t.path.toLowerCase
+      case _ => t.internalName.toLowerCase
+    }
+  }
+
   private def queryFilter(q: String)(tags: List[Tag]) = {
     if (q.contains("*")) {
       wildcardSearch(q)(tags)
@@ -66,7 +77,7 @@ case class TagSearchCriteria(
   }
 
   private def prefixSearch(q: String)(tags: List[Tag]) = {
-    tags.filter { t => t.internalName.toLowerCase.startsWith(q) }
+    tags.filter { t => getSearchField(t).startsWith(q) }
   }
 
   val regexEscapeChars = List("\\", "(", ")", ".", "?")
@@ -81,7 +92,7 @@ case class TagSearchCriteria(
     val MatchesQuery = generateSearchRegex(q)
 
     tags.filter { t =>
-      t.internalName.toLowerCase match {
+      getSearchField(t) match {
         case MatchesQuery() => true
         case _ => false
       }
