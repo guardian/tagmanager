@@ -62,7 +62,7 @@ case class TagSearchCriteria(
     searchField.getOrElse("internalName") match {
       case "externalName" => t.externalName.toLowerCase
       case "id" => t.id.toString
-      case "`type`" => t.`type`.toLowerCase
+      case "type" => t.`type`.toLowerCase
       case "path" => t.path.toLowerCase
       case _ => t.internalName.toLowerCase
     }
