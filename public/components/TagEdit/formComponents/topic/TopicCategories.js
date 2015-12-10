@@ -13,16 +13,16 @@ export default class TopicCategories extends React.Component {
   }
 
   removeCategory(category) {
-    const removeCategory = R.reject(R.equals(category));
+    const removeCategoryFn = R.reject(R.equals(category));
 
-    this.props.onChange(removeCategory(this.props.selectedCategories));
+    this.props.onChange(removeCategoryFn(this.props.selectedCategories));
   }
 
   addCategory(category) {
-    const addCategory = R.append(category);
+    const addCategoryFn = R.append(category);
 
     if (this.props.selectedCategories) {
-      this.props.onChange(addCategory(this.props.selectedCategories));
+      this.props.onChange(addCategoryFn(this.props.selectedCategories));
     } else {
       this.props.onChange([category]);
     }

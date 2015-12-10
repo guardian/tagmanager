@@ -37,7 +37,7 @@ function validatePodcast(tag) {
     return []; //No podcast metadata
   }
 
-  const mandatoryPodcastFields = ['linkUrl'];
+  const mandatoryPodcastFields = ['linkUrl', 'image'];
 
   return validateMandatoryFields(mandatoryPodcastFields, tag.podcastMetadata);
 }

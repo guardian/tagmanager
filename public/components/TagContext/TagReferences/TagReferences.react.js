@@ -21,20 +21,20 @@ export default class TagReferences extends React.Component {
     }
 
     removeReference(reference) {
-      const removeReference = R.reject(R.equals(reference));
+      const removeReferenceFn = R.reject(R.equals(reference));
 
       const updatedTag = Object.assign({}, this.props.tag, {
-        externalReferences: removeReference(this.props.tag.externalReferences)
+        externalReferences: removeReferenceFn(this.props.tag.externalReferences)
       });
 
       this.props.updateTag(updatedTag);
     }
 
     addReference(reference) {
-      const addReference = R.append(reference);
+      const addReferenceFn = R.append(reference);
 
       const updatedTag = Object.assign({}, this.props.tag, {
-        externalReferences: addReference(this.props.tag.externalReferences)
+        externalReferences: addReferenceFn(this.props.tag.externalReferences)
       });
 
       this.props.updateTag(updatedTag);
