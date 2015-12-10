@@ -36,6 +36,14 @@ export default {
     });
   },
 
+  getReferenceTypes: () => {
+    return Reqwest({
+      url: '/api/referenceTypes',
+      method: 'get',
+      type: 'json'
+    });
+  },
+
   checkPathInUse: (type, slug, section) => {
       const query = {type: type, slug: slug};
 
@@ -68,7 +76,7 @@ export default {
   },
 
   batchTag: (contentIds, tagId, operation) => {
-    const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation}
+    const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation};
 
     return Reqwest({
       url: '/api/batchTag',

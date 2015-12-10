@@ -69,6 +69,8 @@ sealed trait Config {
   def jobTableName: String
   def clusterStatusTableName: String
 
+  def referencesTypeTableName: String
+
   def tagUpdateStreamName: String
   def taggingOperationsStreamName: String
 
@@ -87,6 +89,8 @@ class DevConfig extends Config {
   override def tagsTableName: String = "tags-dev"
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
+  override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
+
   override def jobTableName: String = "tag-manager-jobs-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
@@ -107,6 +111,8 @@ class CodeConfig extends Config {
   override def tagsTableName: String = "tags-dev"
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
+  override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
+
   override def jobTableName: String = "tag-manager-jobs-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
@@ -127,6 +133,8 @@ class ProdConfig extends Config {
   override def tagsTableName: String = "tags-PROD"
   override def sectionsTableName: String = "sections-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
+  override def referencesTypeTableName: String = "tag-manager-reference-type-PROD"
+
   override def jobTableName: String = "tag-manager-jobs-PROD"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
 

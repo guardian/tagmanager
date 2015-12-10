@@ -2,6 +2,7 @@ import {TAG_GET_REQUEST, TAG_GET_RECEIVE, TAG_GET_ERROR} from '../actions/TagAct
 import {TAG_UPDATE} from '../actions/TagActions/updateTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/TagActions/saveTag';
 import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/SectionsActions/getSections';
+import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPES_GET_ERROR} from '../actions/ReferenceTypeActions/getReferenceTypes';
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
 
@@ -92,6 +93,21 @@ export default function tag(state = {
       sections: action.sections
     });
   case SECTIONS_GET_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
+    });
+
+  // REFERENCE TYPES GET
+
+  case REFERENCE_TYPES_GET_REQUEST:
+    return Object.assign({}, state, {
+      referenceTypes: false
+    });
+  case REFERENCE_TYPES_GET_RECEIVE:
+    return Object.assign({}, state, {
+      referenceTypes: action.referenceTypes
+    });
+  case REFERENCE_TYPES_GET_ERROR:
     return Object.assign({}, state, {
       error: action.message
     });

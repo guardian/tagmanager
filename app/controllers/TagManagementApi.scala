@@ -90,6 +90,10 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(SectionRepository.loadAllSections))
   }
 
+  def listReferenceTypes() = APIAuthAction {
+    Ok(Json.toJson(ExternalReferencesTypeRepository.loadAllReferenceTypes))
+  }
+
   def checkPathInUse(`type`: String, slug: String, section: Option[Long]) = APIAuthAction { req =>
     try {
       new PathUsageCheck(`type`, slug, section).process.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
