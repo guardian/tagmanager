@@ -18,7 +18,7 @@ export default class SectionSelect extends React.Component {
 
     return (
       <select value={this.props.selectedId} onChange={this.props.onChange}>
-        {!this.props.selectedId ? <option></option> : false}
+        {!this.props.selectedId || this.props.showBlank ? <option value={false}></option> : false}
         {this.props.sections.sort((a, b) => {return a.name > b.name ? 1 : -1;}).map(function(s) {
           return (
             <option value={s.id} key={s.id} >{s.name}</option>

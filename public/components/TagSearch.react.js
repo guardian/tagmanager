@@ -3,6 +3,14 @@ import { Link } from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
 import TagsList from './TagList/TagList.react';
 
+const searchFields = {
+  'Internal Name': 'internalName',
+  'External Name': 'externalName',
+  'ID': 'id',
+  'Type': '`type`',
+  'Path': 'path'
+};
+
 export class TagSearch extends React.Component {
 
     constructor(props) {
@@ -11,7 +19,8 @@ export class TagSearch extends React.Component {
         this.state = {
           searchString: '',
           tags: [],
-          sortResultsBy: 'internalName'
+          sortResultsBy: 'internalName',
+          searchFieldName:'internalName'
         };
 
         this.sortBy = this.sortBy.bind(this);
@@ -26,16 +35,17 @@ export class TagSearch extends React.Component {
       this.searchTags();
     }
 
-    searchTags(searchString, sortBy) {
+    searchTags(searchString, searchFieldName, sortBy) {
 
       var self = this;
 
       this.setState({
-        searchString: searchString,
-        sortBy: sortBy
+        searchString: searchString !== undefined ? searchString : this.state.searchString,
+        sortBy: sortBy !== undefined ? sortBy : this.state.sortBy,
+        searchFieldName: searchFieldName !== undefined ? searchFieldName : this.state.searchFieldName
       });
 
-      tagManagerApi.searchTags(searchString, sortBy)
+      tagManagerApi.searchTags(searchString, searchFieldName, sortBy)
       .then(function(resp) {
           self.setState({tags: resp});
       }).fail(function(err, msg) {
@@ -43,8 +53,13 @@ export class TagSearch extends React.Component {
       });
     }
 
-    handleChange(event) {
-      this.searchTags(event.target.value, this.state.sortBy);
+    handleSearchInputChange(event) {
+      this.searchTags(event.target.value, this.state.searchFieldName, this.state.sortBy);
+    }
+
+    handleSearchFieldChange(event) {
+      this.searchTags(this.state.searchString, event.target.value, this.state.sortBy);
+
     }
 
     sortBy(fieldName) {
@@ -56,10 +71,15 @@ export class TagSearch extends React.Component {
             <div className="tag-search">
                 <div className="tag-search__filters">
                     <div className="tag-search__filters__group">
-                        <label>Filter by name</label>
-                        <input className="tag-search__input" type="text" value={this.state.searchString} onChange={this.handleChange.bind(this)} />
+                        <label>Search</label>
+                        <input className="tag-search__input" type="text" value={this.state.searchString} onChange={this.handleSearchInputChange.bind(this)} />
+                        <select onChange={this.handleSearchFieldChange.bind(this)} value={this.state.searchFieldName}>
+                          {Object.keys(searchFields).map((field) => {
+                            return (<option value={searchFields[field]}>{field}</option>);
+                          })}
+                        </select>
                     </div>
-
+                    
                     <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
 
                 </div>

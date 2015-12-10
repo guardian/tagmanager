@@ -33,7 +33,7 @@ export function searchContent (searchString, params) {
     const query = paramsObjectToQuery(params);
 
     return Reqwest({
-      url: getCapiUrl() + '&q=' + searchString  + '&' + query,
+      url: getCapiUrl() + '&q=' + searchString.replace(' ', ' AND ')  + '&' + query,
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'
