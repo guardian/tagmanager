@@ -26,7 +26,7 @@ export default class ContentList extends React.Component {
               <thead className="taglist__header">
                 <tr>
                   <th>
-                    <input type="checkbox" checked={unselectedContent.length === 0} />
+                    <input type="checkbox" checked={unselectedContent.length === 0} onChange={this.props.toggleAllSelected} />
                   </th>
                   <th>Type</th>
                   <th>Headline</th>

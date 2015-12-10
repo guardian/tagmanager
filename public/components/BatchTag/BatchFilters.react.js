@@ -3,6 +3,7 @@ import moment from 'moment';
 import R from 'ramda';
 
 import TagSelect from '../utils/TagSelect';
+import SectionSelect from '../utils/SectionSelect.react';
 
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import momentLocalizer from 'react-widgets/lib/localizers/moment';
@@ -97,6 +98,25 @@ export default class BatchFilters extends React.Component {
       return this.props.filters.tag ? this.props.filters.tag.split(',') : [];
     }
 
+    updateSectionFilter(e) {
+
+      const section = this.props.sections.filter((section) => section.id === parseInt(e.target.value, 10));
+
+      if (section.length) {
+        this.props.updateFilters(Object.assign({}, this.props.filters, {
+          'section': section[0].path
+        }));
+      } else {
+        this.props.updateFilters(R.omit('section', this.props.filters));
+      }
+    }
+
+    changeDateBasis(e) {
+      this.props.updateFilters(Object.assign({}, this.props.filters, {
+        'use-date': e.target.value
+      }));
+    }
+
     render () {
 
         return (
@@ -138,6 +158,10 @@ export default class BatchFilters extends React.Component {
                       value={ this.props.filters['to-date'] ? new Date(this.props.filters['to-date']) : null}
                       onChange={this.setToDate.bind(this)}/>
                 </div>
+                  <select onChange={this.changeDateBasis.bind(this)}>
+                    <option value="published">Published Date</option>
+                    <option value="last-modified">Last Modified</option>
+                  </select>
               </div>
               <div className="batch-filters__filter">
                 <div className="batch-filters__header">
@@ -155,6 +179,18 @@ export default class BatchFilters extends React.Component {
                     );
                   })}
                   <TagSelect onTagClick={this.addTag.bind(this)} />
+                </div>
+              </div>
+              <div className="batch-filters__filter">
+                <div className="batch-filters__header">
+                  In Section
+                </div>
+                <div className="batch-filters__taglist">
+                  <SectionSelect
+                    showBlank={true}
+                    onChange={this.updateSectionFilter.bind(this)}
+                    sections={this.props.sections}
+                    selectedId={this.props.filters.section ? this.props.sections.filter((section) => section.path === this.props.filters.section)[0].id : undefined} />
                 </div>
               </div>
             </div>

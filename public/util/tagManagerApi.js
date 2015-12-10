@@ -59,12 +59,16 @@ export default {
       });
   },
 
-  searchTags: (textQuery, orderByField) => {
+  searchTags: (textQuery, searchFieldName, orderByField) => {
 
     const query = {q: textQuery};
 
     if (orderByField) {
       query.orderBy = orderByField;
+    }
+
+    if (searchFieldName) {
+      query.searchField = searchFieldName;
     }
 
     return Reqwest({
