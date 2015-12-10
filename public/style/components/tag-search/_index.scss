@@ -39,7 +39,8 @@
     display: block;
   }
 
-  input {
-    display: block;
-  }
+}
+
+.tag-search__input {
+  margin-right: $standard-padding;
 }

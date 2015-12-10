@@ -53,6 +53,7 @@ object Dynamo {
   lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
   lazy val tagAuditTable = dynamoDb.getTable(Config().tagAuditTableName)
   lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
+  lazy val referencesTypeTable = dynamoDb.getTable(Config().referencesTypeTableName)
 }
 
 object SQS {

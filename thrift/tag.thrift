@@ -8,12 +8,11 @@ enum TagType {
     TOPIC = 0,
     CONTRIBUTOR = 1,
     SERIES = 2,
-    BLOG = 3,
-    TONE = 4,
-    CONTENT_TYPE = 5,
-    PUBLICATION = 6,
-    NEWSPAPER_BOOK = 7,
-    NEWSPAPER_BOOK_SECTION = 8
+    TONE = 3,
+    CONTENT_TYPE = 4,
+    PUBLICATION = 5,
+    NEWSPAPER_BOOK = 6,
+    NEWSPAPER_BOOK_SECTION = 7
 }
 
 struct PodcastMetadata {

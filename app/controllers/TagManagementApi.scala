@@ -50,6 +50,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
+      searchField = req.getQueryString("searchField"),
       types = req.getQueryString("types").map(_.split(",").toList)
     )
 
@@ -62,6 +63,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       case("externalName") => tags.sortBy(_.externalName)
       case("path") => tags.sortBy(_.path)
       case("id") => tags.sortBy(_.id)
+      case("type") => tags.sortBy(_.`type`)
       case(_) => tags.sortBy(_.comparableValue)
     }
 
@@ -89,6 +91,10 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def listSections() = APIAuthAction {
     Ok(Json.toJson(SectionRepository.loadAllSections))
+  }
+
+  def listReferenceTypes() = APIAuthAction {
+    Ok(Json.toJson(ExternalReferencesTypeRepository.loadAllReferenceTypes))
   }
 
   def checkPathInUse(`type`: String, slug: String, section: Option[Long]) = APIAuthAction { req =>

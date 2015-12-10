@@ -36,6 +36,14 @@ export default {
     });
   },
 
+  getReferenceTypes: () => {
+    return Reqwest({
+      url: '/api/referenceTypes',
+      method: 'get',
+      type: 'json'
+    });
+  },
+
   checkPathInUse: (type, slug, section) => {
       const query = {type: type, slug: slug};
 
@@ -51,12 +59,16 @@ export default {
       });
   },
 
-  searchTags: (textQuery, orderByField) => {
+  searchTags: (textQuery, searchFieldName, orderByField) => {
 
     const query = {q: textQuery};
 
     if (orderByField) {
       query.orderBy = orderByField;
+    }
+
+    if (searchFieldName) {
+      query.searchField = searchFieldName;
     }
 
     return Reqwest({
@@ -68,7 +80,7 @@ export default {
   },
 
   batchTag: (contentIds, tagId, operation) => {
-    const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation}
+    const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation};
 
     return Reqwest({
       url: '/api/batchTag',

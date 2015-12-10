@@ -1,4 +1,5 @@
 import React from 'react';
+import ReferenceTypeSelect from '../../utils/ReferenceTypeSelect.react';
 
 const BLANK_STATE = {
   expanded: false,
@@ -67,7 +68,7 @@ export default class AddReference extends React.Component {
       return (
         <div className="tag-reference__add">
           <form onSubmit={this.addReference.bind(this)}>
-            <input type="text" placeholder="Type" onChange={this.onTypeChange.bind(this)} value={this.state.newType}/>
+            <ReferenceTypeSelect referenceTypes={this.props.referenceTypes} onChange={this.onTypeChange.bind(this)} selectedType={this.state.newType} />
             <input type="text" placeholder="Value" onChange={this.onValueChange.bind(this)} value={this.state.newValue}/>
             <input type="submit" value="Add" />
           </form>

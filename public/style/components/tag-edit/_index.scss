@@ -211,3 +211,54 @@ $tag-edit-padding: $standard-padding/2;
 
   }
 }
+
+
+.tag-edit__richtext {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  margin-top: $standard-padding/2;
+
+  background-color: white;
+  border: 1px solid $c-grey-300;
+}
+
+.tag-edit__richtext__toolbar {
+  position: relative;
+
+  background-color: $c-grey-100;
+  border-bottom: 1px solid $c-grey-300;
+
+}
+
+.tag-edit__richtext__toolbar__item {
+  display: inline-block;
+
+  cursor: pointer;
+  padding: $standard-padding/2 $standard-padding;
+
+  border-right: 1px solid $c-grey-300;
+}
+
+.tag-edit__richtext__editor {
+  padding: $standard-padding;
+
+  b {
+    font-weight: bold;
+  }
+
+  i {
+    font-style: italic;
+  }
+
+  a {
+    color: $c-blue-link;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+}

@@ -14,11 +14,17 @@ export class BatchTag extends React.Component {
 
         this.state = {
           selectedContent: [],
-          activeFilters: {},
+
           showFilters: false
         };
 
         this.searchContent = this.searchContent.bind(this);
+    }
+
+    componentDidMount() {
+      if (!this.props.sections || !this.props.sections.length) {
+        this.props.sectionActions.getSections();
+      }
     }
 
     searchFieldChange(e) {
@@ -76,7 +82,7 @@ export class BatchTag extends React.Component {
     }
 
     toggleAllSelected() {
-      const notSelectedResults = R.exclude(R.any(this.state.selectedContent));
+      const notSelectedResults = R.difference(this.props.capiSearch.results.map((content) => content.id), this.state.selectedContent);
 
       if (notSelectedResults.length) {
         this.selectAllContent();
@@ -151,7 +157,7 @@ export class BatchTag extends React.Component {
                       { this.state.showFilters ? 'Hide Filters' : 'Show Filters'}
                     </div>
                 </div>
-                {this.state.showFilters ? <BatchFilters filters={this.props.capiSearch.filters || {}} updateFilters={this.applyFilters.bind(this)}/> : false}
+                {this.state.showFilters ? <BatchFilters filters={this.props.capiSearch.filters || {}} updateFilters={this.applyFilters.bind(this)} sections={this.props.sections}/> : false}
                 {this.renderSearchStatus()}
                 {this.renderTooManyResults()}
                 <div className="batch-tag__content">
@@ -179,17 +185,20 @@ export class BatchTag extends React.Component {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as searchCapi from '../actions/CapiActions/searchCapi';
+import * as getSections from '../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {
     config: state.config,
-    capiSearch: state.capiSearch
+    capiSearch: state.capiSearch,
+    sections: state.sections
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    capiActions: bindActionCreators(Object.assign({}, searchCapi), dispatch)
+    capiActions: bindActionCreators(Object.assign({}, searchCapi), dispatch),
+    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
   };
 }
 

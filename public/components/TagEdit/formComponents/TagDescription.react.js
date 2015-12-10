@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactScribe from '../../utils/ReactScribe.react';
 
 export default class TagVisibilityEdit extends React.Component {
 
@@ -6,9 +7,9 @@ export default class TagVisibilityEdit extends React.Component {
     super(props);
   }
 
-  updateDescription(e) {
+  updateDescription(html) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
-      description: e.target.value
+      description: html
     }));
   }
 
@@ -19,9 +20,16 @@ export default class TagVisibilityEdit extends React.Component {
 
     return (
       <div className="tag-edit__input-group">
-        <label className="tag-edit__input-group__header">Description</label>
+        <label className="tag-edit__input-group__header">Description/Profile</label>
         <div>
-          <textarea onChange={this.updateDescription.bind(this)} value={this.props.tag.description || ''}/>
+          <ReactScribe
+            onChange={this.updateDescription.bind(this)}
+            value={this.props.tag.description || ''}
+            className="tag-edit__richtext"
+            toolbarClassName="tag-edit__richtext__toolbar"
+            toolbarItemClassName="tag-edit__richtext__toolbar__item"
+            editorClassName="tag-edit__richtext__editor"
+          />
         </div>
       </div>
     );
