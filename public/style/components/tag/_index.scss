@@ -12,6 +12,8 @@
   overflow-y: auto;
   overflow-x: hidden;
 
+  padding-bottom: $save-height;
+
   &:last-child {
     border-right-width: 0px;
   }

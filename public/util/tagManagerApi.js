@@ -36,6 +36,14 @@ export default {
     });
   },
 
+  getReferenceTypes: () => {
+    return Reqwest({
+      url: '/api/referenceTypes',
+      method: 'get',
+      type: 'json'
+    });
+  },
+
   checkPathInUse: (type, slug, section) => {
       const query = {type: type, slug: slug};
 

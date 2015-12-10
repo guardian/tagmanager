@@ -26,6 +26,10 @@ class TagDisplay extends React.Component {
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }
+
+      if (!this.props.referenceTypes || !this.props.referenceTypes.length) {
+        this.props.referenceTypeActions.getReferenceTypes();
+      }
     }
 
     componentWillReceiveProps(props) {
@@ -73,7 +77,7 @@ class TagDisplay extends React.Component {
               <TagValidationErrors validations={validateTag(this.props.tag)} />
             </div>
             <div className="tag__column">
-              <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag}/>
+              <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag} referenceTypes={this.props.referenceTypes}/>
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
@@ -93,11 +97,13 @@ import * as getTag from '../../actions/TagActions/getTag';
 import * as updateTag from '../../actions/TagActions/updateTag';
 import * as saveTag from '../../actions/TagActions/saveTag';
 import * as getSections from '../../actions/SectionsActions/getSections';
+import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getReferenceTypes';
 
 function mapStateToProps(state) {
   return {
     tag: state.tag,
     sections: state.sections,
+    referenceTypes: state.referenceTypes,
     saveState: state.saveState,
     config: state.config
   };
@@ -106,7 +112,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag), dispatch),
-    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
+    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch),
+    referenceTypeActions: bindActionCreators(Object.assign({}, getReferenceTypes), dispatch)
   };
 }
 

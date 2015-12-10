@@ -52,6 +52,7 @@ object Dynamo {
   lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
   lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
   lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
+  lazy val referencesTypeTable = dynamoDb.getTable(Config().referencesTypeTableName)
 }
 
 object SQS {

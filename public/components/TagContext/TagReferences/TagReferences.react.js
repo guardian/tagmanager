@@ -8,18 +8,6 @@ export default class TagReferences extends React.Component {
         super(props);
     }
 
-    renderReference(reference) {
-      return (
-        <tr className="tag-references__item" key={reference.type + '/' + reference.value}>
-          <td>{reference.type}</td>
-          <td>{reference.value}</td>
-          <td>
-            <i className="i-cross" onClick={this.removeReference.bind(this, reference)} />
-          </td>
-        </tr>
-      );
-    }
-
     removeReference(reference) {
       const removeReferenceFn = R.reject(R.equals(reference));
 
@@ -40,6 +28,21 @@ export default class TagReferences extends React.Component {
       this.props.updateTag(updatedTag);
     }
 
+    renderReference(reference) {
+
+      const matchingReferenceType = this.props.referenceTypes ? this.props.referenceTypes.filter((type) => type.typeName === reference.type) : [];
+
+      return (
+        <tr className="tag-references__item" key={reference.type + '/' + reference.value}>
+          <td>{matchingReferenceType.length ? matchingReferenceType[0].displayName : reference.type}</td>
+          <td>{reference.value}</td>
+          <td>
+            <i className="i-delete" onClick={this.removeReference.bind(this, reference)} />
+          </td>
+        </tr>
+      );
+    }
+
     render() {
       return (
         <div className="tag-context__item">
@@ -57,10 +60,10 @@ export default class TagReferences extends React.Component {
               </tr>
             </thead>
             <tbody className="tag-references__references">
-              {this.props.tag.externalReferences.map(this.renderReference, this)}
+              {this.props.tag.externalReferences.sort((a, b) => a.type > b.type).map(this.renderReference, this)}
               <tr>
                 <td colSpan="3" className="tag-references__addrow">
-                  <AddReference onAddReference={this.addReference.bind(this)} />
+                  <AddReference onAddReference={this.addReference.bind(this)} referenceTypes={this.props.referenceTypes} />
                 </td>
               </tr>
             </tbody>
