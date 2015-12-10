@@ -11,8 +11,7 @@ import scala.util.control.NonFatal
 case class ExternalReferenceType (
                     typeName: String,
                     displayName: String,
-                    path: String,
-                    isInteger: Boolean
+                    path: String
                   )
 
 object ExternalReferenceType {
@@ -20,8 +19,7 @@ object ExternalReferenceType {
   implicit val sectionFormat: Format[ExternalReferenceType] = (
     (JsPath \ "typeName").format[String] and
       (JsPath \ "displayName").format[String] and
-      (JsPath \ "path").format[String] and
-      (JsPath \ "isInteger").format[Boolean]
+      (JsPath \ "path").format[String]
     )(ExternalReferenceType.apply, unlift(ExternalReferenceType.unapply))
 
   def fromItem(item: Item) = try{
