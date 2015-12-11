@@ -60,7 +60,7 @@ export default class MappingTable extends React.Component {
             tagInternalName: tag.internalName,
             referenceType: reference.type,
             referenceValue: reference.value,
-            referenceIndex: i
+            referenceIndex: i //this is used to provide a key for this item in table below
           });
         });
       });
