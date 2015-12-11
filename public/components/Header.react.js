@@ -14,8 +14,6 @@ export default class Header extends React.Component {
     }
 
     render () {
-        var self = this;
-
         return (
             <header className="top-toolbar">
 
