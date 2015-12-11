@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
 import ReferenceTypeSelect from './utils/ReferenceTypeSelect.react';
 
@@ -100,7 +101,12 @@ export class MappingManager extends React.Component {
                   // This can't have a key on it or input becomes defocused onChange
                   return (
                     <tr>
-                      <td>{mapping.tagInternalName}</td>
+                      <td>
+                        {mapping.tagInternalName}
+                        <Link to={'/tag/' + mapping.tagId}>
+                          <i className="i-preview-eye"/>
+                        </Link>
+                      </td>
                       <td>
                         <input value={mapping.referenceValue} onChange={changeFunction}/>
                       </td>
