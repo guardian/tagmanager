@@ -2,12 +2,13 @@ package model.command
 
 import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
+import model.TagAudit
 import model.jobs.{BatchTagAddCompleteCheck, BatchTagRemoveCompleteCheck, Job}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
-import repositories.{SectionRepository, JobRepository, Sequences, TagRepository}
+import repositories._
 import CommandError._
 import services.{SQS, KinesisStreams}
 
@@ -44,6 +45,8 @@ case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: Str
     Logger.info(s"raising job to check $operation for $tagId completes")
     JobRepository.upsertJob(batchTagJob)
     SQS.jobQueue.postMessage(batchTagJob.id.toString, delaySeconds = 15)
+
+    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
 
     Some(batchTagJob.id)
   }

@@ -13,6 +13,8 @@ class JobQueueConsumer(override val queue: SQSQueue)(implicit executionContext: 
   override def processMessage(message: Message): Unit = {
     val jobId = message.getBody.toLong
 
+    Logger.info(s"processing job $jobId")
+
     JobRepository.getJob(jobId) foreach { job => Future {
       val updatedJob = JobRunner.run(job)
       updatedJob foreach{ j =>

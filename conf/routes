@@ -23,6 +23,9 @@ GET        /api/referenceTypes            controllers.TagManagementApi.listRefer
 GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long])
 POST       /api/batchTag                  controllers.TagManagementApi.batchTag
 
+GET        /api/audit/tag/:tagId          controllers.TagManagementApi.getAuditForTag(tagId: Long)
+GET        /api/audit/operation/:op       controllers.TagManagementApi.getAuditForOperation(op: String)
+
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
 

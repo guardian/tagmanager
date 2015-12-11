@@ -1,0 +1,14 @@
+.tag-audit {
+  margin: $standard-padding / 2;
+  padding: $standard-padding;
+}
+
+.tag-audit__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  margin-bottom: $standard-padding/2;
+
+}
