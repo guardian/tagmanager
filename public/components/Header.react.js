@@ -44,12 +44,6 @@ export default class Header extends React.Component {
                         </li>
                     </ul>
                 </div>
-
-                <div className="top-toolbar__right-align">
-                    <div className="top-toolbar__user top-toolbar__item">
-                        <span className="user__name">{self.userName()}<i className="i-down-arrow"/></span>
-                    </div>
-                </div>
             </header>
         );
     }

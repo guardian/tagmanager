@@ -3,3 +3,26 @@
     margin: 0 auto;
     padding: 10px;
 }
+
+.mapping__header {
+  width: 100%;
+
+  position: relative;
+
+
+  background-color: $c-grey-100;
+  border: 1px solid $c-grey-300;
+
+  padding: $standard-padding;
+
+}
+
+.mapping__header__title {
+  @extend %f-header;
+  @extend %fs-data-2;
+
+  font-weight: bold;
+
+  display: block;
+
+}

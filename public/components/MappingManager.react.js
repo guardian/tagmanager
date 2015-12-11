@@ -148,11 +148,14 @@ export class MappingManager extends React.Component {
     render () {
       return (
           <div className="mapping">
-            <ReferenceTypeSelect
-              referenceTypes={this.props.referenceTypes}
-              onChange={this.onSelectedReferenceTypeChange.bind(this)}
-              selectedType={this.state.selectedReferenceType}
-            />
+            <div className="mapping__header">
+              <label className="mapping__header__title">Select a Reference Type</label>
+              <ReferenceTypeSelect
+                referenceTypes={this.props.referenceTypes}
+                onChange={this.onSelectedReferenceTypeChange.bind(this)}
+                selectedType={this.state.selectedReferenceType}
+              />
+            </div>
           {this.renderMappingTable()}
           </div>
       );
