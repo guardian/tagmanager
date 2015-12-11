@@ -90,6 +90,22 @@ export default {
     });
   },
 
+  getAuditForTag: (tagId) => {
+    return Reqwest({
+      url: '/api/audit/tag/' + tagId,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  getAuditForOperation: (operation) => {
+    return Reqwest({
+      url: '/api/audit/operation/' + operation,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
   getJobsByTag: (tagId) => {
     return Reqwest({
       url: '/api/jobs',

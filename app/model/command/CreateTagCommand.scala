@@ -3,7 +3,8 @@ package model.command
 import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
-import model.{PodcastMetadata, Tag, Reference}
+import model.{TagAudit, PodcastMetadata, Tag, Reference}
+import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
@@ -57,6 +58,8 @@ case class CreateTagCommand(
     val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
+
+    TagAuditRepository.upsertTagAudit(TagAudit.created(tag))
 
     result
   }

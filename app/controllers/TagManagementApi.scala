@@ -21,7 +21,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateTag(id: Long) = APIAuthAction { req =>
-
+    implicit val user = Option(req.user)
     req.body.asJson.map { json =>
       try {
         UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -34,6 +34,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag() = APIAuthAction { req =>
+    implicit val user = Option(req.user)
     req.body.asJson.map { json =>
       try {
         json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -105,7 +106,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def batchTag = APIAuthAction { req =>
-    implicit val user = req.user
+    implicit val user = Option(req.user)
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
@@ -115,6 +116,14 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse {
       BadRequest("Expecting Json data")
     }
+  }
+
+  def getAuditForTag(tagId: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(TagAuditRepository.getAuditTrailForTag(tagId)))
+  }
+
+  def getAuditForOperation(op: String) = APIAuthAction { req =>
+    Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
   }
   
   def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 

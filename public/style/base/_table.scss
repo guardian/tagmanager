@@ -1,25 +1,33 @@
 $table-border-color: $c-grey-300;
 
-%table {
+table {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  width: 100%;
+
   td, th {
     padding: $standard-padding/2 $standard-padding;
-    border: 1px solid $table-border-color;
   }
+
 }
 
-%table-head {
-  @extend %table;
+thead {
   background-color: $c-grey-200;
 
   font-weight: bold;
 
+  border: 1px solid $c-grey-300;
+  border-width: 0 1px;
 }
 
-%table-body {
 
-  @extend %table;
-  border: 1px solid $table-border-color;
-  cursor: pointer;
+tbody tr {
 
+  border: 1px solid $c-grey-300;
 
+  td {
+    border-right: 1px solid $c-grey-300;
+  }
 }
