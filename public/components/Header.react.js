@@ -31,6 +31,9 @@ export default class Header extends React.Component {
                 <div className="header__children">
                     <ul className="links">
                         <li className="links__item top-toolbar__item--highlight">
+                            <Link to="/mapping">Mapping Manager</Link>
+                        </li>
+                        <li className="links__item top-toolbar__item--highlight">
                             <Link to="/batch">Batch tag</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">
