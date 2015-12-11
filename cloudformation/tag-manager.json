@@ -180,6 +180,23 @@
       }
     },
 
+    "TagManagerSQSPolicy" : {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TagManagerSQSPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [ "sqs:*" ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [ { "Ref": "TagManagerRole" } ]
+      }
+    },
+
     "TagManagerInstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
