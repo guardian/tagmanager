@@ -62,7 +62,31 @@ export class MappingManager extends React.Component {
       this.props.tagActions.saveTag(tag);
     }
 
-    render () {
+    deleteMapping(tagId, externalReferencesType, value) {
+      const oldTag = this.state.tags.filter((tag) => tag.id === tagId)[0];
+      const newTag = Object.assign({}, oldTag, {
+        externalReferences: oldTag.externalReferences.filter((reference) => {
+          if (reference.type === externalReferencesType && reference.value === value) {
+            return false;
+          }
+
+          return true;
+        })
+      });
+
+      this.setState({
+        tags: this.state.tags.map((tag) => tag.id === newTag.id ? newTag : tag)
+      });
+
+      this.props.tagActions.saveTag(newTag);
+
+    }
+
+    renderMappingTable() {
+
+      if (!this.state.tags.length) {
+        return false;
+      }
 
       const mappings = [];
 
@@ -78,46 +102,58 @@ export class MappingManager extends React.Component {
       });
 
       return (
+        <table>
+          <thead>
+            <tr>
+              <th>Tag Name</th>
+              <th>Mapping Value</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mappings.map((mapping) => {
+
+              const changeFunction = (e) => {
+                this.updateMappingValue(mapping.tagId, mapping.referenceType, mapping.referenceValue, e.target.value);
+              };
+
+              const deleteFunction = (e) => {
+                this.deleteMapping(mapping.tagId, mapping.referenceType, mapping.referenceValue);
+              };
+
+              // This can't have a key on it or input becomes defocused onChange
+              return (
+                <tr>
+                  <td>
+                    {mapping.tagInternalName}
+                    <Link to={'/tag/' + mapping.tagId}>
+                      <i className="i-preview-eye"/>
+                    </Link>
+                  </td>
+                  <td>
+                    <input value={mapping.referenceValue} onChange={changeFunction}/>
+                    <input type="submit" onClick={this.saveTag.bind(this, mapping.tagId)} />
+                  </td>
+                  <td>
+                    <i className="i-delete" onClick={deleteFunction}/>
+                  </td>
+                </tr>
+              );
+            }, this)}
+          </tbody>
+        </table>
+      );
+    }
+
+    render () {
+      return (
           <div className="mapping">
             <ReferenceTypeSelect
               referenceTypes={this.props.referenceTypes}
               onChange={this.onSelectedReferenceTypeChange.bind(this)}
               selectedType={this.state.selectedReferenceType}
             />
-            <table>
-              <thead>
-                <tr>
-                  <th>Tag Name</th>
-                  <th>Mapping Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mappings.map((mapping) => {
-
-                  const changeFunction = (e) => {
-                    this.updateMappingValue(mapping.tagId, mapping.referenceType, mapping.referenceValue, e.target.value);
-                  };
-
-                  // This can't have a key on it or input becomes defocused onChange
-                  return (
-                    <tr>
-                      <td>
-                        {mapping.tagInternalName}
-                        <Link to={'/tag/' + mapping.tagId}>
-                          <i className="i-preview-eye"/>
-                        </Link>
-                      </td>
-                      <td>
-                        <input value={mapping.referenceValue} onChange={changeFunction}/>
-                      </td>
-                      <td>
-                        <input type="submit" onClick={this.saveTag.bind(this, mapping.tagId)} />
-                      </td>
-                    </tr>
-                  );
-                }, this)}
-              </tbody>
-            </table>
+          {this.renderMappingTable()}
           </div>
       );
     }
