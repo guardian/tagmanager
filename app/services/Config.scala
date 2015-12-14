@@ -62,6 +62,11 @@ sealed trait Config {
     props.toMap
   }
 
+  lazy val permissionsStage: String = readTag("Stage") match {
+    case Some("DEV") =>  "CODE"
+    case Some(stage) =>  stage
+    case _           =>  "CODE"
+  }
 
   def tagsTableName: String
   def sectionsTableName: String
@@ -107,9 +112,11 @@ class DevConfig extends Config {
   override def pandaDomain: String = "local.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.local.dev-gutools.co.uk/oauthCallback"
 
+
 }
 
 class CodeConfig extends Config {
+
   override def tagsTableName: String = "tags-dev"
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
@@ -133,6 +140,7 @@ class CodeConfig extends Config {
 }
 
 class ProdConfig extends Config {
+
   override def tagsTableName: String = "tags-PROD"
   override def sectionsTableName: String = "sections-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"

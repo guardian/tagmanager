@@ -4,12 +4,15 @@ import model.command.CommandError._
 import model.command.{BatchTagCommand, PathUsageCheck, CreateTagCommand, UpdateTagCommand}
 import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
+import permissions.Permissions
 import play.api.Logger
 import model.Tag
 import model.Section
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
+import permissions.BatchTagPermissionsCheck
+
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -105,8 +108,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def batchTag = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+  def batchTag = (APIAuthAction andThen BatchTagPermissionsCheck) { req =>
+
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
