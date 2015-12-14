@@ -32,6 +32,17 @@ object ContentAPI {
     count
   }
 
+  def getTag(apiTagId: String) = {
+    val response = apiClient.getResponse(new ItemQuery(apiTagId))
+
+    Await.result(response.map(_.tag), 5 seconds)
+  }
+
+  def countContentWithTag(apiTagId: String) = {
+    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(1))
+    Await.result(response.map(_.total), 5 seconds)
+  }
+
 
   def shutdown: Unit = {
     apiClient.shutdown()

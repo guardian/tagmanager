@@ -52,6 +52,10 @@ object TagAudit {
     TagAudit(tag.id, "updated", new DateTime(), user.map(_.email).getOrElse("default user"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
   }
 
+  def deleted(tag: Tag, user: Option[User] = None): TagAudit = {
+    TagAudit(tag.id, "deleted", new DateTime(), user.map(_.email).getOrElse("default user"), s"tag '${tag.internalName}' deleted", TagSummary(tag), None)
+  }
+
   def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[User] = None): TagAudit = {
     val message = operation match {
       case "remove" => s"tag '${tag.internalName}' removed from $contentCount items(s)"
