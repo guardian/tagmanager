@@ -23,7 +23,7 @@ case class AllUsagesOfTagRemovedCheck(apiTagId: String, originalCount: Int, comp
   }
 }
 
-case class RemoveTagStep(tagId: Long, originalUser: Option[User]) extends Step {
+case class RemoveTagStep(tagId: Long, originalUsername: Option[String]) extends Step {
   /** runs the step and returns the updated state of the step, or None if the step has completed */
   override def process: Option[Step] = {
     Logger.info(s"deleting tag $tagId}")
@@ -33,7 +33,7 @@ case class RemoveTagStep(tagId: Long, originalUser: Option[User]) extends Step {
 
       KinesisStreams.tagUpdateStream.publishUpdate(tagId.toString, TagEvent(EventType.Delete, tagId, None))
 
-      TagAuditRepository.upsertTagAudit(TagAudit.deleted(tag, originalUser))
+      TagAuditRepository.upsertTagAudit(TagAudit.deleted(tag, originalUsername))
     }
     None
   }

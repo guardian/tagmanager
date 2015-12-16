@@ -21,7 +21,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateTag(id: Long) = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+
     req.body.asJson.map { json =>
       try {
         UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -34,7 +35,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag() = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -106,7 +107,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def batchTag = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound

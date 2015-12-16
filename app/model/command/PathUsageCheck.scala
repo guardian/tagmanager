@@ -9,7 +9,7 @@ class PathUsageCheck(`type`: String, slug: String, sectionId: Option[Long]) exte
 
   type T = Map[String, Boolean]
 
-  override def process()(implicit user: Option[User] = None): Option[Map[String, Boolean]] = {
+  override def process()(implicit username: Option[String] = None): Option[Map[String, Boolean]] = {
     val calculatedPath = TagPathCalculator calculatePath(`type`, slug, sectionId)
 
     val inUse = PathManager isPathInUse(calculatedPath)

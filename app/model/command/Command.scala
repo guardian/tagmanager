@@ -8,7 +8,7 @@ import play.api.libs.functional.syntax._
 trait Command {
   type T
 
-  def process()(implicit user: Option[User] = None): Option[T]
+  def process()(implicit username: Option[String] = None): Option[T]
 
 }
 

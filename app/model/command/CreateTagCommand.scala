@@ -30,7 +30,7 @@ case class CreateTagCommand(
 
   type T = Tag
 
-  def process()(implicit user: Option[User] = None): Option[Tag] = {
+  def process()(implicit username: Option[String] = None): Option[Tag] = {
 
     val calculatedPath = TagPathCalculator.calculatePath(`type`, slug, section)
 
