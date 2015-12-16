@@ -1,6 +1,5 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import model.command.logic.TagPathCalculator
 import repositories.PathManager
 

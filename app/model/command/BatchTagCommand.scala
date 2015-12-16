@@ -1,6 +1,5 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
 import model.TagAudit
 import model.jobs.{BatchTagAddCompleteCheck, BatchTagRemoveCompleteCheck, Job}

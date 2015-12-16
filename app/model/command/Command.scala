@@ -1,6 +1,5 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
