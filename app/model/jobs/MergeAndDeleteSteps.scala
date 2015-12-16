@@ -4,6 +4,8 @@ import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.TagAudit
 import play.api.Logger
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Format}
 import repositories.{ContentAPI, TagAuditRepository, TagRepository}
 import services.KinesisStreams
 
@@ -23,6 +25,14 @@ case class AllUsagesOfTagRemovedCheck(apiTagId: String, originalCount: Int, comp
   }
 }
 
+object AllUsagesOfTagRemovedCheck {
+  implicit val allUsagesOfTagRemovedCheckFormat: Format[AllUsagesOfTagRemovedCheck] = (
+      (JsPath \ "apiTagId").format[String] and
+      (JsPath \ "originalCount").format[Int] and
+      (JsPath \ "completed").format[Int]
+    )(AllUsagesOfTagRemovedCheck.apply, unlift(AllUsagesOfTagRemovedCheck.unapply))
+}
+
 case class RemoveTagStep(tagId: Long, originalUsername: Option[String]) extends Step {
   /** runs the step and returns the updated state of the step, or None if the step has completed */
   override def process: Option[Step] = {
@@ -37,6 +47,13 @@ case class RemoveTagStep(tagId: Long, originalUsername: Option[String]) extends 
     }
     None
   }
+}
+
+object RemoveTagStep {
+  implicit val removeTagStepFormat: Format[RemoveTagStep] = (
+    (JsPath \ "tagId").format[Long] and
+      (JsPath \ "originalUsername").formatNullable[String]
+    )(RemoveTagStep.apply, unlift(RemoveTagStep.unapply))
 }
 
 case class TagRemovedCheck(apiTagId: String) extends Step {
