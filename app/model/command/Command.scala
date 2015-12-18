@@ -17,6 +17,7 @@ object Command {
   val commandWrites = new Writes[Command] {
     override def writes(c: Command): JsValue = c match {
       case b: BatchTagCommand => BatchTagCommand.batchTagCommandFormat.writes(b).asInstanceOf[JsObject] + ("type", JsString("BatchTagCommand"))
+      case m: MergeTagCommand => MergeTagCommand.mergeTagCommandFormat.writes(m).asInstanceOf[JsObject] + ("type", JsString("MergeTagCommand"))
       case other => {
         Logger.warn(s"unable to serialise command of type ${other.getClass}")
         throw new UnsupportedOperationException(s"unable to serialise command of type ${other.getClass}")
@@ -28,6 +29,7 @@ object Command {
     override def reads(json: JsValue): JsResult[Command] = {
       (json \ "type").get match {
         case JsString("BatchTagCommand") => BatchTagCommand.batchTagCommandFormat.reads(json)
+        case JsString("MergeTagCommand") => MergeTagCommand.mergeTagCommandFormat.reads(json)
         case JsString(other) => JsError(s"unsupported command type $other}")
         case _ => JsError(s"unexpected command type value")
       }
