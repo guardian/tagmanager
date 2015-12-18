@@ -1,7 +1,7 @@
 package controllers
 
 import model.command.CommandError._
-import model.command.{BatchTagCommand, PathUsageCheck, CreateTagCommand, UpdateTagCommand}
+import model.command._
 import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
 import play.api.Logger
@@ -111,6 +111,32 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def mergeTag = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[MergeTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def deleteTag(id: Long)= APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }
