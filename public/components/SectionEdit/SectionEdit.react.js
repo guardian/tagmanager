@@ -1,5 +1,6 @@
 import React from 'react';
 import SectionName from './SectionName.react';
+import SectionEdition from './SectionEditions.react';
 import SaveButton from '../utils/SaveButton.react';
 
 class SectionEdit extends React.Component {
@@ -26,7 +27,12 @@ class SectionEdit extends React.Component {
 
     saveSection() {
       this.props.sectionActions.saveSection(this.props.section);
+    }
 
+    updateEditions(editions) {
+      this.props.sectionActions.updateSection(Object.assign({}, this.props.section, {
+        editions: editions
+      }));
     }
 
     render () {
@@ -43,12 +49,10 @@ class SectionEdit extends React.Component {
             <SectionName section={this.props.section} updateSection={this.props.sectionActions.updateSection} />
           </div>
           <div className="section-edit__column">
+            <SectionEdition editions={this.props.section.editions} updateEditions={this.updateEditions.bind(this)}/>
           </div>
-          <div className="section-edit__column">
-          </div>
-
+          <div className="section-edit__column"></div>
           <SaveButton isHidden={!this.isSectionDirty()} onSaveClick={this.saveSection.bind(this)} onResetClick={this.resetSection.bind(this)}/>
-
         </div>
       );
     }
