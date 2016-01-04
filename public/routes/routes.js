@@ -11,6 +11,9 @@ import Status       from '../components/Status.react';
 import TagSearch    from '../components/TagSearch.react';
 import Unauthorised from '../components/Unauthorised.react';
 
+import SectionList from '../components/SectionList/SectionList.react';
+import SectionEdit from '../components/SectionEdit/SectionEdit.react';
+
 import {getStore}   from '../util/storeAccessor';
 
 function requirePermission(permissionName, nextState, replaceState) {
@@ -28,6 +31,9 @@ export default [
         <Route name="mapping" path="/mapping" component={MappingManager} />
         <Route name="merge" path="/merge" component={MergeTag} />
         <Route name="status" path="/status" component={Status} />
+        <Route name="sectionList" path="/section" component={SectionList} />
+        <Route name="sectionEdit" path="/section/:sectionId" component={SectionEdit} />
+
         <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
         <IndexRoute component={TagSearch}/>
     </Route>

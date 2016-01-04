@@ -36,6 +36,23 @@ export default {
     });
   },
 
+  getSection: (id) => {
+    return Reqwest({
+      url: '/api/section/' + id,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  saveSection: (id, section) => {
+    return Reqwest({
+        url: '/api/section/' + id,
+        data: JSON.stringify(section),
+        contentType: 'application/json',
+        method: 'put'
+    });
+  },
+
   getReferenceTypes: () => {
     return Reqwest({
       url: '/api/referenceTypes',
