@@ -129,6 +129,23 @@
       }
     },
 
+    "TagManagerPermissionsBucketPolicy": {
+        "Type": "AWS::IAM::Policy",
+        "Properties": {
+            "PolicyName": "TagManagerPermissionsBucketPolicy",
+            "PolicyDocument": {
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": ["s3:GetObject"],
+                        "Resource": ["arn:aws:s3:::permissions-cache/*"]
+                    }
+                ]
+            },
+            "Roles": [{"Ref": "AdminRole"}]
+        }
+    },
+
     "TagManagerCloudwatchPolicy" : {
       "Type": "AWS::IAM::Policy",
       "Properties": {
