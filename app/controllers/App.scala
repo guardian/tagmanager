@@ -7,11 +7,15 @@ import repositories.{TagSearchCriteria, TagRepository}
 import play.api.Logger
 import services.Config
 import com.gu.tagmanagement.{TagType}
+import permissions._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 
 object App extends Controller with PanDomainAuthActions {
 
-  def index(id: String = "") = AuthAction {
+  def index(id: String = "") = AuthAction.async { req =>
 
     val jsFileName = "build/app.js"
 
@@ -20,9 +24,13 @@ object App extends Controller with PanDomainAuthActions {
       case None => routes.Assets.versioned(jsFileName).toString
     }
 
-    val clientConfig = ClientConfig(Config().capiUrl, Config().capiKey, TagType.list.map(_.name))
+    Permissions.getPermissionsForUser(req.user.email).map { permissions =>
 
-    Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
+      val clientConfig = ClientConfig(Config().capiUrl, Config().capiKey, TagType.list.map(_.name), permissions)
+
+      Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
+    }
+
   }
 
   def hello = AuthAction {
