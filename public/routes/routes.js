@@ -1,12 +1,12 @@
 import React        from 'react';
 import { Route, IndexRoute } from 'react-router';
 
-<<<<<<< HEAD
 import ReactApp     from '../components/ReactApp.react';
 import TagCreate    from '../components/Tag/Create.react';
 import TagDisplay   from '../components/Tag/Display.react';
 import BatchTag     from '../components/BatchTag.react';
 import MergeTag     from '../components/MergeTag.react';
+import MappingManager from '../components/MappingManager.react';
 import Status       from '../components/Status.react';
 import TagSearch    from '../components/TagSearch.react';
 import Unauthorised from '../components/Unauthorised.react';
@@ -19,16 +19,6 @@ function requirePermission(permissionName, nextState, replaceState) {
     replaceState(null, '/unauthorised');
   }
 }
-=======
-import ReactApp       from '../components/ReactApp.react';
-import TagCreate      from '../components/Tag/Create.react';
-import TagDisplay     from '../components/Tag/Display.react';
-import BatchTag       from '../components/BatchTag.react';
-import MappingManager from '../components/MappingManager.react';
-import MergeTag       from '../components/MergeTag.react';
-import Status         from '../components/Status.react';
-import TagSearch      from '../components/TagSearch.react';
->>>>>>> master
 
 export default [
     <Route path="/" component={ReactApp}>
