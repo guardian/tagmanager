@@ -79,6 +79,15 @@ export default {
     });
   },
 
+  getTagsByReferenceType: (referenceType) => {
+    return Reqwest({
+        url: '/api/tags',
+        method: 'get',
+        data: {referenceType: referenceType, pageSize: 1000},
+        type: 'json'
+    });
+  },
+
   batchTag: (contentIds, tagId, operation) => {
     const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation};
 
