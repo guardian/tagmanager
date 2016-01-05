@@ -24,6 +24,17 @@ case class PodcastMetadata( linkUrl: String,
     explicit =          explicit,
     image =             image.map(_.asThrift)
   )
+
+  def asXml = {
+    <linkUrl>{this.linkUrl}</linkUrl>
+    <copyrightText>{this.copyrightText.getOrElse("")}</copyrightText>
+    <authorText>{this.authorText.getOrElse("")}</authorText>
+    <iTunesUrl>{this.iTunesUrl.getOrElse("")}</iTunesUrl>
+    <iTunesBlock>{this.iTunesBlock}</iTunesBlock>
+    <clean>{this.clean}</clean>
+    <explicit>{this.explicit}</explicit>
+    <image>{this.image.map(x => x.asXml).getOrElse("")}</image>
+  }
 }
 
 object PodcastMetadata {
@@ -51,4 +62,3 @@ object PodcastMetadata {
       image =             thriftPodcastMetadata.image.map(Image(_))
     )
 }
-

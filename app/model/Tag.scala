@@ -66,7 +66,7 @@ case class Tag(
       <parents>{this.parents}</parents>
       <references>{this.references.map(_.asXml)}</references>
       <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
-    <contributorInformation>{this.contributorInformation.getOrElse("")}</contributorInformation>
+    <contributorInformation>{this.contributorInformation.map(_.asXml).getOrElse("")}</contributorInformation>
       </tag>
   }
 
