@@ -52,6 +52,8 @@ object Dynamo {
   lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
   lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
   lazy val tagAuditTable = dynamoDb.getTable(Config().tagAuditTableName)
+  lazy val sectionAuditTable = dynamoDb.getTable(Config().sectionAuditTableName)
+
   lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
   lazy val referencesTypeTable = dynamoDb.getTable(Config().referencesTypeTableName)
 }
@@ -83,5 +85,6 @@ class KinesisStreamProducer(streamName: String) {
 
 object KinesisStreams {
   lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName)
+  lazy val sectionUpdateStream = new KinesisStreamProducer(Config().sectionUpdateStreamName)
   lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName)
 }

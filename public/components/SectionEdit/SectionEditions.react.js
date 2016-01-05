@@ -1,6 +1,8 @@
 import React from 'react';
 import R from 'ramda';
 
+import {allowedEditions} from '../../constants/allowedEditions';
+
 export default class SectionEdit extends React.Component {
 
     constructor(props) {
@@ -9,6 +11,20 @@ export default class SectionEdit extends React.Component {
 
     removeEdition(editionRegion) {
       this.props.updateEditions(R.omit([editionRegion], this.props.editions));
+    }
+
+    renderAddEdition() {
+      const nonSelectedEditions = allowedEditions.filter(edition => this.props.editions[edition] === undefined);
+
+      if (!nonSelectedEditions.length) {
+        return false;
+      }
+
+      return (
+        <div>
+          Possible to Add... {nonSelectedEditions.join(' ')}
+        </div>
+      );
     }
 
     renderEdition(editionRegion) {
@@ -26,11 +42,15 @@ export default class SectionEdit extends React.Component {
       );
     }
 
-    render () {
+    renderEditions() {
+
+      if (!Object.keys(this.props.editions).length) {
+        return false;
+      }
 
       return (
-        <table className="section-edit__editions">
-          <thead className="section-edit__editions__header">
+        <table>
+          <thead>
             <tr>
               <th>
                 Edition
@@ -41,10 +61,25 @@ export default class SectionEdit extends React.Component {
               <th></th>
             </tr>
           </thead>
-          <tbody className="section-edit__editions__body">
+          <tbody>
             {Object.keys(this.props.editions).map(this.renderEdition, this)}
           </tbody>
         </table>
+      );
+    }
+
+    render () {
+
+      return (
+        <div className="section-edit__editions">
+          <div className="section-edit__header">
+            International Editions
+          </div>
+          {this.renderEditions()}
+          <div className="section-edit__edition__add">
+            {this.renderAddEdition()}
+          </div>
+        </div>
       );
     }
 }

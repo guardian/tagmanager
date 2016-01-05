@@ -49,3 +49,16 @@
   border: 1px solid $c-grey-300;
 
 }
+
+.section-edit__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  margin-bottom: $standard-padding;
+}
+
+.section-edit__editions {
+  padding: 10px;
+}
