@@ -75,11 +75,11 @@ export class TagSearch extends React.Component {
                         <input className="tag-search__input" type="text" value={this.state.searchString} onChange={this.handleSearchInputChange.bind(this)} />
                         <select onChange={this.handleSearchFieldChange.bind(this)} value={this.state.searchFieldName}>
                           {Object.keys(searchFields).map((field) => {
-                            return (<option value={searchFields[field]}>{field}</option>);
+                            return (<option key={field} value={searchFields[field]}>{field}</option>);
                           })}
                         </select>
                     </div>
-                    
+
                     <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
 
                 </div>

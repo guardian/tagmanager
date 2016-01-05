@@ -1,0 +1,50 @@
+.mapping {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.mapping__header {
+  width: 100%;
+
+  position: relative;
+
+
+  background-color: $c-grey-100;
+  border: 1px solid $c-grey-300;
+
+  padding: $standard-padding;
+
+}
+
+.mapping__add {
+  background-color: $c-grey-100;
+  border: 1px solid $c-grey-300;
+  border-top-width: 0;
+
+  padding: $standard-padding;
+
+}
+
+.mapping__header__title,
+.mapping__add__title {
+  @extend %f-header;
+  @extend %fs-data-2;
+
+  font-weight: bold;
+
+  display: block;
+
+}
+
+.mapping__add__block {
+  display: inline-block;
+
+  margin-top: 5px;
+  margin-right: $standard-padding;
+}
+
+.mapping__add__selectedtag {
+  @extend %f-header;
+  @extend %fs-data-3;
+}

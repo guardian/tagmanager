@@ -5,7 +5,9 @@ GET        /tag/:id                       controllers.App.index(id)
 GET        /batch                         controllers.App.index(id = "")
 GET        /merge                         controllers.App.index(id = "")
 
-
+GET        /status                        controllers.App.index(id = "")
+GET        /unauthorised                  controllers.App.index(id = "")
+GET        /mapping                       controllers.App.index(id = "")
 
 # API
 GET        /api/tags                      controllers.TagManagementApi.searchTags

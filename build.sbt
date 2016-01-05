@@ -10,6 +10,7 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.10.33",
   "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
   "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.8",
+  "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
   "com.squareup.okhttp" % "okhttp" % "2.4.0",
   "org.apache.thrift" % "libthrift" % "0.8.0",

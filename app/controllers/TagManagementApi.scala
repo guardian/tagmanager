@@ -4,12 +4,15 @@ import model.command.CommandError._
 import model.command._
 import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
+import permissions.Permissions
 import play.api.Logger
 import model.Tag
 import model.Section
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
+import permissions.BatchTagPermissionsCheck
+
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -52,10 +55,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
       searchField = req.getQueryString("searchField"),
-      types = req.getQueryString("types").map(_.split(",").toList)
+      types = req.getQueryString("types").map(_.split(",").toList),
+      referenceType = req.getQueryString("referenceType")
     )
 
-    val orderBy = req.getQueryString("orderBy").getOrElse("internalName");
+    val orderBy = req.getQueryString("orderBy").getOrElse("internalName")
 
     val tags = TagLookupCache.search(criteria)
 
@@ -68,7 +72,9 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       case(_) => tags.sortBy(_.comparableValue)
     }
 
-    Ok(Json.toJson(orderedTags take 25))
+    val resultsCount = req.getQueryString("pageSize").getOrElse("25").toInt
+
+    Ok(Json.toJson(orderedTags take resultsCount))
   }
 
   def getSection(id: Long) = APIAuthAction {
@@ -106,7 +112,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def batchTag = APIAuthAction { req =>
+  def batchTag = (APIAuthAction andThen BatchTagPermissionsCheck) { req =>
+
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {

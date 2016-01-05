@@ -14,8 +14,6 @@ export default class Header extends React.Component {
     }
 
     render () {
-        var self = this;
-
         return (
             <header className="top-toolbar">
 
@@ -31,6 +29,9 @@ export default class Header extends React.Component {
                 <div className="header__children">
                     <ul className="links">
                         <li className="links__item top-toolbar__item--highlight">
+                            <Link to="/mapping">Mapping Manager</Link>
+                        </li>
+                        <li className="links__item top-toolbar__item--highlight">
                             <Link to="/batch">Batch tag</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">
@@ -40,12 +41,6 @@ export default class Header extends React.Component {
                             <Link to="/status">Status</Link>
                         </li>
                     </ul>
-                </div>
-
-                <div className="top-toolbar__right-align">
-                    <div className="top-toolbar__user top-toolbar__item">
-                        <span className="user__name">{self.userName()}<i className="i-down-arrow"/></span>
-                    </div>
                 </div>
             </header>
         );
