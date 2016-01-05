@@ -18,6 +18,8 @@ case class Section(
                     editions: Map[String, EditionalisedPage] = Map()
                     ) {
 
+  def toItem = Item.fromJSON(Json.toJson(this).toString())
+
   def asThrift = ThriftSection(
     id            = id,
     sectionTagId  = sectionTagId,

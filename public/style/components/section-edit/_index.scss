@@ -1,0 +1,64 @@
+.section-edit {
+  display: flex;
+
+  height: calc(100vh - #{$size-header-height});
+}
+
+.section-edit__column {
+  @extend %tag__column;
+}
+
+.section-edit__column--sidebar {
+  @extend %tag__column;
+  background-color: $c-grey-200;
+
+  flex: 1 0 370px;
+
+}
+
+.section-edit__input-group {
+  padding: $standard-padding * 1.5;
+  border-bottom: 1px solid $c-grey-300;
+
+  select {
+    margin-top: $tag-edit-padding;
+    width: 100%;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 50px;
+  }
+}
+
+.section-edit__input-group__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  display: block;
+
+}
+
+.section-edit__input {
+  width: 100%;
+  display: block;
+  background-color: $c-white;
+  padding: $standard-padding;
+  border: 1px solid $c-grey-300;
+
+}
+
+.section-edit__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+
+  margin-bottom: $standard-padding;
+}
+
+.section-edit__editions {
+  padding: 10px;
+}

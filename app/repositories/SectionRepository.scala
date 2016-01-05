@@ -12,10 +12,9 @@ object SectionRepository {
     Option(Dynamo.sectionTable.getItem("id", id)).map(Section.fromItem)
   }
 
-  def updateSection(sectionJson: JsValue) = {
+  def updateSection(section: Section) = {
     try {
-      val section = Section.fromJson(sectionJson) // parsing input json here provides bugjet validation
-      Dynamo.sectionTable.putItem(Item.fromJSON(sectionJson.toString()))
+      Dynamo.sectionTable.putItem(section.toItem)
       Some(section)
     } catch {
       case e: Error => None

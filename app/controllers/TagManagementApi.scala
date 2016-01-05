@@ -1,7 +1,7 @@
 package controllers
 
 import model.command.CommandError._
-import model.command.{BatchTagCommand, PathUsageCheck, CreateTagCommand, UpdateTagCommand}
+import model.command._
 import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
 import permissions.Permissions
@@ -86,12 +86,35 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def updateSection(id: Long) = APIAuthAction { req =>
 
     req.body.asJson.map { json =>
-      SectionRepository.updateSection(json).map{ section =>
-        Ok(Json.toJson(section))
-      }.getOrElse(BadRequest("Could not update section"))
-
+      try {
+        UpdateSectionCommand(json.as[Section]).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
     }.getOrElse {
       BadRequest("Expecting Json data")
+    }
+  }
+
+  def addEditionToSection(id: Long) = APIAuthAction { req =>
+    req.body.asJson.map { json =>
+      val editionName = (json \ "editionName").as[String]
+
+      try {
+        AddEditionToSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def removeEditionFromSection(id: Long, editionName: String) = APIAuthAction { req =>
+    try {
+      RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+    } catch {
+      commandErrorAsResult
     }
   }
 

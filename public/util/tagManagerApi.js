@@ -36,6 +36,40 @@ export default {
     });
   },
 
+  getSection: (id) => {
+    return Reqwest({
+      url: '/api/section/' + id,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  saveSection: (id, section) => {
+    return Reqwest({
+        url: '/api/section/' + id,
+        data: JSON.stringify(section),
+        contentType: 'application/json',
+        method: 'put'
+    });
+  },
+
+  addEditionToSection: (sectionId, editionName) => {
+    return Reqwest({
+        url: '/api/section/' + sectionId + '/edition',
+        data: JSON.stringify({editionName: editionName}),
+        contentType: 'application/json',
+        method: 'post'
+    });
+  },
+
+  removeEditionFromSection: (sectionId, editionName) => {
+    return Reqwest({
+        url: '/api/section/' + sectionId + '/edition/' + editionName,
+        contentType: 'application/json',
+        method: 'delete'
+    });
+  },
+
   getReferenceTypes: () => {
     return Reqwest({
       url: '/api/referenceTypes',

@@ -60,7 +60,7 @@ export default class TagReferences extends React.Component {
               </tr>
             </thead>
             <tbody className="tag-references__references">
-              {this.props.tag.externalReferences.sort((a, b) => a.type > b.type).map(this.renderReference, this)}
+              {this.props.tag.externalReferences.sort((a, b) => a.type > b.type ? 1 : -1).map(this.renderReference, this)}
               <tr>
                 <td colSpan="3" className="tag-references__addrow">
                   <AddReference onAddReference={this.addReference.bind(this)} referenceTypes={this.props.referenceTypes} />

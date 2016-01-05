@@ -73,11 +73,13 @@ sealed trait Config {
   def sequenceTableName: String
   def jobTableName: String
   def tagAuditTableName: String
+  def sectionAuditTableName: String
   def clusterStatusTableName: String
 
   def referencesTypeTableName: String
 
   def tagUpdateStreamName: String
+  def sectionUpdateStreamName: String
   def taggingOperationsStreamName: String
 
   def jobQueueName: String
@@ -99,9 +101,11 @@ class DevConfig extends Config {
 
   override def jobTableName: String = "tag-manager-jobs-dev"
   override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
+  override def sectionAuditTableName: String = "tag-manager-section-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
+  override def sectionUpdateStreamName: String = "section-update-stream-dev"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
@@ -124,9 +128,12 @@ class CodeConfig extends Config {
 
   override def jobTableName: String = "tag-manager-jobs-dev"
   override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
+  override def sectionAuditTableName: String = "tag-manager-section-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
+  override def sectionUpdateStreamName: String = "section-update-stream-dev"
+
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
@@ -148,9 +155,11 @@ class ProdConfig extends Config {
 
   override def jobTableName: String = "tag-manager-jobs-PROD"
   override def tagAuditTableName: String = "tag-manager-tag-audit-PROD"
+  override def sectionAuditTableName: String = "tag-manager-section-audit-PROD"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
 
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
+  override def sectionUpdateStreamName: String = "section-update-stream-PROD"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-PROD"
 
   override def jobQueueName: String = "tag-manager-job-queue-PROD"
