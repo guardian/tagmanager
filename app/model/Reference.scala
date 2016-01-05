@@ -7,6 +7,10 @@ import com.gu.tagmanagement.{Reference => ThriftReference}
 
 case class Reference(`type`: String, value: String) {
   def asThrift = ThriftReference(`type`, value)
+  def asXml = {<reference>
+               <type>{this.`type`}</type>
+               <value>{this.value}</value>
+               </reference>}
 }
 
 object Reference {
