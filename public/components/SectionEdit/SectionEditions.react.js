@@ -1,7 +1,7 @@
 import React from 'react';
 import R from 'ramda';
-
-import {allowedEditions} from '../../constants/allowedEditions';
+import SectionAddEdition from './SectionAddEdition.react';
+import tagManagerApi from '../../util/tagManagerApi';
 
 export default class SectionEdit extends React.Component {
 
@@ -10,26 +10,14 @@ export default class SectionEdit extends React.Component {
     }
 
     removeEdition(editionRegion) {
-      this.props.updateEditions(R.omit([editionRegion], this.props.editions));
-    }
-
-    renderAddEdition() {
-      const nonSelectedEditions = allowedEditions.filter(edition => this.props.editions[edition] === undefined);
-
-      if (!nonSelectedEditions.length) {
-        return false;
-      }
-
-      return (
-        <div>
-          Possible to Add... {nonSelectedEditions.join(' ')}
-        </div>
-      );
+      tagManagerApi.removeEditionFromSection(this.props.section.id, editionRegion).then((resp) => {
+        this.props.refreshSection();
+      });
     }
 
     renderEdition(editionRegion) {
 
-      const edition = this.props.editions[editionRegion];
+      const edition = this.props.section.editions[editionRegion];
 
       return (
         <tr className="section-edit__editions__item" key={edition.path}>
@@ -44,7 +32,7 @@ export default class SectionEdit extends React.Component {
 
     renderEditions() {
 
-      if (!Object.keys(this.props.editions).length) {
+      if (!Object.keys(this.props.section.editions).length) {
         return false;
       }
 
@@ -62,7 +50,7 @@ export default class SectionEdit extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(this.props.editions).map(this.renderEdition, this)}
+            {Object.keys(this.props.section.editions).map(this.renderEdition, this)}
           </tbody>
         </table>
       );
@@ -76,9 +64,7 @@ export default class SectionEdit extends React.Component {
             International Editions
           </div>
           {this.renderEditions()}
-          <div className="section-edit__edition__add">
-            {this.renderAddEdition()}
-          </div>
+          <SectionAddEdition section={this.props.section} disabled={this.props.saveState === "SAVE_STATE_DIRTY"} refreshSection={this.props.refreshSection}/>
         </div>
       );
     }

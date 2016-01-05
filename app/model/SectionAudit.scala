@@ -50,6 +50,14 @@ object SectionAudit {
     SectionAudit(section.id, "updated", new DateTime(), user.map(_.email).getOrElse("default user"), s"section '${section.name}' updated", SectionSummary(section))
   }
 
+  def addedEdition(section: Section, editionName: String)(implicit user: Option[User] = None): SectionAudit = {
+    SectionAudit(section.id, "added edition", new DateTime(), user.map(_.email).getOrElse("default user"), s"added ${editionName} edition to section '${section.name}", SectionSummary(section))
+  }
+
+  def removedEdition(section: Section, editionName: String)(implicit user: Option[User] = None): SectionAudit = {
+    SectionAudit(section.id, "removed edition", new DateTime(), user.map(_.email).getOrElse("default user"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
+  }
+
 }
 
 case class SectionSummary(

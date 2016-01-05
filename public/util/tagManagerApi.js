@@ -53,6 +53,23 @@ export default {
     });
   },
 
+  addEditionToSection: (sectionId, editionName) => {
+    return Reqwest({
+        url: '/api/section/' + sectionId + '/edition',
+        data: JSON.stringify({editionName: editionName}),
+        contentType: 'application/json',
+        method: 'post'
+    });
+  },
+
+  removeEditionFromSection: (sectionId, editionName) => {
+    return Reqwest({
+        url: '/api/section/' + sectionId + '/edition/' + editionName,
+        contentType: 'application/json',
+        method: 'delete'
+    });
+  },
+
   getReferenceTypes: () => {
     return Reqwest({
       url: '/api/referenceTypes',

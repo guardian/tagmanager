@@ -21,6 +21,9 @@ PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag
 GET        /api/sections                  controllers.TagManagementApi.listSections
 GET        /api/section/:id               controllers.TagManagementApi.getSection(id: Long)
 PUT        /api/section/:id               controllers.TagManagementApi.updateSection(id: Long)
+POST       /api/section/:id/edition       controllers.TagManagementApi.addEditionToSection(id: Long)
+DELETE     /api/section/:id/edition/:editionName       controllers.TagManagementApi.removeEditionFromSection(id: Long, editionName: String)
+
 
 GET        /api/referenceTypes            controllers.TagManagementApi.listReferenceTypes
 

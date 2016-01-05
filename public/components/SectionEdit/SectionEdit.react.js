@@ -49,7 +49,7 @@ class SectionEdit extends React.Component {
             <SectionName section={this.props.section} updateSection={this.props.sectionActions.updateSection} />
           </div>
           <div className="section-edit__column">
-            <SectionEdition editions={this.props.section.editions} updateEditions={this.updateEditions.bind(this)}/>
+            <SectionEdition section={this.props.section} updateEditions={this.updateEditions.bind(this)} saveState={this.props.saveState} refreshSection={this.resetSection.bind(this)}/>
           </div>
           <div className="section-edit__column"></div>
           <SaveButton isHidden={!this.isSectionDirty()} onSaveClick={this.saveSection.bind(this)} onResetClick={this.resetSection.bind(this)}/>

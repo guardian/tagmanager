@@ -96,6 +96,28 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
+  def addEditionToSection(id: Long) = APIAuthAction { req =>
+    req.body.asJson.map { json =>
+      val editionName = (json \ "editionName").as[String]
+
+      try {
+        AddEditionToSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def removeEditionFromSection(id: Long, editionName: String) = APIAuthAction { req =>
+    try {
+      RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
   def listSections() = APIAuthAction {
     Ok(Json.toJson(SectionRepository.loadAllSections))
   }
