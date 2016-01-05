@@ -6,7 +6,7 @@ import model.TagAudit
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
-import repositories.{ContentAPI, TagAuditRepository, TagRepository}
+import repositories.{PathManager, ContentAPI, TagAuditRepository, TagRepository}
 import services.KinesisStreams
 
 
@@ -40,6 +40,7 @@ case class RemoveTagStep(tagId: Long, originalUsername: Option[String]) extends 
     TagRepository.getTag(tagId) foreach { tag =>
 
       TagRepository.deleteTag(tagId)
+      PathManager.removePathForId(tag.pageId)
 
       KinesisStreams.tagUpdateStream.publishUpdate(tagId.toString, TagEvent(EventType.Delete, tagId, None))
 
