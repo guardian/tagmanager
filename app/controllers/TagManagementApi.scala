@@ -131,8 +131,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def getAuditForOperation(op: String) = APIAuthAction { req =>
     Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
   }
-  
-  def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 
+
+  def getJobs(tagIdParam: Option[Long]) = APIAuthAction {
     val jobs = tagIdParam match {
       case Some(tagId) => JobRepository.findJobsForTag(tagId)
       case None => JobRepository.loadAllJobs
@@ -140,4 +140,10 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(jobs))
   }
 
+  def getTagsAsXml() = APIAuthAction {
+    val tagsAsXml = TagRepository.loadAllTags.seq.map(_.asXml)
+    Ok(<tags>
+      {tagsAsXml.seq.map { x => x }}
+      </tags>)
+  }
 }

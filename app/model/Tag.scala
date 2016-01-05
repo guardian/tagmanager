@@ -48,6 +48,28 @@ case class Tag(
     podcastMetadata   = podcastMetadata.map(_.asThrift),
     contributorInformation = contributorInformation.map(_.asThrift)
   )
+
+  def asXml = {
+      <tag>
+      <id>{this.id}</id>
+      <path>{this.path}</path>
+      <pageId>{this.pageId}</pageId>
+      <type>{this.`type`}</type>
+      <internalName>{this.internalName}</internalName>
+      <externalName>{this.externalName}</externalName>
+      <slug>{this.slug}</slug>
+      <hidden>{this.hidden}</hidden>
+      <legallySensitive>{this.legallySensitive}</legallySensitive>
+      <comparableValue>{this.comparableValue}</comparableValue>
+      <section>{this.section.getOrElse("")}</section>
+      <description>{this.description.getOrElse("")}</description>
+      <parents>{this.parents}</parents>
+      <references>{this.references.map(_.asXml)}</references>
+      <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
+    <contributorInformation>{this.contributorInformation.getOrElse("")}</contributorInformation>
+      </tag>
+  }
+
 }
 
 object Tag {
