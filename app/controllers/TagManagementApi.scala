@@ -11,8 +11,6 @@ import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
 import permissions.BatchTagPermissionsCheck
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -140,11 +138,4 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(jobs))
   }
 
-  def getTagsAsXml() = APIAuthAction.async {
-    Future(TagLookupCache.allTags.get.map(_.asXml)) map { tags =>
-      Ok(<tags>
-        {tags.seq.map { x => x }}
-        </tags>)
-    }
-  }
 }
