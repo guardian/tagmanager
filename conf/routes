@@ -29,7 +29,7 @@ GET        /api/audit/operation/:op       controllers.TagManagementApi.getAuditF
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
-GET        /api/xml                       controllers.ReadOnly.getTagsAsXml
+GET        /api/xml                       controllers.ReadOnlyApi.getTagsAsXml
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan

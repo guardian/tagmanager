@@ -6,7 +6,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import repositories._
 
-object ReadOnly extends Controller {
+object ReadOnlyApi extends Controller {
   def getTagsAsXml() = Action.async {
     Future(TagLookupCache.allTags.get.map(_.asXml)) map { tags =>
       Ok(<tags>
