@@ -35,7 +35,8 @@ GET        /api/audit/operation/:op       controllers.TagManagementApi.getAuditF
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
-
+GET        /hyper/tags                    controllers.HyperMediaApi.tags
+GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long)
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan
