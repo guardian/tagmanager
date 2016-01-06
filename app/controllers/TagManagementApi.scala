@@ -85,7 +85,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateSection(id: Long) = APIAuthAction { req =>
-
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         UpdateSectionCommand(json.as[Section]).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -98,6 +98,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def addEditionToSection(id: Long) = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
 
@@ -112,6 +113,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def removeEditionFromSection(id: Long, editionName: String) = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     try {
       RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
     } catch {

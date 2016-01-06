@@ -12,7 +12,7 @@ case class UpdateSectionCommand(section: Section) extends Command {
 
   type T = Section
 
-  override def process()(implicit user: Option[User] = None): Option[Section] = {
+  override def process()(implicit username: Option[String] = None): Option[Section] = {
     Logger.info(s"updating section ${section.id}")
 
     val result = SectionRepository.updateSection(section)

@@ -14,7 +14,7 @@ case class RemoveEditionFromSectionCommand(sectionId: Long, editionName: String)
 
   type T = Section
 
-  override def process()(implicit user: Option[User] = None): Option[Section] = {
+  override def process()(implicit username: Option[String] = None): Option[Section] = {
     Logger.info(s"removing ${editionName} from section ${sectionId}")
 
     val section = SectionRepository.getSection(sectionId).getOrElse(SectionNotFound)
