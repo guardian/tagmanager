@@ -25,7 +25,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
       val criteria = TagSearchCriteria(
         q = req.getQueryString("query"),
         searchField = req.getQueryString("searchField"),
-        types = req.getQueryString("types").map(_.split(",").toList),
+        types = req.getQueryString("type").map(_.split(",").toList),
         referenceType = req.getQueryString("externalReferenceType"),
         internalName = req.getQueryString("internalName"),
         externalName = req.getQueryString("externalName"),
@@ -39,9 +39,8 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
         EmbeddedEntity(tagUri(tag.id), Some(tag))
       }
 
-      val res = CollectionResponse(0, limit, Some(tags.size), tags)
-      Ok(Json.toJson(res))
-}
+      Ok(Json.toJson(CollectionResponse(offset, limit, Some(tags.size), tags)))
+    }
   }
 
   def tagUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/tags/${id}"
