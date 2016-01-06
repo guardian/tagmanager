@@ -4,30 +4,56 @@ import play.api.libs.json._
 case class LinkEntity(rel: String, href: String)
 object LinkEntity { implicit val jsonWrites = Json.writes[LinkEntity] }
 
-case class EmbeddedEntity(uri: String,
-                             data: Option[Tag] = None,
+case class EmbeddedEntity[T](uri: String,
+                             data: Option[T] = None,
                              links: Option[List[LinkEntity]] = None) {
 
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
 }
-object EmbeddedEntity { implicit val jsonWrites = Json.writes[EmbeddedEntity] }
+object EmbeddedEntity {
+  implicit def embeddedEntityWrites[T](implicit fmt: Writes[T]): Writes[EmbeddedEntity[T]] = new Writes[EmbeddedEntity[T]] {
+    def writes(ts: EmbeddedEntity[T]) = JsObject(Seq(
+      "uri" -> JsString(ts.uri),
+      "data" -> Json.toJson(ts.data),
+      "links" -> JsArray(ts.links.map(_.map(x => Json.toJson(x))).getOrElse(Nil))
+    ))
+  }
 
-case class EntityResponse(data: Tag, links: Option[List[LinkEntity]] = None) {
+}
+
+case class EntityResponse[T](data: T, links: Option[List[LinkEntity]] = None) {
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
 }
-object EntityResponse { implicit val jsonWrites = Json.writes[EntityResponse] }
+object EntityResponse {
+  implicit def entityResponseWrites[T](implicit fmt: Writes[T]): Writes[EntityResponse[T]] = new Writes[EntityResponse[T]] {
+    def writes(er: EntityResponse[T]) = JsObject(Seq(
+      "data" -> Json.toJson(er.data),
+      "links" -> JsArray(er.links.map(_.map(x => Json.toJson(x))).getOrElse(Nil))
+    ))
+  }
+}
 
-case class CollectionResponse(
+case class CollectionResponse[T](
   offset: Int,
   limit: Int,
   total: Option[Int],
-  data: List[EmbeddedEntity],
+  data: List[EmbeddedEntity[T]],
   links: Option[List[LinkEntity]] = None
 ) {
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
 }
-object CollectionResponse { implicit val jsonWrites = Json.writes[CollectionResponse] }
+object CollectionResponse {
+  implicit def collectionResponseWrites[T](implicit fmt: Writes[T]): Writes[CollectionResponse[T]] = new Writes[CollectionResponse[T]] {
+    def writes(cr: CollectionResponse[T]) = JsObject(Seq(
+      "offset" -> JsNumber(cr.offset),
+      "limit" -> JsNumber(cr.limit),
+      "total" -> JsNumber(cr.total.getOrElse(0).toInt),
+      "data" -> JsArray(cr.data.map(x => Json.toJson(x))),
+      "links" -> JsArray(cr.links.map(_.map(x => Json.toJson(x))).getOrElse(Nil))
+    ))
+  }
 
+}
 
 case class EmptyResponse(links: Option[List[LinkEntity]] = None) {
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
