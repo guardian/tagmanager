@@ -17,8 +17,8 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def tags = APIAuthAction { req =>
     if(req.queryString.isEmpty) {
       val res = EmptyResponse()
-        .addLink("tags", "/api/tag/{id}")
-        .addLink("tags", "/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}")
+        .addLink("tags-item", fullUri("/hyper/tags/{id}"))
+        .addLink("tags", fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}"))
       Ok(Json.toJson(res))
 
     } else {
@@ -44,4 +44,5 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   }
 
   def tagUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/tags/${id}"
+  def fullUri(path: String): String = s"https://tagmanager.${conf.pandaDomain}${path}"
 }
