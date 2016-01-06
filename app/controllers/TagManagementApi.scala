@@ -1,5 +1,4 @@
 package controllers
-
 import model.command.CommandError._
 import model.command.{BatchTagCommand, PathUsageCheck, CreateTagCommand, UpdateTagCommand}
 import model.jobs.{BatchTagAddCompleteCheck, Job}
@@ -142,7 +141,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def getTagsAsXml() = APIAuthAction.async {
-    Future(TagRepository.loadAllTags.seq.map(_.asXml)) map { tags =>
+    Future(TagLookupCache.allTags.get.map(_.asXml)) map { tags =>
       Ok(<tags>
         {tags.seq.map { x => x }}
         </tags>)
