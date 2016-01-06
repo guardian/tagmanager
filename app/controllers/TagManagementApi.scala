@@ -24,7 +24,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateTag(id: Long) = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+
     req.body.asJson.map { json =>
       try {
         UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -37,7 +38,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag() = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -136,9 +137,36 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def batchTag = (APIAuthAction andThen BatchTagPermissionsCheck) { req =>
 
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def mergeTag = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[MergeTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def deleteTag(id: Long)= APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }

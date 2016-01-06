@@ -1,6 +1,5 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
 import model.{TagAudit, PodcastMetadata, Tag, Reference}
@@ -30,7 +29,7 @@ case class CreateTagCommand(
 
   type T = Tag
 
-  def process()(implicit user: Option[User] = None): Option[Tag] = {
+  def process()(implicit username: Option[String] = None): Option[Tag] = {
 
     val calculatedPath = TagPathCalculator.calculatePath(`type`, slug, section)
 

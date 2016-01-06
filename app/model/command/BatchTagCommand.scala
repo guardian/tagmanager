@@ -1,6 +1,5 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
 import model.TagAudit
 import model.jobs.{BatchTagAddCompleteCheck, BatchTagRemoveCompleteCheck, Job}
@@ -15,7 +14,7 @@ import services.{SQS, KinesisStreams}
 case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: String) extends Command {
   type T = Long
 
-  override def process()(implicit user: Option[User] = None): Option[Long] = {
+  override def process()(implicit username: Option[String] = None): Option[Long] = {
     val tag = TagRepository.getTag(tagId) getOrElse(TagNotFound)
     val section = tag.section.flatMap( SectionRepository.getSection(_) )
 
@@ -33,7 +32,7 @@ case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: Str
       id = Sequences.jobId.getNextId,
       `type` = "Batch tag",
       started = new DateTime,
-      startedBy = user.map(_.email),
+      startedBy = username,
       tagIds = List(tagId),
       command = this,
       steps = operation match {

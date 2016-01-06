@@ -1,6 +1,5 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.{TagAudit, Tag}
 import play.api.Logger
@@ -12,7 +11,7 @@ case class UpdateTagCommand(tag: Tag) extends Command {
 
   type T = Tag
 
-  override def process()(implicit user: Option[User] = None): Option[Tag] = {
+  override def process()(implicit username: Option[String] = None): Option[Tag] = {
     Logger.info(s"updating tag ${tag.id}")
 
     val result = TagRepository.upsertTag(tag)
