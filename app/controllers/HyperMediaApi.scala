@@ -2,29 +2,59 @@ package controllers
 
 import model.{Tag, EntityResponse, EmptyResponse, CollectionResponse, EmbeddedEntity}
 import play.api.libs.json._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Result
+import play.api.mvc.{Action, Controller, Request, Result}
 import repositories._
+import scala.concurrent.Future
 import services.Config.conf
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
-object HyperMediaApi extends Controller with PanDomainAuthActions {
-  def tag(id: Long) = APIAuthAction {
-    TagRepository.getTag(id).map { tag =>
-      Ok(Json.toJson(EntityResponse(tag)))
-    }.getOrElse(NotFound)
+case class CORSable[A](origins: String*)(action: Action[A]) extends Action[A] {
+  def apply(request: Request[A]): Future[Result] = {
+    val headers = request.headers.get("Origin").map { origin =>
+      if(origins.contains(origin)) {
+        List(CORSable.CORS_ALLOW_ORIGIN -> origin, CORSable.CORS_CREDENTIALS -> "true")
+      } else { Nil }
+    }
+
+    action(request).map(_.withHeaders(headers.getOrElse(Nil) :_*))
   }
 
-  def tags = APIAuthAction { req =>
-    if(req.queryString.isEmpty) {
+  lazy val parser = action.parser
+}
+
+object CORSable {
+  val CORS_ALLOW_ORIGIN = "Access-Control-Allow-Origin"
+  val CORS_CREDENTIALS = "Access-Control-Allow-Credentials"
+  val CORS_ALLOW_METHODS = "Access-Control-Allow-Methods"
+  val CORS_ALLOW_HEADERS = "Access-Control-Allow-Headers"
+}
+
+object HyperMediaApi extends Controller with PanDomainAuthActions {
+  def hyper = CORSable(conf.corsableDomains: _*) {
+    Action {
       val res = EmptyResponse()
         .addLink("tags-item", fullUri("/hyper/tags/{id}"))
         .addLink("tags", fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}"))
       Ok(Json.toJson(res))
+    }
+  }
 
-    } else {
+  def tag(id: Long) = CORSable(conf.corsableDomains: _*) {
+    Action {
+      TagRepository.getTag(id).map { tag =>
+        Ok(Json.toJson(EntityResponse(tag)))
+      }.getOrElse(NotFound)
+    }
+  }
+
+  def tags = CORSable(conf.corsableDomains: _*) {
+    Action { implicit req =>
       val criteria = TagSearchCriteria(
         q = req.getQueryString("query"),
         searchField = req.getQueryString("searchField"),
+
         types = req.getQueryString("type").map(_.split(",").toList),
         referenceType = req.getQueryString("externalReferenceType"),
         internalName = req.getQueryString("internalName"),
@@ -40,6 +70,16 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
       }
 
       Ok(Json.toJson(CollectionResponse(offset, limit, Some(tags.size), tags)))
+    }
+  }
+
+  def preflight(routes: String) = CORSable(conf.corsableDomains: _*) {
+    Action { implicit req =>
+      val requestedHeaders = req.headers.get("Access-Control-Request-Headers")
+
+      NoContent.withHeaders(
+        CORSable.CORS_ALLOW_METHODS -> "GET, DELETE, PUT",
+        CORSable.CORS_ALLOW_HEADERS -> requestedHeaders.getOrElse(""))
     }
   }
 
