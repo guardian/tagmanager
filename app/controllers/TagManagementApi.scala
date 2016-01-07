@@ -1,5 +1,4 @@
 package controllers
-
 import model.command.CommandError._
 import model.command._
 import model.jobs.{BatchTagAddCompleteCheck, Job}
@@ -12,7 +11,6 @@ import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
 import permissions.BatchTagPermissionsCheck
-
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -184,8 +182,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def getAuditForOperation(op: String) = APIAuthAction { req =>
     Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
   }
-  
-  def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 
+
+  def getJobs(tagIdParam: Option[Long]) = APIAuthAction {
     val jobs = tagIdParam match {
       case Some(tagId) => JobRepository.findJobsForTag(tagId)
       case None => JobRepository.loadAllJobs
