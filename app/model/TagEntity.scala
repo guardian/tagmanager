@@ -1,5 +1,6 @@
 package model
 import play.api.libs.json._
+import repositories.SectionRepository
 
 //used for responses in the hypermedia api
 
@@ -15,7 +16,7 @@ case class TagEntity(
   legallySensitive: Boolean = false,
   comparableValue: String,
   categories: Set[String] = Set(),
-  section: Option[Long],
+  section: Option[Section],
   description: Option[String] = None,
   podcastMetadata: Option[PodcastMetadata] = None,
   contributorInformation: Option[ContributorInformation] = None,
@@ -37,7 +38,7 @@ object TagEntity {
         tag.legallySensitive,
         tag.comparableValue,
         tag.categories,
-        tag.section,
+        getTagSection(tag.section),
         tag.description,
         tag.podcastMetadata,
         tag.contributorInformation,
@@ -45,6 +46,13 @@ object TagEntity {
         tag.references
       )
   }
+
+  def getTagSection(id: Option[Long]): Option[Section] = {
+    id.map( sectionId =>
+      SectionRepository.getSection(sectionId)
+    ).flatten
+  }
+
 
   implicit def tagEntityWrites: Writes[TagEntity] = new Writes[TagEntity] {
     def writes(te: TagEntity) = JsObject(Seq(
@@ -59,8 +67,8 @@ object TagEntity {
       "legallySensitive" -> JsBoolean(te.legallySensitive),
       "comparableValue" -> JsString(te.comparableValue),
       "categories" -> JsArray(te.categories.map(JsString(_)).toSeq),
-      "section" -> JsNumber(te.section.getOrElse(0).toString.toInt),
-      "descripton" -> JsString(te.description.getOrElse(Nil).toString),
+      "section" -> te.section.map(Json.toJson(_)).getOrElse(JsNull),
+      "descripton" -> JsString(te.description.getOrElse("")),
       "podcastMetadata" -> te.podcastMetadata.map(Json.toJson(_)).getOrElse(JsNull),
       "contributorInformation" -> te.contributorInformation.map(Json.toJson(_)).getOrElse(JsNull),
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq)
