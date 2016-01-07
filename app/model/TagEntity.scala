@@ -6,20 +6,11 @@ import repositories.SectionRepository
 
 case class TagEntity(
   id: Long,
-  path: String,
-  pageId: Long,
   `type`: String,
   internalName: String,
   externalName: String,
   slug: String,
-  hidden: Boolean = false,
-  legallySensitive: Boolean = false,
-  comparableValue: String,
-  categories: Set[String] = Set(),
-  section: Option[Section],
-  description: Option[String] = None,
-  podcastMetadata: Option[PodcastMetadata] = None,
-  contributorInformation: Option[ContributorInformation] = None,
+  section: Option[SectionEntity],
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
   references: List[Reference] = Nil
 )
@@ -28,68 +19,63 @@ object TagEntity {
   def apply(tag: Tag): TagEntity = {
       TagEntity(
         tag.id,
-        tag.path,
-        tag.pageId,
         tag.`type`,
         tag.internalName,
         tag.externalName,
         tag.slug,
-        tag.hidden,
-        tag.legallySensitive,
-        tag.comparableValue,
-        tag.categories,
         getTagSection(tag.section),
-        tag.description,
-        tag.podcastMetadata,
-        tag.contributorInformation,
         tag.parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
         tag.references
       )
   }
 
-  def getTagSection(id: Option[Long]): Option[Section] = {
-    id.map( sectionId =>
-      SectionRepository.getSection(sectionId)
-    ).flatten
+  def getTagSection(id: Option[Long]): Option[SectionEntity] = {
+    id.map(sectionId =>
+      SectionRepository.getSection(sectionId).map(section =>
+        SectionEntity(section))
+      ).flatten
   }
 
 
   implicit def tagEntityWrites: Writes[TagEntity] = new Writes[TagEntity] {
     def writes(te: TagEntity) = JsObject(Seq(
       "id" -> JsNumber(te.id),
-      "path" -> JsString(te.path),
-      "pageId" -> JsNumber(te.pageId),
       "type" -> JsString(te.`type`),
       "internalName" -> JsString(te.internalName),
       "externalName" -> JsString(te.externalName),
       "slug" -> JsString(te.slug),
-      "hidden" -> JsBoolean(te.hidden),
-      "legallySensitive" -> JsBoolean(te.legallySensitive),
-      "comparableValue" -> JsString(te.comparableValue),
-      "categories" -> JsArray(te.categories.map(JsString(_)).toSeq),
       "section" -> te.section.map(Json.toJson(_)).getOrElse(JsNull),
-      "descripton" -> JsString(te.description.getOrElse("")),
-      "podcastMetadata" -> te.podcastMetadata.map(Json.toJson(_)).getOrElse(JsNull),
-      "contributorInformation" -> te.contributorInformation.map(Json.toJson(_)).getOrElse(JsNull),
-      "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq)
+      "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
+      "externalReferences" -> JsArray(te.references.map(Json.toJson(_)))
+
     ))
   }
 
 }
-  // id: Long,
-  // path: String,
-  // pageId: Long,
-  // `type`: String,
-  // internalName: String,
-  // externalName: String,
-  // slug: String,
-  // hidden: Boolean = false,
-  // legallySensitive: Boolean = false,
-  // comparableValue: String,
-  // categories: Set[String] = Set(),
-  // section: Option[Long],
-  // description: Option[String] = None,
-  // podcastMetadata: Option[PodcastMetadata] = None,
-  // contributorInformation: Option[ContributorInformation] = None,
-  // parents: Set[EmbeddedEntity[TagEntity]] = Set(),
-  // references: List[Reference] = Nil
+
+case class SectionEntity(
+  id: Long,
+  name: String,
+  pathPrefix: String,
+  slug: String
+)
+
+object SectionEntity {
+  implicit def sectionEntityWrites: Writes[SectionEntity] = new Writes[SectionEntity] {
+    def writes(se: SectionEntity) = JsObject(Seq(
+      "id" -> JsNumber(se.id),
+      "name" -> JsString(se.name),
+      "pathPrefix" -> JsString(se.pathPrefix),
+      "slug" -> JsString(se.slug)
+    ))
+  }
+
+  def apply(section: Section): SectionEntity = {
+    SectionEntity(
+      section.id,
+      section.name,
+      section.path,
+      section.wordsForUrl
+    )
+  }
+}
