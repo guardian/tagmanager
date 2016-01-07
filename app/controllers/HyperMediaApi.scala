@@ -1,6 +1,6 @@
 package controllers
 
-import model.{Tag, EntityResponse, EmptyResponse, CollectionResponse, EmbeddedEntity}
+import model.{Tag, EntityResponse, EmptyResponse, CollectionResponse, EmbeddedEntity, TagEntity, HyperMediaHelpers}
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.{Action, Controller, Request, Result}
@@ -35,8 +35,8 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def hyper = CORSable(conf.corsableDomains: _*) {
     Action {
       val res = EmptyResponse()
-        .addLink("tag-item", fullUri("/hyper/tags/{id}"))
-        .addLink("tags", fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}"))
+        .addLink("tag-item", HyperMediaHelpers.fullUri("/hyper/tags/{id}"))
+        .addLink("tags", HyperMediaHelpers.fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}"))
       Ok(Json.toJson(res))
     }
   }
@@ -44,7 +44,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def tag(id: Long) = CORSable(conf.corsableDomains: _*) {
     Action {
       TagRepository.getTag(id).map { tag =>
-        Ok(Json.toJson(EntityResponse(tag)))
+        Ok(Json.toJson(EntityResponse(TagEntity(tag))))
       }.getOrElse(NotFound)
     }
   }
@@ -70,7 +70,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
       val offset = req.getQueryString("offset").getOrElse("0").toInt
 
       val tags = TagLookupCache.search(criteria).drop(offset).take(limit).map { tag =>
-        EmbeddedEntity(tagUri(tag.id), Some(tag))
+        EmbeddedEntity(HyperMediaHelpers.tagUri(tag.id), Some(TagEntity(tag)))
       }
 
       Ok(Json.toJson(CollectionResponse(offset, limit, Some(tags.size), tags)))
@@ -86,7 +86,4 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
         CORSable.CORS_ALLOW_HEADERS -> requestedHeaders.getOrElse(""))
     }
   }
-
-  def tagUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/tags/${id}"
-  def fullUri(path: String): String = s"https://tagmanager.${conf.pandaDomain}${path}"
 }

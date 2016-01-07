@@ -1,5 +1,7 @@
 package model
 import play.api.libs.json._
+import services.Config.conf
+
 
 case class LinkEntity(rel: String, href: String)
 object LinkEntity { implicit val jsonWrites = Json.writes[LinkEntity] }
@@ -7,7 +9,6 @@ object LinkEntity { implicit val jsonWrites = Json.writes[LinkEntity] }
 case class EmbeddedEntity[T](uri: String,
                              data: Option[T] = None,
                              links: Option[List[LinkEntity]] = None) {
-
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
 }
 object EmbeddedEntity {
@@ -59,3 +60,8 @@ case class EmptyResponse(links: Option[List[LinkEntity]] = None) {
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
 }
 object EmptyResponse { implicit val jsonWrites = Json.writes[EmptyResponse] }
+
+object HyperMediaHelpers {
+  def tagUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/tags/${id}"
+  def fullUri(path: String): String = s"https://tagmanager.${conf.pandaDomain}${path}"
+}
