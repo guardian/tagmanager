@@ -10,6 +10,10 @@ case class Image(imageId: String, assets: List[ImageAsset]) {
     imageId = imageId,
     assets = assets.map(_.asThrift)
   )
+  def asXml = {
+    <imageId>{this.imageId}</imageId>
+    <assets>{this.assets.map(_.asXml)}</assets>
+  }
 }
 
 object Image {
@@ -29,6 +33,12 @@ object Image {
 
 case class ImageAsset(imageUrl: String, width: Long, height: Long, mimeType: String) {
   def asThrift = ThriftImageAsset(imageUrl, width, height, mimeType)
+  def asXml = {<imageAsset>
+    <imageUrl>{this.imageUrl}</imageUrl>
+    <width>{this.width}</width>
+    <height>{this.height}</height>
+    <mimeType>{this.mimeType}</mimeType>
+    </imageAsset>}
 }
 
 object ImageAsset {

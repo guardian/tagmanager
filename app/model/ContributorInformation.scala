@@ -19,6 +19,13 @@ case class ContributorInformation(
     twitterHandle =     twitterHandle,
     contactEmail =      contactEmail
   )
+  def asXml = {
+    <rcsId>{this.rcsId.getOrElse("")}</rcsId>
+    <bylineImage>{this.bylineImage.map(_.asXml).getOrElse("")}</bylineImage>
+    <largeBylineImage>{this.largeBylineImage.map(_.asXml).getOrElse("")}</largeBylineImage>
+    <twitterHandle>{this.twitterHandle.getOrElse("")}</twitterHandle>
+    <contactEmail>{this.contactEmail.getOrElse("")}</contactEmail>
+  }
 }
 
 object ContributorInformation {
@@ -40,4 +47,3 @@ object ContributorInformation {
       contactEmail =      thriftContributorInformation.contactEmail
     )
 }
-

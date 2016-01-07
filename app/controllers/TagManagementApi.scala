@@ -1,5 +1,4 @@
 package controllers
-
 import model.command.CommandError._
 import model.command._
 import model.jobs.{BatchTagAddCompleteCheck, Job}
@@ -13,7 +12,6 @@ import play.api.mvc.{Action, Controller}
 import repositories._
 import permissions.BatchTagPermissionsCheck
 
-
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def getTag(id: Long) = APIAuthAction {
@@ -24,7 +22,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateTag(id: Long) = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+
     req.body.asJson.map { json =>
       try {
         UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -37,7 +36,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag() = APIAuthAction { req =>
-    implicit val user = Option(req.user)
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -84,7 +83,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateSection(id: Long) = APIAuthAction { req =>
-
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         UpdateSectionCommand(json.as[Section]).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -97,6 +96,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def addEditionToSection(id: Long) = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
 
@@ -111,6 +111,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def removeEditionFromSection(id: Long, editionName: String) = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     try {
       RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
     } catch {
@@ -136,9 +137,36 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def batchTag = (APIAuthAction andThen BatchTagPermissionsCheck) { req =>
 
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def mergeTag = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[MergeTagCommand].process.map{t => NoContent } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def deleteTag(id: Long)= APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }
@@ -154,8 +182,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def getAuditForOperation(op: String) = APIAuthAction { req =>
     Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
   }
-  
-  def getJobs(tagIdParam: Option[Long]) = APIAuthAction { 
+
+  def getJobs(tagIdParam: Option[Long]) = APIAuthAction {
     val jobs = tagIdParam match {
       case Some(tagId) => JobRepository.findJobsForTag(tagId)
       case None => JobRepository.loadAllJobs

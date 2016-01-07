@@ -44,12 +44,16 @@ object TagAudit {
     }
   }
 
-  def created(tag: Tag)(implicit user: Option[User] = None): TagAudit = {
-    TagAudit(tag.id, "created", new DateTime(), user.map(_.email).getOrElse("default user"), s"tag '${tag.internalName}' created", TagSummary(tag), None)
+  def created(tag: Tag)(implicit username: Option[String] = None): TagAudit = {
+    TagAudit(tag.id, "created", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' created", TagSummary(tag), None)
   }
 
-  def updated(tag: Tag)(implicit user: Option[User] = None): TagAudit = {
-    TagAudit(tag.id, "updated", new DateTime(), user.map(_.email).getOrElse("default user"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
+  def updated(tag: Tag)(implicit username: Option[String] = None): TagAudit = {
+    TagAudit(tag.id, "updated", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
+  }
+
+  def deleted(tag: Tag, username: Option[String] = None): TagAudit = {
+    TagAudit(tag.id, "deleted", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' deleted", TagSummary(tag), None)
   }
 
   def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[User] = None): TagAudit = {

@@ -4,6 +4,7 @@ GET        /tag/create                    controllers.App.index(id = "")
 GET        /tag/:id                       controllers.App.index(id)
 GET        /batch                         controllers.App.index(id = "")
 GET        /merge                         controllers.App.index(id = "")
+
 GET        /status                        controllers.App.index(id = "")
 GET        /unauthorised                  controllers.App.index(id = "")
 GET        /mapping                       controllers.App.index(id = "")
@@ -17,6 +18,7 @@ POST       /api/tag                       controllers.TagManagementApi.createTag
 
 GET        /api/tag/:id                   controllers.TagManagementApi.getTag(id: Long)
 PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag(id: Long)
+DELETE     /api/tag/:id                   controllers.TagManagementApi.deleteTag(id: Long)
 
 GET        /api/sections                  controllers.TagManagementApi.listSections
 GET        /api/section/:id               controllers.TagManagementApi.getSection(id: Long)
@@ -29,17 +31,23 @@ GET        /api/referenceTypes            controllers.TagManagementApi.listRefer
 
 GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long])
 POST       /api/batchTag                  controllers.TagManagementApi.batchTag
+POST       /api/mergeTag                  controllers.TagManagementApi.mergeTag
+
 
 GET        /api/audit/tag/:tagId          controllers.TagManagementApi.getAuditForTag(tagId: Long)
 GET        /api/audit/operation/:op       controllers.TagManagementApi.getAuditForOperation(op: String)
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
+
 # Hypmedia API
 GET        /hyper                         controllers.HyperMediaApi.hyper
 GET        /hyper/tags                    controllers.HyperMediaApi.tags
 GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long)
 OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
+
+GET        /api/xml                       controllers.ReadOnlyApi.getTagsAsXml
+
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan

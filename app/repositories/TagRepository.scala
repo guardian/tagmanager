@@ -16,12 +16,16 @@ object TagRepository {
   }
 
   def upsertTag(tag: Tag) = {
-      try {
-        Dynamo.tagTable.putItem(tag.toItem)
-        Some(tag)
-      } catch {
-        case e: Error => None
-      }
+    try {
+      Dynamo.tagTable.putItem(tag.toItem)
+      Some(tag)
+    } catch {
+      case e: Error => None
+    }
+  }
+
+  def deleteTag(tagId: Long): Unit = {
+    Dynamo.tagTable.deleteItem("id", tagId)
   }
 
   def scanSearch(criteria: TagSearchCriteria) = {
