@@ -35,7 +35,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def hyper = CORSable(conf.corsableDomains: _*) {
     Action {
       val res = EmptyResponse()
-        .addLink("tags-item", fullUri("/hyper/tags/{id}"))
+        .addLink("tag-item", fullUri("/hyper/tags/{id}"))
         .addLink("tags", fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}"))
       Ok(Json.toJson(res))
     }
@@ -51,11 +51,16 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
 
   def tags = CORSable(conf.corsableDomains: _*) {
     Action { implicit req =>
+      // we need to map keyword to topic in the types changes
+      val types = req.getQueryString("type").map(_.split(",").toList.map { x =>
+        if(x.toLowerCase() == "keyword") "topic" else x
+      })
+
       val criteria = TagSearchCriteria(
         q = req.getQueryString("query"),
         searchField = req.getQueryString("searchField"),
 
-        types = req.getQueryString("type").map(_.split(",").toList),
+        types = types,
         referenceType = req.getQueryString("externalReferenceType"),
         internalName = req.getQueryString("internalName"),
         externalName = req.getQueryString("externalName"),
