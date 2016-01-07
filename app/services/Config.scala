@@ -92,7 +92,6 @@ sealed trait Config {
 
   def composerDomain: String
   def corsableDomains: Seq[String]
-
 }
 
 class DevConfig extends Config {
