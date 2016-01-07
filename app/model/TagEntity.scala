@@ -2,7 +2,11 @@ package model
 import play.api.libs.json._
 import repositories.SectionRepository
 
-//used for responses in the hypermedia api
+/* Flex expects the old api so this essentially mimics the old functionality
+ * by adding a SectionEntity and TagEntity. It does mean that some of the new
+ * data about tags and sections is missing but this can be rectified by altering
+ * flex.
+ */
 
 case class TagEntity(
   id: Long,
@@ -17,6 +21,7 @@ case class TagEntity(
 
 object TagEntity {
   def apply(tag: Tag): TagEntity = {
+    /* The Section is implicitly populated when this is called */
       TagEntity(
         tag.id,
         tag.`type`,
