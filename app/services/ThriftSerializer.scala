@@ -8,11 +8,19 @@ object ThriftSerializer {
 
   val ThriftBufferInitialSize = 128
 
-  def serializeToBytes(struct: ThriftStruct): Array[Byte] = {
+  def serializeToBytes(struct: ThriftStruct, includeCompressionFlag: Boolean): Array[Byte] = {
     val buffer = new TMemoryBuffer(ThriftBufferInitialSize)
     val protocol = new TCompactProtocol(buffer)
     struct.write(protocol)
-    buffer.getArray
+
+    includeCompressionFlag match {
+      case true => compressionByte +: buffer.getArray
+      case false => buffer.getArray
+    }
+  }
+
+  val compressionByte: Byte = {
+    0x00.toByte
   }
 
 }
