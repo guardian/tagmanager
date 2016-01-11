@@ -39,7 +39,15 @@ GET        /api/audit/operation/:op       controllers.TagManagementApi.getAuditF
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
+
+# Hypmedia API
+GET        /hyper                         controllers.HyperMediaApi.hyper
+GET        /hyper/tags                    controllers.HyperMediaApi.tags
+GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long)
+OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
+
 GET        /api/xml                       controllers.ReadOnlyApi.getTagsAsXml
+
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan
