@@ -21,6 +21,7 @@ case class Tag(
   comparableValue: String,
   categories: Set[String] = Set(),
   section: Option[Long],
+  publication: Option[Long],
   description: Option[String] = None,
   parents: Set[Long] = Set(),
   references: List[Reference] = Nil,
@@ -42,6 +43,7 @@ case class Tag(
     legallySensitive  = legallySensitive,
     comparableValue   = comparableValue,
     section           = section,
+    publication       = publication,
     description       = description,
     parents           = parents,
     references        = references.map(_.asThrift),
@@ -51,22 +53,23 @@ case class Tag(
 
   def asXml = {
       <tag>
-      <id>{this.id}</id>
-      <path>{this.path}</path>
-      <pageId>{this.pageId}</pageId>
-      <type>{this.`type`}</type>
-      <internalName>{this.internalName}</internalName>
-      <externalName>{this.externalName}</externalName>
-      <slug>{this.slug}</slug>
-      <hidden>{this.hidden}</hidden>
-      <legallySensitive>{this.legallySensitive}</legallySensitive>
-      <comparableValue>{this.comparableValue}</comparableValue>
-      <section>{this.section.getOrElse("")}</section>
-      <description>{this.description.getOrElse("")}</description>
-      <parents>{this.parents}</parents>
-      <references>{this.references.map(_.asXml)}</references>
-      <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
-    <contributorInformation>{this.contributorInformation.map(_.asXml).getOrElse("")}</contributorInformation>
+        <id>{this.id}</id>
+        <path>{this.path}</path>
+        <pageId>{this.pageId}</pageId>
+        <type>{this.`type`}</type>
+        <internalName>{this.internalName}</internalName>
+        <externalName>{this.externalName}</externalName>
+        <slug>{this.slug}</slug>
+        <hidden>{this.hidden}</hidden>
+        <legallySensitive>{this.legallySensitive}</legallySensitive>
+        <comparableValue>{this.comparableValue}</comparableValue>
+        <section>{this.section.getOrElse("")}</section>
+        <publication>{this.publication.getOrElse("")}</publication>
+        <description>{this.description.getOrElse("")}</description>
+        <parents>{this.parents}</parents>
+        <references>{this.references.map(_.asXml)}</references>
+        <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
+        <contributorInformation>{this.contributorInformation.map(_.asXml).getOrElse("")}</contributorInformation>
       </tag>
   }
 
@@ -87,6 +90,7 @@ object Tag {
       (JsPath \ "comparableValue").format[String] and
       (JsPath \ "categories").formatNullable[Set[String]].inmap[Set[String]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "publication").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
@@ -118,6 +122,7 @@ object Tag {
       legallySensitive  = thriftTag.legallySensitive,
       comparableValue   = thriftTag.comparableValue,
       section           = thriftTag.section,
+      publication       = thriftTag.publication,
       description       = thriftTag.description,
       parents           = thriftTag.parents.toSet,
       references        = thriftTag.references.map(Reference(_)).toList,
