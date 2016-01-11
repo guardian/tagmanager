@@ -93,16 +93,20 @@ export default {
       });
   },
 
-  searchTags: (textQuery, searchFieldName, orderByField) => {
+  searchTags: (textQuery, options) => {
 
     const query = {q: textQuery};
 
-    if (orderByField) {
-      query.orderBy = orderByField;
+    if (options.orderByField) {
+      query.orderBy = options.orderByField;
     }
 
-    if (searchFieldName) {
-      query.searchField = searchFieldName;
+    if (options.searchFieldName) {
+      query.searchField = options.searchFieldName;
+    }
+
+    if (options.tagType) {
+      query.types = options.tagType;
     }
 
     return Reqwest({

@@ -7,7 +7,7 @@ const searchFields = {
   'Internal Name': 'internalName',
   'External Name': 'externalName',
   'ID': 'id',
-  'Type': '`type`',
+  'Type': 'type',
   'Path': 'path'
 };
 
@@ -45,7 +45,10 @@ export class TagSearch extends React.Component {
         searchFieldName: searchFieldName !== undefined ? searchFieldName : this.state.searchFieldName
       });
 
-      tagManagerApi.searchTags(searchString, searchFieldName, sortBy)
+      tagManagerApi.searchTags(searchString, {
+        searchFieldName: searchFieldName,
+        orderByField: sortBy
+      })
       .then(function(resp) {
           self.setState({tags: resp});
       }).fail(function(err, msg) {
@@ -54,16 +57,16 @@ export class TagSearch extends React.Component {
     }
 
     handleSearchInputChange(event) {
-      this.searchTags(event.target.value, this.state.searchFieldName, this.state.sortBy);
+      this.searchTags(event.target.value, {searchFieldName: this.state.searchFieldName, orderByField: this.state.sortBy});
     }
 
     handleSearchFieldChange(event) {
-      this.searchTags(this.state.searchString, event.target.value, this.state.sortBy);
+      this.searchTags(this.state.searchString, {searchFieldName: event.target.value, orderByField: this.state.sortBy});
 
     }
 
     sortBy(fieldName) {
-      this.searchTags(this.state.searchString, fieldName);
+      this.searchTags(this.state.searchString, {searchFieldName: fieldName});
     }
 
     render () {
