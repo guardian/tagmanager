@@ -6,8 +6,8 @@ import com.gu.tagmanagement.{PublicationInformation => ThriftPublicationInformat
 
 case class PublicationInformation(
                                    mainNewspaperBookSectionId: Option[Long],
-                                   newspaperBooks: Option[Set[Long]]
-                          ) {
+                                   newspaperBooks: Set[Long]
+                                  ) {
 
   def asThrift = ThriftPublicationInformation(
     mainNewspaperBookSectionId = mainNewspaperBookSectionId,
@@ -22,9 +22,9 @@ case class PublicationInformation(
 
 object PublicationInformation {
 
-  implicit val podcastMetadataFormat: Format[PodcastMetadata] = (
+  implicit val publicationInformationFormat: Format[PodcastMetadata] = (
     (JsPath \ "mainNewspaperBookSectionId").formatNullable[Long] and
-      (JsPath \ "newspaperBooks").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
+      (JsPath \ "newspaperBooks").formatNullable[Seq[Long]].inmap[Seq[Long]](_.getOrElse(Seq()), Some(_))
     )(PublicationInformation.apply, unlift(PublicationInformation.unapply))
 
   def apply(thriftPublicationInformation: ThriftPublicationInformation): PublicationInformation =
