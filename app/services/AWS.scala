@@ -64,7 +64,7 @@ object SQS {
   lazy val jobQueue = new SQSQueue(Config().jobQueueName)
 }
 
-class KinesisStreamProducer(streamName: String) {
+class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean = false) {
 
   def publishUpdate(key: String, data: String) {
     publishUpdate(key, ByteBuffer.wrap(data.getBytes("UTF-8")))
@@ -75,7 +75,7 @@ class KinesisStreamProducer(streamName: String) {
   }
 
   def publishUpdate(key: String, struct: ThriftStruct) {
-    publishUpdate(key, ByteBuffer.wrap(ThriftSerializer.serializeToBytes(struct)))
+    publishUpdate(key, ByteBuffer.wrap(ThriftSerializer.serializeToBytes(struct, requireCompressionByte)))
   }
 
   def publishUpdate(key: String, dataBuffer: ByteBuffer) {
@@ -84,7 +84,7 @@ class KinesisStreamProducer(streamName: String) {
 }
 
 object KinesisStreams {
-  lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName)
-  lazy val sectionUpdateStream = new KinesisStreamProducer(Config().sectionUpdateStreamName)
-  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName)
+  lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName, true)
+  lazy val sectionUpdateStream = new KinesisStreamProducer(Config().sectionUpdateStreamName, true)
+  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, true)
 }

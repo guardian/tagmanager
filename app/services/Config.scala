@@ -90,6 +90,8 @@ sealed trait Config {
   def pandaDomain: String
   def pandaAuthCallback: String
 
+  def composerDomain: String
+  def corsableDomains: Seq[String]
 }
 
 class DevConfig extends Config {
@@ -115,6 +117,9 @@ class DevConfig extends Config {
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
   override def pandaDomain: String = "local.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.local.dev-gutools.co.uk/oauthCallback"
+
+  override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
+  override def corsableDomains: Seq[String] = Seq(composerDomain)
 
 
 }
@@ -144,6 +149,10 @@ class CodeConfig extends Config {
   override def pandaDomain: String = "code.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
 
+  override def composerDomain: String = "https://composer.code.dev-gutools.co.uk"
+  override def corsableDomains: Seq[String] = Seq(composerDomain)
+
+
 }
 
 class ProdConfig extends Config {
@@ -169,5 +178,8 @@ class ProdConfig extends Config {
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.gutools.co.uk/oauthCallback"
+
+  override def composerDomain: String = "https://composer.gutools.co.uk"
+  override def corsableDomains: Seq[String] = Seq(composerDomain)
 
 }
