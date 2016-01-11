@@ -9,6 +9,8 @@ import TopicCategories from './formComponents/topic/TopicCategories.js';
 import PodcastMetadata from  './formComponents/series/PodcastMetadata.react';
 import ContributorInfoEdit from './formComponents/contributor/ContributorInfoEdit.react';
 import PublicationInfoEdit from './formComponents/publication/PublicationInfoEdit.react';
+import NewspaperBookInfoEdit from './formComponents/newspaperbook/NewspaperBookInfoEdit.react';
+
 
 import * as tagTypes from '../../constants/tagTypes';
 
@@ -67,6 +69,10 @@ export default class TagEdit extends React.Component {
       return <PublicationInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} />;
     }
 
+    renderNewspaperBookFields() {
+      return <NewspaperBookInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} />;
+    }
+
     renderTagTypeSpecificFields() {
 
       if (!this.props.tag.type) {
@@ -87,6 +93,10 @@ export default class TagEdit extends React.Component {
 
       if (this.props.tag.type === tagTypes.publication) {
         return this.renderPublicationFields();
+      }
+
+      if (this.props.tag.type === tagTypes.newspaperBook) {
+        return this.renderNewspaperBookFields();
       }
 
       return false;

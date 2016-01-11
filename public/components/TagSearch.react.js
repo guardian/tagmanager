@@ -57,16 +57,16 @@ export class TagSearch extends React.Component {
     }
 
     handleSearchInputChange(event) {
-      this.searchTags(event.target.value, {searchFieldName: this.state.searchFieldName, orderByField: this.state.sortBy});
+      this.searchTags(event.target.value, this.state.searchFieldName, this.state.sortBy);
     }
 
     handleSearchFieldChange(event) {
-      this.searchTags(this.state.searchString, {searchFieldName: event.target.value, orderByField: this.state.sortBy});
+      this.searchTags(this.state.searchString, event.target.value, this.state.sortBy);
 
     }
 
     sortBy(fieldName) {
-      this.searchTags(this.state.searchString, {searchFieldName: fieldName});
+      this.searchTags(this.state.searchString, fieldName);
     }
 
     render () {
