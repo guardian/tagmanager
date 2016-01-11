@@ -80,7 +80,12 @@ trait KinesisStreamRecordProcessor{
 
 object KinesisRecordPayloadConversions {
   implicit def kinesisRecordAsThriftCompactProtocol(rec: Record): TProtocol = {
-    val bbis = new ByteBufferBackedInputStream(rec.getData)
+
+    val data = rec.getData
+
+    val settings = data.get() //compression bit
+
+    val bbis = new ByteBufferBackedInputStream(data)
     val transport = new TIOStreamTransport(bbis)
     new TCompactProtocol(transport)
   }

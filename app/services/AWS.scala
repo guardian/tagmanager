@@ -86,5 +86,5 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
 object KinesisStreams {
   lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName, true)
   lazy val sectionUpdateStream = new KinesisStreamProducer(Config().sectionUpdateStreamName, true)
-  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, false)
+  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, true)
 }
