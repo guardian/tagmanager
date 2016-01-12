@@ -17,7 +17,6 @@ export default class SectionSelect extends React.Component {
       tagType: 'Publication'
     })
     .then((tags) => {
-      console.log(tags)
       this.setState({
         publications: tags
       });
