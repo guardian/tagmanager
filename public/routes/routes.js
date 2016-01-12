@@ -27,12 +27,12 @@ export default [
     <Route path="/" component={ReactApp}>
         <Route name="tag" path="/tag/create" component={TagCreate} />
         <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} />
-        <Route name="batch" path="/batch" component={BatchTag} onEnter={requirePermission.bind(this, 'batch_tag')}/>
+        <Route name="batch" path="/batch" component={BatchTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
         <Route name="mapping" path="/mapping" component={MappingManager} />
-        <Route name="merge" path="/merge" component={MergeTag} />
+        <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
         <Route name="status" path="/status" component={Status} />
         <Route name="sectionList" path="/section" component={SectionList} />
-        <Route name="sectionEdit" path="/section/:sectionId" component={SectionEdit} />
+        <Route name="sectionEdit" path="/section/:sectionId" component={SectionEdit} onEnter={requirePermission.bind(this, 'tag_super_admin')}/>
 
         <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
         <IndexRoute component={TagSearch}/>

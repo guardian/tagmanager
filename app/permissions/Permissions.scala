@@ -6,9 +6,10 @@ import scala.concurrent.{Future, ExecutionContext}
 
 object Permissions extends PermissionsProvider {
 
-  lazy val BatchTag = Permission("batch_tag", "tag-manager", PermissionDenied)
+  lazy val TagAdmin = Permission("tag_admin", "tag-manager", PermissionDenied)
+  lazy val TagSuperAdmin = Permission("tag_super_admin", "tag-manager", PermissionDenied)
 
-  lazy val all = Seq(BatchTag)
+  lazy val all = Seq(TagAdmin, TagSuperAdmin)
 
   implicit def config = PermissionsConfig(
     app = "tag-manager",
