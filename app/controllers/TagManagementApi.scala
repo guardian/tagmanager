@@ -10,7 +10,7 @@ import model.Section
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
-import permissions.BatchTagPermissionsCheck
+import permissions._
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -76,13 +76,12 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def getSection(id: Long) = APIAuthAction {
-
     SectionRepository.getSection(id).map{ section =>
       Ok(Json.toJson(section))
     }.getOrElse(NotFound)
   }
 
-  def updateSection(id: Long) = APIAuthAction { req =>
+  def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
@@ -95,7 +94,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def addEditionToSection(id: Long) = APIAuthAction { req =>
+  def addEditionToSection(id: Long) = (APIAuthAction andThen AddEditionToSectionPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
@@ -110,7 +109,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def removeEditionFromSection(id: Long, editionName: String) = APIAuthAction { req =>
+  def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     try {
       RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -149,7 +148,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def mergeTag = APIAuthAction { req =>
+  def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
@@ -162,7 +161,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def deleteTag(id: Long)= APIAuthAction { req =>
+  def deleteTag(id: Long)= (APIAuthAction andThen DeleteTagPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
