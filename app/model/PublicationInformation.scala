@@ -16,20 +16,20 @@ case class PublicationInformation(
 
   def asXml = {
     <mainNewspaperBookSectionId>{this.mainNewspaperBookSectionId.getOrElse("")}</mainNewspaperBookSectionId>
-      <newspaperBooks>{this.newspaperBooks.getOrElse("")}</newspaperBooks>
+    <newspaperBooks>{this.newspaperBooks}</newspaperBooks>
   }
 }
 
 object PublicationInformation {
 
-  implicit val publicationInformationFormat: Format[PodcastMetadata] = (
+  implicit val publicationInformationFormat: Format[PublicationInformation] = (
     (JsPath \ "mainNewspaperBookSectionId").formatNullable[Long] and
-      (JsPath \ "newspaperBooks").formatNullable[Seq[Long]].inmap[Seq[Long]](_.getOrElse(Seq()), Some(_))
+      (JsPath \ "newspaperBooks").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_))
     )(PublicationInformation.apply, unlift(PublicationInformation.unapply))
 
   def apply(thriftPublicationInformation: ThriftPublicationInformation): PublicationInformation =
     PublicationInformation(
       mainNewspaperBookSectionId =  thriftPublicationInformation.mainNewspaperBookSectionId,
-      newspaperBooks =              thriftPublicationInformation.newspaperBooks
+      newspaperBooks =              thriftPublicationInformation.newspaperBooks.toSet
     )
 }

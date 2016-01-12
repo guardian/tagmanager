@@ -26,7 +26,8 @@ case class Tag(
   parents: Set[Long] = Set(),
   references: List[Reference] = Nil,
   podcastMetadata: Option[PodcastMetadata] = None,
-  contributorInformation: Option[ContributorInformation] = None
+  contributorInformation: Option[ContributorInformation] = None,
+  publicationInformation: Option[PublicationInformation] = None
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -48,7 +49,8 @@ case class Tag(
     parents           = parents,
     references        = references.map(_.asThrift),
     podcastMetadata   = podcastMetadata.map(_.asThrift),
-    contributorInformation = contributorInformation.map(_.asThrift)
+    contributorInformation = contributorInformation.map(_.asThrift),
+    publicationInformation = publicationInformation.map(_.asThrift)
   )
 
   def asXml = {
@@ -70,6 +72,7 @@ case class Tag(
         <references>{this.references.map(_.asXml)}</references>
         <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
         <contributorInformation>{this.contributorInformation.map(_.asXml).getOrElse("")}</contributorInformation>
+        <publicationInformation>{this.publicationInformation.map(_.asXml).getOrElse("")}</publicationInformation>
       </tag>
   }
 
@@ -95,7 +98,8 @@ object Tag {
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
-      (JsPath \ "contributorInformation").formatNullable[ContributorInformation]
+      (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
+      (JsPath \ "publicationInformation").formatNullable[PublicationInformation]
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = try {
@@ -127,6 +131,7 @@ object Tag {
       parents           = thriftTag.parents.toSet,
       references        = thriftTag.references.map(Reference(_)).toList,
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
-      contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_))
+      contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
+      publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_))
     )
 }

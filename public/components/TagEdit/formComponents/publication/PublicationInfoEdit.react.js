@@ -17,10 +17,10 @@ export default class PublicationInfoEdit extends React.Component {
     }));
   }
 
-  removeNewspaperBook(removeTag) {
+  removeNewspaperBook(tagIdToRemove) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
       publicationInformation: Object.assign({}, this.props.tag.publicationInformation, {
-        newspaperBooks: this.props.tag.publicationInformation.newspaperBooks.filter((tag) => tag.id !== removeTag.id)
+        newspaperBooks: this.props.tag.publicationInformation.newspaperBooks.filter((tagId) => tagIdToRemove !== tagId)
       })
     }));
   }
@@ -71,13 +71,13 @@ export default class PublicationInfoEdit extends React.Component {
     return (
       <div className="tag-edit__field">
         <label className="tag-edit__label">Newspaper Books</label> <br />
-        {newspaperBooks.map((tag) => {
+        {newspaperBooks.map((tagId) => {
           return (
-            <div key={tag.id} className="tag-edit__tag">
-              <Link to={`/tag/${tag.id}`}>{tag.internalName}</Link>
-              <div className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tag)}>
+            <div key={tagId} className="tag-edit__tag">
+              <Link to={`/tag/${tagId}`}>{tagId}</Link>
+              <span className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tagId)}>
                 <i className="i-delete" />
-              </div>
+              </span>
             </div>
           );
         }, this)}
