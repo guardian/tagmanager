@@ -4,6 +4,7 @@ import com.squareup.okhttp.{FormEncodingBuilder, OkHttpClient, Request}
 import play.api.Logger
 import play.api.libs.json.Json
 import services.Config
+import java.util.concurrent.TimeUnit
 
 
 case class PathRegistrationFailed(m: String) extends RuntimeException(m)
@@ -13,6 +14,7 @@ object PathManager {
 
   val httpClient = new OkHttpClient()
 
+
   def registerPathAndGetPageId(path: String): Long = {
     Logger.info(s"registering path $path")
 
@@ -20,7 +22,11 @@ object PathManager {
       .add("path", path)
       .add("system", "tagmanager")
       .build()
-    val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths").post(formBody).build
+    val req = new Request.Builder()
+      .url(s"${Config().pathManagerUrl}paths")
+      .post(formBody)
+      .build
+
     val resp = httpClient.newCall(req).execute
 
     resp.code match {
@@ -55,6 +61,8 @@ object PathManager {
   }
 
   def isPathInUse(path: String): Boolean = {
+
+    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths?path=$path").build
     val resp = httpClient.newCall(req).execute
 
