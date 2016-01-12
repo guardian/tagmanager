@@ -27,6 +27,7 @@ object PathManager {
       .post(formBody)
       .build
 
+    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
     val resp = httpClient.newCall(req).execute
 
     resp.code match {
@@ -48,6 +49,7 @@ object PathManager {
   def removePathForId(id: Long) = {
     Logger.info(s"removing path entries for $id")
 
+    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths/$id").delete().build
     val resp = httpClient.newCall(req).execute
 
@@ -62,7 +64,7 @@ object PathManager {
 
   def isPathInUse(path: String): Boolean = {
 
-    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
+    httpClient.setConnectTimeout(2, TimeUnit.SECONDS)
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths?path=$path").build
     val resp = httpClient.newCall(req).execute
 
