@@ -36,6 +36,7 @@ object TagRepository {
 
   def loadAllTags = Dynamo.tagTable.scan().map(Tag.fromItem)
 
+  def allTagIter = Dynamo.tagTable.scan()
 }
 
 case class TagSearchCriteria(
