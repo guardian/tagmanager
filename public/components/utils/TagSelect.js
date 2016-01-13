@@ -39,7 +39,7 @@ export default class TagSelect extends React.Component {
     }
 
     performSearch(searchTerm) {
-      tagManagerApi.searchTags(searchTerm || this.state.searchTerm)
+      tagManagerApi.searchTags(searchTerm || this.state.searchTerm, {tagType: this.props.tagType})
         .then((tags) => {
           this.setState({
             suggestions: tags

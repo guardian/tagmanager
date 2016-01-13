@@ -12,8 +12,8 @@ object TagPathCalculator {
 
     val sectionPathPrefix = loadedSection.map(_.wordsForUrl + "/").getOrElse("")
 
-    `type` match {
-      case "type" => s"type/$slug"
+    `type`.toLowerCase match {
+      case "contenttype" => s"type/$slug"
       case "tone" => s"tone/$slug"
       case "contributor" => s"profile/$slug"
       case "publication" => s"publication/$slug"
