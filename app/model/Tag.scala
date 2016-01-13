@@ -5,7 +5,8 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType}
-
+import xml._
+import repositories.SectionRepository
 import scala.util.control.NonFatal
 
 case class Tag(
@@ -53,29 +54,44 @@ case class Tag(
     publicationInformation = publicationInformation.map(_.asThrift)
   )
 
-  def asXml = {
-      <tag>
-        <id>{this.id}</id>
-        <path>{this.path}</path>
-        <pageId>{this.pageId}</pageId>
-        <type>{this.`type`}</type>
-        <internalName>{this.internalName}</internalName>
-        <externalName>{this.externalName}</externalName>
-        <slug>{this.slug}</slug>
-        <hidden>{this.hidden}</hidden>
-        <legallySensitive>{this.legallySensitive}</legallySensitive>
-        <comparableValue>{this.comparableValue}</comparableValue>
-        <section>{this.section.getOrElse("")}</section>
-        <publication>{this.publication.getOrElse("")}</publication>
-        <description>{this.description.getOrElse("")}</description>
-        <parents>{this.parents}</parents>
-        <references>{this.references.map(_.asXml)}</references>
-        <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
-        <contributorInformation>{this.contributorInformation.map(_.asXml).getOrElse("")}</contributorInformation>
-        <publicationInformation>{this.publicationInformation.map(_.asXml).getOrElse("")}</publicationInformation>
-      </tag>
+  def createAttribute(name: String, value: Option[Any]) = {
+    value.map { result =>
+      Attribute(None, name, Text(result.toString), Null)
+    } getOrElse Null
   }
 
+  def addChild(n: Node, newChild: Node): Node = n match {
+    case Elem(prefix, label, attribs, scope, child @ _*) =>
+      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
+    case _ => error("Can only add children to elements!")
+  }
+
+  // in this limited format for inCopy to consume
+  def axExportedXml = {
+    val el = Elem(null, "tag", Null, TopScope, Text(""))
+
+    val section = SectionRepository.getSection(this.id)
+    val id = createAttribute("id", Some(this.id))
+    val externalName = createAttribute("externalName", Some(this.externalName))
+    val internalName = createAttribute("internalName", Some(this.internalName))
+    val urlWords = createAttribute("words-for-url", Some(this.slug))
+    val sectionId = createAttribute("section-id", this.section)
+    val sectionName = createAttribute("section", section.map(_.name))
+    val sectionUrl = createAttribute("section-words-for-url", section.map(_.wordsForUrl))
+    val `type` = createAttribute("type", Some(this.`type`))
+
+    val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type`
+
+    val withRefs: Node = this.references.foldLeft(withAttrs: Node) { (x, y) =>
+      addChild(x, y.asExportedXml)
+    }
+    val withParents: Node = this.parents.foldLeft(withRefs: Node) { (x, parent) =>
+      val el = Elem(null, "parent", Null, TopScope, Text("")) % createAttribute("id",
+ Some(parent))
+      addChild(x, el)
+     }
+    withParents
+  }
 }
 
 object Tag {
