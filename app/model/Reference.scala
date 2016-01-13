@@ -3,14 +3,23 @@ package model
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Reference => ThriftReference}
-
+import xml.{Elem, TopScope, Node, Null, Text}
+import helpers.XmlHelpers._
 
 case class Reference(`type`: String, value: String) {
   def asThrift = ThriftReference(`type`, value)
-  def axExportedXml = {<reference>
-               <type>{this.`type`}</type>
-               <value>{this.value}</value>
-               </reference>}
+
+
+  def asExportedXml = {
+    val el = Elem(null, "external-reference", Null, TopScope, Text(""))
+    val `type` = createAttribute("type", Some(this.`type`))
+
+    // these are identical but it's what inCopy wants
+    val topic = createAttribute("topic", Some(this.value))
+    val display = createAttribute("display-name", Some(this.value))
+
+    el % `type` % topic % display
+  }
 }
 
 object Reference {

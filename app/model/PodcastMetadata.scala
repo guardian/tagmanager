@@ -25,7 +25,7 @@ case class PodcastMetadata( linkUrl: String,
     image =             image.map(_.asThrift)
   )
 
-  def axExportedXml = {
+  def asExportedXml = {
     <linkUrl>{this.linkUrl}</linkUrl>
     <copyrightText>{this.copyrightText.getOrElse("")}</copyrightText>
     <authorText>{this.authorText.getOrElse("")}</authorText>
@@ -33,7 +33,7 @@ case class PodcastMetadata( linkUrl: String,
     <iTunesBlock>{this.iTunesBlock}</iTunesBlock>
     <clean>{this.clean}</clean>
     <explicit>{this.explicit}</explicit>
-    <image>{this.image.map(x => x.axExportedXml).getOrElse("")}</image>
+    <image>{this.image.map(x => x.asExportedXml).getOrElse("")}</image>
   }
 }
 
