@@ -1,6 +1,5 @@
 
 import React from 'react';
-import R from 'ramda';
 
 import PublicationSelect from '../../../utils/PublicationSelect.react';
 
