@@ -8,7 +8,7 @@ import repositories._
 
 object ReadOnlyApi extends Controller {
   def getTagsAsXml() = Action.async {
-    Future(TagLookupCache.allTags.get.map(_.axExportedXml)) map { tags =>
+    Future(TagLookupCache.allTags.get.map(_.asExportedXml)) map { tags =>
       Ok(<tags>
         {tags.seq.map { x => x }}
         </tags>)
@@ -17,7 +17,7 @@ object ReadOnlyApi extends Controller {
 
   def tagAsXml(id: Long) = Action {
     TagRepository.getTag(id).map { tag =>
-      Ok(tag.axExportedXml)
+      Ok(tag.asExportedXml)
     }.getOrElse(NotFound)
   }
 }

@@ -47,7 +47,7 @@ GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long
 OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
 
 GET        /tags/export/all               controllers.ReadOnlyApi.getTagsAsXml
-GET        /tags/export/single/:id         controllers.ReadOnlyApi.tagsAsXml(id: Long)
+GET        /tags/export/single/:id         controllers.ReadOnlyApi.tagAsXml(id: Long)
 
 
 GET        /hello                         controllers.App.hello

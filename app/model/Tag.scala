@@ -6,6 +6,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType}
 import xml._
+import helpers.XmlHelpers._
 import repositories.SectionRepository
 import scala.util.control.NonFatal
 
@@ -54,22 +55,9 @@ case class Tag(
     publicationInformation = publicationInformation.map(_.asThrift)
   )
 
-  def createAttribute(name: String, value: Option[Any]) = {
-    value.map { result =>
-      Attribute(None, name, Text(result.toString), Null)
-    } getOrElse Null
-  }
-
-  def addChild(n: Node, newChild: Node): Node = n match {
-    case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
-    case _ => error("Can only add children to elements!")
-  }
-
   // in this limited format for inCopy to consume
-  def axExportedXml = {
+  def asExportedXml = {
     val el = Elem(null, "tag", Null, TopScope, Text(""))
-
     val section = SectionRepository.getSection(this.id)
     val id = createAttribute("id", Some(this.id))
     val externalName = createAttribute("externalName", Some(this.externalName))
