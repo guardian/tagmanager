@@ -5,7 +5,7 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType}
-import xml._
+import xml.{Elem, TopScope, Null, Text, Node}
 import helpers.XmlHelpers._
 import repositories.SectionRepository
 import scala.util.control.NonFatal
@@ -60,8 +60,8 @@ case class Tag(
     val el = Elem(null, "tag", Null, TopScope, Text(""))
     val section = SectionRepository.getSection(this.id)
     val id = createAttribute("id", Some(this.id))
-    val externalName = createAttribute("externalName", Some(this.externalName))
-    val internalName = createAttribute("internalName", Some(this.internalName))
+    val externalName = createAttribute("externalname", Some(this.externalName))
+    val internalName = createAttribute("internalname", Some(this.internalName))
     val urlWords = createAttribute("words-for-url", Some(this.slug))
     val sectionId = createAttribute("section-id", this.section)
     val sectionName = createAttribute("section", section.map(_.name))

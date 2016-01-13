@@ -3,7 +3,7 @@ package model
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Reference => ThriftReference}
-import xml.{Elem, TopScope, Node, Null, Text}
+import xml.{Elem, TopScope, Null, Text}
 import helpers.XmlHelpers._
 
 case class Reference(`type`: String, value: String) {
