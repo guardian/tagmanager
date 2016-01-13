@@ -14,7 +14,7 @@ case class PublicationInformation(
     newspaperBooks =             newspaperBooks
   )
 
-  def asXml = {
+  def axExportedXml = {
     <mainNewspaperBookSectionId>{this.mainNewspaperBookSectionId.getOrElse("")}</mainNewspaperBookSectionId>
     <newspaperBooks>{this.newspaperBooks}</newspaperBooks>
   }

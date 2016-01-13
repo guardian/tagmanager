@@ -19,10 +19,10 @@ case class ContributorInformation(
     twitterHandle =     twitterHandle,
     contactEmail =      contactEmail
   )
-  def asXml = {
+  def axExportedXml = {
     <rcsId>{this.rcsId.getOrElse("")}</rcsId>
-    <bylineImage>{this.bylineImage.map(_.asXml).getOrElse("")}</bylineImage>
-    <largeBylineImage>{this.largeBylineImage.map(_.asXml).getOrElse("")}</largeBylineImage>
+    <bylineImage>{this.bylineImage.map(_.axExportedXml).getOrElse("")}</bylineImage>
+    <largeBylineImage>{this.largeBylineImage.map(_.axExportedXml).getOrElse("")}</largeBylineImage>
     <twitterHandle>{this.twitterHandle.getOrElse("")}</twitterHandle>
     <contactEmail>{this.contactEmail.getOrElse("")}</contactEmail>
   }
