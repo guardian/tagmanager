@@ -47,8 +47,8 @@ GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long
 OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
 
 GET        /tags/export/all               controllers.ReadOnlyApi.getTagsAsXml
-GET        /tags/export/single/:id         controllers.ReadOnlyApi.tagAsXml(id: Long)
-
+GET        /tags/export/single/:id        controllers.ReadOnlyApi.tagAsXml(id: Long)
+GET        /tags/export/merges/:since     controllers.ReadOnlyApi.mergesAsXml(since: Long)
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan
