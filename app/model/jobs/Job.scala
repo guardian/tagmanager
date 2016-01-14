@@ -91,7 +91,7 @@ case class Merge(  id: Long,
     val timestamp = createAttribute("timestamp", Some(this.started.getMillis))
     val date = createAttribute("date", Some(this.started.toString("MM/dd/yyy HH:mm:ss")))
 
-    el % from % to % timestamp % date
+    el % timestamp % date % to % from
   }
 }
 

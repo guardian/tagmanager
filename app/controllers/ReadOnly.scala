@@ -25,7 +25,7 @@ object ReadOnlyApi extends Controller {
   def mergesAsXml(since: Long) = Action {
     val merges = JobRepository.getMerges().map { job =>
       Merge(job)
-    }
+    }.filter(_.started.getMillis > since)
 
     Ok(<merges>
       {merges.map( x => x.asExportedXml)}
