@@ -178,8 +178,16 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(TagAuditRepository.getAuditTrailForTag(tagId)))
   }
 
-  def getAuditForOperation(op: String) = APIAuthAction { req =>
-    Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
+  def getAuditForTagOperation(op: String) = APIAuthAction { req =>
+    Ok(Json.toJson(TagAuditRepository.getRecentAuditOfTagOperation(op)))
+  }
+
+  def getAuditForSection(sectionId: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(SectionAuditRepository.getAuditTrailForSection(sectionId)))
+  }
+
+  def getAuditForSectionOperation(op: String) = APIAuthAction { req =>
+    Ok(Json.toJson(SectionAuditRepository.getRecentAuditOfSectionOperation(op)))
   }
 
   def getJobs(tagIdParam: Option[Long]) = APIAuthAction {

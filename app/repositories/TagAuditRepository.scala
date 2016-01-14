@@ -23,7 +23,7 @@ object TagAuditRepository {
     Dynamo.tagAuditTable.query("tagId", tagId).map(TagAudit.fromItem).toList
   }
 
-  def getRecentAuditOfOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[TagAudit] = {
+  def getRecentAuditOfTagOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(31)): List[TagAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
     Dynamo.tagAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
