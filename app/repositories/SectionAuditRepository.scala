@@ -23,9 +23,9 @@ object SectionAuditRepository {
     Dynamo.sectionAuditTable.query("sectionId", sectionId).map(SectionAudit.fromItem).toList
   }
 
-  def getRecentAuditOfOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[SectionAudit] = {
+  def getRecentAuditOfSectionOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[SectionAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
-    Dynamo.tagAuditTable.getIndex("operation-date-index")
+    Dynamo.sectionAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
       .map(SectionAudit.fromItem).toList
   }

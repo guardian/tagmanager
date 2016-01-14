@@ -1,0 +1,49 @@
+.audit {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 80px;
+  padding: $standard-padding;
+
+}
+
+.audit__tabs {
+  background-color: $c-grey-100;
+
+  border: 1px solid $c-grey-300;
+  border-width: 0px 1px;
+
+  &:first-child {
+    border-top: 1px solid $c-grey-300;
+  }
+}
+
+%audit__tab {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+  display: inline-block;
+
+  background-color: $c-grey-300;
+  padding: 5px 10px;
+
+  margin: 5px;
+
+  cursor: pointer;
+
+  text-transform: capitalize;
+}
+
+.audit__tab {
+  @extend %audit__tab;
+}
+
+
+.audit__tab--selected {
+
+  @extend %audit__tab;
+
+  background-color: $c-grey-400;
+  font-weight: bold;
+
+}

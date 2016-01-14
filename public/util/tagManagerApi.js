@@ -153,9 +153,25 @@ export default {
     });
   },
 
-  getAuditForOperation: (operation) => {
+  getAuditForTagOperation: (operation) => {
     return Reqwest({
-      url: '/api/audit/operation/' + operation,
+      url: '/api/audit/tag/operation/' + operation,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  getAuditForSection: (tagId) => {
+    return Reqwest({
+      url: '/api/audit/section/' + tagId,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  getAuditForSectionOperation: (operation) => {
+    return Reqwest({
+      url: '/api/audit/section/operation/' + operation,
       method: 'get',
       type: 'json'
     });
