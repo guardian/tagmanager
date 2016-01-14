@@ -19,6 +19,14 @@ export default {
     });
   },
 
+  deleteTag: (id, tag) => {
+    return Reqwest({
+        url: '/api/tag/' + id,
+        contentType: 'application/json',
+        method: 'delete'
+    });
+  },
+
   createTag: (tag) => {
     return Reqwest({
         url: '/api/tag',

@@ -8,6 +8,7 @@ import {validateTag} from '../../util/validateTag';
 import CapiStats from '../CapiStats/CapiStats.react';
 import JobStatus from '../JobStatus/JobStatus.react';
 import TagAudit from './TagAudit.react';
+import ConfirmButton from '../utils/ConfirmButton.react';
 
 class TagDisplay extends React.Component {
 
@@ -47,6 +48,10 @@ class TagDisplay extends React.Component {
       this.props.tagActions.getTag(this.props.routeParams.tagId);
     }
 
+    deleteTag() {
+      this.props.tagActions.deleteTag(this.props.tag);
+    }
+
     isTagDirty() {
       return this.props.saveState === 'SAVE_STATE_DIRTY';
     }
@@ -76,6 +81,7 @@ class TagDisplay extends React.Component {
               </div>
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true}/>
               <TagValidationErrors validations={validateTag(this.props.tag)} />
+              <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
             </div>
             <div className="tag__column">
               <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag} referenceTypes={this.props.referenceTypes}/>
@@ -98,6 +104,7 @@ import { bindActionCreators } from 'redux';
 import * as getTag from '../../actions/TagActions/getTag';
 import * as updateTag from '../../actions/TagActions/updateTag';
 import * as saveTag from '../../actions/TagActions/saveTag';
+import * as deleteTag from '../../actions/TagActions/deleteTag';
 import * as getSections from '../../actions/SectionsActions/getSections';
 import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getReferenceTypes';
 
@@ -113,7 +120,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag), dispatch),
+    tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag, deleteTag), dispatch),
     sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch),
     referenceTypeActions: bindActionCreators(Object.assign({}, getReferenceTypes), dispatch)
   };
