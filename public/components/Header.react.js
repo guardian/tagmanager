@@ -44,7 +44,7 @@ export default class Header extends React.Component {
                             <Link to="/merge">Merge tag</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/status">Status</Link>
+                            <Link to="/status">Job Status</Link>
                         </li>
                     </ul>
                 </div>

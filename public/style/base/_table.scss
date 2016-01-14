@@ -29,4 +29,8 @@ tbody tr {
   td {
     border-right: 1px solid $c-grey-300;
   }
+
+  &.row-warning {
+    color: $c-red;
+  }
 }

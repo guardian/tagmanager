@@ -27,7 +27,7 @@ export default class Audit extends React.Component {
     }
 
     componentDidMount() {
-      if (!this.state.auditLog || !this.props.auditLog.length) {
+      if (!this.state.auditLog || !this.state.auditLog.length) {
         this.fetchAuditLogs();
       }
     }
