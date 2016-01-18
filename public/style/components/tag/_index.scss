@@ -73,6 +73,27 @@
   }
 }
 
+.tag__delete {
+
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  background-color: white;
+  border: 1px solid $c-red;
+  color: $c-red;
+
+  padding: $standard-padding/2 $standard-padding;
+
+  font-weight: bold;
+
+  outline: none;
+
+  margin: $standard-padding;
+
+
+
+}
+
 .validation-transition-leave.tag-validation__result {
   opacity: 1;
   color: $c-green;

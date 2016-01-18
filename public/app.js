@@ -12,7 +12,7 @@ import './style/main.scss';
 
 function extractConfigFromPage() {
 
-const configEl = document.getElementById('config');
+  const configEl = document.getElementById('config');
 
   if (!configEl) {
     return {};

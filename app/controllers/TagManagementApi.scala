@@ -163,14 +163,10 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def deleteTag(id: Long)= (APIAuthAction andThen DeleteTagPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
-    req.body.asJson.map { json =>
-      try {
-        (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
-      } catch {
-        commandErrorAsResult
-      }
-    }.getOrElse {
-      BadRequest("Expecting Json data")
+    try {
+      (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
+    } catch {
+      commandErrorAsResult
     }
   }
 
@@ -178,8 +174,16 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(TagAuditRepository.getAuditTrailForTag(tagId)))
   }
 
-  def getAuditForOperation(op: String) = APIAuthAction { req =>
-    Ok(Json.toJson(TagAuditRepository.getRecentAuditOfOperation(op)))
+  def getAuditForTagOperation(op: String) = APIAuthAction { req =>
+    Ok(Json.toJson(TagAuditRepository.getRecentAuditOfTagOperation(op)))
+  }
+
+  def getAuditForSection(sectionId: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(SectionAuditRepository.getAuditTrailForSection(sectionId)))
+  }
+
+  def getAuditForSectionOperation(op: String) = APIAuthAction { req =>
+    Ok(Json.toJson(SectionAuditRepository.getRecentAuditOfSectionOperation(op)))
   }
 
   def getJobs(tagIdParam: Option[Long]) = APIAuthAction {

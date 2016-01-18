@@ -36,6 +36,11 @@
       "Description": "Ip range for the office",
       "Type": "String",
       "Default": "77.91.248.0/21"
+    },
+    "GithubTeamName": {
+      "Description": "Github team name, used for giving ssh access to members of the team.",
+      "Type": "String",
+      "Default": "Editorial-Tools-SSHAccess"
     }
   },
   "Mappings": {
@@ -122,6 +127,28 @@
               "Effect": "Allow",
               "Action": ["s3:GetObject"],
               "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "TagManagerRole"}]
+      }
+    },
+
+    "TagManagerGetTeamKeysPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TagManagerGetTeamKeysPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::github-team-keys/*"]
+            },
+            {
+              "Effect":"Allow",
+              "Action": ["s3:ListBucket"],
+              "Resource":"arn:aws:s3:::github-team-keys"
             }
           ]
         },
@@ -381,6 +408,7 @@
           "Fn::Base64":{
             "Fn::Join":["", [
               "#!/bin/bash -ev\n",
+              { "Fn::Join": [ "", ["/opt/features/ssh-keys/initialise-keys-and-cron-job.sh -b github-team-keys -t ", {"Ref":"GithubTeamName"}, " -l || true\n"] ] },
               "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
             ]]
           }
