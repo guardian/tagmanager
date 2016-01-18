@@ -1,11 +1,19 @@
 import React from 'react';
 import history from '../../routes/history';
+import * as tagTypes from '../../constants/tagTypes';
 
 export default class TagList extends React.Component {
 
     constructor(props) {
         super(props);
         this.renderListItem = this.renderListItem.bind(this);
+
+        //Much more convenient form of this information, removes need to calculate per row below.
+        this.tagTypesMap = Object.keys(tagTypes).reduce((previous, tagTypeKey) => {
+          const newObject = {};
+          newObject[tagTypes[tagTypeKey].name] = tagTypes[tagTypeKey].displayName;
+          return Object.assign({}, previous, newObject);
+        }, {});
     }
 
     renderListItem(tag) {
@@ -18,7 +26,7 @@ export default class TagList extends React.Component {
 
       return (
           <tr key={tag.id} className="taglist__results-item" onClick={this.onTagClick.bind(this, tag)}>
-            <td>{tag.type}</td>
+            <td>{this.tagTypesMap[tag.type] ? this.tagTypesMap[tag.type] : tag.type}</td>
             <td>{tag.internalName}</td>
             <td>{sectionName}</td>
             <td>{tag.path}</td>
