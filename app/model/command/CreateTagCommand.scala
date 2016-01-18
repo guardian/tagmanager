@@ -2,7 +2,7 @@ package model.command
 
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
-import model.{TagAudit, PodcastMetadata, Tag, Reference}
+import model._
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -21,11 +21,15 @@ case class CreateTagCommand(
                       comparableValue: String,
                       categories: Set[String] = Set(),
                       section: Option[Long],
+                      publication: Option[Long],
                       description: Option[String] = None,
                       parents: Set[Long] = Set(),
                       references: List[Reference] = Nil,
-                      podcastMetadata: Option[PodcastMetadata]
-                      ) extends Command {
+                      podcastMetadata: Option[PodcastMetadata],
+                      contributorInformation: Option[ContributorInformation],
+                      publicationInformation: Option[PublicationInformation]
+
+                           ) extends Command {
 
   type T = Tag
 
@@ -47,11 +51,14 @@ case class CreateTagCommand(
       legallySensitive = legallySensitive,
       comparableValue = comparableValue,
       section = section,
+      publication = publication,
       categories = categories,
       description = description,
       parents = parents,
       references = references,
-      podcastMetadata = podcastMetadata
+      podcastMetadata = podcastMetadata,
+      contributorInformation = contributorInformation,
+      publicationInformation = publicationInformation
     )
     
     val result = TagRepository.upsertTag(tag)
@@ -76,9 +83,13 @@ object CreateTagCommand {
       (JsPath \ "comparableValue").format[String] and
       (JsPath \ "categories").formatNullable[Set[String]].inmap[Set[String]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "publication").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
-      (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata]
+      (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
+      (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
+      (JsPath \ "publicationInformation").formatNullable[PublicationInformation]
+
     )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
 }

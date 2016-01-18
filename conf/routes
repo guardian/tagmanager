@@ -4,7 +4,7 @@ GET        /tag/create                    controllers.App.index(id = "")
 GET        /tag/:id                       controllers.App.index(id)
 GET        /batch                         controllers.App.index(id = "")
 GET        /merge                         controllers.App.index(id = "")
-
+GET        /audit                         controllers.App.index(id = "")
 GET        /status                        controllers.App.index(id = "")
 GET        /unauthorised                  controllers.App.index(id = "")
 GET        /mapping                       controllers.App.index(id = "")
@@ -35,7 +35,10 @@ POST       /api/mergeTag                  controllers.TagManagementApi.mergeTag
 
 
 GET        /api/audit/tag/:tagId          controllers.TagManagementApi.getAuditForTag(tagId: Long)
-GET        /api/audit/operation/:op       controllers.TagManagementApi.getAuditForOperation(op: String)
+GET        /api/audit/tag/operation/:op   controllers.TagManagementApi.getAuditForTagOperation(op: String)
+
+GET        /api/audit/section/:sectionId  controllers.TagManagementApi.getAuditForSection(sectionId: Long)
+GET        /api/audit/section/operation/:op controllers.TagManagementApi.getAuditForSectionOperation(op: String)
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
@@ -48,7 +51,8 @@ GET        /hyper/tags                    controllers.HyperMediaApi.tags
 GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long)
 OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
 
-GET        /api/xml                       controllers.ReadOnlyApi.getTagsAsXml
+GET        /tags/export/all               controllers.ReadOnlyApi.getTagsAsXml
+GET        /tags/export/single/:id         controllers.ReadOnlyApi.tagAsXml(id: Long)
 
 
 GET        /hello                         controllers.App.hello

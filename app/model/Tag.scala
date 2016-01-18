@@ -5,7 +5,9 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
-
+import xml.{Elem, TopScope, Null, Text, Node}
+import helpers.XmlHelpers._
+import repositories.SectionRepository
 import scala.util.control.NonFatal
 
 case class Tag(
@@ -21,11 +23,13 @@ case class Tag(
   comparableValue: String,
   categories: Set[String] = Set(),
   section: Option[Long],
+  publication: Option[Long],
   description: Option[String] = None,
   parents: Set[Long] = Set(),
   references: List[Reference] = Nil,
   podcastMetadata: Option[PodcastMetadata] = None,
-  contributorInformation: Option[ContributorInformation] = None
+  contributorInformation: Option[ContributorInformation] = None,
+  publicationInformation: Option[PublicationInformation] = None
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -42,34 +46,40 @@ case class Tag(
     legallySensitive  = legallySensitive,
     comparableValue   = comparableValue,
     section           = section,
+    publication       = publication,
     description       = description,
     parents           = parents,
     references        = references.map(_.asThrift),
     podcastMetadata   = podcastMetadata.map(_.asThrift),
-    contributorInformation = contributorInformation.map(_.asThrift)
+    contributorInformation = contributorInformation.map(_.asThrift),
+    publicationInformation = publicationInformation.map(_.asThrift)
   )
 
-  def asXml = {
-      <tag>
-      <id>{this.id}</id>
-      <path>{this.path}</path>
-      <pageId>{this.pageId}</pageId>
-      <type>{this.`type`}</type>
-      <internalName>{this.internalName}</internalName>
-      <externalName>{this.externalName}</externalName>
-      <slug>{this.slug}</slug>
-      <hidden>{this.hidden}</hidden>
-      <legallySensitive>{this.legallySensitive}</legallySensitive>
-      <comparableValue>{this.comparableValue}</comparableValue>
-      <section>{this.section.getOrElse("")}</section>
-      <description>{this.description.getOrElse("")}</description>
-      <parents>{this.parents}</parents>
-      <references>{this.references.map(_.asXml)}</references>
-      <podcastMetadata>{this.podcastMetadata.map(_.asXml).getOrElse("")}</podcastMetadata>
-    <contributorInformation>{this.contributorInformation.map(_.asXml).getOrElse("")}</contributorInformation>
-      </tag>
-  }
+  // in this limited format for inCopy to consume
+  def asExportedXml = {
+    val el = Elem(null, "tag", Null, TopScope, Text(""))
+    val section = SectionRepository.getSection(this.id)
+    val id = createAttribute("id", Some(this.id))
+    val externalName = createAttribute("externalname", Some(this.externalName))
+    val internalName = createAttribute("internalname", Some(this.internalName))
+    val urlWords = createAttribute("words-for-url", Some(this.slug))
+    val sectionId = createAttribute("section-id", this.section)
+    val sectionName = createAttribute("section", section.map(_.name))
+    val sectionUrl = createAttribute("section-words-for-url", section.map(_.wordsForUrl))
+    val `type` = createAttribute("type", Some(this.`type`))
 
+    val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type`
+
+    val withRefs: Node = this.references.foldLeft(withAttrs: Node) { (x, y) =>
+      addChild(x, y.asExportedXml)
+    }
+    val withParents: Node = this.parents.foldLeft(withRefs: Node) { (x, parent) =>
+      val el = Elem(null, "parent", Null, TopScope, Text("")) % createAttribute("id",
+ Some(parent))
+      addChild(x, el)
+     }
+    withParents
+  }
 }
 
 object Tag {
@@ -87,11 +97,13 @@ object Tag {
       (JsPath \ "comparableValue").format[String] and
       (JsPath \ "categories").formatNullable[Set[String]].inmap[Set[String]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "publication").formatNullable[Long] and
       (JsPath \ "description").formatNullable[String] and
       (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
-      (JsPath \ "contributorInformation").formatNullable[ContributorInformation]
+      (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
+      (JsPath \ "publicationInformation").formatNullable[PublicationInformation]
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = try {
@@ -124,10 +136,12 @@ object Tag {
       legallySensitive  = thriftTag.legallySensitive,
       comparableValue   = thriftTag.comparableValue,
       section           = thriftTag.section,
+      publication       = thriftTag.publication,
       description       = thriftTag.description,
       parents           = thriftTag.parents.toSet,
       references        = thriftTag.references.map(Reference(_)).toList,
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
-      contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_))
+      contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
+      publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_))
     )
 }

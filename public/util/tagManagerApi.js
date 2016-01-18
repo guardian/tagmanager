@@ -19,6 +19,14 @@ export default {
     });
   },
 
+  deleteTag: (id, tag) => {
+    return Reqwest({
+        url: '/api/tag/' + id,
+        contentType: 'application/json',
+        method: 'delete'
+    });
+  },
+
   createTag: (tag) => {
     return Reqwest({
         url: '/api/tag',
@@ -93,16 +101,20 @@ export default {
       });
   },
 
-  searchTags: (textQuery, searchFieldName, orderByField) => {
+  searchTags: (textQuery, options) => {
 
     const query = {q: textQuery};
 
-    if (orderByField) {
-      query.orderBy = orderByField;
+    if (options.orderByField) {
+      query.orderBy = options.orderByField;
     }
 
-    if (searchFieldName) {
-      query.searchField = searchFieldName;
+    if (options.searchFieldName) {
+      query.searchField = options.searchFieldName;
+    }
+
+    if (options.tagType) {
+      query.types = options.tagType;
     }
 
     return Reqwest({
@@ -133,6 +145,17 @@ export default {
     });
   },
 
+  mergeTag: (oldId, newId) => {
+    const mergeTagCommand = {removingTagId: oldId, replacementTagId: newId};
+
+    return Reqwest({
+      url: '/api/mergeTag',
+      data: JSON.stringify(mergeTagCommand),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
   getAuditForTag: (tagId) => {
     return Reqwest({
       url: '/api/audit/tag/' + tagId,
@@ -141,9 +164,25 @@ export default {
     });
   },
 
-  getAuditForOperation: (operation) => {
+  getAuditForTagOperation: (operation) => {
     return Reqwest({
-      url: '/api/audit/operation/' + operation,
+      url: '/api/audit/tag/operation/' + operation,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  getAuditForSection: (tagId) => {
+    return Reqwest({
+      url: '/api/audit/section/' + tagId,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  getAuditForSectionOperation: (operation) => {
+    return Reqwest({
+      url: '/api/audit/section/operation/' + operation,
       method: 'get',
       type: 'json'
     });
