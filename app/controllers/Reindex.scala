@@ -12,7 +12,7 @@ object Reindex extends Controller with PanDomainAuthActions {
     // Get the reindex id provided by CAPI
     req.body.asJson.map { json =>
         try {
-          ReindexCommand((json \ "id").as[String]).process.map{t => NoContent } getOrElse NotFound // TODO not found doenst make much sense here
+          ReindexCommand((json \ "id").as[String]).process.map{t => NoContent } getOrElse InternalServerError
         } catch {
           commandErrorAsResult
         }
