@@ -1,7 +1,17 @@
 .tag-select,
 .tag-select--results-above {
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
   display: inline-block;
   position: relative;
+
+  min-width: 200px;
+}
+
+.tag-select__input {
+  width: 100%;
 }
 
 .tag-select__suggestions {
@@ -12,9 +22,14 @@
   border: 1px solid $c-grey-300;
   background-color: $c-grey-100;
 
+  width: 100%;
+
+  z-index: 2;
+
 
   li {
-    display: block;
+    position: relative;
+    display: flex;
     padding: $standard-padding/2 $standard-padding;
 
     cursor: pointer;
@@ -28,4 +43,24 @@
     top: auto;
     bottom: 20px;
   }
+}
+
+
+.tag-select__name {
+  flex-grow: 1;
+}
+
+.tag-select__tag-type {
+
+  flex-grow: 0;
+
+
+  background-color: $c-grey-300;
+
+  border-radius: 4px;
+
+  padding: 0 6px;
+
+  vertical-align: center;
+
 }
