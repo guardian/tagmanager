@@ -5,27 +5,32 @@ export const topic = {
 
 export const series = {
   name: 'Series',
-  displayName: 'Series'
+  displayName: 'Series',
+  additionalPathPrefix: 'series' //This is in addition to regular section prefix.
 };
 
 export const contributor = {
   name: 'Contributor',
-  displayName: 'Contributor'
+  displayName: 'Contributor',
+  pathPrefix: 'profile'
 };
 
 export const tone = {
   name: 'Tone',
-  displayName: 'Tone'
+  displayName: 'Tone',
+  pathPrefix: 'tone'
 };
 
 export const contentType = {
   name: 'ContentType',
-  displayName: 'Content Type'
+  displayName: 'Content Type',
+  pathPrefix: 'type'
 };
 
 export const publication = {
   name: 'Publication',
-  displayName: 'Publication'
+  displayName: 'Publication',
+  pathPrefix: 'publication'
 };
 
 export const newspaperBook = {
