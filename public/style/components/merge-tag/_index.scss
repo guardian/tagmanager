@@ -1,0 +1,39 @@
+.merge {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $standard-padding;
+
+  @extend %f-header;
+  @extend %fs-data-3;
+
+
+}
+
+.merge__select {
+  display: inline-block;
+  width: 50%;
+
+  padding: $standard-padding;
+
+  vertical-align: top;
+
+  .tag-select {
+    display: block;
+  }
+
+  .tag-select__input {
+    width: 100%;
+  }
+}
+
+.merge__select__header {
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  font-weight: bold;
+}
+
+.merge__confirmation {
+  color: $c-red;
+  font-weight: bold;
+}

@@ -19,6 +19,14 @@ export default {
     });
   },
 
+  deleteTag: (id, tag) => {
+    return Reqwest({
+        url: '/api/tag/' + id,
+        contentType: 'application/json',
+        method: 'delete'
+    });
+  },
+
   createTag: (tag) => {
     return Reqwest({
         url: '/api/tag',
@@ -132,6 +140,17 @@ export default {
     return Reqwest({
       url: '/api/batchTag',
       data: JSON.stringify(batchTagCommand),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
+  mergeTag: (oldId, newId) => {
+    const mergeTagCommand = {removingTagId: oldId, replacementTagId: newId};
+
+    return Reqwest({
+      url: '/api/mergeTag',
+      data: JSON.stringify(mergeTagCommand),
       contentType: 'application/json',
       method: 'post'
     });
