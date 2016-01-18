@@ -161,7 +161,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def deleteTag(id: Long)= (APIAuthAction andThen DeleteTagPermissionsCheck) { req =>
+  def deleteTag(id: Long) = (APIAuthAction) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     try {
       (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound

@@ -62,3 +62,8 @@ case class DeleteTagCommand(removingTagId: Long) extends Command {
   }
 }
 
+object DeleteTagCommand {
+  implicit val deleteTagCommandFormat: Format[DeleteTagCommand] = (
+    (JsPath \ "removingTagId")
+  ).format[Long].inmap(id => DeleteTagCommand(id), (deleteTagCommand: DeleteTagCommand) => deleteTagCommand.removingTagId)
+}

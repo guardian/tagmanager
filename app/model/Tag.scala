@@ -5,10 +5,10 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
-import xml.{Elem, TopScope, Null, Text, Node}
 import helpers.XmlHelpers._
 import repositories.SectionRepository
 import scala.util.control.NonFatal
+import scala.xml.Node
 
 case class Tag(
   id: Long,
@@ -57,7 +57,7 @@ case class Tag(
 
   // in this limited format for inCopy to consume
   def asExportedXml = {
-    val el = Elem(null, "tag", Null, TopScope, Text(""))
+    val el = createElem("tag")
     val section = SectionRepository.getSection(this.id)
     val id = createAttribute("id", Some(this.id))
     val externalName = createAttribute("externalname", Some(this.externalName))
@@ -74,7 +74,7 @@ case class Tag(
       addChild(x, y.asExportedXml)
     }
     val withParents: Node = this.parents.foldLeft(withRefs: Node) { (x, parent) =>
-      val el = Elem(null, "parent", Null, TopScope, Text("")) % createAttribute("id",
+      val el = createElem("parent") % createAttribute("id",
  Some(parent))
       addChild(x, el)
      }

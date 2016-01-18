@@ -23,7 +23,7 @@ object ReadOnlyApi extends Controller {
   }
 
   def mergesAsXml(since: Long) = Action {
-    val merges = JobRepository.getMerges().map { job =>
+    val merges = JobRepository.getMerges.map { job =>
       Merge(job)
     }.filter(_.started.getMillis > since)
 
@@ -32,4 +32,14 @@ object ReadOnlyApi extends Controller {
       </merges>
     )
   }
+
+  def deletesAsXml(since: Long) = Action {
+    val deletes = JobRepository.getDeletes
+    Ok(Json.toJson(deletes))
+  }
+
+  def modifiedSinceAsXml(since: Long) = Action {
+    Ok("modified since")
+  }
+
 }

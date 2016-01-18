@@ -1,11 +1,13 @@
 package model.jobs
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import model.command.{Command, MergeTagCommand}
+import model.command.{Command, MergeTagCommand, DeleteTagCommand}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import play.api.Logger
 import play.api.libs.functional.syntax._
+import play.api.libs.json.DefaultFormat
+import play.api.libs.json.Reads
 import play.api.libs.json._
 import repositories.JobRepository
 
@@ -36,6 +38,7 @@ object Job {
 
 
   def fromItem(item: Item) = try {
+    println("item: " + item)
     Json.parse(item.toJSON).as[Job]
   } catch {
     case NonFatal(e) => {
@@ -82,10 +85,9 @@ case class Merge(  id: Long,
 ) {
 
   def asExportedXml = {
-    import xml.{Elem, TopScope, Null, Text}
     import helpers.XmlHelpers._
 
-    val el = Elem(null, "merge", Null, TopScope, Text(""))
+    val el = createElem("merge")
     val from = createAttribute("from", Some(this.command.removingTagId))
     val to = createAttribute("to", Some(this.command.replacementTagId))
     val timestamp = createAttribute("timestamp", Some(this.started.getMillis))
@@ -96,14 +98,29 @@ case class Merge(  id: Long,
 }
 
 object Merge {
+  import helpers.ConversionHelpers.commandToType
+
   def apply(job: Job): Merge = {
-    val merge = commandToMergeCommand(job.command)
+    val merge = commandToType[MergeTagCommand](job.command)
     Merge(job.id, job.started, job.startedBy, job.tagIds, merge)
   }
+}
 
-  private def commandToMergeCommand(command: Command): MergeTagCommand = {
-    val json = Json.toJson(command)
-    val merge : MergeTagCommand = json.as[MergeTagCommand]
-    merge
+case class Delete(id: Long,
+  started: DateTime,
+  tagIds: List[Long],
+  command: DeleteTagCommand
+) {
+  def asExportedXml = {
+    import helpers.XmlHelpers._
+    val el = createElem("delete")
+  }
+}
+
+object Delete {
+  import helpers.ConversionHelpers.commandToType
+  def apply(job: Job): Delete = {
+    val delete = commandToType[DeleteTagCommand](job.command)
+    Delete(job.id, job.started, job.tagIds, delete)
   }
 }
