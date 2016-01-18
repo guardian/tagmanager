@@ -145,6 +145,17 @@ export default {
     });
   },
 
+  mergeTag: (oldId, newId) => {
+    const mergeTagCommand = {removingTagId: oldId, replacementTagId: newId};
+
+    return Reqwest({
+      url: '/api/mergeTag',
+      data: JSON.stringify(mergeTagCommand),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
   getAuditForTag: (tagId) => {
     return Reqwest({
       url: '/api/audit/tag/' + tagId,

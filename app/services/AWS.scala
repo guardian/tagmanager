@@ -22,8 +22,6 @@ object AWS {
   lazy val CloudWatch = region.createClient(classOf[AmazonCloudWatchAsyncClient], null, null)
   lazy val Kinesis = region.createClient(classOf[AmazonKinesisClient], null, null)
   lazy val S3Client = region.createClient(classOf[AmazonS3Client], null, null)
-
-
 }
 
 trait AwsInstanceTags {
@@ -86,5 +84,5 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
 object KinesisStreams {
   lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName, true)
   lazy val sectionUpdateStream = new KinesisStreamProducer(Config().sectionUpdateStreamName, true)
-  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, true)
+  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, false)
 }

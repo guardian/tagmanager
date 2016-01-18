@@ -14,7 +14,6 @@ export default class CapiStats extends React.Component {
           prevWeekUses: undefined,
           totalUses: undefined
         };
-
     }
 
     componentDidMount() {

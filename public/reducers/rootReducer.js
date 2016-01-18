@@ -9,6 +9,9 @@ import {SECTION_SAVE_REQUEST, SECTION_SAVE_RECEIVE, SECTION_SAVE_ERROR} from '..
 import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPES_GET_ERROR} from '../actions/ReferenceTypeActions/getReferenceTypes';
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
+import {CLEAR_ERROR} from '../actions/UIActions/clearError';
+import {SHOW_ERROR} from '../actions/UIActions/showError';
+
 
 const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -36,6 +39,18 @@ export default function tag(state = {
   case 'CONFIG_RECEIVED':
     return Object.assign({}, state, {
       config: action.config
+    });
+
+// UI
+
+  case CLEAR_ERROR:
+    return Object.assign({}, state, {
+      error: false
+    });
+
+  case SHOW_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
     });
 
 // TAG GET
@@ -87,10 +102,14 @@ export default function tag(state = {
     });
 
 // TAG DELETE
+  case TAG_DELETE_REQUEST:
+    return Object.assign({}, state, {
+      saveState: saveState.clean
+    });
   case TAG_DELETE_RECEIVE:
     return Object.assign({}, state, {
-      tag: undefined,
-      saveState: saveState.clean
+      saveState: saveState.clean,
+      error: action.message
     });
   case TAG_DELETE_ERROR:
     return Object.assign({}, state, {

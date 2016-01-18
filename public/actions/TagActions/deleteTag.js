@@ -1,5 +1,5 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import history from '../../routes/history';
+import {clearError} from '../UIActions/clearError'
 
 export const TAG_DELETE_REQUEST = 'TAG_DELETE_REQUEST';
 export const TAG_DELETE_RECEIVE = 'TAG_DELETE_RECEIVE';
@@ -13,12 +13,11 @@ function requestTagDelete() {
 }
 
 function recieveTagDelete(tagId) {
-  history.replaceState(null, '/');
-
     return {
         type:       TAG_DELETE_RECEIVE,
         tagId:      tagId,
-        receivedAt: Date.now()
+        receivedAt: Date.now(),
+        message:    'Delete request submitted, will be processed once tag has been removed from all content (This may take some time..)'
     };
 }
 
@@ -35,7 +34,12 @@ export function deleteTag(tag) {
     return dispatch => {
         dispatch(requestTagDelete());
         return tagManagerApi.deleteTag(tag.id)
-            .then(res => dispatch(recieveTagDelete(tag.id)))
+            .then(res => {
+              dispatch(recieveTagDelete(tag.id));
+              setTimeout(() => {
+                dispatch(clearError());
+              }, 3000);
+            })
             .fail(error => dispatch(errorTagDelete(error)));
     };
 }
