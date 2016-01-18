@@ -37,4 +37,5 @@ object JobRepository {
     Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).map(Job.fromItem).toList
   }
 
+  def getMerges(): List[Job] = loadAllJobs.filter(_.`type` == "Merge tag")
 }
