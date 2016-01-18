@@ -114,6 +114,11 @@ case class Delete(id: Long,
   def asExportedXml = {
     import helpers.XmlHelpers._
     val el = createElem("delete")
+    val id = createAttribute("id", Some(this.command.removingTagId))
+    val timestamp = createAttribute("timestamp", Some(this.started.getMillis))
+    val date = createAttribute("date", Some(this.started.toString("MM/dd/yyy HH:mm:ss")))
+
+    el % timestamp % date % id
   }
 }
 

@@ -3,9 +3,9 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import model.jobs.Merge
+import model.jobs.{Merge, Delete}
 import repositories._
-import play.api.libs.json._
+
 
 object ReadOnlyApi extends Controller {
   def getTagsAsXml() = Action.async {
@@ -34,8 +34,15 @@ object ReadOnlyApi extends Controller {
   }
 
   def deletesAsXml(since: Long) = Action {
-    val deletes = JobRepository.getDeletes
-    Ok(Json.toJson(deletes))
+    val deletes = JobRepository.getDeletes.map { job =>
+      Delete(job)
+    }.filter(_.started.getMillis > since)
+
+    Ok(
+      <deletes>
+        {deletes.map(x => x.asExportedXml)}
+      </deletes>
+    )
   }
 
   def modifiedSinceAsXml(since: Long) = Action {
