@@ -1,6 +1,7 @@
 import React from 'react';
 import tagManagerApi from '../../util/tagManagerApi';
 import debounce from 'lodash.debounce';
+import * as tagTypes from '../../constants/tagTypes';
 
 const BLANK_STATE = {
   selectedTag: undefined,
@@ -49,19 +50,41 @@ export default class TagSelect extends React.Component {
         });
     }
 
+    renderSuggestions() {
+      if (!this.state.suggestions.length) {
+        return false;
+      }
+
+      return (
+        <div className="tag-select__suggestions">
+          <ul>
+            {this.state.suggestions.map(tag => {
+
+              const tagTypeKey = Object.keys(tagTypes).filter((tagTypeKey) => {
+                return tagTypes[tagTypeKey].name === tag.type;
+              })[0];
+
+              return (
+                <li key={tag.id} onClick={this.onClickTag.bind(this, tag)}>
+                  <div className="tag-select__name">{tag.internalName}</div>
+                  <div className="tag-select__tag-type">
+                    {tagTypes[tagTypeKey] ? tagTypes[tagTypeKey].displayName : ''}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      );
+    }
+
     render() {
       return (
         <div className={this.props.showResultsAbove ? 'tag-select--results-above' : 'tag-select'}>
             <div>
               <input className="tag-select__input" type="text" autoFocus={true} value={this.state.tagSearchTerm} onChange={this.onUpdateSearchField.bind(this)}/>
             </div>
-            <div className="tag-select__suggestions">
-              <ul>
-                {this.state.suggestions.map(tag => {
-                  return <li key={tag.id} onClick={this.onClickTag.bind(this, tag)}>{tag.internalName}</li>;
-                })}
-              </ul>
-            </div>
+            {this.renderSuggestions()}
         </div>
       );
     }

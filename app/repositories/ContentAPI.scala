@@ -55,7 +55,7 @@ object ContentAPI {
 
     val allIds = ids ::: resultPage.results.map(_.id)
 
-    if (page == resultPage.pages) {
+    if (page >= resultPage.pages) {
       allIds
     } else {
       getContentIdsForTag(apiTagId, page + 1, allIds)
