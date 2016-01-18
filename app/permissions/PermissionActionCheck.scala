@@ -41,6 +41,11 @@ object UpdateSectionPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "update section"
 }
 
+object DeleteTagPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
+  val restrictedAction = "delete tag"
+}
+
 // Admin
 object MergeTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
@@ -50,9 +55,4 @@ object MergeTagPermissionsCheck extends PermissionActionFilter {
 object BatchTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "batch tag"
-}
-
-object DeleteTagPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "delete tag"
 }
