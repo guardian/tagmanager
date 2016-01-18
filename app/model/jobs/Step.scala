@@ -19,6 +19,9 @@ object Step {
       case b: RemoveTagStep => RemoveTagStep.removeTagStepFormat.writes(b).asInstanceOf[JsObject] + ("type", JsString("RemoveTagStep"))
       case b: AllUsagesOfTagRemovedCheck => AllUsagesOfTagRemovedCheck.allUsagesOfTagRemovedCheckFormat.writes(b).asInstanceOf[JsObject] + ("type", JsString("AllUsagesOfTagRemovedCheck"))
       case trc: TagRemovedCheck => JsObject(Map("type" -> JsString("TagRemovedCheck"), "apiTagId" -> JsString(trc.apiTagId)))
+
+      case ridx: ReindexTags => ReindexTags.reindexTagsFormat.writes(ridx).asInstanceOf[JsObject] + ("type", JsString("ReindexTags"))
+
       case other => {
         Logger.warn(s"unable to serialise step of type ${other.getClass}")
         throw new UnsupportedOperationException(s"unable to serialise step of type ${other.getClass}")
@@ -34,6 +37,7 @@ object Step {
         case JsString("RemoveTagStep") => RemoveTagStep.removeTagStepFormat.reads(json)
         case JsString("AllUsagesOfTagRemovedCheck") => AllUsagesOfTagRemovedCheck.allUsagesOfTagRemovedCheckFormat.reads(json)
         case JsString("TagRemovedCheck") => (json \ "apiTagId").validate[String].map(TagRemovedCheck)
+        case JsString("ReindexTags") => ReindexTags.reindexTagsFormat.reads(json)
         case JsString(other) => JsError(s"unsupported command type $other}")
         case _ => JsError(s"unexpected command type value")
       }

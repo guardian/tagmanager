@@ -42,6 +42,8 @@ GET        /api/audit/section/operation/:op controllers.TagManagementApi.getAudi
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
+POST       /reindex                       controllers.Reindex.reindex
+
 
 # Hypmedia API
 GET        /hyper                         controllers.HyperMediaApi.hyper

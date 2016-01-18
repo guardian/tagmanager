@@ -19,6 +19,7 @@ object Command {
       case b: BatchTagCommand => BatchTagCommand.batchTagCommandFormat.writes(b).asInstanceOf[JsObject] + ("type", JsString("BatchTagCommand"))
       case m: MergeTagCommand => MergeTagCommand.mergeTagCommandFormat.writes(m).asInstanceOf[JsObject] + ("type", JsString("MergeTagCommand"))
       case d: DeleteTagCommand => JsObject(Map("type" -> JsString("DeleteTagCommand"), "removingTagId" -> JsNumber(d.removingTagId)))
+      case r: ReindexCommand => ReindexCommand.reindexCommandFormat.writes(r).asInstanceOf[JsObject] + ("type", JsString("ReindexCommand"))
       case other => {
         Logger.warn(s"unable to serialise command of type ${other.getClass}")
         throw new UnsupportedOperationException(s"unable to serialise command of type ${other.getClass}")
@@ -32,6 +33,7 @@ object Command {
         case JsString("BatchTagCommand") => BatchTagCommand.batchTagCommandFormat.reads(json)
         case JsString("MergeTagCommand") => MergeTagCommand.mergeTagCommandFormat.reads(json)
         case JsString("DeleteTagCommand") => (json \ "removingTagId").validate[Long].map(DeleteTagCommand)
+        case JsString("ReindexCommand") => ReindexCommand.reindexCommandFormat.reads(json)
         case JsString(other) => JsError(s"unsupported command type $other}")
         case _ => JsError(s"unexpected command type value")
       }

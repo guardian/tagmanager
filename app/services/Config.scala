@@ -82,6 +82,11 @@ sealed trait Config {
   def sectionUpdateStreamName: String
   def taggingOperationsStreamName: String
 
+  def reindexStreamName: String
+  def reindexBatchSize: Int
+
+  def appAuditTableName: String
+
   def jobQueueName: String
 
   def pathManagerUrl: String
@@ -109,6 +114,11 @@ class DevConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
   override def sectionUpdateStreamName: String = "section-update-stream-dev"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
+
+  override def reindexStreamName: String = "tag-reindex-dev"
+  override def reindexBatchSize: Int = 500
+
+  override def appAuditTableName: String = "tag-manager-app-audit-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
 
@@ -138,8 +148,12 @@ class CodeConfig extends Config {
 
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
   override def sectionUpdateStreamName: String = "section-update-stream-dev"
-
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
+
+  override def reindexStreamName: String = "tag-reindex-dev"
+  override def reindexBatchSize: Int = 500
+
+  override def appAuditTableName: String = "tag-manager-app-audit-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
 
@@ -170,6 +184,11 @@ class ProdConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
   override def sectionUpdateStreamName: String = "section-update-stream-PROD"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-PROD"
+
+  override def reindexStreamName: String = "tag-reindex-PROD"
+  override def reindexBatchSize: Int = 500
+
+  override def appAuditTableName: String = "tag-manager-app-audit-PROD"
 
   override def jobQueueName: String = "tag-manager-job-queue-PROD"
 

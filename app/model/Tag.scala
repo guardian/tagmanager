@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import com.gu.tagmanagement.{Tag => ThriftTag, TagType}
+import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
 import xml.{Elem, TopScope, Null, Text, Node}
 import helpers.XmlHelpers._
 import repositories.SectionRepository
@@ -113,6 +113,12 @@ object Tag {
       Logger.error(s"failed to load tag ${item.toJSON}", e)
       throw e
     }
+  }
+
+  def createReindexBatch(toBatch: List[Tag]): TagReindexBatch = {
+    TagReindexBatch(
+        tags = toBatch.map(_.asThrift)
+      )
   }
 
   def fromJson(json: JsValue) = json.as[Tag]
