@@ -52,7 +52,7 @@ export default class JobStatus extends React.Component {
         return 'Unexpected batch tag operation';
       }
     } else {
-      return 'Unexpected job type';
+      return job.type;
     }
   }
 
@@ -60,31 +60,36 @@ export default class JobStatus extends React.Component {
     const step = job.steps[0];
     const stepType = step.type;
 
-    if(stepType === 'BatchTagRemoveCompleteCheck' || stepType === 'BatchTagAddCompleteCheck') {
+    if (stepType === 'BatchTagRemoveCompleteCheck' || stepType === 'BatchTagAddCompleteCheck') {
       return 'completed ' + step.completed + ' of ' + step.contentIds.length;
     } else {
-      return 'unexpected step type ' + stepType;
+      return stepType;
     }
   }
 
   describeJob(job) {
     return (
-      <div className="job-status__job" key={job.id} >
-        {this.describeCommand(job)}<br />
-        <span className="job-status__job__progress">{this.describeCurrentStep(job)}</span>
-      </div>
+      <tr className="job-status__job" key={job.id} >
+        <td className="job-status__job__progress">{this.describeCommand(job)}: {this.describeCurrentStep(job)}</td>
+      </tr>
     );
   }
 
   render () {
     const self = this;
     return (
-      <div className="job-status">
-        <div className="job-status__header">Currently running jobs</div>
-        {this.state.jobs.map( function(job) {
-          return self.describeJob(job);
-        })}
-      </div>
+      <table className="job-status">
+        <thead>
+          <tr>
+            <th>Currently running jobs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.jobs.map(function (job) {
+            return self.describeJob(job);
+          })}
+        </tbody>
+      </table>
     );
   }
 }
