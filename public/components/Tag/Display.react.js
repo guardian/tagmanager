@@ -64,6 +64,19 @@ class TagDisplay extends React.Component {
       return !validateTag(this.props.tag).length;
     }
 
+    renderDeleteButton() {
+        if (this.props.config.permissions["tag_super_admin"]) {
+          return <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
+        } else {
+          return (
+            <div>
+              <ConfirmButton className="tag__delete tag__delete--disabled" disabled={true} buttonText="Delete Tag" />
+              <span className="tag-edit__label">You do not have permission to delete this tag.</span>
+            </div>
+          )
+        }
+    }
+
     render () {
       if (!this.isTagFetched()) {
         return (
@@ -81,7 +94,7 @@ class TagDisplay extends React.Component {
               </div>
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true}/>
               <TagValidationErrors validations={validateTag(this.props.tag)} />
-              <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
+              {this.renderDeleteButton()}
             </div>
             <div className="tag__column">
               <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag} referenceTypes={this.props.referenceTypes}/>

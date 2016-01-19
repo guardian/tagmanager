@@ -41,7 +41,7 @@ export default class ConfirmButton extends React.Component {
     }
 
     return (
-      <button className={this.props.className} onClick={this.onFirstClick.bind(this)}>{this.props.buttonText}</button>
+      <button className={this.props.className} disabled={this.props.disabled} onClick={this.onFirstClick.bind(this)}>{this.props.buttonText}</button>
     );
 
   }

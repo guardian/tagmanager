@@ -11,6 +11,18 @@ import play.api.libs.json.JsValue
 
 import play.api.mvc.AnyContent
 
+object TagTypePermissionMap {
+  def apply(tagType: String): Option[Permission] = {
+    tagType match {
+      case TagType.Tone.name => Some(Permissions.TagSuperAdmin)
+      case TagType.Publication.name => Some(Permissions.TagAdmin)
+      case TagType.NewspaperBook.name => Some(Permissions.TagAdmin)
+      case TagType.NewspaperBookSection.name => Some(Permissions.TagAdmin)
+      case _ => None
+    }
+  }
+}
+
 trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
 
   val testAccess: (Permission => (String => Future[PermissionAuthorisation]))
@@ -22,14 +34,7 @@ trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
         b.asJson.map { json =>
           val tagType: String = (json \ "type").as[String]
 
-          val permission = tagType match {
-            case TagType.Tone.name => Permissions.TagSuperAdmin
-            case TagType.Publication.name => Permissions.TagAdmin
-            case TagType.NewspaperBook.name => Permissions.TagAdmin
-            case TagType.NewspaperBookSection.name => Permissions.TagAdmin
-            case _ => return Future(None)
-          }
-          println(s"Does ${request.user.email} have ${tagType}")
+          val permission = TagTypePermissionMap(tagType).getOrElse { return Future(None) }
 
           testAccess(permission)(request.user.email).map {
             case PermissionGranted => None
