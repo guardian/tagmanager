@@ -101,7 +101,7 @@ sealed trait Config {
 
 class DevConfig extends Config {
 
-  override def tagsTableName: String = "tags-dev"
+  override def tagsTableName: String = "tags-sc-temp"
   override def sectionsTableName: String = "sections-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"

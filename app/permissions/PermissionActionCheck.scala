@@ -1,7 +1,8 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
-import com.gu.editorial.permissions.client.{PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.tagmanagement.TagType
 import play.api.mvc.{ActionFilter, Results}
 import play.api.Logger
 import scala.concurrent.{Future}
@@ -56,3 +57,4 @@ object BatchTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "batch tag"
 }
+
