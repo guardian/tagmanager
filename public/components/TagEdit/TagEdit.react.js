@@ -11,7 +11,6 @@ import ContributorInfoEdit from './formComponents/contributor/ContributorInfoEdi
 import PublicationInfoEdit from './formComponents/publication/PublicationInfoEdit.react';
 import NewspaperBookInfoEdit from './formComponents/newspaperbook/NewspaperBookInfoEdit.react';
 
-
 import * as tagTypes from '../../constants/tagTypes';
 
 export default class TagEdit extends React.Component {
@@ -79,23 +78,23 @@ export default class TagEdit extends React.Component {
         return false;
       }
 
-      if (this.props.tag.type === tagTypes.topic) {
+      if (this.props.tag.type === tagTypes.topic.name) {
         return this.renderTopicFields();
       }
 
-      if (this.props.tag.type === tagTypes.series) {
+      if (this.props.tag.type === tagTypes.series.name) {
         return this.renderSeriesFields();
       }
 
-      if (this.props.tag.type === tagTypes.contributor) {
+      if (this.props.tag.type === tagTypes.contributor.name) {
         return this.renderContributorFields();
       }
 
-      if (this.props.tag.type === tagTypes.publication) {
+      if (this.props.tag.type === tagTypes.publication.name) {
         return this.renderPublicationFields();
       }
 
-      if (this.props.tag.type === tagTypes.newspaperBook) {
+      if (this.props.tag.type === tagTypes.newspaperBook.name) {
         return this.renderNewspaperBookFields();
       }
 
