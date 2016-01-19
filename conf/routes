@@ -57,7 +57,7 @@ GET        /tags/export/single/:id        controllers.ReadOnlyApi.tagAsXml(id: L
 GET        /tags/export/merges/:since     controllers.ReadOnlyApi.mergesAsXml(since: Long)
 
 # More newspaper integration
-# GET       /tools/newspaperintegration/tags/modified/:since
+GET       /tools/newspaperintegration/tags/modified/:since          controllers.ReadOnlyApi.modifiedAsXml(since: Long)
 GET       /tools/newspaperintegration/tags/merges/:since            controllers.ReadOnlyApi.mergesAsXml(since: Long)
 GET       /tools/newspaperintegration/tags/deleted/:since           controllers.ReadOnlyApi.deletesAsXml(since: Long)
 

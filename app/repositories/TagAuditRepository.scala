@@ -30,4 +30,7 @@ object TagAuditRepository {
       .map(TagAudit.fromItem).toList
   }
 
+  def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().map(TagAudit.fromItem).toList
+  val lastModifiedTags: Long => List[TagAudit] = since => loadAllAudits
+    .filter(x => (x.operation == "updated" && x.date.getMillis > since))
 }

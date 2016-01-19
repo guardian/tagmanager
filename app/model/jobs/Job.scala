@@ -38,7 +38,6 @@ object Job {
 
 
   def fromItem(item: Item) = try {
-    println("item: " + item)
     Json.parse(item.toJSON).as[Job]
   } catch {
     case NonFatal(e) => {
