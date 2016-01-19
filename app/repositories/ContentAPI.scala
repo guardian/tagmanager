@@ -2,7 +2,7 @@ package repositories
 
 import java.util.concurrent.Executors
 
-import com.gu.contentapi.client.ContentApiClientLogic
+import com.gu.contentapi.client.{ContentApiClientLogic, GuardianContentApiError}
 import com.gu.contentapi.client.model._
 import play.api.Logger
 import services.Config
@@ -35,9 +35,16 @@ object ContentAPI {
   }
 
   def getTag(apiTagId: String) = {
-    val response = apiClient.getResponse(new ItemQuery(apiTagId))
 
-    Await.result(response.map(_.tag), 5 seconds)
+    try {
+      val response = apiClient.getResponse(new ItemQuery(apiTagId))
+      Await.result(response.map(_.tag), 5 seconds)
+    } catch {
+      case GuardianContentApiError(404, _, _) => {
+        Logger.debug(s"No tag found for id ${apiTagId}")
+        None
+      }
+    }
   }
 
   def countContentWithTag(apiTagId: String) = {
