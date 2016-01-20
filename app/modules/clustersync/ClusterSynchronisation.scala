@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject._
 import play.api.Logger
-import repositories.TagLookupCache
+import repositories.{TagLookupCache, SectionLookupCache}
 import services.{Config, KinesisConsumer}
 
 import scala.collection.convert.wrapAll._
@@ -37,6 +37,9 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
 
       Logger.info("loading tag cache")
       TagLookupCache.refresh
+
+      Logger.info("loading section cache")
+      SectionLookupCache.refresh
 
       val tagUpdateConsumer = new KinesisConsumer(Config().tagUpdateStreamName, s"tag-cache-syncroniser-${ns.nodeId}", TagSyncUpdateProcessor)
       Logger.info("starting sync consumer")
