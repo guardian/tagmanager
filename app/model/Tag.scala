@@ -6,7 +6,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
 import helpers.XmlHelpers._
-import repositories.SectionRepository
+import repositories.SectionLookupCache
 import scala.util.control.NonFatal
 import scala.xml.Node
 
@@ -58,7 +58,7 @@ case class Tag(
   // in this limited format for inCopy to consume
   def asExportedXml = {
     val el = createElem("tag")
-    val section = SectionRepository.getSection(this.id)
+    val section = SectionLookupCache.getSection(this.section)
     val id = createAttribute("id", Some(this.id))
     val externalName = createAttribute("externalname", Some(this.externalName))
     val internalName = createAttribute("internalname", Some(this.internalName))
