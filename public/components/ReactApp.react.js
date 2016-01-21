@@ -38,7 +38,10 @@ class ReactApp extends React.Component {
 import { connect } from 'react-redux';
 
 function mapStateToProps(state) {
-  return { error: state.error };
+  return {
+      error: state.error,
+      warning: state.warning,
+  };
 }
 
 export default connect(mapStateToProps)(ReactApp);

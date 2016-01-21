@@ -41,15 +41,25 @@ export default class TagTypeCustomFields extends React.Component {
         return [
           (<div className="tag-edit__input-group" key="keyword-section">
             <label className="tag-edit__input-group__header">Section</label>
-              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+              <SectionSelect
+                selectedId={this.props.tag.section}
+                sections={this.props.sections}
+                onChange={this.onUpdateSection.bind(this)}
+                disabled={!this.props.tagEditable}/>
           </div>),
           (<div className="tag-edit__input-group" key="keyword-category">
             <label className="tag-edit__input-group__header">Category</label>
-              <TopicCategories selectedCategories={this.props.tag.categories} onChange={this.onUpdateCategory.bind(this)}/>
+              <TopicCategories
+                selectedCategories={this.props.tag.categories}
+                onChange={this.onUpdateCategory.bind(this)}
+                tagEditable={this.props.tagEditable}/>
           </div>)
         ];
       } else if (this.props.tag.type === tagTypes.series) {
-        return <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>;
+        return <PodcastMetadata
+                 tag={this.props.tag}
+                 updateTag={this.props.updateTag}
+                 tagEditable={this.tagEditable}/>;
       }
     }
 

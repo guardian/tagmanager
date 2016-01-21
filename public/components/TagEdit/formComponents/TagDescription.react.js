@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactScribe from '../../utils/ReactScribe.react';
 
-export default class TagVisibilityEdit extends React.Component {
+export default class TagDescriptionEdit extends React.Component {
 
   constructor(props) {
     super(props);
@@ -29,6 +29,7 @@ export default class TagVisibilityEdit extends React.Component {
             toolbarClassName="tag-edit__richtext__toolbar"
             toolbarItemClassName="tag-edit__richtext__toolbar__item"
             editorClassName="tag-edit__richtext__editor"
+            disabled={!this.props.tagEditable}
           />
         </div>
       </div>

@@ -1,4 +1,8 @@
 import tagManagerApi from '../../util/tagManagerApi';
+import {showWarning} from '../UIActions/showWarning'
+import {clearWarning} from '../UIActions/clearWarning'
+import {getStore} from '../../util/storeAccessor';
+
 
 export const TAG_GET_REQUEST = 'TAG_GET_REQUEST';
 export const TAG_GET_RECEIVE = 'TAG_GET_RECEIVE';
@@ -11,11 +15,12 @@ function requestTagGet() {
     };
 }
 
-function recieveTagGet(tag) {
+function recieveTagGet(tag, canEdit) {
     return {
-        type:       TAG_GET_RECEIVE,
-        tag:        tag,
-        receivedAt: Date.now()
+        type:        TAG_GET_RECEIVE,
+        tag:         tag,
+        tagEditable: canEdit,
+        receivedAt:  Date.now()
     };
 }
 
@@ -32,7 +37,22 @@ export function getTag(id) {
     return dispatch => {
         dispatch(requestTagGet());
         return tagManagerApi.getTag(id)
-            .then(res => dispatch(recieveTagGet(res)))
+            .then(res => {
+
+              const store = getStore();
+              var permitted = store.getState().config.permittedTagTypes;
+              var tagType = res.type;
+
+              if (!permitted.some((e, i, a) => e == tagType)) {
+                dispatch(showWarning('You do not have permission to edit this tag type'));
+                dispatch(recieveTagGet(res, false));
+              } else {
+                // Tag display warnings are persistent (not based on timeouts) so we have to manually clear out
+                // any previous warnings.
+                dispatch(clearWarning());
+                dispatch(recieveTagGet(res, true));
+              }
+            })
             .fail(error => dispatch(errorTagGet(error)));
     };
 }

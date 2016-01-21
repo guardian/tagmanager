@@ -39,11 +39,14 @@ export default class TagEdit extends React.Component {
         <div>
           <div className="tag-edit__input-group" key="topic-section">
             <label className="tag-edit__input-group__header">Section</label>
-              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)} disabled={!this.props.tagEditable}/>
           </div>
           <div className="tag-edit__input-group" key="topic-category">
             <label className="tag-edit__input-group__header">Category</label>
-              <TopicCategories selectedCategories={this.props.tag.categories} onChange={this.onUpdateCategory.bind(this)}/>
+              <TopicCategories
+                selectedCategories={this.props.tag.categories}
+                onChange={this.onUpdateCategory.bind(this)}
+                tagEditable={this.props.tagEditable}/>
           </div>
         </div>
       );
@@ -54,23 +57,23 @@ export default class TagEdit extends React.Component {
         <div>
           <div className="tag-edit__input-group" key="series-section">
             <label className="tag-edit__input-group__header">Category</label>
-              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)}/>
+              <SectionSelect selectedId={this.props.tag.section} sections={this.props.sections} onChange={this.onUpdateSection.bind(this)} disabled={!this.props.tagEditable}/>
           </div>
-          <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>
+          <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>
         </div>
       );
     }
 
     renderContributorFields() {
-      return <ContributorInfoEdit tag={this.props.tag} updateTag={this.props.updateTag}/>;
+      return <ContributorInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
     renderPublicationFields() {
-      return <PublicationInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} />;
+      return <PublicationInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
     renderNewspaperBookFields() {
-      return <NewspaperBookInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} />;
+      return <NewspaperBookInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
     renderTagTypeSpecificFields() {
@@ -109,16 +112,18 @@ export default class TagEdit extends React.Component {
       }
 
       return (
-        <div className="tag-edit">
-          <div className="tag-edit__form">
+        <div>
+          <div className="tag-edit">
+            <div className="tag-edit__form">
 
-            <TagNameEdit {...this.props}/>
-            <TagDescriptionEdit {...this.props}/>
+              <TagNameEdit {...this.props}/>
+              <TagDescriptionEdit {...this.props}/>
 
-            {this.renderTagTypeSpecificFields()}
+              {this.renderTagTypeSpecificFields()}
 
-            <TagVisibility {...this.props}/>
+              <TagVisibility {...this.props}/>
 
+            </div>
           </div>
         </div>
       );

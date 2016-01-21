@@ -93,7 +93,7 @@ class TagCreate extends React.Component {
                 <label className="tag-edit__input-group__header">Tag Type</label>
                 <TypeSelect selectedType={this.props.tag.type} types={this.props.config.permittedTagTypes} onChange={this.onUpdateType.bind(this)}/>
               </div>
-              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} />
+              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/>
               <TagValidationErrors validations={this.generateValidationErrors()} />
             </div>
             <div className="tag__column">
@@ -120,6 +120,7 @@ function mapStateToProps(state) {
   return {
     sections: state.sections,
     tag: state.tag,
+    tagEditable: state.tagEditable,
     config: state.config
   };
 }

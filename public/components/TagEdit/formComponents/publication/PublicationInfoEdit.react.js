@@ -58,7 +58,7 @@ export default class PublicationInfoEdit extends React.Component {
     return (
       <div className="tag-edit__field">
         <label className="tag-edit__label">Main Newspaper Book Section</label> <br />
-        <TagSelect onTagClick={this.addMainNewspaperBookSectionTag.bind(this)} tagType="NewspaperBookSection"/>
+        <TagSelect onTagClick={this.addMainNewspaperBookSectionTag.bind(this)} tagType="NewspaperBookSection" disabled={!this.props.tagEditable}/>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default class PublicationInfoEdit extends React.Component {
             </div>
           );
         }, this)}
-        <TagSelect onTagClick={this.addNewspaperBookTag.bind(this)} tagType="NewspaperBook"/>
+        <TagSelect onTagClick={this.addNewspaperBookTag.bind(this)} tagType="NewspaperBook" disabled={!this.props.tagEditable}/>
       </div>
     );
   }

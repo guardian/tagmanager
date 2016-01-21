@@ -12,6 +12,8 @@ import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
+import {CLEAR_WARNING} from '../actions/UIActions/clearWarning';
+import {SHOW_WARNING} from '../actions/UIActions/showWarning';
 
 
 const saveState = {
@@ -54,6 +56,15 @@ export default function tag(state = {
       error: action.message
     });
 
+  case SHOW_WARNING:
+      return Object.assign({}, state, {
+        warning: action.message
+      });
+
+  case CLEAR_WARNING:
+    return Object.assign({}, state, {
+      warning: false
+    });
 // TAG GET
 
   case TAG_GET_REQUEST:
@@ -61,11 +72,14 @@ export default function tag(state = {
       tag: false,
       saveState: undefined
     });
+
   case TAG_GET_RECEIVE:
     return Object.assign({}, state, {
       tag: action.tag,
+      tagEditable: action.tagEditable,
       saveState: saveState.clean
     });
+
   case TAG_GET_ERROR:
     return Object.assign({}, state, {
       error: action.message,
@@ -83,6 +97,7 @@ export default function tag(state = {
   case TAG_POPULATE_BLANK:
     return Object.assign({}, state, {
       tag: action.tag,
+      tagEditable: action.tagEditable,
       saveState: saveState.clean
     });
 

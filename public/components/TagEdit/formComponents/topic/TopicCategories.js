@@ -47,7 +47,10 @@ export default class TopicCategories extends React.Component {
         {topicCategories.map(category => {
           return (
             <div className="tag-edit__field" key={category}>
-              <input type="checkbox" checked={this.isSelected(category)} onChange={this.onChecked.bind(this, category)}/>
+              <input type="checkbox"
+                checked={this.isSelected(category)}
+                onChange={this.onChecked.bind(this, category)}
+                disabled={!this.props.tagEditable}/>
               <label className="tag-edit__label"> {category}</label>
             </div>
           );

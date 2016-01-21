@@ -150,13 +150,16 @@ export default class TagNameEdit extends React.Component {
       <div className="tag-edit__input-group">
         <div className="tag-edit__name">
           <label className="tag-edit__input-group__header">Internal Name</label>
-          <input className="tag-edit__input" type="text" value={this.props.tag.internalName} onChange={this.onUpdateInternalName.bind(this)}/>
+          <input className="tag-edit__input" type="text" value={this.props.tag.internalName} onChange={this.onUpdateInternalName.bind(this)} disabled={!this.props.tagEditable}/>
           <div className="tag-edit__linked-field">
             <div className={classNames.externalName.link}></div>
             <div className={classNames.externalName.lock} onClick={this.toggleExternalNameLock.bind(this)}></div>
             <label>External Name</label>
             <div className="tag-edit__linked-field__input-container">
-              <input type="text" value={this.props.tag.externalName} onChange={this.onUpdateExternalName.bind(this)} />
+              <input type="text"
+                value={this.props.tag.externalName}
+                onChange={this.onUpdateExternalName.bind(this)}
+                disabled={!this.props.tagEditable}/>
             </div>
           </div>
           <div className="tag-edit__linked-field">
@@ -164,7 +167,10 @@ export default class TagNameEdit extends React.Component {
             <div className={classNames.comparableValue.lock} onClick={this.toggleComparableValueLock.bind(this)}></div>
             <label>Sort by name</label>
             <div className="tag-edit__linked-field__input-container">
-              <input type="text" value={this.props.tag.comparableValue} onChange={this.onUpdateComparableValue.bind(this)} />
+              <input type="text"
+                value={this.props.tag.comparableValue}
+                onChange={this.onUpdateComparableValue.bind(this)}
+                disabled={!this.props.tagEditable}/>
             </div>
           </div>
           <div className="tag-edit__linked-field">
@@ -173,7 +179,11 @@ export default class TagNameEdit extends React.Component {
             <label>Slug</label>
             <div className="tag-edit__linked-field__input-container">
               <span>{this.getPathPrefixForSection()}</span>
-              <input type="text" disabled={this.props.pathLocked} value={this.props.tag.slug} onChange={this.onUpdateSlug.bind(this)}/>
+              <input type="text"
+                disabled={this.props.pathLocked}
+                value={this.props.tag.slug}
+                onChange={this.onUpdateSlug.bind(this)}
+                disabled={!this.props.tagEditable}/>
             </div>
           </div>
         </div>
