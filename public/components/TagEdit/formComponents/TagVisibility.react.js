@@ -27,11 +27,17 @@ export default class TagVisibilityEdit extends React.Component {
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Visibility Control</label>
         <div className="tag-edit__field">
-          <input type="checkbox" onChange={this.toggleHidden.bind(this)} checked={this.props.tag.hidden}/>
+          <input type="checkbox"
+            onChange={this.toggleHidden.bind(this)}
+            checked={this.props.tag.hidden}
+            disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Hidden</label>
         </div>
         <div className="tag-edit__field">
-          <input type="checkbox" onChange={this.toggleSensitive.bind(this)} checked={this.props.tag.legallySensitive}/>
+          <input type="checkbox"
+            onChange={this.toggleSensitive.bind(this)}
+            checked={this.props.tag.legallySensitive}
+            disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Legally Sensitive</label>
         </div>
       </div>

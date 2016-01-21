@@ -19,7 +19,7 @@ export default class SectionSelect extends React.Component {
     const sections = this.props.isMicrosite ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
 
     return (
-      <select value={this.props.selectedId} onChange={this.props.onChange}>
+      <select value={this.props.selectedId} onChange={this.props.onChange} disabled={this.props.disabled}>
         {!this.props.selectedId || this.props.showBlank ? <option value={false}></option> : false}
         {sections.sort((a, b) => {return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map(function(s) {
           return (

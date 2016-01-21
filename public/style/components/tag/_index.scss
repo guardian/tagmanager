@@ -73,7 +73,8 @@
   }
 }
 
-.tag__delete {
+.tag__delete,
+.tag__delete--disabled {
 
   @extend %f-header;
   @extend %fs-data-4;
@@ -89,10 +90,13 @@
   outline: none;
 
   margin: $standard-padding;
-
-
-
 }
+
+.tag__delete--disabled {
+  border: 1px solid $c-grey-200;
+  color: $c-grey-400;
+}
+
 
 .validation-transition-leave.tag-validation__result {
   opacity: 1;

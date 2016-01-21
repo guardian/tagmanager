@@ -45,19 +45,22 @@ export default class TagEdit extends React.Component {
         <div>
           <div className="tag-edit__input-group" key="topic-section">
             <label className="tag-edit__input-group__header">Section</label>
-              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked}/>
+              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/>
               <label className="tag-edit__label">is Microsite</label>
               <SectionSelect
                 selectedId={this.props.tag.section}
                 sections={this.props.sections}
                 isMicrosite={this.props.tag.isMicrosite}
                 onChange={this.onUpdateSection.bind(this)}
-                disabled={this.props.pathLocked}
+                disabled={this.props.pathLocked || !this.props.tagEditable}
               />
           </div>
           <div className="tag-edit__input-group" key="topic-category">
             <label className="tag-edit__input-group__header">Category</label>
-              <TopicCategories selectedCategories={this.props.tag.categories} onChange={this.onUpdateCategory.bind(this)}/>
+              <TopicCategories
+                selectedCategories={this.props.tag.categories}
+                onChange={this.onUpdateCategory.bind(this)}
+                tagEditable={this.props.tagEditable}/>
           </div>
         </div>
       );
@@ -68,30 +71,30 @@ export default class TagEdit extends React.Component {
         <div>
           <div className="tag-edit__input-group" key="series-section">
             <label className="tag-edit__input-group__header">Section</label>
-              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked}/> is Microsite
+              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/> is Microsite
               <SectionSelect
                 selectedId={this.props.tag.section}
                 sections={this.props.sections}
                 isMicrosite={this.props.tag.isMicrosite}
                 onChange={this.onUpdateSection.bind(this)}
-                disabled={this.props.pathLocked}
+                disabled={this.props.pathLocked || !this.props.tagEditable}
               />
             </div>
-          <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>
+          <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>
         </div>
       );
     }
 
     renderContributorFields() {
-      return <ContributorInfoEdit tag={this.props.tag} updateTag={this.props.updateTag}/>;
+      return <ContributorInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
     renderPublicationFields() {
-      return <PublicationInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} />;
+      return <PublicationInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
     renderNewspaperBookFields() {
-      return <NewspaperBookInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} />;
+      return <NewspaperBookInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
     renderTagTypeSpecificFields() {

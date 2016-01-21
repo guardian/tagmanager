@@ -35,4 +35,3 @@ object Permissions extends PermissionsProvider {
   }
 }
 
-

@@ -1,7 +1,8 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
-import com.gu.editorial.permissions.client.{PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.tagmanagement.TagType
 import play.api.mvc.{ActionFilter, Results}
 import play.api.Logger
 import scala.concurrent.{Future}
@@ -41,6 +42,11 @@ object UpdateSectionPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "update section"
 }
 
+object DeleteTagPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
+  val restrictedAction = "delete tag"
+}
+
 // Admin
 object MergeTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
@@ -52,7 +58,3 @@ object BatchTagPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "batch tag"
 }
 
-object DeleteTagPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "delete tag"
-}

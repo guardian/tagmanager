@@ -76,33 +76,62 @@ export default class PodcastMetadata extends React.Component {
       <div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Link URL</label>
-          <input type="text" className="tag-edit__input" value={this.props.tag.podcastMetadata.linkUrl || ''} onChange={this.updateLinkUrl.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={this.props.tag.podcastMetadata.linkUrl || ''}
+            onChange={this.updateLinkUrl.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Copyright</label>
-          <input type="text" className="tag-edit__input" value={this.props.tag.podcastMetadata.copyrightText || ''} onChange={this.updateCopyright.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={this.props.tag.podcastMetadata.copyrightText || ''}
+            onChange={this.updateCopyright.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Author</label>
-          <input type="text" className="tag-edit__input" value={this.props.tag.podcastMetadata.authorText || ''} onChange={this.updateAuthor.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={this.props.tag.podcastMetadata.authorText || ''}
+            onChange={this.updateAuthor.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">iTunes Url</label>
-          <input type="text" className="tag-edit__input" value={this.props.tag.podcastMetadata.iTunesUrl || ''} onChange={this.updateiTunesUrl.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={this.props.tag.podcastMetadata.iTunesUrl || ''}
+            onChange={this.updateiTunesUrl.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
-          <input type="checkbox" onChange={this.updateiTunesBlock.bind(this)} checked={this.props.tag.podcastMetadata.iTunesBlock || false}/>
+          <input type="checkbox"
+            onChange={this.updateiTunesBlock.bind(this)}
+            checked={this.props.tag.podcastMetadata.iTunesBlock || false}
+            disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Block from iTunes</label>
         </div>
         <div className="tag-edit__field">
-          <input type="checkbox" onChange={this.updateClean.bind(this)} checked={this.props.tag.podcastMetadata.clean || false}/>
+          <input type="checkbox"
+            onChange={this.updateClean.bind(this)}
+            checked={this.props.tag.podcastMetadata.clean || false}
+            disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Clean</label>
         </div>
         <div className="tag-edit__field">
-          <input type="checkbox" onChange={this.updateExplicit.bind(this)} checked={this.props.tag.podcastMetadata.explicit || false}/>
+          <input type="checkbox"
+            onChange={this.updateExplicit.bind(this)}
+            checked={this.props.tag.podcastMetadata.explicit || false}
+            disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Explicit</label>
         </div>
-        <TagImageEdit tagImage={this.props.tag.podcastMetadata.image} label="Podcast Image" onChange={this.updateImage.bind(this)}/>
+        <TagImageEdit
+          tagImage={this.props.tag.podcastMetadata.image}
+          label="Podcast Image"
+          onChange={this.updateImage.bind(this)}
+          tagEditable={this.props.tagEditable}/>
       </div>
     );
   }
@@ -117,7 +146,11 @@ export default class PodcastMetadata extends React.Component {
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Podcast Metadata</label>
         <div className="tag-edit__field">
-          <input type="checkbox" checked={this.tagHasPodcast()} onChange={this.togglePodcast.bind(this)}/>
+          <input
+            type="checkbox"
+            checked={this.tagHasPodcast()}
+            onChange={this.togglePodcast.bind(this)}
+            disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Is this series a podcast?</label>
         </div>
         {this.renderMetadataForm()}
