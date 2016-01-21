@@ -8,11 +8,11 @@ class SectionList extends React.Component {
     }
 
     onSectionClick(section) {
-      history.replaceState(null, '/section/' + section.id);
+      const path = this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id;
+      history.replaceState(null, path);
     }
 
-    componentDidMount() {
-
+    componentWillMount() {
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }
@@ -36,6 +36,8 @@ class SectionList extends React.Component {
         );
       }
 
+      const sections = this.props.route.isMicrositeView ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
+
       return (
         <table className="sectionlist">
           <thead className="sectionlist__header">
@@ -46,7 +48,7 @@ class SectionList extends React.Component {
             </tr>
           </thead>
           <tbody className="sectionlist__results">
-            {this.props.sections.sort((a, b) => a.name > b.name ? 1 : -1).map(this.renderListItem, this)}
+            {sections.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(this.renderListItem, this)}
           </tbody>
         </table>
       );

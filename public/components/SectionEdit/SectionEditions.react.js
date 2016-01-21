@@ -1,5 +1,4 @@
 import React from 'react';
-import R from 'ramda';
 import SectionAddEdition from './SectionAddEdition.react';
 import tagManagerApi from '../../util/tagManagerApi';
 
@@ -58,13 +57,17 @@ export default class SectionEdit extends React.Component {
 
     render () {
 
+      if (this.props.section.isMicrosite) {
+        return false;
+      }
+
       return (
         <div className="section-edit__editions">
           <div className="section-edit__header">
             International Editions
           </div>
           {this.renderEditions()}
-          <SectionAddEdition section={this.props.section} disabled={this.props.saveState === "SAVE_STATE_DIRTY"} refreshSection={this.props.refreshSection}/>
+          <SectionAddEdition section={this.props.section} disabled={this.props.saveState === 'SAVE_STATE_DIRTY'} refreshSection={this.props.refreshSection}/>
         </div>
       );
     }

@@ -72,3 +72,32 @@ case class TagRemovedCheck(apiTagId: String) extends Step {
     }
   }
 }
+
+case class MergeAuditStep(
+  removingTagId: Long,
+  replacementTagId: Long,
+  username: Option[String]) extends Step {
+  override def process: Option[Step] = {
+    Logger.info(s"replacing: ${removingTagId} with ${replacementTagId}")
+
+    val removingTag = TagRepository.getTag(removingTagId)
+    val replacementTag = TagRepository.getTag(replacementTagId)
+
+    (removingTag, replacementTag) match {
+      case (Some(removing), Some(replacing)) => {
+        val audit = TagAudit.merged(removing, replacing, username)
+        TagAuditRepository.upsertTagAudit(audit)
+      }
+      case (_, _ ) => None
+    }
+    None
+  }
+}
+
+object MergeAuditStep {
+  implicit val mergeAuditStepFormat: Format[MergeAuditStep] = (
+    (JsPath \ "removingTagId").format[Long] and
+    (JsPath \ "replacementTagId").format[Long] and
+      (JsPath \ "username").formatNullable[String]
+    )(MergeAuditStep.apply, unlift(MergeAuditStep.unapply))
+}

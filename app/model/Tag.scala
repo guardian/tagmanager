@@ -29,7 +29,8 @@ case class Tag(
   references: List[Reference] = Nil,
   podcastMetadata: Option[PodcastMetadata] = None,
   contributorInformation: Option[ContributorInformation] = None,
-  publicationInformation: Option[PublicationInformation] = None
+  publicationInformation: Option[PublicationInformation] = None,
+  isMicrosite: Boolean
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -52,7 +53,8 @@ case class Tag(
     references        = references.map(_.asThrift),
     podcastMetadata   = podcastMetadata.map(_.asThrift),
     contributorInformation = contributorInformation.map(_.asThrift),
-    publicationInformation = publicationInformation.map(_.asThrift)
+    publicationInformation = publicationInformation.map(_.asThrift),
+    isMicrosite       = isMicrosite
   )
 
   // in this limited format for inCopy to consume
@@ -103,7 +105,9 @@ object Tag {
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
-      (JsPath \ "publicationInformation").formatNullable[PublicationInformation]
+      (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
+      (JsPath \ "isMicrosite").format[Boolean]
+
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = try {
@@ -142,6 +146,7 @@ object Tag {
       references        = thriftTag.references.map(Reference(_)).toList,
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
-      publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_))
+      publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
+      isMicrosite       = thriftTag.isMicrosite
     )
 }

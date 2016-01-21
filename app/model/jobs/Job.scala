@@ -74,7 +74,7 @@ object JobRunner {
 }
 
 
-case class Merge(  id: Long,
+case class Merge(id: Long,
   started: DateTime,
   startedBy: Option[String],
   tagIds: List[Long],
