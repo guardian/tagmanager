@@ -1,6 +1,4 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import {showWarning} from '../UIActions/showWarning'
-import {clearWarning} from '../UIActions/clearWarning'
 import {getStore} from '../../util/storeAccessor';
 
 
@@ -44,12 +42,8 @@ export function getTag(id) {
               var tagType = res.type;
 
               if (!permitted.some((e, i, a) => e == tagType)) {
-                dispatch(showWarning('You do not have permission to edit this tag type'));
                 dispatch(recieveTagGet(res, false));
               } else {
-                // Tag display warnings are persistent (not based on timeouts) so we have to manually clear out
-                // any previous warnings.
-                dispatch(clearWarning());
                 dispatch(recieveTagGet(res, true));
               }
             })

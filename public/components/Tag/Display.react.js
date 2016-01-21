@@ -78,25 +78,23 @@ class TagDisplay extends React.Component {
     }
 
     renderSaveBanner() {
-      var permitted = this.props.config.permittedTagTypes;
-
-      if (permitted.some((e, i, a) => e == this.props.tag.type)) {
+      if (this.props.tagEditable) {
         return <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()}
                            onSaveClick={this.saveTag.bind(this)}
                            onResetClick={this.resetTag.bind(this)}/>
       }
     }
 
-    renderWarningBar() {
-      if (!this.props.warning) {
-        return false;
+    renderPermissionsWarningBar() {
+      if (!this.props.tagEditable) {
+          return (
+            <div className="warning-bar">
+              You do not have permission to edit this tag type
+            </div>
+          );
       }
 
-      return (
-        <div className="warning-bar">
-          {this.props.warning || 'An unlabelled warning has occured, please refresh your browser. If this problem persists please contact Central Production'}
-        </div>
-      );
+      return false;
     }
 
     render () {
@@ -108,7 +106,7 @@ class TagDisplay extends React.Component {
 
       return (
         <div className="tag">
-          {this.renderWarningBar()}
+          {this.renderPermissionsWarningBar()}
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
               <div className="tag-edit__input-group">
@@ -147,7 +145,6 @@ import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getRefere
 function mapStateToProps(state) {
   return {
     tag: state.tag,
-    warning: state.warning,
     tagEditable: state.tagEditable,
     sections: state.sections,
     referenceTypes: state.referenceTypes,
