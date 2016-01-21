@@ -32,6 +32,9 @@ export default class Header extends React.Component {
                             <Link to="/audit">Audit Logs</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">
+                            <Link to="/microsite">Microsite Manager</Link>
+                        </li>
+                        <li className="links__item top-toolbar__item--highlight">
                             <Link to="/section">Section Editor</Link>
                         </li>
                         <li className="links__item top-toolbar__item--highlight">

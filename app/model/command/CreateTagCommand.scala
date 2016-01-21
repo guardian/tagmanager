@@ -27,7 +27,8 @@ case class CreateTagCommand(
                       references: List[Reference] = Nil,
                       podcastMetadata: Option[PodcastMetadata],
                       contributorInformation: Option[ContributorInformation],
-                      publicationInformation: Option[PublicationInformation]
+                      publicationInformation: Option[PublicationInformation],
+                      isMicrosite: Boolean
 
                            ) extends Command {
 
@@ -58,7 +59,8 @@ case class CreateTagCommand(
       references = references,
       podcastMetadata = podcastMetadata,
       contributorInformation = contributorInformation,
-      publicationInformation = publicationInformation
+      publicationInformation = publicationInformation,
+      isMicrosite = isMicrosite
     )
     
     val result = TagRepository.upsertTag(tag)
@@ -89,7 +91,9 @@ object CreateTagCommand {
       (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
-      (JsPath \ "publicationInformation").formatNullable[PublicationInformation]
+      (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
+      (JsPath \ "isMicrosite").format[Boolean]
+
 
     )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
 }
