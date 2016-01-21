@@ -42,3 +42,8 @@ export const newspaperBookSection = {
   name: 'NewspaperBookSection',
   displayName: 'Newspaper Book Section'
 };
+
+export const blog = {
+  name: 'Blog',
+  displayName: 'Blog'
+};

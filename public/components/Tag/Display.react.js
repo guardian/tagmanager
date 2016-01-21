@@ -106,7 +106,6 @@ import * as updateTag from '../../actions/TagActions/updateTag';
 import * as saveTag from '../../actions/TagActions/saveTag';
 import * as deleteTag from '../../actions/TagActions/deleteTag';
 import * as getSections from '../../actions/SectionsActions/getSections';
-import * as getMicrosites from '../../actions/SectionsActions/getMicrosites';
 import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getReferenceTypes';
 
 function mapStateToProps(state) {
@@ -122,7 +121,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag, deleteTag), dispatch),
-    sectionActions: bindActionCreators(Object.assign({}, getSections, getMicrosites), dispatch),
+    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch),
     referenceTypeActions: bindActionCreators(Object.assign({}, getReferenceTypes), dispatch)
   };
 }

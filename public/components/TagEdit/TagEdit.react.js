@@ -45,13 +45,14 @@ export default class TagEdit extends React.Component {
         <div>
           <div className="tag-edit__input-group" key="topic-section">
             <label className="tag-edit__input-group__header">Section</label>
-              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)}/>
-            <label className="tag-edit__label">is Microsite</label>
+              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked}/>
+              <label className="tag-edit__label">is Microsite</label>
               <SectionSelect
                 selectedId={this.props.tag.section}
                 sections={this.props.sections}
                 isMicrosite={this.props.tag.isMicrosite}
                 onChange={this.onUpdateSection.bind(this)}
+                disabled={this.props.pathLocked}
               />
           </div>
           <div className="tag-edit__input-group" key="topic-category">
@@ -67,13 +68,15 @@ export default class TagEdit extends React.Component {
         <div>
           <div className="tag-edit__input-group" key="series-section">
             <label className="tag-edit__input-group__header">Section</label>
-            <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)}/> is Microsite
-            <SectionSelect
-              selectedId={this.props.tag.section}
-              sections={this.props.sections}
-              isMicrosite={this.props.tag.isMicrosite}
-              onChange={this.onUpdateSection.bind(this)}
-            />          </div>
+              <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked}/> is Microsite
+              <SectionSelect
+                selectedId={this.props.tag.section}
+                sections={this.props.sections}
+                isMicrosite={this.props.tag.isMicrosite}
+                onChange={this.onUpdateSection.bind(this)}
+                disabled={this.props.pathLocked}
+              />
+            </div>
           <PodcastMetadata tag={this.props.tag} updateTag={this.props.updateTag}/>
         </div>
       );

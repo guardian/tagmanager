@@ -24,10 +24,6 @@ class TagCreate extends React.Component {
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }
-
-      if (!this.props.microsites || !this.props.microsites.length) {
-        this.props.sectionActions.getMicrosites();
-      }
     }
 
     saveTag() {
@@ -76,7 +72,10 @@ class TagCreate extends React.Component {
     checkPathInUse(tag) {
       tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section)
         .then(res => this.setState({pathInUse: res.inUse}))
-        .fail(error => this.setState({pathInUse: true}));
+        .fail((error) => {
+          console.log(error);
+          this.setState({pathInUse: true});
+        });
     }
 
     onUpdateType(e) {
@@ -123,7 +122,6 @@ import * as getSections from '../../actions/SectionsActions/getSections';
 function mapStateToProps(state) {
   return {
     sections: state.sections,
-    microsites: state.microsites,
     tag: state.tag,
     config: state.config
   };
