@@ -12,6 +12,7 @@ object CommandError extends Results {
   def TagNotFound = throw new CommandError("tag not found", 400)
   def PathInUse = throw new CommandError("path in use", 400)
   def PathNotFound = throw new CommandError("could not remove path from pathmanager", 400)
+  def CouldNotCreateSectionTag = throw new CommandError("could not create section tag", 400)
 
   def InvalidSectionEditionRegion = throw new CommandError("Invalid region supplied", 400)
 

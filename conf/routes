@@ -24,6 +24,7 @@ PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag
 DELETE     /api/tag/:id                   controllers.TagManagementApi.deleteTag(id: Long)
 
 GET        /api/sections                  controllers.TagManagementApi.listSections
+POST       /api/section                   controllers.TagManagementApi.createSection
 GET        /api/section/:id               controllers.TagManagementApi.getSection(id: Long)
 PUT        /api/section/:id               controllers.TagManagementApi.updateSection(id: Long)
 POST       /api/section/:id/edition       controllers.TagManagementApi.addEditionToSection(id: Long)

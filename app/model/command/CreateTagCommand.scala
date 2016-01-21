@@ -20,14 +20,14 @@ case class CreateTagCommand(
                       legallySensitive: Boolean = false,
                       comparableValue: String,
                       categories: Set[String] = Set(),
-                      section: Option[Long],
-                      publication: Option[Long],
+                      section: Option[Long] = None,
+                      publication: Option[Long] = None,
                       description: Option[String] = None,
                       parents: Set[Long] = Set(),
                       references: List[Reference] = Nil,
-                      podcastMetadata: Option[PodcastMetadata],
-                      contributorInformation: Option[ContributorInformation],
-                      publicationInformation: Option[PublicationInformation],
+                      podcastMetadata: Option[PodcastMetadata] = None,
+                      contributorInformation: Option[ContributorInformation] = None,
+                      publicationInformation: Option[PublicationInformation] = None,
                       isMicrosite: Boolean
 
                            ) extends Command {

@@ -81,6 +81,19 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
+  def createSection() = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[CreateSectionCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
   def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
