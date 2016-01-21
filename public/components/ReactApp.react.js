@@ -39,8 +39,7 @@ import { connect } from 'react-redux';
 
 function mapStateToProps(state) {
   return {
-      error: state.error,
-      warning: state.warning,
+      error: state.error
   };
 }
 
