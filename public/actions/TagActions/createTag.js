@@ -11,7 +11,8 @@ const BLANK_TAG = {
   externalReferences: [],
   hidden: false,
   legallySensitive: false,
-  parents: []
+  parents: [],
+  isMicrosite: false
 };
 
 function requestTagCreate() {
