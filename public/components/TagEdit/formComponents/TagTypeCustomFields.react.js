@@ -37,7 +37,7 @@ export default class TagTypeCustomFields extends React.Component {
         return false;
       }
 
-      if (this.props.tag.type === tagTypes.topic) {
+      if (this.props.tag.type === tagTypes.topic.name) {
         return [
           (<div className="tag-edit__input-group" key="keyword-section">
             <label className="tag-edit__input-group__header">Section</label>
@@ -55,7 +55,7 @@ export default class TagTypeCustomFields extends React.Component {
                 tagEditable={this.props.tagEditable}/>
           </div>)
         ];
-      } else if (this.props.tag.type === tagTypes.series) {
+      } else if (this.props.tag.type === tagTypes.series.name) {
         return <PodcastMetadata
                  tag={this.props.tag}
                  updateTag={this.props.updateTag}

@@ -1,4 +1,5 @@
 import React from 'react';
+import * as tagTypes from '../../../constants/tagTypes';
 
 function slugify(text) {
   return text ? text.toLowerCase().replace(/[^a-z0-9-]/g, '-') : '';
@@ -105,12 +106,34 @@ export default class TagNameEdit extends React.Component {
   }
 
   getPathPrefixForSection() {
-    if (!this.props.sections || !this.props.tag.section) {
-      return '???/';
+
+    //Infer from Tag Type
+    if (!this.props.tag.type) {
+      return '/';
     }
+
+    const tagTypeKey = Object.keys(tagTypes).filter((tagTypeKey) => {
+      return tagTypes[tagTypeKey].name === this.props.tag.type;
+    })[0];
+
+    if (tagTypes[tagTypeKey].pathPrefix) {
+      return tagTypes[tagTypeKey].pathPrefix + '/';
+    }
+
+    //Infer from section
+
+    if (!this.props.sections || !this.props.tag.section) {
+      return '/';
+    }
+
     var section = this.props.sections.filter((section) => section.id === this.props.tag.section);
 
     if (section.length) {
+
+      if (tagTypes[tagTypeKey].additionalPathPrefix) {
+        return section[0].wordsForUrl + '/' + tagTypes[tagTypeKey].additionalPathPrefix + '/';
+      }
+
       return section[0].wordsForUrl + '/';
     } else {
       return '/';
@@ -145,7 +168,6 @@ export default class TagNameEdit extends React.Component {
     if (!this.state.slugLocked && !this.state.comparableValueLocked) {
       classNames.externalName.link = this.state.externalNameLocked ? 'tag-edit__linked-field__link--corner' : 'tag-edit__linked-field__link';
     }
-
     return (
       <div className="tag-edit__input-group">
         <div className="tag-edit__name">
@@ -178,12 +200,12 @@ export default class TagNameEdit extends React.Component {
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
             <label>Slug</label>
             <div className="tag-edit__linked-field__input-container">
-              <span>{this.getPathPrefixForSection()}</span>
-              <input type="text"
-                disabled={this.props.pathLocked}
-                value={this.props.tag.slug}
-                onChange={this.onUpdateSlug.bind(this)}
-                disabled={!this.props.tagEditable}/>
+              <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : this.props.tag.path}</span>
+              {!this.props.pathLocked ? <input type="text"
+                                          disabled={this.props.pathLocked}
+                                          value={this.props.tag.slug}
+                                          onChange={this.onUpdateSlug.bind(this)
+                                          disabled={!this.props.tagEditable}}/> : false}
             </div>
           </div>
         </div>
