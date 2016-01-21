@@ -37,8 +37,4 @@ object JobRepository {
     Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).map(Job.fromItem).toList
   }
 
-
-  private val getType: String => List[Job] = `type` => loadAllJobs.filter(_.`type` == `type`)
-  val getMerges: List[Job] = getType("Merge tag")
-  val getDeletes: List[Job] = getType("Delete tag")
 }
