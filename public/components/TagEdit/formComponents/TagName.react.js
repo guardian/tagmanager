@@ -204,8 +204,8 @@ export default class TagNameEdit extends React.Component {
               {!this.props.pathLocked ? <input type="text"
                                           disabled={this.props.pathLocked}
                                           value={this.props.tag.slug}
-                                          onChange={this.onUpdateSlug.bind(this)
-                                          disabled={!this.props.tagEditable}}/> : false}
+                                          onChange={this.onUpdateSlug.bind(this)}
+                                          disabled={!this.props.tagEditable}/> : false}
             </div>
           </div>
         </div>
