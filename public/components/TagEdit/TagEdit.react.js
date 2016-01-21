@@ -112,18 +112,16 @@ export default class TagEdit extends React.Component {
       }
 
       return (
-        <div>
-          <div className="tag-edit">
-            <div className="tag-edit__form">
+        <div className="tag-edit">
+          <div className="tag-edit__form">
 
-              <TagNameEdit {...this.props}/>
-              <TagDescriptionEdit {...this.props}/>
+            <TagNameEdit {...this.props}/>
+            <TagDescriptionEdit {...this.props}/>
 
-              {this.renderTagTypeSpecificFields()}
+            {this.renderTagTypeSpecificFields()}
 
-              <TagVisibility {...this.props}/>
+            <TagVisibility {...this.props}/>
 
-            </div>
           </div>
         </div>
       );
