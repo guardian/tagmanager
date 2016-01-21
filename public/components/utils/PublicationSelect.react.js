@@ -2,7 +2,7 @@ import React from 'react';
 
 import tagManagerApi from '../../util/tagManagerApi';
 
-export default class SectionSelect extends React.Component {
+export default class PublicationSelect extends React.Component {
 
   constructor(props) {
     super(props);
@@ -40,7 +40,7 @@ export default class SectionSelect extends React.Component {
     }
 
     return (
-      <select value={this.props.selectedId} onChange={this.props.onChange}>
+      <select value={this.props.selectedId} onChange={this.props.onChange} disabled={this.props.disabled}>
         {!this.props.selectedId || this.props.showBlank ? <option value={false}></option> : false}
         {this.state.publications.sort((a, b) => {return a.internalName > b.internalName ? 1 : -1;}).map(function(s) {
           return (

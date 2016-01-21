@@ -22,7 +22,7 @@ export default class ContributorInfoEdit extends React.Component {
         <label className="tag-edit__input-group__header">Newspaper Book Information</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Publication</label>
-          <PublicationSelect selectedId={this.props.tag.publication} onChange={this.updatePublicationId.bind(this)}/>
+          <PublicationSelect selectedId={this.props.tag.publication} onChange={this.updatePublicationId.bind(this)} disabled={!this.props.tagEditable}/>
         </div>
       </div>
     );

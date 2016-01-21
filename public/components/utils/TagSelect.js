@@ -82,7 +82,12 @@ export default class TagSelect extends React.Component {
       return (
         <div className={this.props.showResultsAbove ? 'tag-select--results-above' : 'tag-select'}>
             <div>
-              <input className="tag-select__input" type="text" autoFocus={true} value={this.state.tagSearchTerm} onChange={this.onUpdateSearchField.bind(this)}/>
+              <input
+                className="tag-select__input"
+                type="text" autoFocus={true}
+                value={this.state.tagSearchTerm}
+                onChange={this.onUpdateSearchField.bind(this)}
+                disabled={this.props.disabled}/>
             </div>
             {this.renderSuggestions()}
         </div>

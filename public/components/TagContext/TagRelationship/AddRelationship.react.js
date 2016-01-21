@@ -40,7 +40,7 @@ export default class AddRelationship extends React.Component {
 
       return (
         <div className="tag-relationship__add--expanded">
-          <TagSelect onTagClick={this.onAddTag.bind(this)}/>
+          <TagSelect onTagClick={this.onAddTag.bind(this)} disabled={!this.props.tagEditable}/>
           <i className="i-cross" onClick={this.minimise.bind(this)}></i>
         </div>
       );
