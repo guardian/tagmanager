@@ -59,7 +59,7 @@ export default class TagTypeCustomFields extends React.Component {
         return <PodcastMetadata
                  tag={this.props.tag}
                  updateTag={this.props.updateTag}
-                 tagEditable={this.tagEditable}/>;
+                 tagEditable={this.props.tagEditable}/>;
       }
     }
 
