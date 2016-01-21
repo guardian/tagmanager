@@ -119,11 +119,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def listSections() = APIAuthAction {
-    Ok(Json.toJson(SectionRepository.loadAllSections.filter(_.isMicrosite == false)))
-  }
-
-  def listMicrositeSections() = APIAuthAction {
-    Ok(Json.toJson(SectionRepository.loadAllSections.filter(_.isMicrosite == true)))
+    Ok(Json.toJson(SectionRepository.loadAllSections))
   }
 
   def listReferenceTypes() = APIAuthAction {

@@ -24,6 +24,10 @@ class TagCreate extends React.Component {
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }
+
+      if (!this.props.microsites || !this.props.microsites.length) {
+        this.props.sectionActions.getMicrosites();
+      }
     }
 
     saveTag() {
@@ -119,6 +123,7 @@ import * as getSections from '../../actions/SectionsActions/getSections';
 function mapStateToProps(state) {
   return {
     sections: state.sections,
+    microsites: state.microsites,
     tag: state.tag,
     config: state.config
   };

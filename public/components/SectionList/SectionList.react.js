@@ -13,25 +13,6 @@ class SectionList extends React.Component {
     }
 
     componentWillMount() {
-      this.fetchSections();
-    }
-
-    componentWillReceiveProps(nextProps) {
-      //Route Changed
-      if (this.props.route.path !== nextProps.route.path) {
-        this.fetchSections();
-      }
-    }
-
-    fetchSections() {
-
-      if (this.props.route.isMicrositeView) {
-        if (!this.props.microsites || !this.props.microsites.length) {
-          this.props.sectionActions.getMicrosites();
-        }
-        return;
-      }
-
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }
@@ -49,13 +30,13 @@ class SectionList extends React.Component {
 
     render () {
 
-      const sections = this.props.route.isMicrositeView ? this.props.microsites : this.props.sections;
-
-      if (!sections || !sections.length) {
+      if (!this.props.sections || !this.props.sections.length) {
         return (
           <div>Fetching sections...</div>
         );
       }
+
+      const sections = this.props.route.isMicrositeView ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
 
       return (
         <table className="sectionlist">
@@ -78,19 +59,17 @@ class SectionList extends React.Component {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as getSections from '../../actions/SectionsActions/getSections';
-import * as getMicrosites from '../../actions/SectionsActions/getMicrosites';
 
 function mapStateToProps(state) {
   return {
     sections: state.sections,
-    microsites: state.microsites,
     config: state.config
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    sectionActions: bindActionCreators(Object.assign({}, getSections, getMicrosites), dispatch)
+    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
   };
 }
 
