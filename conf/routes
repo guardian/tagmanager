@@ -10,6 +10,9 @@ GET        /unauthorised                  controllers.App.index(id = "")
 GET        /mapping                       controllers.App.index(id = "")
 GET        /section                       controllers.App.index(id = "")
 GET        /section/:id                   controllers.App.index(id)
+GET        /microsite                     controllers.App.index(id = "")
+GET        /microsite/:id                 controllers.App.index(id)
+
 
 
 # API
@@ -21,6 +24,7 @@ PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag
 DELETE     /api/tag/:id                   controllers.TagManagementApi.deleteTag(id: Long)
 
 GET        /api/sections                  controllers.TagManagementApi.listSections
+GET        /api/sections/microsites       controllers.TagManagementApi.listMicrositeSections
 GET        /api/section/:id               controllers.TagManagementApi.getSection(id: Long)
 PUT        /api/section/:id               controllers.TagManagementApi.updateSection(id: Long)
 POST       /api/section/:id/edition       controllers.TagManagementApi.addEditionToSection(id: Long)

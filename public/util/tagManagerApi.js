@@ -44,6 +44,14 @@ export default {
     });
   },
 
+  getMicrosites: () => {
+    return Reqwest({
+      url: '/api/sections/microsites',
+      method: 'get',
+      type: 'json'
+    });
+  },
+
   getSection: (id) => {
     return Reqwest({
       url: '/api/section/' + id,

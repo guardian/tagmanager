@@ -8,10 +8,29 @@ class SectionList extends React.Component {
     }
 
     onSectionClick(section) {
-      history.replaceState(null, '/section/' + section.id);
+      const path = this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id;
+      history.replaceState(null, path);
     }
 
-    componentDidMount() {
+    componentWillMount() {
+      this.fetchSections();
+    }
+
+    componentWillReceiveProps(nextProps) {
+      //Route Changed
+      if (this.props.route.path !== nextProps.route.path) {
+        this.fetchSections();
+      }
+    }
+
+    fetchSections() {
+
+      if (this.props.route.isMicrositeView) {
+        if (!this.props.microsites || !this.props.microsites.length) {
+          this.props.sectionActions.getMicrosites();
+        }
+        return;
+      }
 
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
@@ -30,7 +49,9 @@ class SectionList extends React.Component {
 
     render () {
 
-      if (!this.props.sections || !this.props.sections.length) {
+      const sections = this.props.route.isMicrositeView ? this.props.microsites : this.props.sections;
+
+      if (!sections || !sections.length) {
         return (
           <div>Fetching sections...</div>
         );
@@ -46,7 +67,7 @@ class SectionList extends React.Component {
             </tr>
           </thead>
           <tbody className="sectionlist__results">
-            {this.props.sections.sort((a, b) => a.name > b.name ? 1 : -1).map(this.renderListItem, this)}
+            {sections.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(this.renderListItem, this)}
           </tbody>
         </table>
       );
@@ -57,17 +78,19 @@ class SectionList extends React.Component {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as getSections from '../../actions/SectionsActions/getSections';
+import * as getMicrosites from '../../actions/SectionsActions/getMicrosites';
 
 function mapStateToProps(state) {
   return {
     sections: state.sections,
+    microsites: state.microsites,
     config: state.config
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
+    sectionActions: bindActionCreators(Object.assign({}, getSections, getMicrosites), dispatch)
   };
 }
 

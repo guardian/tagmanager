@@ -15,7 +15,9 @@ case class Section(
                     path: String,
                     wordsForUrl: String,
                     pageId: Long,
-                    editions: Map[String, EditionalisedPage] = Map()
+                    editions: Map[String, EditionalisedPage] = Map(),
+                    discriminator: Option[String] = None,
+                    isMicrosite: Boolean
                     ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -27,7 +29,9 @@ case class Section(
     path          = path,
     wordsForUrl   = wordsForUrl,
     pageId        = pageId,
-    editions      = editions.mapValues(_.asThift)
+    editions      = editions.mapValues(_.asThift),
+    discriminator = discriminator,
+    isMicrosite   = isMicrosite
   )
 }
 
@@ -40,7 +44,9 @@ object Section {
       (JsPath \ "path").format[String] and
       (JsPath \ "wordsForUrl").format[String] and
       (JsPath \ "pageId").format[Long] and
-      (JsPath \ "editions").formatNullable[Map[String, EditionalisedPage]].inmap[Map[String, EditionalisedPage]](_.getOrElse(Map()), Some(_))
+      (JsPath \ "editions").formatNullable[Map[String, EditionalisedPage]].inmap[Map[String, EditionalisedPage]](_.getOrElse(Map()), Some(_)) and
+      (JsPath \ "discriminator").formatNullable[String] and
+      (JsPath \ "isMicrosite").format[Boolean]
     )(Section.apply, unlift(Section.unapply))
 
   def fromItem(item: Item) = try{
@@ -60,7 +66,9 @@ object Section {
       path          = thriftSection.path,
       wordsForUrl   = thriftSection.wordsForUrl,
       pageId        = thriftSection.pageId,
-      editions      = thriftSection.editions.mapValues(EditionalisedPage(_)).toMap
+      editions      = thriftSection.editions.mapValues(EditionalisedPage(_)).toMap,
+      discriminator = thriftSection.discriminator,
+      isMicrosite   = thriftSection.isMicrosite
     )
 
 }

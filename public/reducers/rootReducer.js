@@ -3,6 +3,7 @@ import {TAG_UPDATE} from '../actions/TagActions/updateTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/TagActions/saveTag';
 import {TAG_DELETE_REQUEST, TAG_DELETE_RECEIVE, TAG_DELETE_ERROR} from '../actions/TagActions/deleteTag';
 import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/SectionsActions/getSections';
+import {MICROSITES_GET_REQUEST, MICROSITES_GET_RECEIVE, MICROSITES_GET_ERROR} from '../actions/SectionsActions/getMicrosites';
 import {SECTION_GET_REQUEST, SECTION_GET_RECEIVE, SECTION_GET_ERROR} from '../actions/SectionsActions/getSection';
 import {SECTION_UPDATE} from '../actions/SectionsActions/updateSection';
 import {SECTION_SAVE_REQUEST, SECTION_SAVE_RECEIVE, SECTION_SAVE_ERROR} from '../actions/SectionsActions/saveSection';
@@ -11,7 +12,6 @@ import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
-
 
 const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -112,6 +112,21 @@ export default function tag(state = {
       error: action.message
     });
   case TAG_DELETE_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
+    });
+
+// MICROSITES GET
+
+  case MICROSITES_GET_REQUEST:
+    return Object.assign({}, state, {
+      microsites: false
+    });
+  case MICROSITES_GET_RECEIVE:
+    return Object.assign({}, state, {
+      microsites: action.sections
+    });
+  case MICROSITES_GET_ERROR:
     return Object.assign({}, state, {
       error: action.message
     });
