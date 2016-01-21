@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactScribe from '../../utils/ReactScribe.react';
 
-export default class TagVisibilityEdit extends React.Component {
+export default class TagDescription extends React.Component {
 
   constructor(props) {
     super(props);

@@ -56,6 +56,17 @@ object TagAudit {
     TagAudit(tag.id, "deleted", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' deleted", TagSummary(tag), None)
   }
 
+  def merged(removingTag: Tag, replacementTag: Tag, username: Option[String]): TagAudit = {
+    TagAudit(removingTag.id,
+      "merged" ,
+      new DateTime(),
+      username.getOrElse("default user"),
+      s"tag '${removingTag.internalName}' merged with '${replacementTag.internalName}'",
+      TagSummary(removingTag),
+      Some(TagSummary(replacementTag))
+    )
+  }
+
   def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[User] = None): TagAudit = {
     val message = operation match {
       case "remove" => s"tag '${tag.internalName}' removed from $contentCount items(s)"

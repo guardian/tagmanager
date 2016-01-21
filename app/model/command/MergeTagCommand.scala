@@ -2,7 +2,7 @@ package model.command
 
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
 import model.command.CommandError._
-import model.jobs.{TagRemovedCheck, RemoveTagStep, AllUsagesOfTagRemovedCheck, Job}
+import model.jobs.{TagRemovedCheck, RemoveTagStep, AllUsagesOfTagRemovedCheck, Job, MergeAuditStep}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
@@ -25,7 +25,6 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
     val replacementTagSection = replacementTag.section.flatMap( SectionRepository.getSection(_) )
 
     val jobId = Sequences.jobId.getNextId
-
     Future {
 
       val contentIds = ContentAPI.getContentIdsForTag(removingTag.path)
@@ -40,10 +39,10 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
         steps = List(
           AllUsagesOfTagRemovedCheck(removingTag.path, contentIds.length),
           RemoveTagStep(removingTagId, username),
-          TagRemovedCheck(removingTag.path)
+          TagRemovedCheck(removingTag.path),
+          MergeAuditStep(removingTag.id, replacementTag.id, username)
         )
       )
-
       Logger.info(s"raising job to check merging ${removingTag.path} into ${replacementTag.path} completes")
       JobRepository.upsertJob(mergeTagJob)
       SQS.jobQueue.postMessage(mergeTagJob.id.toString, delaySeconds = 15)

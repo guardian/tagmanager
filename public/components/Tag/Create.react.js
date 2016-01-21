@@ -72,7 +72,10 @@ class TagCreate extends React.Component {
     checkPathInUse(tag) {
       tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section)
         .then(res => this.setState({pathInUse: res.inUse}))
-        .fail(error => this.setState({pathInUse: true}));
+        .fail((error) => {
+          console.log(error);
+          this.setState({pathInUse: true});
+        });
     }
 
     onUpdateType(e) {

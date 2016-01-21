@@ -16,10 +16,12 @@ export default class SectionSelect extends React.Component {
       );
     }
 
+    const sections = this.props.isMicrosite ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
+
     return (
       <select value={this.props.selectedId} onChange={this.props.onChange}>
         {!this.props.selectedId || this.props.showBlank ? <option value={false}></option> : false}
-        {this.props.sections.sort((a, b) => {return a.name > b.name ? 1 : -1;}).map(function(s) {
+        {sections.sort((a, b) => {return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map(function(s) {
           return (
             <option value={s.id} key={s.id} >{s.name}</option>
           );

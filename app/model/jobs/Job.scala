@@ -74,3 +74,37 @@ object JobRunner {
     }
   }
 }
+
+case class Merge(id: Long,
+  started: DateTime,
+  startedBy: Option[String],
+  tagIds: List[Long],
+  command: MergeTagCommand
+) {
+
+  def asExportedXml = {
+    import xml.{Elem, TopScope, Null, Text}
+    import helpers.XmlHelpers._
+
+    val el = Elem(null, "merge", Null, TopScope, Text(""))
+    val from = createAttribute("from", Some(this.command.removingTagId))
+    val to = createAttribute("to", Some(this.command.replacementTagId))
+    val timestamp = createAttribute("timestamp", Some(this.started.getMillis))
+    val date = createAttribute("date", Some(this.started.toString("MM/dd/yyy HH:mm:ss")))
+
+    el % timestamp % date % to % from
+  }
+}
+
+object Merge {
+  def apply(job: Job): Merge = {
+    val merge = commandToMergeCommand(job.command)
+    Merge(job.id, job.started, job.startedBy, job.tagIds, merge)
+  }
+
+  private def commandToMergeCommand(command: Command): MergeTagCommand = {
+    val json = Json.toJson(command)
+    val merge : MergeTagCommand = json.as[MergeTagCommand]
+    merge
+  }
+}
