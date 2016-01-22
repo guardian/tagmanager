@@ -1,9 +1,7 @@
 package model.command
 
 import com.gu.tagmanagement.{EventType, SectionEvent}
-import model.command.logic.TagPathCalculator
 import model._
-import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
@@ -12,7 +10,6 @@ import services.KinesisStreams
 
 
 case class CreateSectionCommand(
-                                 sectionTagId: Long,
                                  name: String,
                                  wordsForUrl: String,
                                  editions: Map[String, EditionalisedPage] = Map(),
@@ -21,13 +18,13 @@ case class CreateSectionCommand(
 
         ) extends Command {
 
-          type T = Tag
+          type T = Section
 
           def process()(implicit username: Option[String] = None): Option[Section] = {
 
               val calculatedPath = wordsForUrl
 
-              val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
+              val pageId: Long = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
               val sectionId = Sequences.sectionId.getNextId
 
@@ -38,16 +35,17 @@ case class CreateSectionCommand(
                 slug = wordsForUrl,
                 comparableValue = name,
                 section = Some(sectionId),
-                isMicrosite = isMicrosite
+                isMicrosite = isMicrosite,
+                preCalculatedPath = Some(s"$wordsForUrl/$wordsForUrl")
               ).process().map(_.id) getOrElse CouldNotCreateSectionTag
 
               val section = Section(
                 id = sectionId,
-                path = calculatedPath,
-                pageId = pageId,
                 sectionTagId = sectionTagId,
                 name = name,
+                path = calculatedPath,
                 wordsForUrl = wordsForUrl,
+                pageId = pageId,
                 editions = editions,
                 discriminator = discriminator,
                 isMicrosite = isMicrosite
@@ -65,8 +63,7 @@ case class CreateSectionCommand(
 
         object CreateSectionCommand {
 
-          implicit val createTagCommandFormat: Format[CreateSectionCommand] = (
-          (JsPath \ "sectionTagId").format[Long] and
+          implicit val createSectionCommandFormat: Format[CreateSectionCommand] = (
           (JsPath \ "name").format[String] and
           (JsPath \ "wordsForUrl").format[String] and
           (JsPath \ "editions").formatNullable[Map[String, EditionalisedPage]].inmap[Map[String, EditionalisedPage]](_.getOrElse(Map()), Some(_)) and
