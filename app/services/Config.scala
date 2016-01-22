@@ -107,7 +107,7 @@ class DevConfig extends Config {
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
 
-  override def jobTableName: String = "tag-manager-jobs-DEV-HG"
+  override def jobTableName: String = "tag-manager-jobs-dev"
   override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
   override def sectionAuditTableName: String = "tag-manager-section-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
@@ -138,27 +138,27 @@ class DevConfig extends Config {
 
 class CodeConfig extends Config {
 
-  override def tagsTableName: String = "tags-dev"
-  override def sectionsTableName: String = "sections-dev"
-  override def sequenceTableName: String = "tag-manager-sequences-dev"
-  override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
+  override def tagsTableName: String = "tags-CODE"
+  override def sectionsTableName: String = "sections-CODE"
+  override def sequenceTableName: String = "tag-manager-sequences-CODE"
+  override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
 
-  override def jobTableName: String = "tag-manager-jobs-dev"
-  override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
-  override def sectionAuditTableName: String = "tag-manager-section-audit-dev"
-  override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
+  override def jobTableName: String = "tag-manager-jobs-CODE"
+  override def tagAuditTableName: String = "tag-manager-tag-audit-CODE"
+  override def sectionAuditTableName: String = "tag-manager-section-audit-CODE"
+  override def clusterStatusTableName: String = "tag-manager-cluster-status-CODE"
 
-  override def tagUpdateStreamName: String = "tag-update-stream-dev"
-  override def sectionUpdateStreamName: String = "section-update-stream-dev"
-  override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
+  override def tagUpdateStreamName: String = "tag-update-stream-CODE"
+  override def sectionUpdateStreamName: String = "section-update-stream-CODE"
+  override def taggingOperationsStreamName: String = "tagging-operations-stream-CODE"
 
-  override def reindexTagsStreamName: String = "tag-reindex-dev"
+  override def reindexTagsStreamName: String = "tag-reindex-CODE"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-CODE"
 
-  override def appAuditTableName: String = "tag-manager-app-audit-dev"
+  override def appAuditTableName: String = "tag-manager-app-audit-CODE"
 
-  override def jobQueueName: String = "tag-manager-job-queue-dev"
+  override def jobQueueName: String = "tag-manager-job-queue-CODE"
 
   override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
