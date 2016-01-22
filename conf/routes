@@ -45,7 +45,7 @@ GET        /api/audit/section/operation/:op controllers.TagManagementApi.getAudi
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
 
-POST       /reindex/tag                   controllers.Reindex.reindexTags
+POST       /reindex/tags                  controllers.Reindex.reindexTags
 POST       /reindex/sections              controllers.Reindex.reindexSections
 
 
