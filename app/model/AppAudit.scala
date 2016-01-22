@@ -28,7 +28,11 @@ object AppAudit {
     }
   }
 
-  def reindex(capiJobId: String)(implicit username: Option[String] = None): AppAudit = {
-    AppAudit("reindex", new DateTime(), username.getOrElse("default user"), "reindex started with CAPI job id: " + capiJobId);
+  def reindexTags(capiJobId: String)(implicit username: Option[String] = None): AppAudit = {
+    AppAudit("reindexTags", new DateTime(), username.getOrElse("default user"), "tag reindex started with CAPI job id: " + capiJobId);
+  }
+
+  def reindexSections(capiJobId: String)(implicit username: Option[String] = None): AppAudit = {
+    AppAudit("reindexSections", new DateTime(), username.getOrElse("default user"), "section reindex started with CAPI job id: " + capiJobId);
   }
 }

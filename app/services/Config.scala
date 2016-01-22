@@ -82,8 +82,9 @@ sealed trait Config {
   def sectionUpdateStreamName: String
   def taggingOperationsStreamName: String
 
-  def reindexStreamName: String
-  def reindexBatchSize: Int
+  def reindexTagsStreamName: String
+  def reindexTagsBatchSize: Int
+  def reindexSectionsStreamName: String
 
   def appAuditTableName: String
 
@@ -115,8 +116,9 @@ class DevConfig extends Config {
   override def sectionUpdateStreamName: String = "section-update-stream-dev"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
 
-  override def reindexStreamName: String = "tag-reindex-dev"
-  override def reindexBatchSize: Int = 500
+  override def reindexTagsStreamName: String = "tag-reindex-dev"
+  override def reindexTagsBatchSize: Int = 500
+  override def reindexSectionsStreamName: String = "section-reindex-dev"
 
   override def appAuditTableName: String = "tag-manager-app-audit-dev"
 
@@ -150,8 +152,9 @@ class CodeConfig extends Config {
   override def sectionUpdateStreamName: String = "section-update-stream-CODE"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-CODE"
 
-  override def reindexStreamName: String = "tag-reindex-CODE"
-  override def reindexBatchSize: Int = 500
+  override def reindexTagsStreamName: String = "tag-reindex-CODE"
+  override def reindexTagsBatchSize: Int = 500
+  override def reindexSectionsStreamName: String = "section-reindex-CODE"
 
   override def appAuditTableName: String = "tag-manager-app-audit-CODE"
 
@@ -185,8 +188,9 @@ class ProdConfig extends Config {
   override def sectionUpdateStreamName: String = "section-update-stream-PROD"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-PROD"
 
-  override def reindexStreamName: String = "tag-reindex-PROD"
-  override def reindexBatchSize: Int = 500
+  override def reindexTagsStreamName: String = "tag-reindex-PROD"
+  override def reindexTagsBatchSize: Int = 500
+  override def reindexSectionsStreamName: String = "section-reindex-PROD"
 
   override def appAuditTableName: String = "tag-manager-app-audit-PROD"
 

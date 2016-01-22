@@ -1,15 +1,17 @@
 package model.jobs
 
-import model.Tag
+import model.{Section, Tag}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import repositories._
 import services.{Config, KinesisStreams}
 
+// Tags
+
 case class ReindexTags(capiJobId: String) extends Step {
   override def process: Option[Step] = {
-    TagLookupCache.allTags.get.grouped(Config().reindexBatchSize).foreach { tags =>
-      KinesisStreams.reindexStream.publishUpdate("reindex" + capiJobId, Tag.createReindexBatch(tags))
+    TagLookupCache.allTags.get.grouped(Config().reindexTagsBatchSize).foreach { tags =>
+      KinesisStreams.reindexTagsStream.publishUpdate(capiJobId, Tag.createReindexBatch(tags))
     }
     None
   }
@@ -22,4 +24,21 @@ object ReindexTags {
   implicit val reindexTagsFormat: Format[ReindexTags] = (
     JsPath \ "capiJobId"
   ).format[String].inmap(id => ReindexTags(id), (reindexTags: ReindexTags) => reindexTags.capiJobId)
+}
+
+// Sections
+
+case class ReindexSections(capiJobId: String) extends Step {
+  override def process: Option[Step] = {
+    SectionRepository.loadAllSections.foreach { section =>
+      KinesisStreams.reindexSectionsStream.publishUpdate(capiJobId, section.asThrift)
+    }
+    None
+  }
+}
+
+object ReindexSections {
+  implicit val reindexSectionsFormat: Format[ReindexSections] = (
+    JsPath \ "capiJobId"
+  ).format[String].inmap(id => ReindexSections(id), (reindexSections: ReindexSections) => reindexSections.capiJobId)
 }
