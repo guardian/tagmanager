@@ -21,7 +21,7 @@ object Step {
       case trc: TagRemovedCheck => JsObject(Map("type" -> JsString("TagRemovedCheck"), "apiTagId" -> JsString(trc.apiTagId)))
       case mas: MergeAuditStep => MergeAuditStep.mergeAuditStepFormat.writes(mas).asInstanceOf[JsObject] + ("type" -> JsString("MergeAuditStep"))
       case ridxtags: ReindexTags => ReindexTags.reindexTagsFormat.writes(ridxtags).asInstanceOf[JsObject] + ("type", JsString("ReindexTags"))
-      case ridxsections: ReindexSections => ReindexSections.reindexSectionsFormat.writes(ridxsections).asInstanceOf[JsObject] + ("type", JsString("ReindexSectionss"))
+      case ridxsections: ReindexSections => ReindexSections.reindexSectionsFormat.writes(ridxsections).asInstanceOf[JsObject] + ("type", JsString("ReindexSections"))
 
       case other => {
         Logger.warn(s"unable to serialise step of type ${other.getClass}")
