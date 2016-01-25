@@ -82,7 +82,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def createSection() = APIAuthAction { req =>
+  def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
