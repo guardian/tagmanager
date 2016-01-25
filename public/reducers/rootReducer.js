@@ -9,6 +9,7 @@ import {SECTION_UPDATE} from '../actions/SectionsActions/updateSection';
 import {SECTION_SAVE_REQUEST, SECTION_SAVE_RECEIVE, SECTION_SAVE_ERROR} from '../actions/SectionsActions/saveSection';
 import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPES_GET_ERROR} from '../actions/ReferenceTypeActions/getReferenceTypes';
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
+import {SECTION_POPULATE_BLANK} from '../actions/SectionsActions/createSection';
 import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
@@ -166,6 +167,12 @@ export default function tag(state = {
     return Object.assign({}, state, {
       section: action.section,
       saveState: saveState.dirty
+    });
+
+  case SECTION_POPULATE_BLANK:
+    return Object.assign({}, state, {
+      section: action.section,
+      saveState: saveState.clean
     });
 
 // SECTION SAVE

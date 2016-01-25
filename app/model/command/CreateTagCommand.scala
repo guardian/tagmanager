@@ -20,15 +20,16 @@ case class CreateTagCommand(
                       legallySensitive: Boolean = false,
                       comparableValue: String,
                       categories: Set[String] = Set(),
-                      section: Option[Long],
-                      publication: Option[Long],
+                      section: Option[Long] = None,
+                      publication: Option[Long] = None,
                       description: Option[String] = None,
                       parents: Set[Long] = Set(),
                       references: List[Reference] = Nil,
-                      podcastMetadata: Option[PodcastMetadata],
-                      contributorInformation: Option[ContributorInformation],
-                      publicationInformation: Option[PublicationInformation],
-                      isMicrosite: Boolean
+                      podcastMetadata: Option[PodcastMetadata] = None,
+                      contributorInformation: Option[ContributorInformation] = None,
+                      publicationInformation: Option[PublicationInformation] = None,
+                      isMicrosite: Boolean,
+                      preCalculatedPath: Option[String] = None //This is used so path isn't calculated
 
                            ) extends Command {
 
@@ -36,7 +37,10 @@ case class CreateTagCommand(
 
   def process()(implicit username: Option[String] = None): Option[Tag] = {
 
-    val calculatedPath = TagPathCalculator.calculatePath(`type`, slug, section)
+    val calculatedPath = preCalculatedPath match {
+      case Some(path) => path
+      case None => TagPathCalculator.calculatePath(`type`, slug, section)
+    }
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
@@ -92,8 +96,7 @@ object CreateTagCommand {
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
-      (JsPath \ "isMicrosite").format[Boolean]
-
-
+      (JsPath \ "isMicrosite").format[Boolean] and
+      (JsPath \ "preCalculatedPath").formatNullable[String]
     )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import history from '../../routes/history';
+import {Link} from 'react-router';
 
 class SectionList extends React.Component {
 
@@ -39,18 +40,28 @@ class SectionList extends React.Component {
       const sections = this.props.route.isMicrositeView ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
 
       return (
-        <table className="sectionlist">
-          <thead className="sectionlist__header">
-            <tr>
-              <th>Name</th>
-              <th>Path</th>
-              <th>Editionalised</th>
-            </tr>
-          </thead>
-          <tbody className="sectionlist__results">
-            {sections.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(this.renderListItem, this)}
-          </tbody>
-        </table>
+        <div className="sectionlist">
+          <div className="tag-search__filters">
+            {this.props.route.isMicrositeView ?
+              <Link className="tag-search__create" to="/microsite/create">Create a new Microsite</Link> :
+              <Link className="tag-search__create" to="/section/create">Create a new Section</Link>
+            }
+
+          </div>
+          <table >
+            <thead className="sectionlist__header">
+              <tr>
+                <th>Name</th>
+                <th>Path</th>
+                <th>Editionalised</th>
+              </tr>
+            </thead>
+            <tbody className="sectionlist__results">
+              {sections.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(this.renderListItem, this)}
+            </tbody>
+          </table>
+        </div>
+
       );
     }
 }

@@ -2,18 +2,20 @@ import React        from 'react';
 import { Route, IndexRoute } from 'react-router';
 
 import ReactApp     from '../components/ReactApp.react';
-import TagCreate    from '../components/Tag/Create.react';
-import TagDisplay   from '../components/Tag/Display.react';
 import BatchTag     from '../components/BatchTag.react';
 import MergeTag     from '../components/MergeTag.react';
 import MappingManager from '../components/MappingManager.react';
 import Status       from '../components/Status.react';
-import TagSearch    from '../components/TagSearch.react';
 import Audit        from '../components/Audit.react';
 import Unauthorised from '../components/Unauthorised.react';
 
+import TagCreate    from '../components/Tag/Create.react';
+import TagDisplay   from '../components/Tag/Display.react';
+import TagSearch    from '../components/TagSearch.react';
+
 import SectionList from '../components/SectionList/SectionList.react';
-import SectionEdit from '../components/SectionEdit/SectionEdit.react';
+import SectionDisplay from '../components/Section/Display';
+import SectionCreate from '../components/Section/Create';
 
 import {getStore}   from '../util/storeAccessor';
 
@@ -33,10 +35,12 @@ export default [
       <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="audit" path="/audit" component={Audit} />
       <Route name="status" path="/status" component={Status} />
-      <Route name="sectionList" path="/section" component={SectionList} />
-      <Route name="sectionEdit" path="/section/:sectionId" component={SectionEdit} onEnter={requirePermission.bind(this, 'tag_super_admin')}/>
+      <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_super_admin')} />
+      <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_super_admin')} />
+      <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_super_admin')}/>
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
-      <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionEdit} onEnter={requirePermission.bind(this, 'tag_super_admin')}/>
+      <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
+      <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />
       <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
       <IndexRoute component={TagSearch}/>
     </Route>

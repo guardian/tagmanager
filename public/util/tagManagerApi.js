@@ -61,6 +61,15 @@ export default {
     });
   },
 
+  createSection: (section) => {
+    return Reqwest({
+        url: '/api/section',
+        data: JSON.stringify(section),
+        contentType: 'application/json',
+        method: 'post'
+    });
+  },
+
   addEditionToSection: (sectionId, editionName) => {
     return Reqwest({
         url: '/api/section/' + sectionId + '/edition',

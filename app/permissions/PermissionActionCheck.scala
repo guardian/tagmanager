@@ -37,10 +37,6 @@ object RemoveEditionFromSectionPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "remove edition from section"
 }
 
-object UpdateSectionPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
-  val restrictedAction = "update section"
-}
 
 object DeleteTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
