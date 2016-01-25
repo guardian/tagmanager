@@ -23,8 +23,14 @@ case class RemoveEditionFromSectionCommand(sectionId: Long, editionName: String)
 
     val pageId = try { PathManager.removePathForId(editionInfo.pageId) } catch { case p: PathRemoveFailed => PathNotFound}
 
+    val updatedEditions = section.editions.filterKeys(_.toUpperCase != editionName.toUpperCase)
+
     val updatedSection = section.copy(
-      editions = section.editions.filterKeys(_.toUpperCase != editionName.toUpperCase)
+      editions = updatedEditions,
+      discriminator = updatedEditions.isEmpty match {
+        case false => Some("MultiEdition")
+        case true => Some("Navigation")
+      }
     )
 
     val result = SectionRepository.updateSection(updatedSection)

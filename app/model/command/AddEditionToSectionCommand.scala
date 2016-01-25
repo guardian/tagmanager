@@ -23,8 +23,14 @@ case class AddEditionToSectionCommand(sectionId: Long, editionName: String) exte
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
+    val updatedEditions = section.editions ++ Map(editionName -> EditionalisedPage(calculatedPath, pageId))
+
     val updatedSection = section.copy(
-      editions = section.editions ++ Map(editionName -> EditionalisedPage(calculatedPath, pageId))
+      editions = updatedEditions,
+      discriminator = updatedEditions.isEmpty match {
+        case false => Some("MultiEdition")
+        case true => Some("Navigation")
+      }
     )
 
     val result = SectionRepository.updateSection(updatedSection)
