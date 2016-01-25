@@ -14,4 +14,8 @@ object XmlHelpers {
       Elem(prefix, label, attribs, scope, child ++ newChild : _*)
     case _ => error("Can only add children to elements!")
   }
+
+  def createElem(name: String): Elem = {
+    Elem(null, name, Null, TopScope, Text(""))
+  }
 }

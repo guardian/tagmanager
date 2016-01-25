@@ -108,3 +108,48 @@ object TagSummary {
       sectionName = tag.section.flatMap{ sid => SectionRepository.getSection(sid).map(_.name)}.getOrElse("global")
     )
 }
+
+case class Delete(tagId: Long,
+  date: DateTime
+) {
+  def asExportedXml = {
+    import helpers.XmlHelpers._
+    val el = createElem("delete")
+    val id = createAttribute("id", Some(this.tagId))
+    val timestamp = createAttribute("timestamp", Some(this.date.getMillis))
+    val date = createAttribute("date", Some(this.date.toString("MM/dd/yyy HH:mm:ss")))
+
+    el % timestamp % date % id
+  }
+}
+
+object Delete {
+  def apply(audit: TagAudit): Delete = {
+    Delete(audit.tagId, audit.date)
+  }
+}
+
+case class Merge(
+  tagId: Long,
+  date: DateTime,
+  targetTag: Option[TagSummary]
+) {
+
+  def asExportedXml = {
+    import helpers.XmlHelpers._
+
+    val el = createElem("merge")
+    val from = createAttribute("from", Some(this.tagId))
+    val to = createAttribute("to", this.targetTag.map(_.tagId))
+    val timestamp = createAttribute("timestamp", Some(this.date.getMillis))
+    val date = createAttribute("date", Some(this.date.toString("MM/dd/yyy HH:mm:ss")))
+
+    el % timestamp % date % to % from
+  }
+}
+
+object Merge {
+  def apply(audit: TagAudit): Merge = {
+    Merge(audit.tagId, audit.date, audit.secondaryTagSummary)
+  }
+}

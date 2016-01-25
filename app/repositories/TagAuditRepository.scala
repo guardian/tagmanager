@@ -30,4 +30,12 @@ object TagAuditRepository {
       .map(TagAudit.fromItem).toList
   }
 
+  def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().map(TagAudit.fromItem).toList
+  val lastModifiedTags: Long => List[TagAudit] = since => loadAllAudits
+    .filter(x => (x.operation == "updated" && x.date.getMillis > since))
+
+  private val getType: String => List[TagAudit] = operation => loadAllAudits.filter(_.operation == operation)
+  val getMerges: List[TagAudit] = getType("merged")
+  val getDeletes: List[TagAudit] = getType("deleted")
+
 }

@@ -1,11 +1,13 @@
 package model.jobs
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import model.command.{Command, MergeTagCommand}
+import model.command.{Command, MergeTagCommand, DeleteTagCommand}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import play.api.Logger
 import play.api.libs.functional.syntax._
+import play.api.libs.json.DefaultFormat
+import play.api.libs.json.Reads
 import play.api.libs.json._
 import repositories.JobRepository
 
@@ -72,7 +74,6 @@ object JobRunner {
     }
   }
 }
-
 
 case class Merge(id: Long,
   started: DateTime,

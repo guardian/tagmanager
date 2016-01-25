@@ -55,9 +55,16 @@ GET        /hyper/tags                    controllers.HyperMediaApi.tags
 GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long)
 OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
 
+# Tag export for inCopy
 GET        /tags/export/all               controllers.ReadOnlyApi.getTagsAsXml
 GET        /tags/export/single/:id        controllers.ReadOnlyApi.tagAsXml(id: Long)
 GET        /tags/export/merges/:since     controllers.ReadOnlyApi.mergesAsXml(since: Long)
+
+# More newspaper integration
+GET       /tools/newspaperintegration/tags/modified/:since          controllers.ReadOnlyApi.modifiedAsXml(since: Long)
+GET       /tools/newspaperintegration/tags/merges/:since            controllers.ReadOnlyApi.mergesAsXml(since: Long)
+GET       /tools/newspaperintegration/tags/deleted/:since           controllers.ReadOnlyApi.deletesAsXml(since: Long)
+
 
 GET        /hello                         controllers.App.hello
 GET        /testScan                      controllers.App.testScan
