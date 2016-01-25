@@ -33,7 +33,7 @@ object Command {
       (json \ "type").get match {
         case JsString("BatchTagCommand") => BatchTagCommand.batchTagCommandFormat.reads(json)
         case JsString("MergeTagCommand") => MergeTagCommand.mergeTagCommandFormat.reads(json)
-        case JsString("DeleteTagCommand") => (json \ "removingTagId").validate[Long].map(DeleteTagCommand)
+        case JsString("DeleteTagCommand") => DeleteTagCommand.deleteTagCommandFormat.reads(json)
         case JsString("ReindexTagsCommand") => ReindexTagsCommand.reindexTagsCommandFormat.reads(json)
         case JsString("ReindexSectionsCommand") => ReindexSectionsCommand.reindexSectionsCommandFormat.reads(json)
         case JsString(other) => JsError(s"unsupported command type $other}")
