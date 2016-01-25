@@ -28,6 +28,8 @@ sealed trait Config {
   def capiUrl: String = getRequiredStringProperty("capi.url")
   def capiKey: String = getRequiredStringProperty("capi.key")
 
+  def pathManagerUrl: String = getRequiredStringProperty("pathmanager.url")
+
   def getRequiredStringProperty(key: String): String = {
     remoteConfiguration.getOrElse(key, {
       throw new IllegalArgumentException(s"Property '$key' not configured")
@@ -89,9 +91,7 @@ sealed trait Config {
   def appAuditTableName: String
 
   def jobQueueName: String
-
-  def pathManagerUrl: String
-
+  
   def logShippingStreamName: Option[String] = None
   def pandaDomain: String
   def pandaAuthCallback: String
@@ -123,8 +123,6 @@ class DevConfig extends Config {
   override def appAuditTableName: String = "tag-manager-app-audit-dev"
 
   override def jobQueueName: String = "tag-manager-job-queue-dev"
-
-  override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
   override def pandaDomain: String = "local.dev-gutools.co.uk"
@@ -160,8 +158,6 @@ class CodeConfig extends Config {
 
   override def jobQueueName: String = "tag-manager-job-queue-CODE"
 
-  override def pathManagerUrl: String = "http://pathmanager.code.dev-gutools.co.uk/"
-
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "code.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
@@ -195,8 +191,6 @@ class ProdConfig extends Config {
   override def appAuditTableName: String = "tag-manager-app-audit-PROD"
 
   override def jobQueueName: String = "tag-manager-job-queue-PROD"
-
-  override def pathManagerUrl: String = "http://pathmanager.gutools.co.uk/"
 
   override def logShippingStreamName = Some("elk-PROD-KinesisStream-1PYU4KS1UEQA")
   override def pandaDomain: String = "gutools.co.uk"
