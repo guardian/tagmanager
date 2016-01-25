@@ -54,18 +54,38 @@ export default class ContributorInfoEdit extends React.Component {
         <label className="tag-edit__input-group__header">Contributor Information</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">RCS ID</label>
-          <input type="text" className="tag-edit__input" value={contributorInfomation.rcsId || ''} onChange={this.updateRcsId.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={contributorInfomation.rcsId || ''}
+            onChange={this.updateRcsId.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Twitter ID</label>
-          <input type="text" className="tag-edit__input" value={contributorInfomation.twitterHandle ? '@' + contributorInfomation.twitterHandle : ''} onChange={this.updateTwitterHandle.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={contributorInfomation.twitterHandle ? '@' + contributorInfomation.twitterHandle : ''}
+            onChange={this.updateTwitterHandle.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Contact Email</label>
-          <input type="text" className="tag-edit__input" value={contributorInfomation.contactEmail || ''} onChange={this.updateContactEmail.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={contributorInfomation.contactEmail || ''}
+            onChange={this.updateContactEmail.bind(this)}
+            disabled={!this.props.tagEditable}/>
         </div>
-        <TagImageEdit tagImage={contributorInfomation.bylineImage} label="Byline Image" onChange={this.updateBylineImage.bind(this)}/>
-        <TagImageEdit tagImage={contributorInfomation.largeBylineImage} label="Large Byline Image" onChange={this.updateLargeBylineImage.bind(this)}/>
+        <TagImageEdit
+          tagImage={contributorInfomation.bylineImage}
+          label="Byline Image"
+          onChange={this.updateBylineImage.bind(this)}
+          tagEditable={this.props.tagEditable}/>
+        <TagImageEdit
+          tagImage={contributorInfomation.largeBylineImage}
+          label="Large Byline Image"
+          onChange={this.updateLargeBylineImage.bind(this)}
+          tagEditable={this.props.tagEditable}/>
       </div>
     );
   }

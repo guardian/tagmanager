@@ -29,6 +29,7 @@ export default class TagDescription extends React.Component {
             toolbarClassName="tag-edit__richtext__toolbar"
             toolbarItemClassName="tag-edit__richtext__toolbar__item"
             editorClassName="tag-edit__richtext__editor"
+            disabled={!this.props.tagEditable}
           />
         </div>
       </div>

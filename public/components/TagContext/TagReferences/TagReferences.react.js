@@ -43,6 +43,13 @@ export default class TagReferences extends React.Component {
       );
     }
 
+    renderAddReferenceButton() {
+      if (this.props.tagEditable) {
+        return <AddReference onAddReference={this.addReference.bind(this)} referenceTypes={this.props.referenceTypes} />
+      }
+      return false;
+    }
+
     render() {
       return (
         <div className="tag-context__item">
@@ -63,7 +70,7 @@ export default class TagReferences extends React.Component {
               {this.props.tag.externalReferences.sort((a, b) => a.type > b.type ? 1 : -1).map(this.renderReference, this)}
               <tr>
                 <td colSpan="3" className="tag-references__addrow">
-                  <AddReference onAddReference={this.addReference.bind(this)} referenceTypes={this.props.referenceTypes} />
+                  {this.renderAddReferenceButton()}
                 </td>
               </tr>
             </tbody>

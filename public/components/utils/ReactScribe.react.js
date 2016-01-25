@@ -13,15 +13,19 @@ export default class ReactScribe extends React.Component {
   }
 
   componentDidMount() {
-    this.scribe = new Scribe(this.refs.editor);
+    if (!this.props.disabled) {
+      this.scribe = new Scribe(this.refs.editor);
 
-    this.configureScribe();
+      this.configureScribe();
 
-    this.scribe.on('content-changed', this.onContentChange);
+      this.scribe.on('content-changed', this.onContentChange);
+    }
   }
 
   componentWillUnmount() {
-    this.scribe.off('content-changed', this.onContentChange);
+    if (!this.props.disabled) {
+      this.scribe.off('content-changed', this.onContentChange);
+    }
   }
 
   configureScribe() {

@@ -10,8 +10,7 @@ import com.gu.tagmanagement.{TagType}
 import permissions._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
-
+import scala.collection.mutable.ListBuffer
 
 object App extends Controller with PanDomainAuthActions {
 
@@ -26,7 +25,23 @@ object App extends Controller with PanDomainAuthActions {
 
     Permissions.getPermissionsForUser(req.user.email).map { permissions =>
 
-      val clientConfig = ClientConfig(Config().capiUrl, Config().capiKey, TagType.list.map(_.name), permissions)
+      val allTags = TagType.list.map(_.name)
+      var permittedTags = ListBuffer[String]()
+
+      for (tag <- allTags) {
+        TagTypePermissionMap(tag) match {
+          case Some(p) => {
+            permissions.get(p.name).map { hasPermission =>
+              if (hasPermission) {
+                permittedTags += tag
+              }
+            }
+          }
+          case None => permittedTags += tag
+        }
+      }
+
+      val clientConfig = ClientConfig(Config().capiUrl, Config().capiKey, allTags, permittedTags.toList, permissions)
 
       Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
     }

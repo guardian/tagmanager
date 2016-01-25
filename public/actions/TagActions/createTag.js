@@ -11,7 +11,8 @@ const BLANK_TAG = {
   externalReferences: [],
   hidden: false,
   legallySensitive: false,
-  parents: []
+  parents: [],
+  isMicrosite: false
 };
 
 function requestTagCreate() {
@@ -50,8 +51,9 @@ export function createTag(tag) {
 
 export function populateEmptyTag(tag) {
   return {
-      type:       TAG_POPULATE_BLANK,
-      tag:        Object.assign({}, BLANK_TAG),
-      receivedAt: Date.now()
+      type:        TAG_POPULATE_BLANK,
+      tagEditable: true,
+      tag:         Object.assign({}, BLANK_TAG),
+      receivedAt:  Date.now()
   };
 }

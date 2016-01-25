@@ -1,4 +1,5 @@
 package controllers
+
 import model.command.CommandError._
 import model.command._
 import model.jobs.{BatchTagAddCompleteCheck, Job}
@@ -21,7 +22,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def updateTag(id: Long) = APIAuthAction { req =>
+  def updateTag(id: Long) = (APIAuthAction andThen UpdateTagPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
 
     req.body.asJson.map { json =>
@@ -35,7 +36,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def createTag() = APIAuthAction { req =>
+  def createTag() = (APIAuthAction andThen CreateTagPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {

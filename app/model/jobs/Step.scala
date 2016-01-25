@@ -19,8 +19,9 @@ object Step {
       case b: RemoveTagStep => RemoveTagStep.removeTagStepFormat.writes(b).asInstanceOf[JsObject] + ("type", JsString("RemoveTagStep"))
       case b: AllUsagesOfTagRemovedCheck => AllUsagesOfTagRemovedCheck.allUsagesOfTagRemovedCheckFormat.writes(b).asInstanceOf[JsObject] + ("type", JsString("AllUsagesOfTagRemovedCheck"))
       case trc: TagRemovedCheck => JsObject(Map("type" -> JsString("TagRemovedCheck"), "apiTagId" -> JsString(trc.apiTagId)))
-
-      case ridx: ReindexTags => ReindexTags.reindexTagsFormat.writes(ridx).asInstanceOf[JsObject] + ("type", JsString("ReindexTags"))
+      case mas: MergeAuditStep => MergeAuditStep.mergeAuditStepFormat.writes(mas).asInstanceOf[JsObject] + ("type" -> JsString("MergeAuditStep"))
+      case ridxtags: ReindexTags => ReindexTags.reindexTagsFormat.writes(ridxtags).asInstanceOf[JsObject] + ("type", JsString("ReindexTags"))
+      case ridxsections: ReindexSections => ReindexSections.reindexSectionsFormat.writes(ridxsections).asInstanceOf[JsObject] + ("type", JsString("ReindexSections"))
 
       case other => {
         Logger.warn(s"unable to serialise step of type ${other.getClass}")
@@ -37,7 +38,9 @@ object Step {
         case JsString("RemoveTagStep") => RemoveTagStep.removeTagStepFormat.reads(json)
         case JsString("AllUsagesOfTagRemovedCheck") => AllUsagesOfTagRemovedCheck.allUsagesOfTagRemovedCheckFormat.reads(json)
         case JsString("TagRemovedCheck") => (json \ "apiTagId").validate[String].map(TagRemovedCheck)
+        case JsString("MergeAuditStep") => MergeAuditStep.mergeAuditStepFormat.reads(json)
         case JsString("ReindexTags") => ReindexTags.reindexTagsFormat.reads(json)
+        case JsString("ReindexSections") => ReindexSections.reindexSectionsFormat.reads(json)
         case JsString(other) => JsError(s"unsupported command type $other}")
         case _ => JsError(s"unexpected command type value")
       }

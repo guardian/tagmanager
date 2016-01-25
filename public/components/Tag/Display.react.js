@@ -64,6 +64,39 @@ class TagDisplay extends React.Component {
       return !validateTag(this.props.tag).length;
     }
 
+    renderDeleteButton() {
+      if (this.props.config.permissions["tag_super_admin"]) {
+        return <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
+      } else {
+        return (
+          <div>
+            <ConfirmButton className="tag__delete tag__delete--disabled" disabled={true} buttonText="Delete Tag" />
+            <span className="tag-edit__label">You do not have permission to delete this tag.</span>
+          </div>
+        )
+      }
+    }
+
+    renderSaveBanner() {
+      if (this.props.tagEditable) {
+        return <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()}
+                           onSaveClick={this.saveTag.bind(this)}
+                           onResetClick={this.resetTag.bind(this)}/>
+      }
+    }
+
+    renderPermissionsWarningBar() {
+      if (!this.props.tagEditable) {
+          return (
+            <div className="warning-bar">
+              You do not have permission to edit this tag type
+            </div>
+          );
+      }
+
+      return false;
+    }
+
     render () {
       if (!this.isTagFetched()) {
         return (
@@ -73,18 +106,19 @@ class TagDisplay extends React.Component {
 
       return (
         <div className="tag">
+          {this.renderPermissionsWarningBar()}
           <div className="tag__columns-wrapper">
             <div className="tag__column--sidebar">
               <div className="tag-edit__input-group">
                 <label className="tag-edit__input-group__header">Tag Type</label>
                 <TypeSelect selectedType={this.props.tag.type} types={this.props.config.tagTypes} forceDisabled={true}/>
               </div>
-              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true}/>
+              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true} tagEditable={this.props.tagEditable}/>
               <TagValidationErrors validations={validateTag(this.props.tag)} />
-              <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
+              {this.renderDeleteButton()}
             </div>
             <div className="tag__column">
-              <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag} referenceTypes={this.props.referenceTypes}/>
+              <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag} referenceTypes={this.props.referenceTypes} tagEditable={this.props.tagEditable}/>
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
@@ -92,7 +126,7 @@ class TagDisplay extends React.Component {
               <TagAudit tagId={this.props.tag.id} saveState={this.props.saveState}/>
             </div>
           </div>
-          <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
+          {this.renderSaveBanner()}
         </div>
       );
     }
@@ -111,6 +145,7 @@ import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getRefere
 function mapStateToProps(state) {
   return {
     tag: state.tag,
+    tagEditable: state.tagEditable,
     sections: state.sections,
     referenceTypes: state.referenceTypes,
     saveState: state.saveState,

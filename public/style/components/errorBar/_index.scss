@@ -1,3 +1,4 @@
+.warning-bar,
 .error-bar {
   display: block;
 
@@ -6,4 +7,8 @@
   background-color: $c-red;
   color: white;
   text-align: center;
+}
+
+.warning-bar {
+    background-color: $c-orange;
 }

@@ -124,7 +124,11 @@ export default class TagImageEdit extends React.Component {
     if (!validateImageUrl(imageAsset.imageUrl)) {
       return (
         <div>
-          <input type="text" className="tag-edit__input" value={this.state.inputUrl} onChange={this.updateInputUrl.bind(this)}/>
+          <input type="text"
+            className="tag-edit__input"
+            value={this.state.inputUrl}
+            onChange={this.updateInputUrl.bind(this)}
+            disabled={!this.props.tagEditable}/>
           {this.renderAddButton()}
         </div>
       );
