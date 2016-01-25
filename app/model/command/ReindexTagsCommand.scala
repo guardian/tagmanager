@@ -9,13 +9,13 @@ import play.api.libs.json._
 import play.api.Logger
 import repositories._
 
-case class ReindexCommand(capiJobId: String) extends Command {
+case class ReindexTagsCommand(capiJobId: String) extends Command {
   override type T = Long
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
     val reindexJob = Job(
       id = Sequences.jobId.getNextId,
-      `type` = "reindex",
+      `type` = "reindexTags",
       started = new DateTime,
       startedBy = username,
       tagIds = List(),
@@ -26,17 +26,17 @@ case class ReindexCommand(capiJobId: String) extends Command {
     JobRepository.upsertJob(reindexJob)
     SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 15)
 
-    AppAuditRepository.upsertAppAudit(AppAudit.reindex(capiJobId));
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexTags(capiJobId));
 
     Some(reindexJob.id)
   }
 }
 
-object ReindexCommand {
+object ReindexTagsCommand {
   //Weird inmapping required because of a "limitation" in the macro system in play. Meaning it doesn't allow for
   //single field case classes to be serialized using the Format
   //http://stackoverflow.com/questions/14754092/how-to-turn-json-to-case-class-when-case-class-has-only-one-field
-  implicit val reindexCommandFormat: Format[ReindexCommand] = (
+  implicit val reindexTagsCommandFormat: Format[ReindexTagsCommand] = (
     JsPath \ "capiJobId"
-  ).format[String].inmap(id => ReindexCommand(id), (reindexCommand: ReindexCommand) => reindexCommand.capiJobId)
+  ).format[String].inmap(id => ReindexTagsCommand(id), (reindexTagsCommand: ReindexTagsCommand) => reindexTagsCommand.capiJobId)
 }
