@@ -25,7 +25,7 @@ case class UpdateTagCommand(tag: Tag) extends Command {
 
     existingTag foreach {(existing) =>
       if (tag.references != existing.references) {
-        Logger.debug("Detected references change, triggering reindex")
+        Logger.info("Detected references change, triggering reindex")
         FlexTagReindexCommand(tag).process
       }
     }
