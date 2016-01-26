@@ -47,6 +47,7 @@ object Dynamo {
 
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
   lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
+  lazy val sponsorshipTable = dynamoDb.getTable(Config().sponsorshipTableName)
   lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
   lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
   lazy val tagAuditTable = dynamoDb.getTable(Config().tagAuditTableName)

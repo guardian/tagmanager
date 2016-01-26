@@ -72,6 +72,7 @@ sealed trait Config {
 
   def tagsTableName: String
   def sectionsTableName: String
+  def sponsorshipTableName: String
   def sequenceTableName: String
   def jobTableName: String
   def tagAuditTableName: String
@@ -104,6 +105,7 @@ class DevConfig extends Config {
 
   override def tagsTableName: String = "tags-dev"
   override def sectionsTableName: String = "sections-dev"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
 
@@ -138,6 +140,7 @@ class CodeConfig extends Config {
 
   override def tagsTableName: String = "tags-CODE"
   override def sectionsTableName: String = "sections-CODE"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-CODE"
   override def sequenceTableName: String = "tag-manager-sequences-CODE"
   override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
 
@@ -172,6 +175,7 @@ class ProdConfig extends Config {
 
   override def tagsTableName: String = "tags-PROD"
   override def sectionsTableName: String = "sections-PROD"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
   override def referencesTypeTableName: String = "tag-manager-reference-type-PROD"
 
