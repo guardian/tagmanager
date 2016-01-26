@@ -58,7 +58,7 @@ export default class TagEdit extends React.Component {
         </div>
       );
 
-      //Removed:
+      //TODO RE-ADD THIS COMPONENT:
       //<div className="tag-edit__input-group" key="topic-category">
       //   <label className="tag-edit__input-group__header">Category</label>
       //     <TopicCategories
