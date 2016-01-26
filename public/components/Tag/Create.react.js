@@ -99,12 +99,8 @@ class TagCreate extends React.Component {
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/>
               <TagValidationErrors validations={this.generateValidationErrors()} />
             </div>
-            <div className="tag__column">
-              Column 2
-            </div>
-            <div className="tag__column">
-              Column 3
-            </div>
+            <div className="tag__column"></div>
+            <div className="tag__column"></div>
           </div>
           <SaveButton isHidden={!this.isTagValid()} onSaveClick={this.saveTag.bind(this)} onResetClick={this.resetTag.bind(this)}/>
         </div>
