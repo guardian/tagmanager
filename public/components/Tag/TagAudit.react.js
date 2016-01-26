@@ -51,7 +51,7 @@ export default class TagAudit extends React.Component {
               </tr>
             </thead>
             <tbody>
-            {this.state.audit.sort((a,b) => a.date < b.date).map(this.renderAuditRow, this)}
+            {this.state.audit.sort((a,b) => b.date - a.date).map(this.renderAuditRow, this)}
             </tbody>
           </table>
       </div>
