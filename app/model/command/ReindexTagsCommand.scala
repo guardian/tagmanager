@@ -10,7 +10,7 @@ import play.api.Logger
 import repositories._
 
 case class ReindexTagsCommand(capiJobId: String) extends Command {
-  override type T = Long
+  override type T = Int
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
     val reindexJob = Job(
@@ -28,7 +28,7 @@ case class ReindexTagsCommand(capiJobId: String) extends Command {
 
     AppAuditRepository.upsertAppAudit(AppAudit.reindexTags(capiJobId));
 
-    Some(reindexJob.id)
+    Some(TagLookupCache.allTags.get.count(_ => true))
   }
 }
 

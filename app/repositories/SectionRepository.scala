@@ -23,4 +23,6 @@ object SectionRepository {
 
   def loadAllSections = Dynamo.sectionTable.scan().map(Section.fromItem)
 
+  def count = Dynamo.sectionTable.scan().count(_ => true)
+
 }
