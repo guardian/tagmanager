@@ -7,12 +7,12 @@ import model.{Tag, Delete, Merge}
 import repositories._
 
 object ReadOnlyApi extends Controller {
-  def getTagsAsXml() = Action {
-    val tags = TagLookupCache.allTags
-    val xmlTags = tags.get.map(_.asExportedXml)
-    Ok(<tags>
-      {xmlTags.seq.map { x => x }}
-      </tags>)
+  def getTagsAsXml() = Action.async {
+    Future(TagLookupCache.allTags.get.map(_.asExportedXml)) map { tags =>
+      Ok(<tags>
+        {tags.seq.map { x => x }}
+        </tags>)
+    }
   }
 
   def tagAsXml(id: Long) = Action {
