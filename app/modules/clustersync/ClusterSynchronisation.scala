@@ -49,11 +49,11 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
       tagUpdateConsumer.start()
       tagCacheSynchroniser.set(Some(tagUpdateConsumer))
 
-      val sectionUpdateConsumer = new KinesisConsumer(Config().sectionUpdateStreamName,
-      s"section-cache-synchroniser-${ns.nodeId}", SectionSyncUpdateProcessor)
-      Logger.info("stating section sync consumer")
-      sectionUpdateConsumer.start()
-      sectionCacheSynchroniser.set(Some(sectionUpdateConsumer))
+      // val sectionUpdateConsumer = new KinesisConsumer(Config().sectionUpdateStreamName,
+      // s"section-cache-synchroniser-${ns.nodeId}", SectionSyncUpdateProcessor)
+      // Logger.info("stating section sync consumer")
+      // sectionUpdateConsumer.start()
+      // sectionCacheSynchroniser.set(Some(sectionUpdateConsumer))
     } catch {
       case he: HeartbeatException => Logger.error("failed to register in the cluster, will try again next heartbeat")
       case NonFatal(e) => {
