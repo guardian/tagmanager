@@ -212,5 +212,13 @@ export default {
       method: 'get',
       type: 'json'
     });
+  },
+
+  deleteJob: (id) => {
+    return Reqwest({
+      url: '/api/jobs/' + id,
+      method: 'delete',
+      type: 'json'
+    });
   }
-};
+ };

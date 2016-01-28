@@ -45,6 +45,8 @@ GET        /api/audit/section/:sectionId  controllers.TagManagementApi.getAuditF
 GET        /api/audit/section/operation/:op controllers.TagManagementApi.getAuditForSectionOperation(op: String)
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
+DELETE     /api/jobs/:id                  controllers.TagManagementApi.deleteJob(id: Long)
+
 
 POST       /reindex/tags                  controllers.Reindex.reindexTags
 POST       /reindex/sections              controllers.Reindex.reindexSections
