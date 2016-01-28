@@ -1,9 +1,38 @@
 
 import Reqwest from 'reqwest';
+import Q from 'q';
+import {reEstablishSession} from 'babel?presets[]=es2015!panda-session';
+import {getStore} from './storeAccessor';
+
+function PandaReqwest(reqwestBody) {
+  return Q.Promise(function(resolve, reject) {
+    Reqwest(reqwestBody)
+      .then(res => {
+        resolve(res)
+      })
+      .fail(err => {
+        if (err.status == 419) {
+          const store = getStore();
+          var reauthCallback = store.getState().config.pandaAuthCallback;
+
+          reEstablishSession(reauthCallback, 5000).then(
+            res => {
+                Reqwest(reqwestBody).then(res => resolve(res)).fail(err => reject(err));
+            },
+            error => {
+              throw error;
+            });
+
+        } else {
+          reject(err)
+        }
+      });
+  });
+}
 
 export default {
   getTag: (id) => {
-      return Reqwest({
+      return PandaReqwest({
           url: '/api/tag/' + id,
           contentType: 'application/json',
           method: 'get'
@@ -11,7 +40,7 @@ export default {
   },
 
   saveTag: (id, tag) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/tag/' + id,
         data: JSON.stringify(tag),
         contentType: 'application/json',
@@ -20,7 +49,7 @@ export default {
   },
 
   deleteTag: (id, tag) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/tag/' + id,
         contentType: 'application/json',
         method: 'delete'
@@ -28,7 +57,7 @@ export default {
   },
 
   createTag: (tag) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/tag',
         data: JSON.stringify(tag),
         contentType: 'application/json',
@@ -37,7 +66,7 @@ export default {
   },
 
   getSections: () => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/sections',
       method: 'get',
       type: 'json'
@@ -45,7 +74,7 @@ export default {
   },
 
   getSection: (id) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/section/' + id,
       method: 'get',
       type: 'json'
@@ -53,7 +82,7 @@ export default {
   },
 
   saveSection: (id, section) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/section/' + id,
         data: JSON.stringify(section),
         contentType: 'application/json',
@@ -62,7 +91,7 @@ export default {
   },
 
   createSection: (section) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/section',
         data: JSON.stringify(section),
         contentType: 'application/json',
@@ -71,7 +100,7 @@ export default {
   },
 
   addEditionToSection: (sectionId, editionName) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/section/' + sectionId + '/edition',
         data: JSON.stringify({editionName: editionName}),
         contentType: 'application/json',
@@ -80,7 +109,7 @@ export default {
   },
 
   removeEditionFromSection: (sectionId, editionName) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/section/' + sectionId + '/edition/' + editionName,
         contentType: 'application/json',
         method: 'delete'
@@ -88,7 +117,7 @@ export default {
   },
 
   getReferenceTypes: () => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/referenceTypes',
       method: 'get',
       type: 'json'
@@ -102,7 +131,7 @@ export default {
           query.section = section;
       }
 
-      return Reqwest({
+      return PandaReqwest({
           url: '/api/checkPathInUse',
           data: query,
           method: 'get',
@@ -126,7 +155,7 @@ export default {
       query.types = options.tagType;
     }
 
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/tags',
         method: 'get',
         data: query,
@@ -135,7 +164,7 @@ export default {
   },
 
   getTagsByReferenceType: (referenceType) => {
-    return Reqwest({
+    return PandaReqwest({
         url: '/api/tags',
         method: 'get',
         data: {referenceType: referenceType, pageSize: 1000},
@@ -146,7 +175,7 @@ export default {
   batchTag: (contentIds, tagId, operation) => {
     const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation};
 
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/batchTag',
       data: JSON.stringify(batchTagCommand),
       contentType: 'application/json',
@@ -157,7 +186,7 @@ export default {
   mergeTag: (oldId, newId) => {
     const mergeTagCommand = {removingTagId: oldId, replacementTagId: newId};
 
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/mergeTag',
       data: JSON.stringify(mergeTagCommand),
       contentType: 'application/json',
@@ -166,7 +195,7 @@ export default {
   },
 
   getAuditForTag: (tagId) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/audit/tag/' + tagId,
       method: 'get',
       type: 'json'
@@ -174,7 +203,7 @@ export default {
   },
 
   getAuditForTagOperation: (operation) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/audit/tag/operation/' + operation,
       method: 'get',
       type: 'json'
@@ -182,7 +211,7 @@ export default {
   },
 
   getAuditForSection: (tagId) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/audit/section/' + tagId,
       method: 'get',
       type: 'json'
@@ -190,7 +219,7 @@ export default {
   },
 
   getAuditForSectionOperation: (operation) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/audit/section/operation/' + operation,
       method: 'get',
       type: 'json'
@@ -198,7 +227,7 @@ export default {
   },
 
   getJobsByTag: (tagId) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/jobs',
       method: 'get',
       data: {tagId: tagId},
@@ -207,7 +236,7 @@ export default {
   },
 
   getAllJobs: () => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/jobs',
       method: 'get',
       type: 'json'

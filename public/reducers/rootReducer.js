@@ -14,7 +14,7 @@ import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
 
-const saveState = {
+export const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
   clean: 'SAVE_STATE_CLEAN',
   inprogress: 'SAVE_STATE_INPROGRESS',

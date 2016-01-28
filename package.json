@@ -21,6 +21,8 @@
     "lodash.debounce": "^3.1.1",
     "moment": "^2.10.6",
     "node-sass": "^3.3.3",
+    "panda-session": "0.1.6",
+    "q": "1.4.1",
     "ramda": "^0.18.0",
     "react": "^0.14.2",
     "react-addons-css-transition-group": "^0.14.2",
