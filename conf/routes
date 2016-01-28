@@ -74,6 +74,7 @@ GET        /testScan                      controllers.App.testScan
 
 GET        /oauthCallback                 controllers.Login.oauthCallback
 GET        /logout                        controllers.Login.logout
+GET        /reauth                        controllers.Login.reauth
 
 # Management
 GET        /management/healthcheck        controllers.Management.healthCheck
@@ -83,3 +84,4 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 
 # Support routes
 GET        /support/image-metadata        controllers.Support.imageMetadata(imageUrl: String)
+

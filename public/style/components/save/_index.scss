@@ -24,6 +24,10 @@
   @extend %button--red;
 }
 
+.save__button--indicator {
+  display: inline-block;
+}
+
 .save-transition-enter.save {
   transform: translateY($save-height);
 }
