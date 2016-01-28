@@ -1,0 +1,9 @@
+.spinner {
+    background: url("/assets/images/progress-spinner.gif") no-repeat center center;
+    // Scaled down
+    width: 15px;
+    // Maintain aspect ratio
+    height: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}

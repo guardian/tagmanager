@@ -53,7 +53,7 @@ class TagDisplay extends React.Component {
     }
 
     isTagDirty() {
-      return this.props.saveState === 'SAVE_STATE_DIRTY';
+      return this.props.saveState !== 'SAVE_STATE_CLEAN';
     }
 
     isTagFetched() {
@@ -79,7 +79,7 @@ class TagDisplay extends React.Component {
 
     renderSaveBanner() {
       if (this.props.tagEditable) {
-        return <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()}
+        return <SaveButton saveState={this.props.saveState} isHidden={!this.isTagDirty() || !this.isTagValid()}
                            onSaveClick={this.saveTag.bind(this)}
                            onResetClick={this.resetTag.bind(this)}/>
       }
