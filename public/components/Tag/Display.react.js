@@ -65,7 +65,7 @@ class TagDisplay extends React.Component {
     }
 
     renderDeleteButton() {
-      if (this.props.config.permissions["tag_super_admin"]) {
+      if (this.props.config.permissions["tag_admin"]) {
         return <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
       } else {
         return (

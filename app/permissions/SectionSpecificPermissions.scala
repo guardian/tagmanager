@@ -12,7 +12,7 @@ object SectionPermissionMap {
   def apply(isMicrosite: Boolean): Option[Permission] = {
     isMicrosite match {
       case true => None
-      case _ => Some(Permissions.TagSuperAdmin)
+      case _ => Some(Permissions.TagAdmin)
     }
   }
 }

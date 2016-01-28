@@ -14,9 +14,9 @@ import play.api.mvc.AnyContent
 object TagTypePermissionMap {
   def apply(tagType: String): Option[Permission] = {
     tagType match {
-      case TagType.Tone.name => Some(Permissions.TagSuperAdmin)
-      case TagType.Blog.name => Some(Permissions.TagSuperAdmin) //Blog is to be deprecated
-      case TagType.ContentType.name => Some(Permissions.TagSuperAdmin)
+      case TagType.Tone.name => Some(Permissions.TagAdmin)
+      case TagType.Blog.name => Some(Permissions.TagAdmin) //Blog is to be deprecated
+      case TagType.ContentType.name => Some(Permissions.TagAdmin)
       case TagType.Publication.name => Some(Permissions.TagAdmin)
       case TagType.NewspaperBook.name => Some(Permissions.TagAdmin)
       case TagType.NewspaperBookSection.name => Some(Permissions.TagAdmin)
