@@ -13,9 +13,9 @@ function PandaReqwest(reqwestBody) {
       .fail(err => {
         if (err.status == 419) {
           const store = getStore();
-          var reauthCallback = store.getState().config.pandaAuthCallback;
+          var reauthUrl = store.getState().config.reauthUrl;
 
-          reEstablishSession(reauthCallback, 5000).then(
+          reEstablishSession(reauthUrl, 5000).then(
             res => {
                 Reqwest(reqwestBody).then(res => resolve(res)).fail(err => reject(err));
             },

@@ -9,7 +9,7 @@ case class ClientConfig(capiUrl: String,
                         tagTypes: List[String],
                         permittedTagTypes: List[String],
                         permissions: Map[String, Boolean],
-                        pandaAuthCallback: String)
+                        reauthUrl: String)
 
 object ClientConfig {
 
@@ -19,6 +19,6 @@ object ClientConfig {
       (JsPath \ "tagTypes").format[List[String]] and
       (JsPath \ "permittedTagTypes").format[List[String]] and
       (JsPath \ "permissions").format[Map[String, Boolean]] and
-      (JsPath \ "pandaAuthCallback").format[String]
+      (JsPath \ "reauthUrl").format[String]
     )(ClientConfig.apply, unlift(ClientConfig.unapply))
 }

@@ -32,9 +32,7 @@ export function saveTag(tag) {
     return dispatch => {
         dispatch(requestTagSave());
         return tagManagerApi.saveTag(tag.id, tag)
-            .then(res => {
-              dispatch(recieveTagSave(res))
-            })
+            .then(res => dispatch(recieveTagSave(res)))
             .fail(error => dispatch(errorTagSave(error)));
     };
 }
