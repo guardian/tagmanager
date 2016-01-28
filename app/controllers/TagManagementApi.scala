@@ -148,7 +148,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def batchTag = (APIAuthAction andThen BatchTagPermissionsCheck) { req =>
+  def batchTag = APIAuthAction { req =>
 
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>

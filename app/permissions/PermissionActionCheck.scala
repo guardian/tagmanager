@@ -45,9 +45,3 @@ object MergeTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "merge tag"
 }
-
-object BatchTagPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "batch tag"
-}
-
