@@ -33,7 +33,7 @@ class Status extends React.Component {
     render () {
       return (
         <div className="status">
-          <JobTable jobs={this.state.jobStatus} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_super_admin}/>
+          <JobTable jobs={this.state.jobStatus} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
         </div>
       );
     }
