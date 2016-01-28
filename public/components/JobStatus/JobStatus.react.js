@@ -33,7 +33,7 @@ export default class JobStatus extends React.Component {
 
   render () {
     return (
-      <JobTable jobs={this.state.jobs} triggerRefresh={this.fetchJobs.bind(this)} />
+      <JobTable jobs={this.state.jobs} triggerRefresh={this.fetchJobs.bind(this)} disableDelete={!this.props.config.permissions.tag_super_admin}/>
     );
   }
 }

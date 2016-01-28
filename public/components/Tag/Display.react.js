@@ -122,7 +122,7 @@ class TagDisplay extends React.Component {
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
-              <JobStatus tagId={this.props.tag.id} />
+              <JobStatus tagId={this.props.tag.id} config={this.props.config}/>
               <TagAudit tagId={this.props.tag.id} saveState={this.props.saveState}/>
             </div>
           </div>

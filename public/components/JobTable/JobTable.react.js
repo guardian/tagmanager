@@ -67,7 +67,7 @@ export default class JobTable extends React.Component {
             {this.stepProgress(job.steps[0])}<br />
             Remaining Steps: {job.steps.length}
           </td>
-          <td><ConfirmButton buttonText="Delete Job" onClick={this.removeJob.bind(this, job.id)}/></td>
+          <td><ConfirmButton buttonText="Delete Job" onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/></td>
         </tr>
       );
     }

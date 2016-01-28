@@ -3,7 +3,7 @@ import JobTable from './JobTable/JobTable.react';
 
 import tagManagerApi from '../util/tagManagerApi';
 
-export default class Status extends React.Component {
+class Status extends React.Component {
 
     constructor(props) {
         super(props);
@@ -33,8 +33,19 @@ export default class Status extends React.Component {
     render () {
       return (
         <div className="status">
-          <JobTable jobs={this.state.jobStatus} triggerRefresh={this.fetchJobs.bind(this)} />
+          <JobTable jobs={this.state.jobStatus} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_super_admin}/>
         </div>
       );
     }
 }
+
+//REDUX CONNECTIONS
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {
+  return {
+    config: state.config
+  };
+}
+
+export default connect(mapStateToProps)(Status);
