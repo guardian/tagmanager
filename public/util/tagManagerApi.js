@@ -244,7 +244,7 @@ export default {
   },
 
   deleteJob: (id) => {
-    return Reqwest({
+    return PandaReqwest({
       url: '/api/jobs/' + id,
       method: 'delete',
       type: 'json'
