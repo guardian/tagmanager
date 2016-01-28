@@ -43,6 +43,11 @@ object DeleteTagPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "delete tag"
 }
 
+object DeleteJobPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
+  val restrictedAction = "delete job"
+}
+
 // Admin
 object MergeTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)

@@ -241,5 +241,13 @@ export default {
       method: 'get',
       type: 'json'
     });
+  },
+
+  deleteJob: (id) => {
+    return PandaReqwest({
+      url: '/api/jobs/' + id,
+      method: 'delete',
+      type: 'json'
+    });
   }
-};
+ };
