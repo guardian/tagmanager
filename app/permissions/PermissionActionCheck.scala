@@ -21,36 +21,32 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
         Some(Results.Unauthorized)}
 }
 
-// Super Admin
 object ReindexPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "reindex"
 }
 
 object AddEditionToSectionPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "add edition to section"
 }
 
 object RemoveEditionFromSectionPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "remove edition from section"
 }
 
-
 object DeleteTagPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagSuperAdmin)
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "delete tag"
 }
 
-// Admin
+object DeleteJobPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
+  val restrictedAction = "delete job"
+}
+
 object MergeTagPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "merge tag"
 }
-
-object BatchTagPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "batch tag"
-}
-

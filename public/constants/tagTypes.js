@@ -45,5 +45,5 @@ export const newspaperBookSection = {
 
 export const blog = {
   name: 'Blog',
-  displayName: 'Blog'
+  displayName: 'Blog - DEPRECATED'
 };

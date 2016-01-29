@@ -39,12 +39,12 @@ export default [
       <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="audit" path="/audit" component={Audit} />
       <Route name="status" path="/status" component={Status} />
-      <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_super_admin')} />
-      <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_super_admin')} />
-      <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_super_admin')}/>
-      <Route name="sponsorshipList" path="/sponsorship" component={SponsorshipsList} onEnter={requirePermission.bind(this, 'tag_super_admin')} />
-      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'tag_super_admin')} />
-      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'tag_super_admin')}/>
+      <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+      <Route name="sponsorshipList" path="/sponsorship" component={SponsorshipsList} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
       <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
       <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />

@@ -53,6 +53,8 @@ GET        /api/audit/section/:sectionId  controllers.TagManagementApi.getAuditF
 GET        /api/audit/section/operation/:op controllers.TagManagementApi.getAuditForSectionOperation(op: String)
 
 GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
+DELETE     /api/jobs/:id                  controllers.TagManagementApi.deleteJob(id: Long)
+
 
 POST       /reindex/tags                  controllers.Reindex.reindexTags
 POST       /reindex/sections              controllers.Reindex.reindexSections
@@ -80,6 +82,7 @@ GET        /testScan                      controllers.App.testScan
 
 GET        /oauthCallback                 controllers.Login.oauthCallback
 GET        /logout                        controllers.Login.logout
+GET        /reauth                        controllers.Login.reauth
 
 # Management
 GET        /management/healthcheck        controllers.Management.healthCheck
@@ -89,3 +92,4 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 
 # Support routes
 GET        /support/image-metadata        controllers.Support.imageMetadata(imageUrl: String)
+

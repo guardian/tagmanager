@@ -1,8 +1,9 @@
 import React from 'react';
-import tagManagerApi from '../util/tagManagerApi';
-import moment from 'moment';
+import JobTable from './JobTable/JobTable.react';
 
-export default class Status extends React.Component {
+import tagManagerApi from '../util/tagManagerApi';
+
+class Status extends React.Component {
 
     constructor(props) {
         super(props);
@@ -11,7 +12,7 @@ export default class Status extends React.Component {
         };
     }
 
-    fetchJobStatus() {
+    fetchJobs() {
       tagManagerApi.getAllJobs()
       .then((logs) => {
         this.setState({
@@ -21,46 +22,30 @@ export default class Status extends React.Component {
     }
 
     componentDidMount() {
-      if (!this.state.jobStatus || !this.state.jobStatus.length) {
-        this.fetchJobStatus();
-      }
+      this.fetchJobs();
+      this.jobCheck = setInterval(this.fetchJobs.bind(this), 15000);
     }
 
-    renderListItem(logItem) {
-
-      const itemTime = moment(logItem.started, 'x');
-      const rowClass = moment().subtract(1, 'days').isAfter(itemTime) ? 'row-warning' : '';
-
-      return (
-        <tr className={rowClass} key={logItem.id}>
-          <td>{itemTime.format('DD/MM/YYYY HH:mm:ss')}</td>
-          <td>{logItem.type}</td>
-          <td>{logItem.startedBy}</td>
-          <td>Currently Processing: {logItem.steps[0].type}<br />Remaining Steps: {logItem.steps.length}</td>
-        </tr>
-      );
+    componentWillUnmount() {
+      clearInterval(this.jobCheck);
     }
 
     render () {
-
       return (
-
         <div className="status">
-          <table className="status__table">
-            <thead className="status__header">
-              <tr>
-                <th>Started</th>
-                <th>Type</th>
-                <th>User</th>
-                <th>Progress</th>
-              </tr>
-            </thead>
-            <tbody className="status__results">
-              {this.state.jobStatus.sort((a, b) => a.id > b.id ? 1 : -1).map(this.renderListItem, this)}
-            </tbody>
-          </table>
+          <JobTable jobs={this.state.jobStatus} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
         </div>
-
       );
     }
 }
+
+//REDUX CONNECTIONS
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {
+  return {
+    config: state.config
+  };
+}
+
+export default connect(mapStateToProps)(Status);

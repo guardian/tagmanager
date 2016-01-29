@@ -148,7 +148,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def batchTag = (APIAuthAction andThen BatchTagPermissionsCheck) { req =>
+  def batchTag = APIAuthAction { req =>
 
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
@@ -222,6 +222,12 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       case None => JobRepository.loadAllJobs
     }
     Ok(Json.toJson(jobs))
+  }
+
+  def deleteJob(id: Long) = (APIAuthAction andThen DeleteJobPermissionsCheck) {
+    JobRepository.deleteJob(id)
+
+    Ok("Deleted")
   }
 
 }

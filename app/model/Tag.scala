@@ -60,14 +60,14 @@ case class Tag(
   // in this limited format for inCopy to consume
   def asExportedXml = {
     val el = createElem("tag")
-    val section = SectionRepository.getSection(this.id)
+    val section = this.section.map(SectionRepository.getSection(_))
     val id = createAttribute("id", Some(this.id))
     val externalName = createAttribute("externalname", Some(this.externalName))
     val internalName = createAttribute("internalname", Some(this.internalName))
     val urlWords = createAttribute("words-for-url", Some(this.slug))
     val sectionId = createAttribute("section-id", this.section)
-    val sectionName = createAttribute("section", section.map(_.name))
-    val sectionUrl = createAttribute("section-words-for-url", section.map(_.wordsForUrl))
+    val sectionName = createAttribute("section", section.map(_.map(_.name)))
+    val sectionUrl = createAttribute("section-words-for-url", section.map(_.map(_.wordsForUrl)))
     val `type` = createAttribute("type", Some(this.`type`))
 
     val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type`

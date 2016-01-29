@@ -53,7 +53,7 @@ class TagDisplay extends React.Component {
     }
 
     isTagDirty() {
-      return this.props.saveState === 'SAVE_STATE_DIRTY';
+      return this.props.saveState !== 'SAVE_STATE_CLEAN';
     }
 
     isTagFetched() {
@@ -65,7 +65,7 @@ class TagDisplay extends React.Component {
     }
 
     renderDeleteButton() {
-      if (this.props.config.permissions["tag_super_admin"]) {
+      if (this.props.config.permissions["tag_admin"]) {
         return <ConfirmButton className="tag__delete" onClick={this.deleteTag.bind(this)} buttonText="Delete Tag" />
       } else {
         return (
@@ -79,7 +79,7 @@ class TagDisplay extends React.Component {
 
     renderSaveBanner() {
       if (this.props.tagEditable) {
-        return <SaveButton isHidden={!this.isTagDirty() || !this.isTagValid()}
+        return <SaveButton saveState={this.props.saveState} isHidden={!this.isTagDirty() || !this.isTagValid()}
                            onSaveClick={this.saveTag.bind(this)}
                            onResetClick={this.resetTag.bind(this)}/>
       }
@@ -122,7 +122,7 @@ class TagDisplay extends React.Component {
             </div>
             <div className="tag__column">
               <CapiStats tag={this.props.tag} config={this.props.config} />
-              <JobStatus tagId={this.props.tag.id} />
+              <JobStatus tagId={this.props.tag.id} config={this.props.config}/>
               <TagAudit tagId={this.props.tag.id} saveState={this.props.saveState}/>
             </div>
           </div>
