@@ -49,7 +49,7 @@ object ContentAPI {
 
   @tailrec
   def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
-    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).showFields("internalComposerCode"))
+    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page).showFields("internalComposerCode"))
 
     val resultPage = Await.result(response, 5 seconds)
 
