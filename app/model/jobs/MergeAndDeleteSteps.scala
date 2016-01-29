@@ -42,7 +42,7 @@ case class RemoveTagStep(tagId: Long, originalUsername: Option[String]) extends 
       TagRepository.deleteTag(tagId)
       PathManager.removePathForId(tag.pageId)
 
-      KinesisStreams.tagUpdateStream.publishUpdate(tagId.toString, TagEvent(EventType.Delete, tagId, None))
+      KinesisStreams.tagUpdateStream.publishUpdate(tagId.toString, TagEvent(EventType.Delete, tagId, Some(tag.asThrift)))
 
       TagAuditRepository.upsertTagAudit(TagAudit.deleted(tag, originalUsername))
     }
