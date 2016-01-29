@@ -22,8 +22,13 @@ export default class TagEdit extends React.Component {
     }
 
     onUpdateSection(e) {
+
+      const sectionId = parseInt(e.target.value, 10);
+      const section = this.props.sections.filter((section) => section.id === sectionId)[0];
+
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        section: parseInt(e.target.value, 10)
+        section: sectionId,
+        capiSectionId: section.path
       }));
     }
 
@@ -36,7 +41,8 @@ export default class TagEdit extends React.Component {
     onUpdateIsMicrosite(e) {
       this.props.updateTag(Object.assign({}, this.props.tag, {
         isMicrosite: e.target.checked,
-        section: undefined
+        section: undefined,
+        capiSectionId: undefined
       }));
     }
 
