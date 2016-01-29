@@ -87,6 +87,32 @@ export default {
     });
   },
 
+  getSponsorship: (id) => {
+    return Reqwest({
+      url: '/api/sponsorship/' + id,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  saveSponsorship: (id, sponsorship) => {
+    return Reqwest({
+      url: '/api/sponsorship/' + id,
+      data: JSON.stringify(sponsorship),
+      contentType: 'application/json',
+      method: 'put'
+    });
+  },
+
+  createSponsorship: (sponsorship) => {
+    return Reqwest({
+      url: '/api/sponsorship',
+      data: JSON.stringify(sponsorship),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
   getReferenceTypes: () => {
     return Reqwest({
       url: '/api/referenceTypes',
