@@ -30,7 +30,8 @@ case class Tag(
   podcastMetadata: Option[PodcastMetadata] = None,
   contributorInformation: Option[ContributorInformation] = None,
   publicationInformation: Option[PublicationInformation] = None,
-  isMicrosite: Boolean
+  isMicrosite: Boolean,
+  capiSectionId: Option[String] = None
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -54,7 +55,8 @@ case class Tag(
     podcastMetadata   = podcastMetadata.map(_.asThrift),
     contributorInformation = contributorInformation.map(_.asThrift),
     publicationInformation = publicationInformation.map(_.asThrift),
-    isMicrosite       = isMicrosite
+    isMicrosite       = isMicrosite,
+    capiSectionId     = capiSectionId
   )
 
   // in this limited format for inCopy to consume
@@ -106,7 +108,8 @@ object Tag {
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
-      (JsPath \ "isMicrosite").format[Boolean]
+      (JsPath \ "isMicrosite").format[Boolean] and
+      (JsPath \ "capiSectionId").formatNullable[String]
 
     )(Tag.apply, unlift(Tag.unapply))
 
@@ -147,6 +150,7 @@ object Tag {
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
-      isMicrosite       = thriftTag.isMicrosite
+      isMicrosite       = thriftTag.isMicrosite,
+      capiSectionId     = thriftTag.capiSectionId
     )
 }
