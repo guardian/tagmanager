@@ -1,5 +1,7 @@
 import React from 'react';
-import SponsorshipEdit from '../SponsorshipEdit/SponsorshipEdit.react';
+import SponsorEdit from '../SponsorshipEdit/SponsorEdit.react';
+import ValidityEdit from '../SponsorshipEdit/ValidityEdit.react';
+import TargetingEdit from '../SponsorshipEdit/TargetingEdit.react';
 import SaveButton from '../utils/SaveButton.react';
 
 class SponsorshipDisplay extends React.Component {
@@ -39,10 +41,14 @@ class SponsorshipDisplay extends React.Component {
       return (
         <div className="sponsorship-edit">
           <div className="sponsorship-edit__column--sidebar">
-            <SponsorshipEdit section={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship} />
+            <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
           </div>
-          <div className="sponsorship-edit__column"></div>
-          <div className="sponsorship-edit__column"></div>
+          <div className="sponsorship-edit__column">
+            <ValidityEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
+          </div>
+          <div className="sponsorship-edit__column">
+            <TargetingEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
+          </div>
           <SaveButton isHidden={!this.isSponsorshipDirty()} onSaveClick={this.saveSponsorship.bind(this)} onResetClick={this.resetSponsorship.bind(this)}/>
         </div>
       );
