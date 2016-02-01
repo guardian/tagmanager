@@ -24,6 +24,13 @@
   @extend %tag__column;
 }
 
+.tag__column--header {
+    font-size: 16px;
+    font-weight: bold;
+    padding: $standard-padding;
+    padding-bottom: 0px;
+}
+
 .tag__column--sidebar {
   background-color: $c-grey-200;
 
