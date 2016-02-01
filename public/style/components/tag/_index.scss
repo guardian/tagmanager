@@ -24,6 +24,10 @@
   @extend %tag__column;
 }
 
+.tag__column--header {
+    padding: $standard-padding;
+}
+
 .tag__column--sidebar {
   background-color: $c-grey-200;
 
