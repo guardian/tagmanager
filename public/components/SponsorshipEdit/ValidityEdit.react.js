@@ -21,7 +21,7 @@ export default class ValidityEdit extends React.Component {
 
   setValidTo(date) {
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      validFrom: moment(date)
+      validTo: moment(date)
     }));
   }
 
@@ -35,7 +35,7 @@ export default class ValidityEdit extends React.Component {
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Validity</label>
 
-        <div className="tag-edit__input-group" >
+        <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">From</label>
           <DateTimePicker
             format={"DD/MM/YYYY HH:mm"}
@@ -43,7 +43,7 @@ export default class ValidityEdit extends React.Component {
             onChange={this.setValidFrom.bind(this)}/>
         </div>
 
-        <div className="tag-edit__input-group" >
+        <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">To</label>
           <DateTimePicker
             format={"DD/MM/YYYY HH:mm"}
@@ -54,16 +54,3 @@ export default class ValidityEdit extends React.Component {
     );
   }
 }
-/*
- id: Long,
- validFrom: Option[DateTime],
- validTo: Option[DateTime],
- status: String,
- sponsorshipType: String,
- sponsorName: String,
- sponsorLogo: String,
- sponsorLink: String,
- tag: Option[Long],
- section: Option[Long],
- targetting: Option[SponsorshipTargeting])
- */

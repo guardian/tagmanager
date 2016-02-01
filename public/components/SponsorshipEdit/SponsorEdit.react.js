@@ -33,13 +33,12 @@ export default class SponsorEdit extends React.Component {
     if (!this.props.sponsorship) {
       return false;
     }
-
     return (
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Sponsor</label>
         <div className="tag-edit__field">
-          <input type="text" value={this.props.sponsorship.sponsorName} onChange={this.updateName.bind(this)}/>
           <label className="tag-edit__label">Name</label>
+          <input type="text" value={this.props.sponsorship.sponsorName} onChange={this.updateName.bind(this)}/>
         </div>
 
         <TagImageEdit
@@ -49,11 +48,12 @@ export default class SponsorEdit extends React.Component {
           tagEditable={true}/>
 
         <div className="tag-edit__field">
-          <input type="text" value={this.props.sponsorship.sponsorLink} onChange={this.updateLink.bind(this)}/>
           <label className="tag-edit__label">Link</label>
+          <input type="text" value={this.props.sponsorship.sponsorLink} onChange={this.updateLink.bind(this)}/>
         </div>
       </div>
     );
+
   }
 }
 /*

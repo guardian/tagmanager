@@ -55,12 +55,12 @@ export default class TargetingEdit extends React.Component {
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Targeting</label>
 
-        <div className="tag-edit__input-group" >
+        <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">Tag</label>
           {this.renderTag(this.props.sponsorship.tag, this.onTagSelected.bind(this))}
         </div>
 
-        <div className="tag-edit__input-group" >
+        <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">Section</label>
           <SectionSelect
             selectedId={this.sectionId()}
