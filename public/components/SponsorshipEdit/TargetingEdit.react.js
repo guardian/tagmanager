@@ -21,6 +21,10 @@ export default class TargetingEdit extends React.Component {
   }
 
   renderTag(tag, setTagFn) {
+    if(!!this.props.sponsorship.section) {
+      return (<div>Remove the targeted section to target by tag.</div>);
+    }
+
     if (!tag) {
       return <TagSelect onTagClick={setTagFn} />;
     }
@@ -30,6 +34,22 @@ export default class TargetingEdit extends React.Component {
         {tag.internalName}
         <i className="i-cross" onClick={setTagFn.bind(this, undefined)} />
       </div>
+    );
+  }
+
+  renderSection() {
+    if(!!this.props.sponsorship.tag) {
+      return (<div>Remove the targeted tag to target by section.</div>);
+    }
+
+    return (
+      <SectionSelect
+        selectedId={this.sectionId()}
+        sections={this.props.sections}
+        isMicrosite={false}
+        onChange={this.onUpdateSection.bind(this)}
+        disabled={this.hasTag()}
+        />
     );
   }
 
@@ -62,29 +82,10 @@ export default class TargetingEdit extends React.Component {
 
         <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">Section</label>
-          <SectionSelect
-            selectedId={this.sectionId()}
-            sections={this.props.sections}
-            isMicrosite={false}
-            onChange={this.onUpdateSection.bind(this)}
-            disabled={this.hasTag()}
-            />
+          {this.renderSection()}
         </div>
 
       </div>
     );
   }
 }
-/*
- id: Long,
- validFrom: Option[DateTime],
- validTo: Option[DateTime],
- status: String,
- sponsorshipType: String,
- sponsorName: String,
- sponsorLogo: String,
- sponsorLink: String,
- tag: Option[Long],
- section: Option[Long],
- targetting: Option[SponsorshipTargeting])
- */
