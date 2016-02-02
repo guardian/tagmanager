@@ -27,6 +27,9 @@ sealed trait Config {
 
   def capiUrl: String = getRequiredStringProperty("capi.url")
   def capiKey: String = getRequiredStringProperty("capi.key")
+  def capiPreviewUrl: String = getRequiredStringProperty("capi.preview.url")
+  def capiPreviewUser: String = getRequiredStringProperty("capi.preview.username")
+  def capiPreviewPassword: String = getRequiredStringProperty("capi.preview.password")
 
   def pathManagerUrl: String = getRequiredStringProperty("pathmanager.url")
 
@@ -65,7 +68,6 @@ sealed trait Config {
   }
 
   lazy val permissionsStage: String = readTag("Stage") match {
-    case Some("DEV") =>  "CODE"
     case Some(stage) =>  stage
     case _           =>  "CODE"
   }
