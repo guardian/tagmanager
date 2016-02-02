@@ -54,7 +54,7 @@ object TagEntity {
       "internalName" -> JsString(te.internalName),
       "externalName" -> JsString(te.externalName),
       "slug" -> JsString(te.slug),
-      "section" -> te.section.map(Json.toJson(_)).getOrElse(JsNull),
+      "section" -> Json.toJson(te.section),
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
       "externalReferences" -> JsArray(te.references.map(Json.toJson(_)))
 
