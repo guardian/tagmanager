@@ -15,8 +15,12 @@ export default class TargetingEdit extends React.Component {
   }
 
   onUpdateSection(e) {
+    const sectionId = parseInt(e.target.value, 10);
+    const section = this.props.sections.find( function(element) {
+      return element.id === sectionId;
+    });
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      section: parseInt(e.target.value, 10)
+      section: section
     }));
   }
 
