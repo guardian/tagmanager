@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import R from 'ramda';
 import tagManagerApi from '../../../util/tagManagerApi';
 import AddTagToContext from './AddRelationship.react';
+import * as tagTypes from '../../../constants/tagTypes';
 
 export default class TagRelationship extends React.Component {
 
@@ -97,6 +98,10 @@ export default class TagRelationship extends React.Component {
     render () {
       if (!this.props.tag) {
         console.log('ContextDisplay loaded without tag provided');
+        return false;
+      }
+
+      if (this.props.tag.type !== tagTypes.topic.name) {
         return false;
       }
 

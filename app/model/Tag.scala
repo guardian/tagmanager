@@ -30,7 +30,8 @@ case class Tag(
   podcastMetadata: Option[PodcastMetadata] = None,
   contributorInformation: Option[ContributorInformation] = None,
   publicationInformation: Option[PublicationInformation] = None,
-  isMicrosite: Boolean
+  isMicrosite: Boolean,
+  capiSectionId: Option[String] = None
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -54,23 +55,32 @@ case class Tag(
     podcastMetadata   = podcastMetadata.map(_.asThrift),
     contributorInformation = contributorInformation.map(_.asThrift),
     publicationInformation = publicationInformation.map(_.asThrift),
-    isMicrosite       = isMicrosite
+    isMicrosite       = isMicrosite,
+    capiSectionId     = capiSectionId
   )
 
   // in this limited format for inCopy to consume
   def asExportedXml = {
-    val el = createElem("tag")
+
+
+    val oldType = this.`type` match {
+      case "Topic" => "Keyword"
+      case t => t
+    }
+
     val section = this.section.map(SectionRepository.getSection(_))
+    val el = createElem("tag")
     val id = createAttribute("id", Some(this.id))
     val externalName = createAttribute("externalname", Some(this.externalName))
     val internalName = createAttribute("internalname", Some(this.internalName))
     val urlWords = createAttribute("words-for-url", Some(this.slug))
-    val sectionId = createAttribute("section-id", this.section)
-    val sectionName = createAttribute("section", section.map(_.map(_.name)))
-    val sectionUrl = createAttribute("section-words-for-url", section.map(_.map(_.wordsForUrl)))
-    val `type` = createAttribute("type", Some(this.`type`))
+    val sectionId = createAttribute("section-id", Some(this.section.getOrElse(281))) //R2 Global Id
+    val sectionName = createAttribute("section", Some(section.map(_.map(_.name)).getOrElse("Global")))
+    val sectionUrl = createAttribute("section-words-for-url", Some(section.map(_.map(_.wordsForUrl)).getOrElse("global")))
+    val `type` = createAttribute("type", Some(oldType))
+    val cmsPrefix = createAttribute("section-cms-path-prefix", Some("/Guardian/" + section.map(_.map(_.path).getOrElse("")).getOrElse("global")))
 
-    val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type`
+    val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type` % cmsPrefix
 
     val withRefs: Node = this.references.foldLeft(withAttrs: Node) { (x, y) =>
       addChild(x, y.asExportedXml)
@@ -106,7 +116,8 @@ object Tag {
       (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
-      (JsPath \ "isMicrosite").format[Boolean]
+      (JsPath \ "isMicrosite").format[Boolean] and
+      (JsPath \ "capiSectionId").formatNullable[String]
 
     )(Tag.apply, unlift(Tag.unapply))
 
@@ -147,6 +158,7 @@ object Tag {
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
-      isMicrosite       = thriftTag.isMicrosite
+      isMicrosite       = thriftTag.isMicrosite,
+      capiSectionId     = thriftTag.capiSectionId
     )
 }

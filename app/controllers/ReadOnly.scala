@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import model.{Tag, Delete, Merge}
+import model.{Tag, Section, Delete, Merge}
 import repositories._
 
 object ReadOnlyApi extends Controller {
@@ -15,9 +15,33 @@ object ReadOnlyApi extends Controller {
       </tags>)
   }
 
+  def getSectionsAsXml() = Action {
+    val sections = SectionRepository.loadAllSections
+
+    //Lack of a Section in TagManager was previously represented as a "Global" section.
+    val globalSection = new Section(
+      name = "Global",
+      id = 281,
+      sectionTagId = 0,
+      path = "",
+      wordsForUrl = "",
+      pageId = 0,
+      isMicrosite = false
+    )
+
+    val xmlSections = sections.map(_.asExportedXml) ++ globalSection.asExportedXml
+
+
+    Ok(<sections>
+      {xmlSections.seq.map { x => x }}
+    </sections>)
+  }
+
   def tagAsXml(id: Long) = Action {
     TagRepository.getTag(id).map { tag =>
-      Ok(tag.asExportedXml)
+      Ok(<tags>
+        {tag.asExportedXml}
+      </tags>)
     }.getOrElse(NotFound)
   }
 

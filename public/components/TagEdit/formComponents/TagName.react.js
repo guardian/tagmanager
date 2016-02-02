@@ -7,9 +7,9 @@ function slugify(text) {
 
 function inferLockStateFromProps(props) {
   return {
-    externalNameLocked: props.tag.externalName === undefined || props.tag.externalName === props.tag.internalName,
-    comparableValueLocked: props.tag.comparableValue === undefined || props.tag.comparableValue === props.tag.internalName.toLowerCase(),
-    slugLocked: props.tag.slug === undefined || props.tag.slug === slugify(props.tag.internalName)
+    internalNameLocked: props.tag.internalName === undefined || props.tag.internalName === props.tag.externalName,
+    comparableValueLocked: props.tag.comparableValue === undefined || props.tag.comparableValue === props.tag.externalName.toLowerCase(),
+    slugLocked: props.tag.slug === undefined || props.tag.slug === slugify(props.tag.externalName)
   };
 }
 
@@ -25,10 +25,10 @@ export default class TagNameEdit extends React.Component {
     this.setState(inferLockStateFromProps(props));
   }
 
-  onUpdateInternalName(e) {
+  onUpdateExternalName(e) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
-      internalName: e.target.value,
-      externalName: this.state.externalNameLocked ? e.target.value : this.props.tag.externalName,
+      externalName: e.target.value,
+      internalName: this.state.internalNameLocked ? e.target.value : this.props.tag.internalName,
       comparableValue: this.state.comparableValueLocked ? e.target.value.toLowerCase() : this.props.tag.comparableValue,
       slug: (!this.props.pathLocked && this.state.slugLocked) ? slugify(e.target.value) : this.props.tag.slug
     }));
@@ -40,9 +40,9 @@ export default class TagNameEdit extends React.Component {
     }));
   }
 
-  onUpdateExternalName(e) {
+  onUpdateInternalName(e) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
-      externalName: e.target.value
+      internalName: e.target.value
     }));
   }
 
@@ -57,17 +57,17 @@ export default class TagNameEdit extends React.Component {
     }));
   }
 
-  toggleExternalNameLock() {
+  toggleInternalNameLock() {
 
-    var newLockState = !this.state.externalNameLocked;
+    var newLockState = !this.state.internalNameLocked;
 
     this.setState({
-      externalNameLocked: newLockState
+      internalNameLocked: newLockState
     });
 
     if (newLockState) {
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        externalName: this.props.tag.internalName
+        internalName: this.props.tag.externalName
       }));
     }
   }
@@ -82,7 +82,7 @@ export default class TagNameEdit extends React.Component {
 
     if (newLockState) {
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        comparableValue: this.props.tag.internalName.toLowerCase()
+        comparableValue: this.props.tag.externalName.toLowerCase()
       }));
     }
   }
@@ -100,7 +100,7 @@ export default class TagNameEdit extends React.Component {
 
     if (newLockState) {
       this.props.updateTag(Object.assign({}, this.props.tag, {
-        slug: slugify(this.props.tag.internalName)
+        slug: slugify(this.props.tag.externalName)
       }));
     }
   }
@@ -147,9 +147,9 @@ export default class TagNameEdit extends React.Component {
     }
 
     var classNames = {
-      externalName: {
-        lock: this.state.externalNameLocked ? 'tag-edit__linked-field__lock' : 'tag-edit__linked-field__lock--unlocked',
-        link: this.state.externalNameLocked ? 'tag-edit__linked-field__link--junction' : 'tag-edit__linked-field__link--line'
+      internalName: {
+        lock: this.state.internalNameLocked ? 'tag-edit__linked-field__lock' : 'tag-edit__linked-field__lock--unlocked',
+        link: this.state.internalNameLocked ? 'tag-edit__linked-field__link--junction' : 'tag-edit__linked-field__link--line'
       },
       comparableValue: {
         lock: this.state.comparableValueLocked ? 'tag-edit__linked-field__lock' : 'tag-edit__linked-field__lock--unlocked',
@@ -166,21 +166,21 @@ export default class TagNameEdit extends React.Component {
     }
 
     if (!this.state.slugLocked && !this.state.comparableValueLocked) {
-      classNames.externalName.link = this.state.externalNameLocked ? 'tag-edit__linked-field__link--corner' : 'tag-edit__linked-field__link';
+      classNames.internalName.link = this.state.internalNameLocked ? 'tag-edit__linked-field__link--corner' : 'tag-edit__linked-field__link';
     }
     return (
       <div className="tag-edit__input-group">
         <div className="tag-edit__name">
-          <label className="tag-edit__input-group__header">Internal Name</label>
-          <input className="tag-edit__input" type="text" value={this.props.tag.internalName} onChange={this.onUpdateInternalName.bind(this)} disabled={!this.props.tagEditable}/>
+          <label className="tag-edit__input-group__header">External Name</label>
+          <input className="tag-edit__input" type="text" value={this.props.tag.externalName} onChange={this.onUpdateExternalName.bind(this)} disabled={!this.props.tagEditable}/>
           <div className="tag-edit__linked-field">
-            <div className={classNames.externalName.link}></div>
-            <div className={classNames.externalName.lock} onClick={this.toggleExternalNameLock.bind(this)}></div>
-            <label>External Name</label>
+            <div className={classNames.internalName.link}></div>
+            <div className={classNames.internalName.lock} onClick={this.toggleInternalNameLock.bind(this)}></div>
+            <label>Internal Name</label>
             <div className="tag-edit__linked-field__input-container">
               <input type="text"
-                value={this.props.tag.externalName}
-                onChange={this.onUpdateExternalName.bind(this)}
+                value={this.props.tag.internalName}
+                onChange={this.onUpdateInternalName.bind(this)}
                 disabled={!this.props.tagEditable}/>
             </div>
           </div>

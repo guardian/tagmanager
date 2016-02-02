@@ -29,6 +29,7 @@ case class CreateTagCommand(
                       contributorInformation: Option[ContributorInformation] = None,
                       publicationInformation: Option[PublicationInformation] = None,
                       isMicrosite: Boolean,
+                      capiSectionId: Option[String] = None,
                       preCalculatedPath: Option[String] = None //This is used so path isn't calculated
 
                            ) extends Command {
@@ -64,7 +65,8 @@ case class CreateTagCommand(
       podcastMetadata = podcastMetadata,
       contributorInformation = contributorInformation,
       publicationInformation = publicationInformation,
-      isMicrosite = isMicrosite
+      isMicrosite = isMicrosite,
+      capiSectionId = capiSectionId
     )
     
     val result = TagRepository.upsertTag(tag)
@@ -97,6 +99,7 @@ object CreateTagCommand {
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
       (JsPath \ "isMicrosite").format[Boolean] and
+      (JsPath \ "capiSectionId").formatNullable[String] and
       (JsPath \ "preCalculatedPath").formatNullable[String]
     )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
 }

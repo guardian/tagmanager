@@ -118,9 +118,11 @@ class TagDisplay extends React.Component {
               {this.renderDeleteButton()}
             </div>
             <div className="tag__column">
+              <div className="tag__column--header">Relationships</div>
               <TagContext tag={this.props.tag} updateTag={this.props.tagActions.updateTag} referenceTypes={this.props.referenceTypes} tagEditable={this.props.tagEditable}/>
             </div>
             <div className="tag__column">
+              <div className="tag__column--header">Usage</div>
               <CapiStats tag={this.props.tag} config={this.props.config} />
               <JobStatus tagId={this.props.tag.id} config={this.props.config}/>
               <TagAudit tagId={this.props.tag.id} saveState={this.props.saveState}/>

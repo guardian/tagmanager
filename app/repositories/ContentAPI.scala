@@ -47,9 +47,31 @@ object ContentAPI {
     }
   }
 
-  def countContentWithTag(apiTagId: String) = {
-    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(1))
-    Await.result(response.map(_.total), 5 seconds)
+  @tailrec
+  def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
+    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page).showFields("internalComposerCode"))
+
+    val resultPage = Await.result(response, 5 seconds)
+
+    val newCount = count + resultPage.results.count((result) => {
+      result.fields match {
+        case Some(fields) => {
+          fields.internalComposerCode match {
+            case Some(_) => true
+            case None => false
+          }
+        }
+        case None => false
+      }
+    })
+
+    if (page >= resultPage.pages) {
+      newCount
+    } else {
+      Logger.debug(s"Found ${count + newCount} pieces of content so far...")
+      countContentWithTag(apiTagId, page + 1, newCount)
+    }
+
   }
 
 
