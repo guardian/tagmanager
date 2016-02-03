@@ -15,7 +15,7 @@ case class Sponsorship (
   status: String,
   sponsorshipType: String,
   sponsorName: String,
-  sponsorLogo: String,
+  sponsorLogo: Image,
   sponsorLink: String,
   tag: Option[Long],
   section: Option[Long],
@@ -34,7 +34,7 @@ object Sponsorship {
       (JsPath \ "status").format[String] and
       (JsPath \ "sponsorshipType").format[String] and
       (JsPath \ "sponsorName").format[String] and
-      (JsPath \ "sponsorLogo").format[String] and
+      (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
       (JsPath \ "tag").formatNullable[Long] and
       (JsPath \ "section").formatNullable[Long] and
