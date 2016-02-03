@@ -23,14 +23,12 @@ export const tone = {
 
 export const contentType = {
   name: 'ContentType',
-  displayName: 'Content Type',
-  pathPrefix: 'type'
+  displayName: 'Content Type'
 };
 
 export const publication = {
   name: 'Publication',
-  displayName: 'Publication',
-  pathPrefix: 'publication'
+  displayName: 'Publication'
 };
 
 export const newspaperBook = {
