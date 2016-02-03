@@ -1,4 +1,5 @@
 import React from 'react';
+import R from 'ramda';
 import SectionSelect from '../utils/SectionSelect.react';
 import TagSelect from '../utils/TagSelect.js';
 
@@ -16,9 +17,7 @@ export default class TargetingEdit extends React.Component {
 
   onUpdateSection(e) {
     const sectionId = parseInt(e.target.value, 10);
-    const section = this.props.sections.find( function(element) {
-      return element.id === sectionId;
-    });
+    const section = R.find(R.propEq('id', sectionId))(this.props.sections);
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
       section: section
     }));
