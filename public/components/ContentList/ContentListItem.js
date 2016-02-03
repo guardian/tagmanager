@@ -48,7 +48,9 @@ export default class ContentListItem extends React.Component {
             </td>
             <td>{this.props.content.type}</td>
             <td>{this.props.content.webTitle}</td>
-            <td>{moment(this.props.content.webPublicationDate).format('DD/MM/YYYY')}</td>
+            <td>
+              {this.props.content.fields && this.props.content.fields.isLive === "false" ? "Not Published" : moment(this.props.content.webPublicationDate).format('DD/MM/YYYY')}
+            </td>
             <td>{this.props.content.id}</td>
             <td>
               {this.renderTags(this.props.content)}

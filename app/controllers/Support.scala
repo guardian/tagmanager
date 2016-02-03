@@ -31,7 +31,7 @@ object Support extends Controller with PanDomainAuthActions {
 
     resp.code match {
       case 200 => {
-        Ok(resp.body.string)
+        Ok(resp.body.string).as(JSON)
       }
       case c => {
         BadRequest
