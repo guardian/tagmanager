@@ -14,7 +14,7 @@ case class TagEntity(
   internalName: String,
   externalName: String,
   slug: String,
-  section: Option[SectionEntity],
+  section: SectionEntity,
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
   references: List[Reference] = Nil
 )
@@ -34,11 +34,16 @@ object TagEntity {
       )
   }
 
-  def getTagSection(id: Option[Long]): Option[SectionEntity] = {
-    id.map(sectionId =>
+  def getTagSection(id: Option[Long]): SectionEntity = {
+    val section = id.map(sectionId =>
       SectionRepository.getSection(sectionId).map(section =>
         SectionEntity(section))
       ).flatten
+
+    // else use the global section
+    val globalSection = SectionEntity(281, "Global", "global", "global")
+
+    section getOrElse globalSection
   }
 
 
@@ -49,7 +54,7 @@ object TagEntity {
       "internalName" -> JsString(te.internalName),
       "externalName" -> JsString(te.externalName),
       "slug" -> JsString(te.slug),
-      "section" -> te.section.map(Json.toJson(_)).getOrElse(JsNull),
+      "section" -> Json.toJson(te.section),
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
       "externalReferences" -> JsArray(te.references.map(Json.toJson(_)))
 
