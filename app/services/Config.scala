@@ -68,6 +68,7 @@ sealed trait Config {
   }
 
   lazy val permissionsStage: String = readTag("Stage") match {
+    case Some("DEV") =>  "CODE"
     case Some(stage) =>  stage
     case _           =>  "CODE"
   }
