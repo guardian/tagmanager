@@ -34,7 +34,7 @@ export default [
     <Route path="/" component={ReactApp}>
       <Route name="tag" path="/tag/create" component={TagCreate} />
       <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} />
-      <Route name="batch" path="/batch" component={BatchTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+      <Route name="batch" path="/batch" component={BatchTag}/>
       <Route name="mapping" path="/mapping" component={MappingManager} />
       <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="audit" path="/audit" component={Audit} />

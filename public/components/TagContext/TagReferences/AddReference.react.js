@@ -47,8 +47,11 @@ export default class AddReference extends React.Component {
         return;
       }
 
+      const refType = this.props.referenceTypes.filter((r) => r.typeName === this.state.newType)[0];
+
       this.props.onAddReference({
-        type: this.state.newType,
+        type: refType.typeName,
+        capiType: refType.capiType,
         value: this.state.newValue
       });
 
