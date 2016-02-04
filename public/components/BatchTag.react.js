@@ -40,7 +40,7 @@ export class BatchTag extends React.Component {
         'page-size': CAPI_PAGE_SIZE
       });
 
-      this.props.capiActions.searchCapi(searchString, params);
+      this.props.capiActions.searchPreviewCapi(searchString, params);
     }
 
     applyFilters(filters) {
