@@ -2,6 +2,7 @@ import debounce from 'lodash.debounce';
 import {searchContent} from '../../util/capiClient';
 
 export const CAPI_CLEAR_PAGES = 'CAPI_CLEAR_PAGES';
+export const CAPI_SWITCH_PAGE = 'CAPI_SWITCH_PAGE';
 export const CAPI_SEARCH_REQUEST = 'CAPI_SEARCH_REQUEST';
 export const CAPI_SEARCH_RECEIVE = 'CAPI_SEARCH_RECEIVE';
 export const CAPI_SEARCH_ERROR = 'CAPI_SEARCH_ERROR';
@@ -12,6 +13,14 @@ function capiClearPages() {
         type:               CAPI_CLEAR_PAGES,
         receivedAt:         Date.now()
     }
+}
+
+function switchCapiPage(page) {
+    return {
+        type: CAPI_SWITCH_PAGE,
+        page: page
+    }
+
 }
 
 function requestCapiSearch(searchTerm) {
@@ -55,6 +64,12 @@ export function searchCapi(searchString, params) {
         dispatch(requestCapiSearch(searchString));
         return _debouncedSearch(dispatch, searchString, params);
     };
+}
+
+export function switchPage(page) {
+    return dispatch => {
+        dispatch(switchCapiPage(page));
+    }
 }
 
 export function clearPages() {

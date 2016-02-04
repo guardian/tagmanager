@@ -10,7 +10,7 @@ import {SECTION_SAVE_REQUEST, SECTION_SAVE_RECEIVE, SECTION_SAVE_ERROR} from '..
 import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPES_GET_ERROR} from '../actions/ReferenceTypeActions/getReferenceTypes';
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {SECTION_POPULATE_BLANK} from '../actions/SectionsActions/createSection';
-import {CAPI_CLEAR_PAGES, CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
+import {CAPI_CLEAR_PAGES, CAPI_SWITCH_PAGE, CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
 
@@ -210,6 +210,13 @@ export default function tag(state = {
           count: 0,
           pageRequestCount: 0
       })
+    });
+
+  case CAPI_SWITCH_PAGE:
+    return Object.assign({}, state, {
+        capiSearch: Object.assign({}, state.capiSearch, {
+            currentPage: action.page
+        })
     });
 
   case CAPI_SEARCH_REQUEST:
