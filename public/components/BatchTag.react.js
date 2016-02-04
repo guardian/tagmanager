@@ -1,11 +1,13 @@
 import React from 'react';
 import ContentList from './ContentList/ContentList';
+import PageNavigator from './utils/PageNavigator.react';
 import BatchTagStatus from './BatchTagStatus/BatchTagStatus';
 import tagManagerApi from '../util/tagManagerApi';
 import BatchFilters from './BatchTag/BatchFilters.react';
 import R from 'ramda';
 
-const CAPI_PAGE_SIZE = 200;
+const CAPI_PAGE_SIZE = 10;
+const PAGE_NAV_SPAN = 5;
 
 export class BatchTag extends React.Component {
 
@@ -31,13 +33,16 @@ export class BatchTag extends React.Component {
       this.searchContent(e.target.value);
     }
 
-    searchContent(searchString, filters) {
+    searchContent(searchString, filters, page = 1) {
+      this.props.capiActions.clearPages();
+      this.state.selectedContent = [];
 
       const applyFilters = this.state.showFilters ? filters || this.props.capiSearch.filters : {};
 
       const params = Object.assign({}, applyFilters, {
         'show-tags': 'all',
-        'page-size': CAPI_PAGE_SIZE
+        'page-size': CAPI_PAGE_SIZE,
+        'page': page
       });
 
       this.props.capiActions.searchCapi(searchString, params);
@@ -69,25 +74,28 @@ export class BatchTag extends React.Component {
       }
     }
 
-    selectAllContent() {
+    selectAllContentFromPage(page) {
       this.setState({
-        selectedContent: this.props.capiSearch.results.map(content => content.id)
+          selectedContent: R.union(this.state.selectedContent, page.map(c => c.id))
       });
     }
 
-    deselectAllContent() {
+    deselectAllContentFromPage(page) {
+      var newContent = R.difference(this.state.selectedContent, page.map(c => c.id));
+
       this.setState({
-        selectedContent: []
+              selectedContent: newContent
       });
     }
 
     toggleAllSelected() {
-      const notSelectedResults = R.difference(this.props.capiSearch.results.map((content) => content.id), this.state.selectedContent);
+      const currentPage = this.props.capiSearch.pages[this.props.capiSearch.currentPage];
+      const notSelectedResults = R.difference(currentPage.map((content) => content.id), this.state.selectedContent);
 
       if (notSelectedResults.length) {
-        this.selectAllContent();
+        this.selectAllContentFromPage(currentPage);
       } else {
-        this.deselectAllContent();
+        this.deselectAllContentFromPage(currentPage);
       }
     }
 
@@ -110,22 +118,8 @@ export class BatchTag extends React.Component {
       });
     }
 
-    renderTooManyResults() {
-
-      if (!this.props.capiSearch.count || this.props.capiSearch.count <= CAPI_PAGE_SIZE) {
-        return false;
-      }
-
-      return (
-        <div className="batch-tag__error">
-          Over {CAPI_PAGE_SIZE} results found, please refine the search.
-        </div>
-      );
-    }
-
     renderSearchStatus() {
-
-      if (this.props.capiSearch.fetchState === 'FETCH_STATE_DIRTY') {
+      if (this.props.capiSearch.pageRequestCount > 0) {
         return (
           <div className="batch-tag__info">
             Searching...
@@ -133,7 +127,7 @@ export class BatchTag extends React.Component {
         );
       }
 
-      if (this.props.capiSearch.fetchState === 'FETCH_STATE_CLEAN' && this.props.capiSearch.results.length === 0) {
+      if (this.props.capiSearch.pageRequestCount === 0 && this.props.capiSearch.pages[1].length === 0) {
         return (
           <div className="batch-tag__error">
             No results found
@@ -144,8 +138,47 @@ export class BatchTag extends React.Component {
       return false;
     }
 
-    render () {
+    pageSelectCallback(page) {
+      const applyFilters = this.state.showFilters ? this.props.capiSearch.filters : {};
 
+      const params = Object.assign({}, applyFilters, {
+        'show-tags': 'all',
+        'page-size': CAPI_PAGE_SIZE,
+        'page': page
+      });
+
+      this.props.capiActions.searchCapi(this.props.capiSearch.searchTerm, params);
+    }
+
+    renderPageNavigator() {
+        var count = this.props.capiSearch.count;
+        if (count > 0 && count > CAPI_PAGE_SIZE) {
+            return (<PageNavigator
+                        pageSelectCallback={this.pageSelectCallback.bind(this)}
+                        currentPage={this.props.capiSearch.currentPage}
+                        pageSpan={PAGE_NAV_SPAN}
+                        lastPage={Math.ceil(this.props.capiSearch.count / CAPI_PAGE_SIZE)}/>);
+        }
+
+        return false;
+    }
+
+    renderContent() {
+        if (this.props.capiSearch.count > 0) {
+            return (<div className="batch-tag__content">
+                  <ContentList
+                    content={this.props.capiSearch.pages[this.props.capiSearch.currentPage]}
+                    selectedContent={this.state.selectedContent}
+                    contentClicked={this.toggleContentSelected.bind(this)}
+                    toggleAllSelected={this.toggleAllSelected.bind(this)}
+                   />
+                   </div>);
+        }
+
+        return false;
+    }
+
+    render () {
         return (
             <div className="batch-tag">
                 <div className="batch-tag__filters">
@@ -159,15 +192,12 @@ export class BatchTag extends React.Component {
                 </div>
                 {this.state.showFilters ? <BatchFilters filters={this.props.capiSearch.filters || {}} updateFilters={this.applyFilters.bind(this)} sections={this.props.sections}/> : false}
                 {this.renderSearchStatus()}
-                {this.renderTooManyResults()}
-                <div className="batch-tag__content">
-                  <ContentList
-                    content={this.props.capiSearch.results}
-                    selectedContent={this.state.selectedContent}
-                    contentClicked={this.toggleContentSelected.bind(this)}
-                    toggleAllSelected={this.toggleAllSelected.bind(this)}
-                   />
-                </div>
+
+                {this.renderPageNavigator()}
+                {this.renderContent()}
+                {this.renderPageNavigator()}
+
+
                 <div className="batch-tag__status">
                   <BatchTagStatus
                     selectedContent={this.state.selectedContent}

@@ -1,10 +1,18 @@
 import debounce from 'lodash.debounce';
 import {searchContent} from '../../util/capiClient';
 
+export const CAPI_CLEAR_PAGES = 'CAPI_CLEAR_PAGES';
 export const CAPI_SEARCH_REQUEST = 'CAPI_SEARCH_REQUEST';
 export const CAPI_SEARCH_RECEIVE = 'CAPI_SEARCH_RECEIVE';
 export const CAPI_SEARCH_ERROR = 'CAPI_SEARCH_ERROR';
 export const CAPI_FILTERS_UPDATE = 'CAPI_FILTERS_UPDATE';
+
+function capiClearPages() {
+    return {
+        type:               CAPI_CLEAR_PAGES,
+        receivedAt:         Date.now()
+    }
+}
 
 function requestCapiSearch(searchTerm) {
     return {
@@ -19,6 +27,7 @@ function recieveCapiSearch(res, searchTerm) {
         type:               CAPI_SEARCH_RECEIVE,
         results:            res.response.results,
         resultsCount:       res.response.total,
+        page:               res.response.currentPage,
         searchTerm:         searchTerm,
         receivedAt:         Date.now()
     };
@@ -45,6 +54,12 @@ export function searchCapi(searchString, params) {
     return dispatch => {
         dispatch(requestCapiSearch(searchString));
         return _debouncedSearch(dispatch, searchString, params);
+    };
+}
+
+export function clearPages() {
+    return dispatch => {
+        dispatch(capiClearPages())
     };
 }
 
