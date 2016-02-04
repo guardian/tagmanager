@@ -55,6 +55,11 @@ export default class MappingTable extends React.Component {
 
       this.props.tags.forEach((tag) => {
         tag.externalReferences.forEach((reference, i) => {
+
+          if (this.props.selectedType !== reference.type) {
+            return
+          }
+
           mappings.push({
             tagId: tag.id,
             tagInternalName: tag.internalName,
