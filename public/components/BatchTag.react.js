@@ -45,7 +45,7 @@ export class BatchTag extends React.Component {
         'page': page
       });
 
-      this.props.capiActions.searchCapi(searchString, params);
+      this.props.capiActions.searchPreviewCapi(searchString, params);
     }
 
     applyFilters(filters) {

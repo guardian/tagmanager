@@ -5,8 +5,8 @@ import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Reference => ThriftReference}
 import helpers.XmlHelpers._
 
-case class Reference(`type`: String, value: String) {
-  def asThrift = ThriftReference(`type`, value)
+case class Reference(`type`: String, value: String, capiType: Option[String]) {
+  def asThrift = ThriftReference(`type`, value, capiType)
 
 
   def asExportedXml = {
@@ -25,9 +25,11 @@ object Reference {
 
   implicit val referenceFormat: Format[Reference] = (
       (JsPath \ "type").format[String] and
-      (JsPath \ "value").format[String]
+      (JsPath \ "value").format[String] and
+        (JsPath \ "capiType").formatNullable[String]
+
     )(Reference.apply, unlift(Reference.unapply))
 
-  def apply(thriftReference: ThriftReference): Reference = Reference(thriftReference.`type`, thriftReference.value)
+  def apply(thriftReference: ThriftReference): Reference = Reference(thriftReference.`type`, thriftReference.value, thriftReference.capiType)
 
 }

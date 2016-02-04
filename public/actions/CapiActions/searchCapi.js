@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import {searchContent} from '../../util/capiClient';
+import {searchContent, searchPreviewContent} from '../../util/capiClient';
 
 export const CAPI_CLEAR_PAGES = 'CAPI_CLEAR_PAGES';
 export const CAPI_SWITCH_PAGE = 'CAPI_SWITCH_PAGE';
@@ -57,7 +57,14 @@ function _searchFn (dispatch, searchString, params) {
         .fail(error => dispatch(errorCapiSearch(error)));
 }
 
+function _searchPreviewFn (dispatch, searchString, params) {
+    return searchPreviewContent(searchString, params)
+        .then(res => dispatch(recieveCapiSearch(res, searchString)))
+        .fail(error => dispatch(errorCapiSearch(error)));
+}
+
 const _debouncedSearch = debounce(_searchFn, 500);
+const _debouncedPreviewSearch = debounce(_searchPreviewFn, 500);
 
 export function searchCapi(searchString, params) {
     return dispatch => {
@@ -75,6 +82,13 @@ export function switchPage(page) {
 export function clearPages() {
     return dispatch => {
         dispatch(capiClearPages())
+    };
+}
+
+export function searchPreviewCapi(searchString, params) {
+    return dispatch => {
+        dispatch(requestCapiSearch(searchString));
+        return _debouncedPreviewSearch(dispatch, searchString, params);
     };
 }
 
