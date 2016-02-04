@@ -45,7 +45,7 @@ object Support extends Controller with PanDomainAuthActions {
             )
           ))
           Ok(Json.toJson(image))
-        }.getOrElse(NotFound)
+        }.getOrElse(BadRequest("failed to upload image"))
       }
       case _ => BadRequest("sponsorship logos must be 140 x 90")
     }

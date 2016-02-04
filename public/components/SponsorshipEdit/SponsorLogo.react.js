@@ -6,6 +6,10 @@ export default class SponsorEdit extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      errorMessage: undefined
+    };
   }
 
   removeImage() {
@@ -13,7 +17,13 @@ export default class SponsorEdit extends React.Component {
   }
 
   fileUploaded(e) {
-    this.props.onImageUpdated(JSON.parse(e.target.response));
+    const resp = e.target;
+    console.log(e);
+    if(resp.status == 200) {
+      this.props.onImageUpdated(JSON.parse(e.target.response));
+    } else {
+      this.setState({errorMessage: resp.responseText});
+    }
   }
 
   onDrop(files) {
@@ -26,13 +36,24 @@ export default class SponsorEdit extends React.Component {
     oReq.send(file);
   }
 
+  errorDiv() {
+    if (this.state.errorMessage) {
+      return (<div>{this.state.errorMessage}</div>);
+    } else {
+      return false;
+    }
+  }
+
   render () {
 
     if (!this.props.logo) {
       return (
-        <Dropzone onDrop={this.onDrop.bind(this)} multiple={false} >
-          <div>Drop a logo here, or click to select file.</div>
-        </Dropzone>
+        <div className="tag-edit__field">
+          <Dropzone onDrop={this.onDrop.bind(this)} multiple={false} >
+            <div>Drop a logo here, or click to select file.</div>
+          </Dropzone>
+          {this.errorDiv()}
+        </div>
       );
     }
 
