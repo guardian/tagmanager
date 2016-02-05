@@ -1,10 +1,13 @@
 package controllers
 
+import helpers.XmlHelpers._
 import play.api.mvc.{Action, Controller}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import model.{Tag, Section, Delete, Merge}
+import model.{Tag, Section, Delete, Merge, Create}
 import repositories._
+
+import scala.xml.Node
 
 object ReadOnlyApi extends Controller {
   def getTagsAsXml() = Action {
@@ -66,6 +69,29 @@ object ReadOnlyApi extends Controller {
         {deletes.map(x => x.asExportedXml)}
       </deletes>
     )
+  }
+
+  def createsAsXml(since: Long) = Action {
+    val audits = TagAuditRepository.getCreates.map { audit =>
+      Create(audit.tagId, audit.date)
+    }.filter(_.date.getMillis > since).sortBy(_.date.getMillis)
+
+
+    val beginning = audits.headOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+    val end =  audits.lastOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+
+    val dateRange: Option[String] = (beginning, end) match {
+      case (Some(beginning), Some(end)) => Some(s"${beginning}/${end}")
+      case (Some(beginning), _) => Some(s"${beginning}/${beginning}")
+      case (_, Some(end)) => Some(s"${end}/${end}")
+      case (_ , _) => None
+    }
+
+    val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
+    val root = createElem("tags") % createAttribute("dateRange", dateRange)
+
+    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))
+    Ok(ret)
   }
 
   def modifiedAsXml(since: Long) = Action {
