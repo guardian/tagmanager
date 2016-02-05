@@ -202,10 +202,9 @@ export default class TagNameEdit extends React.Component {
             <div className="tag-edit__linked-field__input-container">
               <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : this.props.tag.path}</span>
               {!this.props.pathLocked ? <input type="text"
-                                          disabled={this.props.pathLocked}
                                           value={this.props.tag.slug}
                                           onChange={this.onUpdateSlug.bind(this)}
-                                          disabled={!this.props.tagEditable}/> : false}
+                                          disabled={this.props.pathLocked || !this.props.tagEditable}/> : false}
             </div>
           </div>
         </div>
