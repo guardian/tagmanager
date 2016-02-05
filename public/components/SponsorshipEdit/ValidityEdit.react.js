@@ -14,13 +14,13 @@ export default class ValidityEdit extends React.Component {
 
   setValidFrom(date) {
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      validFrom: moment(date).unix()
+      validFrom: moment(date).valueOf()
     }));
   }
 
   setValidTo(date) {
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      validTo: moment(date).unix()
+      validTo: moment(date).valueOf()
     }));
   }
 
