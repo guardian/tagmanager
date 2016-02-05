@@ -145,4 +145,8 @@ object TagLookupCache {
   def search(tagSearchCriteria: TagSearchCriteria) = {
     tagSearchCriteria.execute(allTags.get())
   }
+
+  def getTag(tagId: Long): Option[Tag] = {
+    allTags.get().find(_.id == tagId)
+  }
 }

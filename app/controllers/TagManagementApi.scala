@@ -6,8 +6,7 @@ import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
 import permissions.Permissions
 import play.api.Logger
-import model.Tag
-import model.Section
+import model.{DenormalisedSponsorship, Tag, Section}
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
@@ -189,7 +188,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def getSponsorship(id: Long) = APIAuthAction { req =>
-    Ok(Json.toJson(SponsorshipRepository.getSponsorship(id)))
+    Ok(Json.toJson(SponsorshipRepository.getSponsorship(id).map(DenormalisedSponsorship(_))))
   }
 
   def createSponsorship = APIAuthAction { req =>
