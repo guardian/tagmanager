@@ -37,5 +37,7 @@ object TagAuditRepository {
   private val getType: String => List[TagAudit] = operation => loadAllAudits.filter(_.operation == operation)
   val getMerges: List[TagAudit] = getType("merged")
   val getDeletes: List[TagAudit] = getType("deleted")
+  val getCreates: List[TagAudit] = getType("created")
+
 
 }

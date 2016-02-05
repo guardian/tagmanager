@@ -75,8 +75,8 @@ case class Tag(
     val internalName = createAttribute("internalname", Some(this.internalName))
     val urlWords = createAttribute("words-for-url", Some(this.slug))
     val sectionId = createAttribute("section-id", Some(this.section.getOrElse(281))) //R2 Global Id
-    val sectionName = createAttribute("section", Some(section.map(_.map(_.name)).getOrElse("Global")))
-    val sectionUrl = createAttribute("section-words-for-url", Some(section.map(_.map(_.wordsForUrl)).getOrElse("global")))
+    val sectionName = createAttribute("section", Some(section.map(_.map(_.name).getOrElse(None)).getOrElse("Global")))
+    val sectionUrl = createAttribute("section-words-for-url", Some(section.map(_.map(_.wordsForUrl).getOrElse(None)).getOrElse("global")))
     val `type` = createAttribute("type", Some(oldType))
     val cmsPrefix = createAttribute("section-cms-path-prefix", Some("/Guardian/" + section.map(_.map(_.path).getOrElse("")).getOrElse("global")))
 
