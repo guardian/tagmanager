@@ -19,7 +19,8 @@ case class Section(
                     pageId: Long,
                     editions: Map[String, EditionalisedPage] = Map(),
                     discriminator: Option[String] = None,
-                    isMicrosite: Boolean
+                    isMicrosite: Boolean,
+                    activeSponsorships: List[Long] = Nil
                     ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -61,7 +62,8 @@ object Section {
       (JsPath \ "pageId").format[Long] and
       (JsPath \ "editions").formatNullable[Map[String, EditionalisedPage]].inmap[Map[String, EditionalisedPage]](_.getOrElse(Map()), Some(_)) and
       (JsPath \ "discriminator").formatNullable[String] and
-      (JsPath \ "isMicrosite").format[Boolean]
+      (JsPath \ "isMicrosite").format[Boolean] and
+      (JsPath \ "activeSponsorships").formatNullable[List[Long]].inmap[List[Long]](_.getOrElse(Nil), Some(_))
     )(Section.apply, unlift(Section.unapply))
 
   def fromItem(item: Item) = try{

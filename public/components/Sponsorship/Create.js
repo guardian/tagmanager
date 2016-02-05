@@ -29,7 +29,7 @@ class SponsorshipCreate extends React.Component {
       return this.props.sponsorship &&
         this.props.sponsorship.sponsorName &&
         this.props.sponsorship.sponsorLink &&
-        //this.props.sponsorship.sponsorLogo &&
+        this.props.sponsorship.sponsorLogo &&
         (this.props.sponsorship.tag || this.props.sponsorship.section)
     }
 

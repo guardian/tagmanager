@@ -125,18 +125,28 @@ export default {
   },
 
   saveSponsorship: (id, sponsorship) => {
+    const command = Object.assign({}, sponsorship, {
+      tag: sponsorship.tag ? sponsorship.tag.id : undefined,
+      section: sponsorship.section ? sponsorship.section.id : undefined
+    });
+
     return Reqwest({
       url: '/api/sponsorship/' + id,
-      data: JSON.stringify(sponsorship),
+      data: JSON.stringify(command),
       contentType: 'application/json',
       method: 'put'
     });
   },
 
   createSponsorship: (sponsorship) => {
+    const command = Object.assign({}, sponsorship, {
+      tag: sponsorship.tag ? sponsorship.tag.id : undefined,
+      section: sponsorship.section ? sponsorship.section.id : undefined
+    });
+
     return Reqwest({
       url: '/api/sponsorship',
-      data: JSON.stringify(sponsorship),
+      data: JSON.stringify(command),
       contentType: 'application/json',
       method: 'post'
     });

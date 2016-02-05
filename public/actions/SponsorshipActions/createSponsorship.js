@@ -15,6 +15,7 @@ function requestSponsorshipCreate() {
 
 function recieveSponsorshipCreate(sponsorship) {
 
+    history.replaceState(null, '/sponsorship/' + sponsorship.id);
     return {
         type:           SPONSORSHIP_CREATE_RECEIVE,
         sponsorship:    sponsorship,
@@ -43,7 +44,7 @@ export function createSponsorship(sponsorship) {
 export function populateEmptySponsorship() {
   return {
       type:         SPONSORSHIP_POPULATE_BLANK,
-      sponsorship:  Object.assign({}, {}),
+      sponsorship:  Object.assign({}, {sponsorshipType: 'sponsorship'}),
       receivedAt:   Date.now()
   };
 }

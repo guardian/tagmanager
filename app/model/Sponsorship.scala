@@ -19,7 +19,7 @@ case class Sponsorship (
   sponsorLink: String,
   tag: Option[Long],
   section: Option[Long],
-  targetting: Option[SponsorshipTargeting]) {
+  targeting: Option[SponsorshipTargeting]) {
 
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -38,7 +38,7 @@ object Sponsorship {
       (JsPath \ "sponsorLink").format[String] and
       (JsPath \ "tag").formatNullable[Long] and
       (JsPath \ "section").formatNullable[Long] and
-      (JsPath \ "targetting").formatNullable[SponsorshipTargeting]
+      (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
 
     )(Sponsorship.apply, unlift(Sponsorship.unapply))
 
