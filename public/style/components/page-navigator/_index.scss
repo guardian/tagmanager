@@ -1,0 +1,18 @@
+.page-navigator {
+    margin: 10px;
+    text-align: center;
+}
+
+.page-navigator__page,
+.page-navigator__selected {
+    margin-right: 2px;
+    margin-left: 2px;
+
+    padding: 5px;
+    background-color: $c-grey-100;
+    border: 1px solid $c-grey-300;
+}
+
+.page-navigator__selected {
+    background-color: $c-grey-400;
+}
