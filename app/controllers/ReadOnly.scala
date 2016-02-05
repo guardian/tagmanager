@@ -12,7 +12,7 @@ import scala.xml.Node
 object ReadOnlyApi extends Controller {
   def getTagsAsXml() = Action {
     val tags = TagLookupCache.allTags
-    val xmlTags = tags.get.map(_.asExportedXml)
+    val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml)
     Ok(<tags>
       {xmlTags.seq.map { x => x }}
       </tags>)
