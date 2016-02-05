@@ -151,7 +151,7 @@ export class BatchTag extends React.Component {
         // If we already have the page just used the cached version
         this.props.capiActions.switchPage(page);
       } else {
-        this.props.capiActions.searchCapi(this.props.capiSearch.searchTerm, params);
+        this.props.capiActions.searchPreviewCapi(this.props.capiSearch.searchTerm, params);
       }
     }
 
