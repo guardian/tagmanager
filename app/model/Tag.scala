@@ -6,7 +6,6 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
 import helpers.XmlHelpers._
-//import repositories.SectionLookupCache
 import repositories.SectionLookupCache
 import scala.util.control.NonFatal
 import scala.xml.Node
