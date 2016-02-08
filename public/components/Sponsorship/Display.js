@@ -44,6 +44,10 @@ class SponsorshipDisplay extends React.Component {
             <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
           </div>
           <div className="sponsorship-edit__column">
+            <div className="tag-edit__input-group">
+              <label className="tag-edit__input-group__header">Status</label>
+              <div className="tag-edit__field" >{this.props.sponsorship.status}</div>
+            </div>
             <ValidityEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
           </div>
           <div className="sponsorship-edit__column">

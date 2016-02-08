@@ -11,7 +11,7 @@ function requestSponsorshipSave() {
     };
 }
 
-function recieveSponsorshipSave(sponsorship) {
+function receiveSponsorshipSave(sponsorship) {
     return {
         type:         SPONSORSHIP_SAVE_RECEIVE,
         sponsorship:  sponsorship,
@@ -32,7 +32,7 @@ export function saveSponsorship(sponsorship) {
     return dispatch => {
         dispatch(requestSponsorshipSave());
         return tagManagerApi.saveSponsorship(sponsorship.id, sponsorship)
-            .then(res => dispatch(recieveSponsorshipSave(res)))
+            .then(res => dispatch(receiveSponsorshipSave(res)))
             .fail(error => dispatch(errorSponsorshipSave(error)));
     };
 }
