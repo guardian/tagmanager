@@ -22,7 +22,7 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,
       new DefaultAWSCredentialsProviderChain,
-      s"$appName-worker");
+      s"$appName-$streamName-worker");
 
   kinesisClientLibConfiguration
     .withRegionName(AWS.region.getName)
