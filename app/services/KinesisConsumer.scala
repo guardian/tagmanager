@@ -30,7 +30,7 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
     .withInitialPositionInStream(InitialPositionInStream.LATEST)
 
   val worker = new Worker.Builder()
-    .recordProcessorFactory(new KinesisProcessorConsumerFactory(appName, processor))
+    .recordProcessorFactory(new KinesisProcessorConsumerFactory(appName + "-" + streamName, processor))
     .config(kinesisClientLibConfiguration)
     .build()
 
