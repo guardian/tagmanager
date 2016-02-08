@@ -74,6 +74,7 @@ export class MappingManager extends React.Component {
               saveTag={this.saveTag.bind(this)}
             />
             <MappingTable
+              selectedType={this.state.selectedReferenceType}
               referenceTypes={this.props.referenceTypes}
               tags={this.state.tags}
               updateTag={this.updateTag.bind(this)}

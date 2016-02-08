@@ -18,6 +18,12 @@ function getCapiUrl() {
   return store.getState().config.capiUrl + '/search?api-key=' + store.getState().config.capiKey;
 }
 
+
+function getCapiPreviewUrl() {
+  const store = getStore();
+  return store.getState().config.capiPreviewUrl + '/search?api-key=' + store.getState().config.capiKey;
+}
+
 export function getByTag (tag, params) {
     const query = paramsObjectToQuery(params);
 
@@ -34,6 +40,17 @@ export function searchContent (searchString, params) {
 
     return Reqwest({
       url: getCapiUrl() + '&q=' + searchString.replace(' ', ' AND ')  + '&' + query,
+      contentType: 'application/json',
+      crossOrigin: true,
+      method: 'get'
+    });
+}
+
+export function searchPreviewContent (searchString, params) {
+    const query = paramsObjectToQuery(params);
+
+    return Reqwest({
+      url: getCapiPreviewUrl() + '&q=' + searchString.replace(' ', ' AND ')  + '&' + query + '&show-fields=isLive',
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'

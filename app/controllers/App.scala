@@ -41,7 +41,15 @@ object App extends Controller with PanDomainAuthActions {
         }
       }
 
-      val clientConfig = ClientConfig(Config().capiUrl, Config().capiKey, allTags, permittedTags.toList, permissions, "/reauth")
+      val clientConfig = ClientConfig(
+        capiUrl = Config().capiUrl,
+        capiPreviewUrl = "/support/previewCapi",
+        capiKey = Config().capiKey,
+        tagTypes = allTags,
+        permittedTagTypes = permittedTags.toList,
+        permissions = permissions,
+        reauthUrl = "/reauth"
+      )
 
       Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
     }

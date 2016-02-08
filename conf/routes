@@ -78,6 +78,7 @@ GET        /sections/export/all           controllers.ReadOnlyApi.getSectionsAsX
 GET       /tools/newspaperintegration/tags/modified/:since          controllers.ReadOnlyApi.modifiedAsXml(since: Long)
 GET       /tools/newspaperintegration/tags/merges/:since            controllers.ReadOnlyApi.mergesAsXml(since: Long)
 GET       /tools/newspaperintegration/tags/deleted/:since           controllers.ReadOnlyApi.deletesAsXml(since: Long)
+GET       /tools/newspaperintegration/tags/created/:since           controllers.ReadOnlyApi.createsAsXml(since: Long)
 
 
 GET        /hello                         controllers.App.hello
@@ -96,4 +97,5 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 # Support routes
 GET        /support/image-metadata        controllers.Support.imageMetadata(imageUrl: String)
 POST       /support/uploadLogo/:filename  controllers.Support.uploadLogo(filename: String)
+GET        /support/previewCapi/*path     controllers.Support.previewCapiProxy(path: String)
 

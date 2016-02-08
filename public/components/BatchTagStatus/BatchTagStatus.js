@@ -2,7 +2,8 @@ import React from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import TagSelect from '../utils/TagSelect';
 const modes = {
-  add: 'ADD_BATCH_MODE',
+  add_to_top: 'ADD_TOP_BATCH_MODE',
+  add_to_bottom: 'ADD_BOTTOM_BATCH_MODE',
   remove: 'REMOVE_BATCH_MODE'
 };
 
@@ -47,6 +48,10 @@ export default class BatchTagStatus extends React.Component {
       this.props.onAddTagToContentTop(this.state.selectedTag);
     }
 
+    addTagToContentBottom() {
+      this.props.onAddTagToContentBottom(this.state.selectedTag);
+    }
+
     renderNoMode() {
       const pluralContent = this.props.selectedContent.length > 1 ? 'pieces' : 'piece';
 
@@ -55,8 +60,11 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__info">
               {this.props.selectedContent.length} {pluralContent} selected
             </div>
-            <div className="batch-status__button" onClick={this.switchMode.bind(this, 'add')}>
-              Add tag
+            <div className="batch-status__button" onClick={this.switchMode.bind(this, 'add_to_top')}>
+              Add tag to top of tag list
+            </div>
+            <div className="batch-status__button" onClick={this.switchMode.bind(this, 'add_to_bottom')}>
+              Add tag to bottom of tag list
             </div>
             <div className="batch-status__button--remove" onClick={this.switchMode.bind(this, 'remove')}>
               Remove tag
@@ -65,18 +73,19 @@ export default class BatchTagStatus extends React.Component {
       );
     }
 
-    renderAddTag() {
+    renderAddTag(isAddTagToTopOfList) {
 
       if (this.state.selectedTag) {
 
         const pluralContent = this.props.selectedContent.length > 1 ? 'pieces' : 'piece';
+        const _addFn = isAddTagToTopOfList ? this.addTagToContentTop : this.addTagToContentBottom;
 
         return (
           <div className="batch-status__mode">
             <div className="batch-status__info">
-              Add "{this.state.selectedTag.internalName}" to {this.props.selectedContent.length} {pluralContent} of content?
+              Add "{this.state.selectedTag.internalName}" to {isAddTagToTopOfList ? 'top' : 'bottom'} of {this.props.selectedContent.length} {pluralContent} of content?
             </div>
-            <div className="batch-status__button" onClick={this.addTagToContentTop.bind(this)} >
+            <div className="batch-status__button" onClick={_addFn.bind(this)} >
               <i className="i-tick-green"></i> Confirm
             </div>
             <i className="i-cross" onClick={this.resetMode}></i>
@@ -128,8 +137,12 @@ export default class BatchTagStatus extends React.Component {
 
     renderMode() {
 
-      if (this.state.mode === modes.add) {
-        return this.renderAddTag();
+      if (this.state.mode === modes.add_to_top) {
+        return this.renderAddTag(true);
+      }
+
+      if (this.state.mode === modes.add_to_bottom) {
+        return this.renderAddTag(false);
       }
 
       if (this.state.mode === modes.remove) {

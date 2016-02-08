@@ -153,3 +153,17 @@ object Merge {
     Merge(audit.tagId, audit.date, audit.secondaryTagSummary)
   }
 }
+
+case class Create(
+                  tagId: Long,
+                  date: DateTime
+                ) {
+
+
+}
+
+object Create {
+  def apply(audit: TagAudit): Create = {
+    Create(audit.tagId, audit.date)
+  }
+}

@@ -14,7 +14,8 @@ import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPE
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {SECTION_POPULATE_BLANK} from '../actions/SectionsActions/createSection';
 import {SPONSORSHIP_POPULATE_BLANK} from '../actions/SponsorshipActions/createSponsorship';
-import {CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
+import {CAPI_CLEAR_PAGES, CAPI_SWITCH_PAGE, CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
+
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
 
@@ -24,11 +25,6 @@ export const saveState = {
   clean: 'SAVE_STATE_CLEAN',
   inprogress: 'SAVE_STATE_INPROGRESS',
   error: 'SAVE_STATE_ERROR'
-};
-
-const fetchState = {
-  dirty: 'FETCH_STATE_DIRTY',
-  clean: 'FETCH_STATE_CLEAN'
 };
 
 export default function tag(state = {
@@ -263,22 +259,45 @@ export default function tag(state = {
 
   //CAPI SEARCH
 
+  case CAPI_CLEAR_PAGES:
+    return Object.assign({}, state, {
+      capiSearch: Object.assign({}, state.capiSearch, {
+          pages: {},
+          count: 0,
+          pageRequestCount: 0
+      })
+    });
+
+  case CAPI_SWITCH_PAGE:
+    return Object.assign({}, state, {
+        capiSearch: Object.assign({}, state.capiSearch, {
+            currentPage: action.page
+        })
+    });
+
   case CAPI_SEARCH_REQUEST:
     return Object.assign({}, state, {
       capiSearch: Object.assign({}, state.capiSearch, {
         searchTerm: action.searchTerm,
-        fetchState: fetchState.dirty
+        pageRequestCount: state.capiSearch.pageRequestCount + 1
       })
     });
 
   case CAPI_SEARCH_RECEIVE:
-    return Object.assign({}, state, {
+    var newState = Object.assign({}, state, {
       capiSearch: Object.assign({}, state.capiSearch, {
-        results: action.results,
-        count: action.resultsCount,
-        fetchState: fetchState.clean //Add logic to ensure this is results for current search Term;
-      })
+          pages: Object.assign({}, state.capiSearch.pages),
+          count: action.resultsCount,
+          currentPage: action.page
+        }),
     });
+
+    var newPage = action.results;
+
+    newState.capiSearch.pages[action.page] = newPage;
+    newState.capiSearch.pageRequestCount -= 1;
+
+    return newState;
 
   case CAPI_FILTERS_UPDATE:
     return Object.assign({}, state, {

@@ -27,6 +27,9 @@ sealed trait Config {
 
   def capiUrl: String = getRequiredStringProperty("capi.url")
   def capiKey: String = getRequiredStringProperty("capi.key")
+  def capiPreviewUrl: String = getRequiredStringProperty("capi.preview.url")
+  def capiPreviewUser: String = getRequiredStringProperty("capi.preview.username")
+  def capiPreviewPassword: String = getRequiredStringProperty("capi.preview.password")
 
   def pathManagerUrl: String = getRequiredStringProperty("pathmanager.url")
 
