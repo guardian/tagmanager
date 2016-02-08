@@ -134,6 +134,10 @@ object TagLookupCache {
       Logger.warn("failed to update cache")
   }
 
+  def getTag(id: Long): Option[Tag] = {
+    allTags.get().find(_.id == id)
+  }
+
   def removeTag(tagId: Long): Unit = {
     val currentTags = allTags.get()
     val newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)

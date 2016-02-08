@@ -76,7 +76,6 @@ object ReadOnlyApi extends Controller {
       Create(audit.tagId, audit.date)
     }.filter(_.date.getMillis > since).sortBy(_.date.getMillis)
 
-
     val beginning = audits.headOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
     val end =  audits.lastOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
 
@@ -87,10 +86,10 @@ object ReadOnlyApi extends Controller {
       case (_ , _) => None
     }
 
-    val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
+    val tags = audits.map(x => TagLookupCache.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
-
     val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))
+
     Ok(ret)
   }
 
