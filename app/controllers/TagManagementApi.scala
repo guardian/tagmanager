@@ -205,7 +205,16 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateSponsorship(id: Long) = APIAuthAction { req =>
-    NoContent
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[UpdateSponsorshipCommand].process.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
   }
 
   def getAuditForTag(tagId: Long) = APIAuthAction { req =>
