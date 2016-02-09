@@ -66,7 +66,7 @@ export class TagSearch extends React.Component {
     }
 
     sortBy(fieldName) {
-      this.searchTags(this.state.searchString, fieldName);
+      this.searchTags(this.state.searchString, this.state.searchFieldName, fieldName);
     }
 
     render () {

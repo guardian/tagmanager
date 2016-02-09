@@ -18,6 +18,7 @@ import SectionDisplay from '../components/Section/Display';
 import SectionCreate from '../components/Section/Create';
 
 import {getStore}   from '../util/storeAccessor';
+import {clearError} from '../actions/UIActions/clearError'
 
 function requirePermission(permissionName, nextState, replaceState) {
   const store = getStore();
@@ -26,10 +27,15 @@ function requirePermission(permissionName, nextState, replaceState) {
   }
 }
 
+function clearErrorBar() {
+    const store = getStore();
+    store.dispatch(clearError());
+}
+
 export default [
     <Route path="/" component={ReactApp}>
       <Route name="tag" path="/tag/create" component={TagCreate} />
-      <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} />
+      <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
       <Route name="batch" path="/batch" component={BatchTag}/>
       <Route name="mapping" path="/mapping" component={MappingManager} />
       <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
