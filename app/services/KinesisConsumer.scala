@@ -22,7 +22,7 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,
       new DefaultAWSCredentialsProviderChain,
-      s"$appName-$streamName-worker");
+      s"$appName-worker");
 
   kinesisClientLibConfiguration
     .withRegionName(AWS.region.getName)
@@ -30,7 +30,7 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
     .withInitialPositionInStream(InitialPositionInStream.LATEST)
 
   val worker = new Worker.Builder()
-    .recordProcessorFactory(new KinesisProcessorConsumerFactory(appName + "-" + streamName, processor))
+    .recordProcessorFactory(new KinesisProcessorConsumerFactory(appName, processor))
     .config(kinesisClientLibConfiguration)
     .build()
 
