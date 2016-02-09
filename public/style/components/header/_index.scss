@@ -140,23 +140,23 @@
 .links {
   display: block;
   text-align: right;
-  .links__item {
-    vertical-align: middle;
-    display: inline-block;
-    vertical-align: top;
-    height: 50px;
-    line-height: 50px;
-    @extend %fs-data-3;
-    padding: 0 15px;
+}
 
-    border-left: 1px solid $c-grey-400;
+.links__item {
+  display: inline-block;
+  height: 100%;
+  vertical-align: top;
+  border-left: 1px solid $c-grey-400;
+  border-top: 3px solid $c-alt-green;
+  padding: 0 15px;
+  line-height: 46px;
+  @extend %fs-data-3;
+  text-decoration: none;
+  color: $c-grey-700;
+}
 
-    a {
-      display: inline-block;
-      text-decoration: none;
-      color: $c-grey-700;
-    }
-  }
+.links__item--active {
+  border-top: 3px solid $c-highlight-blue;
 }
 
 .top-toolbar__right-align {
