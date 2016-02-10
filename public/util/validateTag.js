@@ -42,6 +42,20 @@ function validatePodcast(tag) {
   return validateMandatoryFields(mandatoryPodcastFields, tag.podcastMetadata);
 }
 
+function validateTrackingTag(tag) {
+
+  if (!tag.trackingInformation) {
+    return [{
+      fieldName: 'trackingInformation',
+      message: 'Mandatory tracking information is missing.'
+    }];
+  }
+
+  const mandatoryTrackingFields = ['trackingType'];
+  return validateMandatoryFields(mandatoryTrackingFields, tag.trackingInformation);
+
+}
+
 export function validateTag(tag) {
   let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
   let booleanFields = ['hidden', 'legallySensitive'];
@@ -52,6 +66,8 @@ export function validateTag(tag) {
     mandatoryFields = mandatoryFields.concat(['section']);
   } else if (tag.type === tagTypes.series.name) {
     additionalErrors = additionalErrors.concat(validatePodcast(tag));
+  } else if (tag.type === tagTypes.tracking.name) {
+    additionalErrors = additionalErrors.concat(validateTrackingTag(tag))
   }
 
   return []

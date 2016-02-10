@@ -31,7 +31,8 @@ case class Tag(
   contributorInformation: Option[ContributorInformation] = None,
   publicationInformation: Option[PublicationInformation] = None,
   isMicrosite: Boolean,
-  capiSectionId: Option[String] = None
+  capiSectionId: Option[String] = None,
+  trackingInformation: Option[TrackingInformation]
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -56,7 +57,8 @@ case class Tag(
     contributorInformation = contributorInformation.map(_.asThrift),
     publicationInformation = publicationInformation.map(_.asThrift),
     isMicrosite       = isMicrosite,
-    capiSectionId     = capiSectionId
+    capiSectionId     = capiSectionId,
+    trackingInformation = trackingInformation.map(_.asThrift)
   )
 
   // in this limited format for inCopy to consume
@@ -117,8 +119,8 @@ object Tag {
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
       (JsPath \ "isMicrosite").format[Boolean] and
-      (JsPath \ "capiSectionId").formatNullable[String]
-
+      (JsPath \ "capiSectionId").formatNullable[String] and
+      (JsPath \ "trackingInformation").formatNullable[TrackingInformation]
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = try {
@@ -159,6 +161,7 @@ object Tag {
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
       isMicrosite       = thriftTag.isMicrosite,
-      capiSectionId     = thriftTag.capiSectionId
+      capiSectionId     = thriftTag.capiSectionId,
+      trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_))
     )
 }
