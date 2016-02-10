@@ -49,7 +49,21 @@
         "CODE": "arn:aws:iam::743583969668:server-certificate/sites.code.dev-gutools.co.uk-exp2023-08-15",
         "PROD": "arn:aws:iam::743583969668:server-certificate/star.gutools.co.uk-exp2018-11-17"
       }
-    }
+    },
+     "Config":{
+       "CODE":{
+         "MinSize": 1,
+         "MaxSize": 2,
+         "DesiredCapacity": 1,
+         "InstanceType": "t2.small"
+       },
+       "PROD":{
+         "MinSize": 2,
+         "MaxSize": 4,
+         "DesiredCapacity": 2,
+         "InstanceType": "t2.small"
+       }
+     }
   },
 
   "Resources":{
@@ -365,8 +379,8 @@
         "AvailabilityZones": { "Fn::GetAZs": "" },
         "VPCZoneIdentifier": { "Ref": "PrivateVpcSubnets" },
         "LaunchConfigurationName":{ "Ref":"TagManagerLaunchConfig" },
-        "MinSize":"1",
-        "MaxSize":"2",
+        "MinSize":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "MinSize" ] },
+        "MaxSize":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "MaxSize" ] },
         "DesiredCapacity": "1",
         "HealthCheckType" : "ELB",
         "HealthCheckGracePeriod": 300,
@@ -402,7 +416,7 @@
           { "Ref": "AppServerSecurityGroup" },
           { "Ref": "SSHSecurityGroup" }
         ],
-        "InstanceType": "t2.medium",
+        "InstanceType":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "InstanceType" ] },
         "IamInstanceProfile": {"Ref": "TagManagerInstanceProfile"},
         "UserData":{
           "Fn::Base64":{
