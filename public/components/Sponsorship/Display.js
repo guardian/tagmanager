@@ -22,6 +22,14 @@ class SponsorshipDisplay extends React.Component {
       return this.props.saveState === 'SAVE_STATE_DIRTY';
     }
 
+    isSponsorshipValid() {
+      return this.props.sponsorship &&
+        this.props.sponsorship.sponsorName &&
+        this.props.sponsorship.sponsorLink &&
+        this.props.sponsorship.sponsorLogo &&
+        (this.props.sponsorship.tag || this.props.sponsorship.section)
+    }
+
     resetSponsorship() {
       this.props.sponsorshipActions.getSponsorship(this.props.routeParams.sponsorshipId);
     }
@@ -53,7 +61,7 @@ class SponsorshipDisplay extends React.Component {
           <div className="sponsorship-edit__column">
             <TargetingEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
           </div>
-          <SaveButton isHidden={!this.isSponsorshipDirty()} onSaveClick={this.saveSponsorship.bind(this)} onResetClick={this.resetSponsorship.bind(this)}/>
+          <SaveButton isHidden={!this.isSponsorshipValid() || !this.isSponsorshipDirty()} onSaveClick={this.saveSponsorship.bind(this)} onResetClick={this.resetSponsorship.bind(this)}/>
         </div>
       );
     }
