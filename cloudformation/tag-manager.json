@@ -55,13 +55,13 @@
          "MinSize": 1,
          "MaxSize": 2,
          "DesiredCapacity": 1,
-         "InstanceType": "t2.small"
+         "InstanceType": "t2.medium"
        },
        "PROD":{
-         "MinSize": 2,
-         "MaxSize": 4,
-         "DesiredCapacity": 2,
-         "InstanceType": "t2.small"
+         "MinSize": 3,
+         "MaxSize": 6,
+         "DesiredCapacity": 3,
+         "InstanceType": "t2.medium"
        }
      }
   },
