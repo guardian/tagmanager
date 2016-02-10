@@ -22,7 +22,7 @@ object Support extends Controller with PanDomainAuthActions {
     val picture = req.body
 
     ImageMetadataService.imageDimensions(picture.file) match {
-      case (140, 90) => {
+      case (w, h) if w <= 140 && h <= 90 => {
         val dateSlug = new DateTime().toString("dd/MMM/yyyy")
         val logoPath = s"commercial/sponsor/${dateSlug}/${filename}"
         val contentType = req.contentType
@@ -50,7 +50,7 @@ object Support extends Controller with PanDomainAuthActions {
           Ok(Json.toJson(image))
         }.getOrElse(BadRequest("failed to upload image"))
       }
-      case _ => BadRequest("sponsorship logos must be 140 x 90")
+      case _ => BadRequest("sponsorship logos must be at most 140 x 90")
     }
   }
 
