@@ -116,6 +116,61 @@ export default {
     });
   },
 
+  getSponsorship: (id) => {
+    return Reqwest({
+      url: '/api/sponsorship/' + id,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  saveSponsorship: (id, sponsorship) => {
+    const command = Object.assign({}, sponsorship, {
+      tag: sponsorship.tag ? sponsorship.tag.id : undefined,
+      section: sponsorship.section ? sponsorship.section.id : undefined
+    });
+
+    return Reqwest({
+      url: '/api/sponsorship/' + id,
+      data: JSON.stringify(command),
+      contentType: 'application/json',
+      method: 'put'
+    });
+  },
+
+  createSponsorship: (sponsorship) => {
+    const command = Object.assign({}, sponsorship, {
+      tag: sponsorship.tag ? sponsorship.tag.id : undefined,
+      section: sponsorship.section ? sponsorship.section.id : undefined
+    });
+
+    return Reqwest({
+      url: '/api/sponsorship',
+      data: JSON.stringify(command),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
+  searchSponsorships: (options) => {
+    const query = {
+      q: options.searchString,
+      status: options.status,
+      type: options.type
+    };
+
+    if (options.sortBy) {
+      query.sortBy = options.sortBy;
+    }
+
+    return PandaReqwest({
+      url: '/api/sponsorships',
+      method: 'get',
+      data: query,
+      type: 'json'
+    });
+  },
+
   getReferenceTypes: () => {
     return PandaReqwest({
       url: '/api/referenceTypes',

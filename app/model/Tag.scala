@@ -31,7 +31,8 @@ case class Tag(
   contributorInformation: Option[ContributorInformation] = None,
   publicationInformation: Option[PublicationInformation] = None,
   isMicrosite: Boolean,
-  capiSectionId: Option[String] = None
+  capiSectionId: Option[String] = None,
+  activeSponsorships: List[Long] = Nil
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -117,7 +118,8 @@ object Tag {
       (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
       (JsPath \ "isMicrosite").format[Boolean] and
-      (JsPath \ "capiSectionId").formatNullable[String]
+      (JsPath \ "capiSectionId").formatNullable[String] and
+      (JsPath \ "activeSponsorships").formatNullable[List[Long]].inmap[List[Long]](_.getOrElse(Nil), Some(_))
 
     )(Tag.apply, unlift(Tag.unapply))
 

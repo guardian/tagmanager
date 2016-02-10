@@ -75,6 +75,7 @@ sealed trait Config {
 
   def tagsTableName: String
   def sectionsTableName: String
+  def sponsorshipTableName: String
   def sequenceTableName: String
   def jobTableName: String
   def tagAuditTableName: String
@@ -107,6 +108,7 @@ class DevConfig extends Config {
 
   override def tagsTableName: String = "tag-manager-tags-DEV"
   override def sectionsTableName: String = "tag-manager-sections-DEV"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
 
@@ -141,6 +143,7 @@ class CodeConfig extends Config {
 
   override def tagsTableName: String = "tag-manager-tags-CODE"
   override def sectionsTableName: String = "tag-manager-sections-CODE"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-CODE"
   override def sequenceTableName: String = "tag-manager-sequences-CODE"
   override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
 
@@ -173,8 +176,10 @@ class CodeConfig extends Config {
 
 class ProdConfig extends Config {
 
+
   override def tagsTableName: String = "tag-manager-tags-PROD"
   override def sectionsTableName: String = "tag-manager-sections-PROD"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
   override def referencesTypeTableName: String = "tag-manager-reference-type-PROD"
 
