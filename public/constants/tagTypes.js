@@ -41,6 +41,11 @@ export const newspaperBookSection = {
   displayName: 'Newspaper Book Section'
 };
 
+export const paidContent = {
+  name: 'PaidContent',
+  displayName: 'Paid Content'
+};
+
 export const blog = {
   name: 'Blog',
   displayName: 'Blog - DEPRECATED'

@@ -42,6 +42,12 @@ function validatePodcast(tag) {
   return validateMandatoryFields(mandatoryPodcastFields, tag.podcastMetadata);
 }
 
+function validatePaidContent(tag) {
+  const mandatoryPaidContentFields = ['sponsorName', 'sponsorLogo', 'sponsorLink'];
+
+  return validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship);
+}
+
 export function validateTag(tag) {
   let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
   let booleanFields = ['hidden', 'legallySensitive'];
@@ -52,6 +58,8 @@ export function validateTag(tag) {
     mandatoryFields = mandatoryFields.concat(['section']);
   } else if (tag.type === tagTypes.series.name) {
     additionalErrors = additionalErrors.concat(validatePodcast(tag));
+  } else if (tag.type === tagTypes.paidContent.name) {
+    additionalErrors = additionalErrors.concat(validatePaidContent(tag));
   }
 
   return []
