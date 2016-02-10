@@ -33,7 +33,7 @@ PUT        /api/section/:id               controllers.TagManagementApi.updateSec
 POST       /api/section/:id/edition       controllers.TagManagementApi.addEditionToSection(id: Long)
 DELETE     /api/section/:id/edition/:editionName       controllers.TagManagementApi.removeEditionFromSection(id: Long, editionName: String)
 
-GET        /api/sponsorship               controllers.TagManagementApi.listSponsorships
+GET        /api/sponsorships              controllers.TagManagementApi.searchSponsorships
 GET        /api/sponsorship/:id           controllers.TagManagementApi.getSponsorship(id: Long)
 POST       /api/sponsorship               controllers.TagManagementApi.createSponsorship
 PUT        /api/sponsorship/:id           controllers.TagManagementApi.updateSponsorship(id: Long)

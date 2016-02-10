@@ -17,7 +17,7 @@ import SectionList from '../components/SectionList/SectionList.react';
 import SectionDisplay from '../components/Section/Display';
 import SectionCreate from '../components/Section/Create';
 
-import SponsorshipsList from '../components/SponsorshipList/SponsorshipList.react';
+import SponsorshipSearch from '../components/SponsorshipSearch.react';
 import SponsorshipDisplay from '../components/Sponsorship/Display';
 import SponsorshipCreate from '../components/Sponsorship/Create';
 
@@ -48,7 +48,7 @@ export default [
       <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="sponsorshipList" path="/sponsorship" component={SponsorshipsList} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>

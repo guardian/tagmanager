@@ -6,7 +6,7 @@ import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
 import permissions.Permissions
 import play.api.Logger
-import model.{DenormalisedSponsorship, Tag, Section}
+import model.{Sponsorship, DenormalisedSponsorship, Tag, Section}
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
@@ -183,8 +183,28 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def listSponsorships = APIAuthAction { req =>
-    Ok(Json.toJson(SponsorshipRepository.loadAllSponsorships))
+  def searchSponsorships = APIAuthAction { req =>
+    val criteria = SponsorshipSearchCriteria(
+      q = req.getQueryString("q"),
+      status = req.getQueryString("status"),
+      `type` = req.getQueryString("type")
+    )
+
+    val orderBy = req.getQueryString("sortBy").getOrElse("internalName")
+
+    val sponsorships = SponsorshipRepository.searchSponsorships(criteria)
+
+    val orderedSponsorships: List[Sponsorship] = orderBy match {
+      case("sponsor") => sponsorships.sortBy(_.sponsorName)
+      case("from") => sponsorships.sortBy(_.validFrom.map(_.getMillis).getOrElse(0l))
+      case("to") => sponsorships.sortBy(_.validTo.map(_.getMillis).getOrElse(Long.MaxValue))
+      case("status") => sponsorships.sortBy(_.status)
+      case(_) => sponsorships.sortBy(_.sponsorName)
+    }
+
+    val resultsCount = req.getQueryString("pageSize").getOrElse("25").toInt
+
+    Ok(Json.toJson((orderedSponsorships take resultsCount).map(DenormalisedSponsorship(_))))
   }
 
   def getSponsorship(id: Long) = APIAuthAction { req =>

@@ -152,6 +152,25 @@ export default {
     });
   },
 
+  searchSponsorships: (options) => {
+    const query = {
+      q: options.searchString,
+      status: options.status,
+      type: options.type
+    };
+
+    if (options.sortBy) {
+      query.sortBy = options.sortBy;
+    }
+
+    return PandaReqwest({
+      url: '/api/sponsorships',
+      method: 'get',
+      data: query,
+      type: 'json'
+    });
+  },
+
   getReferenceTypes: () => {
     return PandaReqwest({
       url: '/api/referenceTypes',
