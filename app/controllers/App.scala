@@ -29,7 +29,7 @@ object App extends Controller with PanDomainAuthActions {
     }
   }
 
-  //Basic auth to be removed once deployed
+  //Basic auth to be removed once released publically
   def index(id: String = "") = BasicSecured("tagmin", "tagword") { AuthAction.async { req =>
 
     val jsFileName = "build/app.js"
