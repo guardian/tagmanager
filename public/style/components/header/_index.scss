@@ -1,5 +1,4 @@
 .top-toolbar {
-
   position: fixed;
   top: 0;
   left: 0;
@@ -10,7 +9,6 @@
   max-height: $size-header-height;
   background-color: $c-alt-green;
   z-index: 2;
-  line-height: 50px;
 
   border-bottom: 1px solid $c-grey-400;
 }
@@ -56,45 +54,37 @@
 }
 
 .top-toolbar__title {
-
-  flex: 0 0 160px;
-
-  position: relative;
-
-  font-size: 18px;
-  line-height: 50px;
-  background-color: $c-grey-350;
-  margin: 0;
-  border-right: 1px solid $c-grey-300;
+  flex: 0 0 50px;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-  text-decoration: none;
-  color: black;
+  background: url(/assets/images/icons/tag-white-30.svg) $c-green-logo no-repeat center center;
 
-  &:hover {
-    text-decoration: none;
-  }
-
-  .top-toolbar__letter {
-    border-right: 1px solid $c-grey-300;
-    padding: 0 10px;
-    font-size: 20px;
-    flex: 0 0 50px;
-    @extend %f-title;
-  }
-
-  .top-toolbar__page-title {
-
-    flex: 1 1 auto;
-    font-size: 18px;
-    margin: 0px;
-
-
-  }
-
-  .top-toolbar__title__hover-state {
+  .top-toolbar__text-large, .top-toolbar__text-small {
     display: none;
   }
+
+  &:hover {
+    background: none $c-grey-700;
+    text-decoration: none;
+    .top-toolbar__text-large, .top-toolbar__text-small {
+      display: inherit;
+    }
+  }
+}
+
+.top-toolbar__text-large {
+  @extend %fs-data-4;
+  text-align: center;
+  color: white;
+}
+
+.top-toolbar__text-small {
+  @extend %fs-data-2;
+  text-align: center;
+  color: white;
 }
 
 .top-toolbar__title:hover .top-toolbar__title__hover-state {
@@ -129,12 +119,6 @@
     @extend %fs-data-3;
   }
 
-}
-
-.top-toolbar__letter, .top-toolbar__page-title {
-  display: inline-block;
-  text-align: center;
-  line-height: 55px;
 }
 
 .links {
