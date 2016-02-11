@@ -49,7 +49,21 @@
         "CODE": "arn:aws:iam::743583969668:server-certificate/sites.code.dev-gutools.co.uk-exp2023-08-15",
         "PROD": "arn:aws:iam::743583969668:server-certificate/star.gutools.co.uk-exp2018-11-17"
       }
-    }
+    },
+     "Config":{
+       "CODE":{
+         "MinSize": 1,
+         "MaxSize": 2,
+         "DesiredCapacity": 1,
+         "InstanceType": "t2.medium"
+       },
+       "PROD":{
+         "MinSize": 3,
+         "MaxSize": 6,
+         "DesiredCapacity": 3,
+         "InstanceType": "t2.medium"
+       }
+     }
   },
 
   "Resources":{
@@ -385,9 +399,9 @@
         "AvailabilityZones": { "Fn::GetAZs": "" },
         "VPCZoneIdentifier": { "Ref": "PrivateVpcSubnets" },
         "LaunchConfigurationName":{ "Ref":"TagManagerLaunchConfig" },
-        "MinSize":"1",
-        "MaxSize":"2",
-        "DesiredCapacity": "1",
+        "MinSize":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "MinSize" ] },
+        "MaxSize":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "MaxSize" ] },
+        "DesiredCapacity":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "DesiredCapacity" ] },
         "HealthCheckType" : "ELB",
         "HealthCheckGracePeriod": 300,
         "LoadBalancerNames" : [ { "Ref": "TagManagerLoadBalancer" }],
@@ -422,7 +436,7 @@
           { "Ref": "AppServerSecurityGroup" },
           { "Ref": "SSHSecurityGroup" }
         ],
-        "InstanceType": "t2.medium",
+        "InstanceType":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "InstanceType" ] },
         "IamInstanceProfile": {"Ref": "TagManagerInstanceProfile"},
         "UserData":{
           "Fn::Base64":{
