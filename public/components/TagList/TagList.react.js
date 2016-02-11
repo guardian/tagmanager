@@ -39,7 +39,7 @@ export default class TagList extends React.Component {
     }
 
     onTagClick(tag) {
-      history.replaceState(null, '/tag/' + tag.id);
+      history.pushState(null, '/tag/' + tag.id);
     }
 
     render () {
