@@ -14,10 +14,11 @@ import org.apache.thrift.transport.TIOStreamTransport
 import play.api.Logger
 
 import scala.collection.JavaConversions._
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) {
+
+  implicit val executionContext = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,
