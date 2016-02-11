@@ -23,22 +23,26 @@ export const tone = {
 
 export const contentType = {
   name: 'ContentType',
-  displayName: 'Content Type'
+  displayName: 'Content Type',
+  pathPrefix: ' '
 };
 
 export const publication = {
   name: 'Publication',
-  displayName: 'Publication'
+  displayName: 'Publication',
+  pathPrefix: ' '
 };
 
 export const newspaperBook = {
   name: 'NewspaperBook',
-  displayName: 'Newspaper Book'
+  displayName: 'Newspaper Book',
+  pathPrefix: ' '
 };
 
 export const newspaperBookSection = {
   name: 'NewspaperBookSection',
-  displayName: 'Newspaper Book Section'
+  displayName: 'Newspaper Book Section',
+  pathPrefix: ' '
 };
 
 export const paidContent = {
@@ -49,4 +53,10 @@ export const paidContent = {
 export const blog = {
   name: 'Blog',
   displayName: 'Blog - DEPRECATED'
+};
+
+export const tracking = {
+  name: 'Tracking',
+  displayName: 'Tracking',
+  pathPrefix: 'tracking'
 };

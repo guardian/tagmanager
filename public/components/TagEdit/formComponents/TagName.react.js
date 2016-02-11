@@ -107,30 +107,38 @@ export default class TagNameEdit extends React.Component {
 
   getPathPrefixForSection() {
 
-    //Infer from Tag Type
     if (!this.props.tag.type) {
-      return '/';
+      return '.../';
     }
+
+    //Tracking Type Exception
+
+    if (this.props.tag.type === tagTypes.tracking.name) {
+      const trackingTypeName = this.props.tag.trackingInformation && this.props.tag.trackingInformation.trackingType ? this.props.tag.trackingInformation.trackingType.toLowerCase() : '...';
+      return 'tracking/' + trackingTypeName + '/';
+    }
+
+    //Infer from Tag Type
 
     const tagTypeKey = Object.keys(tagTypes).filter((tagTypeKey) => {
       return tagTypes[tagTypeKey].name === this.props.tag.type;
     })[0];
 
-    if (tagTypes[tagTypeKey].pathPrefix) {
+    if (tagTypes[tagTypeKey] && tagTypes[tagTypeKey].pathPrefix) {
       return tagTypes[tagTypeKey].pathPrefix + '/';
     }
 
     //Infer from section
 
     if (!this.props.sections || !this.props.tag.section) {
-      return '/';
+      return '.../';
     }
 
     var section = this.props.sections.filter((section) => section.id === this.props.tag.section);
 
     if (section.length) {
 
-      if (tagTypes[tagTypeKey].additionalPathPrefix) {
+      if (tagTypes[tagTypeKey] && tagTypes[tagTypeKey].additionalPathPrefix) {
         return section[0].wordsForUrl + '/' + tagTypes[tagTypeKey].additionalPathPrefix + '/';
       }
 

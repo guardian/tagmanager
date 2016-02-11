@@ -32,6 +32,7 @@ case class Tag(
   publicationInformation: Option[PublicationInformation] = None,
   isMicrosite: Boolean,
   capiSectionId: Option[String] = None,
+  trackingInformation: Option[TrackingInformation],
   activeSponsorships: List[Long] = Nil
 ) {
 
@@ -57,7 +58,8 @@ case class Tag(
     contributorInformation = contributorInformation.map(_.asThrift),
     publicationInformation = publicationInformation.map(_.asThrift),
     isMicrosite       = isMicrosite,
-    capiSectionId     = capiSectionId
+    capiSectionId     = capiSectionId,
+    trackingInformation = trackingInformation.map(_.asThrift)
   )
 
   // in this limited format for inCopy to consume
@@ -119,8 +121,8 @@ object Tag {
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
       (JsPath \ "isMicrosite").format[Boolean] and
       (JsPath \ "capiSectionId").formatNullable[String] and
+      (JsPath \ "trackingInformation").formatNullable[TrackingInformation] and
       (JsPath \ "activeSponsorships").formatNullable[List[Long]].inmap[List[Long]](_.getOrElse(Nil), Some(_))
-
     )(Tag.apply, unlift(Tag.unapply))
 
   def fromItem(item: Item) = try {
@@ -161,6 +163,7 @@ object Tag {
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
       isMicrosite       = thriftTag.isMicrosite,
-      capiSectionId     = thriftTag.capiSectionId
+      capiSectionId     = thriftTag.capiSectionId,
+      trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_))
     )
 }

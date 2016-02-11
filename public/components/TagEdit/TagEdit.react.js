@@ -11,6 +11,7 @@ import ContributorInfoEdit from './formComponents/contributor/ContributorInfoEdi
 import PublicationInfoEdit from './formComponents/publication/PublicationInfoEdit.react';
 import NewspaperBookInfoEdit from './formComponents/newspaperbook/NewspaperBookInfoEdit.react';
 import PaidContentInfoEdit from './formComponents/paidcontent/PaidContentInfoEdit.react';
+import TrackingInfoEdit from './formComponents/tracking/TrackingInformation.react.js';
 
 import * as tagTypes from '../../constants/tagTypes';
 
@@ -110,6 +111,10 @@ export default class TagEdit extends React.Component {
       return <PaidContentInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
+    renderTrackingFields() {
+      return <TrackingInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
+    }
+
     renderTagTypeSpecificFields() {
 
       if (!this.props.tag.type) {
@@ -138,6 +143,10 @@ export default class TagEdit extends React.Component {
 
       if (this.props.tag.type === tagTypes.paidContent.name) {
         return this.renderPaidContentFields();
+      }
+
+      if (this.props.tag.type === tagTypes.tracking.name) {
+        return this.renderTrackingFields();
       }
 
       return false;

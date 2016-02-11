@@ -42,10 +42,25 @@ function validatePodcast(tag) {
   return validateMandatoryFields(mandatoryPodcastFields, tag.podcastMetadata);
 }
 
+
 function validatePaidContent(tag) {
   const mandatoryPaidContentFields = ['sponsorName', 'sponsorLogo', 'sponsorLink'];
 
   return validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship);
+}
+
+function validateTrackingTag(tag) {
+
+  if (!tag.trackingInformation) {
+    return [{
+      fieldName: 'trackingInformation',
+      message: 'Mandatory tracking information is missing.'
+    }];
+  }
+
+  const mandatoryTrackingFields = ['trackingType'];
+  return validateMandatoryFields(mandatoryTrackingFields, tag.trackingInformation);
+
 }
 
 export function validateTag(tag) {
@@ -60,6 +75,8 @@ export function validateTag(tag) {
     additionalErrors = additionalErrors.concat(validatePodcast(tag));
   } else if (tag.type === tagTypes.paidContent.name) {
     additionalErrors = additionalErrors.concat(validatePaidContent(tag));
+  } else if (tag.type === tagTypes.tracking.name) {
+    additionalErrors = additionalErrors.concat(validateTrackingTag(tag))
   }
 
   return []

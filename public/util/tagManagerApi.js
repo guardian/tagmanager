@@ -179,11 +179,15 @@ export default {
     });
   },
 
-  checkPathInUse: (type, slug, section) => {
+  checkPathInUse: (type, slug, section, trackingTagType) => {
       const query = {type: type, slug: slug};
 
       if (section) {
           query.section = section;
+      }
+
+      if (trackingTagType) {
+        query.trackingTagType = trackingTagType
       }
 
       return PandaReqwest({
