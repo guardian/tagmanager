@@ -381,7 +381,7 @@
         "LaunchConfigurationName":{ "Ref":"TagManagerLaunchConfig" },
         "MinSize":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "MinSize" ] },
         "MaxSize":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "MaxSize" ] },
-        "DesiredCapacity": "1",
+        "DesiredCapacity":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "DesiredCapacity" ] },
         "HealthCheckType" : "ELB",
         "HealthCheckGracePeriod": 300,
         "LoadBalancerNames" : [ { "Ref": "TagManagerLoadBalancer" }],
