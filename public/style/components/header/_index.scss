@@ -53,7 +53,7 @@
   }
 }
 
-.top-toolbar__title {
+.home-logo {
   flex: 0 0 50px;
   display: flex;
   flex-direction: column;
@@ -62,63 +62,30 @@
 
   background: url(/assets/images/icons/tag-white-30.svg) $c-green-logo no-repeat center center;
 
-  .top-toolbar__text-large, .top-toolbar__text-small {
+  .home-logo__text-large, .home-logo__text-small {
     display: none;
   }
 
   &:hover {
     background: none $c-grey-700;
     text-decoration: none;
-    .top-toolbar__text-large, .top-toolbar__text-small {
+    
+    .home-logo__text-large, .home-logo__text-small {
       display: inherit;
     }
   }
 }
 
-.top-toolbar__text-large {
+.home-logo__text-large {
   @extend %fs-data-4;
   text-align: center;
   color: white;
 }
 
-.top-toolbar__text-small {
+.home-logo__text-small {
   @extend %fs-data-2;
   text-align: center;
   color: white;
-}
-
-.top-toolbar__title:hover .top-toolbar__title__hover-state {
-
-  display: block;
-
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  width: 100%;
-  height: 100%;
-
-  background-color: $c-grey-700;
-
-  line-height: 21px;
-
-  padding-left: 10px;
-  padding-top: 2px;
-
-  span {
-    color: white;
-  }
-
-  .top-toolbar__title__hover-state__title {
-    @extend %f-title;
-    @extend %fs-data-6;
-  }
-
-  .top-toolbar__title__hover-state__subtitle {
-    @extend %f-title;
-    @extend %fs-data-3;
-  }
-
 }
 
 .links {

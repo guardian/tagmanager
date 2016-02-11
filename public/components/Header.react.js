@@ -17,9 +17,9 @@ export default class Header extends React.Component {
         return (
             <header className="top-toolbar">
 
-                <Link to="/" className="top-toolbar__title">
-                    <span className="top-toolbar__text-large">Tags</span>
-                    <span className="top-toolbar__text-small">home</span>
+                <Link to="/" className="home-logo">
+                    <span className="home-logo__text-large">Tags</span>
+                    <span className="home-logo__text-small">home</span>
                 </Link>
 
                 <div className="header__children">
