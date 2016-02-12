@@ -34,11 +34,7 @@ object SectionLookupCache {
   // a map makes this faster to lookup
   val allSections = new AtomicReference[Map[Long, Section]](Map())
 
-  def refresh = {
-    SectionRepository.loadAllSections.foreach { section =>
-      insertSection(section)
-    }
-  }
+  def initialLoad = allSections.set(SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut))
 
   def getSection(id: Option[Long]): Option[Section] = {
     id.flatMap { i =>

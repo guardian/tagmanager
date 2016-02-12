@@ -124,7 +124,7 @@ object TagLookupCache {
 
   val allTags = new AtomicReference[List[Tag]](Nil)
 
-  def refresh = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
+  def initialLoad = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
 
   def insertTag(tag: Tag): Unit = {
     var currentTags: List[Tag] = null

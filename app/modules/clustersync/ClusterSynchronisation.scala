@@ -39,10 +39,10 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
       reservation.set(Some(ns))
 
       Logger.info("loading tag cache")
-      TagLookupCache.refresh
+      TagLookupCache.initialLoad
 
       Logger.info("loading section cache")
-      SectionLookupCache.refresh
+      SectionLookupCache.initialLoad
 
       val tagUpdateConsumer = new KinesisConsumer(Config().tagUpdateStreamName, s"tag-cache-syncroniser-${ns.nodeId}", TagSyncUpdateProcessor)
       Logger.info("starting tag sync consumer")
