@@ -71,11 +71,11 @@ export default class PublicationInfoEdit extends React.Component {
     return (
       <div className="tag-edit__field">
         <label className="tag-edit__label">Newspaper Books</label> <br />
-        {newspaperBooks.map((tagId) => {
+        {newspaperBooks.map((tag) => {
           return (
-            <div key={tagId} className="tag-edit__tag">
-              <Link to={`/tag/${tagId}`}>{tagId}</Link>
-              <span className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tagId)}>
+            <div key={tag.id} className="tag-edit__tag">
+              <Link to={`/tag/${tag.id}`}>{tag.externalName}</Link>
+              <span className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tag.id)}>
                 <i className="i-delete" />
               </span>
             </div>

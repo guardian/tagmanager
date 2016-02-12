@@ -3,6 +3,7 @@ import {TAG_UPDATE} from '../actions/TagActions/updateTag';
 import {TAG_CREATE_ERROR} from '../actions/TagActions/createTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/TagActions/saveTag';
 import {TAG_DELETE_REQUEST, TAG_DELETE_RECEIVE, TAG_DELETE_ERROR} from '../actions/TagActions/deleteTag';
+import {NEWSPAPERBOOKS_GET_RECEIVE} from '../actions/TagActions/getNewspaperBooks';
 import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/SectionsActions/getSections';
 import {SECTION_GET_REQUEST, SECTION_GET_RECEIVE, SECTION_GET_ERROR} from '../actions/SectionsActions/getSection';
 import {SECTION_UPDATE} from '../actions/SectionsActions/updateSection';
@@ -57,6 +58,15 @@ export default function tag(state = {
     });
 
   case TAG_GET_RECEIVE:
+    if(action.tag.publicationInformation && action.tag.publicationInformation.newspaperBooks) {
+      action.tag.publicationInformation.newspaperBooks = action.tag.publicationInformation.newspaperBooks.map(b => {
+          return {
+              id: b.id || b,
+              externalName: b.externalName || b
+          }
+      })
+    }
+
     return Object.assign({}, state, {
       tag: action.tag,
       tagEditable: action.tagEditable,
@@ -122,6 +132,25 @@ export default function tag(state = {
     return Object.assign({}, state, {
       error: action.message
     });
+
+// NEWSPAPERBOOKS GET
+  case NEWSPAPERBOOKS_GET_RECEIVE:
+    let tag = Object.assign({}, state.tag)
+
+    if(!tag.publicationInformation) {
+      return state
+    }
+
+    tag.publicationInformation.newspaperBooks = action.tags.map(t => {
+      return {
+        id: t.id,
+          externalName: t.externalName,
+      }
+    })
+
+    return Object.assign({}, state, {
+      tag: tag
+    })
 
 // SECTIONS GET
 
