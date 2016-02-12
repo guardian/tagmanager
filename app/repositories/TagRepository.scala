@@ -130,10 +130,14 @@ object TagLookupCache {
     var currentTags: List[Tag] = null
     var newTags: List[Tag] = null
 
+    var count = 0
+
+    Logger.info(s"Attempting to insert ${tag.id} into cache")
     do {
       currentTags = allTags.get()
       newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
     } while (!allTags.compareAndSet(currentTags, newTags))
+    Logger.info(s"Successfully inserted ${tag.id} into cache after ${count} attempts")
   }
 
   def getTag(id: Long): Option[Tag] = {
@@ -144,10 +148,14 @@ object TagLookupCache {
     var currentTags: List[Tag] = null
     var newTags: List[Tag] = null
 
+    var count = 0
+
+    Logger.info(s"Attempting to remove ${tagId} from cache")
     do {
       currentTags = allTags.get()
       newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
     } while (!allTags.compareAndSet(currentTags, newTags))
+    Logger.info(s"Successfully removed  ${tagId} from cache after ${count} attempts")
   }
 
   def search(tagSearchCriteria: TagSearchCriteria) = {

@@ -86,7 +86,7 @@ object ReadOnlyApi extends Controller {
       case (_ , _) => None
     }
 
-    val tags = audits.map(x => TagLookupCache.getTag(x.tagId)).flatten
+    val tags = audits.flatMap(x => TagLookupCache.getTag(x.tagId))
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
     val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))
 
