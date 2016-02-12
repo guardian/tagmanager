@@ -51,14 +51,14 @@ object SectionLookupCache {
 
     var count = 0
 
-    Logger.info(s"Attempting to insert ${section.id} into cache")
+    Logger.info(s"Attempting to insert section (${section.id}) into cache")
     do {
       currentSections = allSections.get
       newSections = currentSections + (section.id -> section)
       count += 1
     } while (!allSections.compareAndSet(currentSections, newSections))
 
-    Logger.info(s"Successfully inserted ${section.id} into cache after ${count} attempts")
+    Logger.info(s"Successfully inserted section (${section.id}) into cache after ${count} attempts")
   }
 
   def removeSection(id: Long) = {
@@ -67,11 +67,11 @@ object SectionLookupCache {
 
     var count = 0;
 
-    Logger.info(s"Attempting to remove ${id} from cache")
+    Logger.info(s"Attempting to remove section (${id}) from cache")
     do {
       currentSections = allSections.get
       newSections = currentSections - id
     } while (!allSections.compareAndSet(currentSections, newSections))
-    Logger.info(s"Successfully removed  ${id} from cache after ${count} attempts")
+    Logger.info(s"Successfully removed section (${id}) from cache after ${count} attempts")
   }
 }
