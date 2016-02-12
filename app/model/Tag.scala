@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
 import helpers.XmlHelpers._
 import repositories.SectionRepository
@@ -26,13 +28,14 @@ case class Tag(
   publication: Option[Long],
   description: Option[String] = None,
   parents: Set[Long] = Set(),
-  references: List[Reference] = Nil,
+  externalReferences: List[Reference] = Nil,
   podcastMetadata: Option[PodcastMetadata] = None,
   contributorInformation: Option[ContributorInformation] = None,
   publicationInformation: Option[PublicationInformation] = None,
   isMicrosite: Boolean,
   capiSectionId: Option[String] = None,
-  trackingInformation: Option[TrackingInformation]
+  trackingInformation: Option[TrackingInformation],
+  activeSponsorships: List[Long] = Nil
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -52,7 +55,7 @@ case class Tag(
     publication       = publication,
     description       = description,
     parents           = parents,
-    references        = references.map(_.asThrift),
+    references        = externalReferences.map(_.asThrift),
     podcastMetadata   = podcastMetadata.map(_.asThrift),
     contributorInformation = contributorInformation.map(_.asThrift),
     publicationInformation = publicationInformation.map(_.asThrift),
@@ -84,7 +87,7 @@ case class Tag(
 
     val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type` % cmsPrefix
 
-    val withRefs: Node = this.references.foldLeft(withAttrs: Node) { (x, y) =>
+    val withRefs: Node = this.externalReferences.foldLeft(withAttrs: Node) { (x, y) =>
       addChild(x, y.asExportedXml)
     }
     val withParents: Node = this.parents.foldLeft(withRefs: Node) { (x, parent) =>
@@ -98,30 +101,7 @@ case class Tag(
 
 object Tag {
 
-  implicit val tagFormat: Format[Tag] = (
-      (JsPath \ "id").format[Long] and
-      (JsPath \ "path").format[String] and
-      (JsPath \ "pageId").format[Long] and
-      (JsPath \ "type").format[String] and
-      (JsPath \ "internalName").format[String] and
-      (JsPath \ "externalName").format[String] and
-      (JsPath \ "slug").format[String] and
-      (JsPath \ "hidden").format[Boolean] and
-      (JsPath \ "legallySensitive").format[Boolean] and
-      (JsPath \ "comparableValue").format[String] and
-      (JsPath \ "categories").formatNullable[Set[String]].inmap[Set[String]](_.getOrElse(Set()), Some(_)) and
-      (JsPath \ "section").formatNullable[Long] and
-      (JsPath \ "publication").formatNullable[Long] and
-      (JsPath \ "description").formatNullable[String] and
-      (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
-      (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
-      (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
-      (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
-      (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
-      (JsPath \ "isMicrosite").format[Boolean] and
-      (JsPath \ "capiSectionId").formatNullable[String] and
-      (JsPath \ "trackingInformation").formatNullable[TrackingInformation]
-    )(Tag.apply, unlift(Tag.unapply))
+  implicit val tagFormat = Jsonx.formatCaseClassUseDefaults[Tag]
 
   def fromItem(item: Item) = try {
     Json.parse(item.toJSON).as[Tag]
@@ -156,7 +136,7 @@ object Tag {
       publication       = thriftTag.publication,
       description       = thriftTag.description,
       parents           = thriftTag.parents.toSet,
-      references        = thriftTag.references.map(Reference(_)).toList,
+      externalReferences        = thriftTag.references.map(Reference(_)).toList,
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),

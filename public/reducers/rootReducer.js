@@ -7,12 +7,18 @@ import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '..
 import {SECTION_GET_REQUEST, SECTION_GET_RECEIVE, SECTION_GET_ERROR} from '../actions/SectionsActions/getSection';
 import {SECTION_UPDATE} from '../actions/SectionsActions/updateSection';
 import {SECTION_SAVE_REQUEST, SECTION_SAVE_RECEIVE, SECTION_SAVE_ERROR} from '../actions/SectionsActions/saveSection';
+import {SPONSORSHIP_GET_REQUEST, SPONSORSHIP_GET_RECEIVE, SPONSORSHIP_GET_ERROR} from '../actions/SponsorshipActions/getSponsorship';
+import {SPONSORSHIP_SAVE_REQUEST, SPONSORSHIP_SAVE_RECEIVE, SPONSORSHIP_SAVE_ERROR} from '../actions/SponsorshipActions/saveSponsorship';
+import {SPONSORSHIP_UPDATE} from '../actions/SponsorshipActions/updateSponsorship';
 import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPES_GET_ERROR} from '../actions/ReferenceTypeActions/getReferenceTypes';
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {SECTION_POPULATE_BLANK} from '../actions/SectionsActions/createSection';
+import {SPONSORSHIP_POPULATE_BLANK} from '../actions/SponsorshipActions/createSponsorship';
 import {CAPI_CLEAR_PAGES, CAPI_SWITCH_PAGE, CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
+
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
+
 
 export const saveState = {
   dirty: 'SAVE_STATE_DIRTY',
@@ -182,6 +188,56 @@ export default function tag(state = {
       saveState: saveState.clean
     });
   case SECTION_SAVE_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
+    });
+
+
+
+
+  // SPONSORSHIP GET
+  case SPONSORSHIP_GET_REQUEST:
+    return Object.assign({}, state, {
+      sponsorship: false,
+      saveState: undefined
+    });
+  case SPONSORSHIP_GET_RECEIVE:
+    return Object.assign({}, state, {
+      sponsorship: action.sponsorship,
+      saveState: saveState.clean
+    });
+  case SPONSORSHIP_GET_ERROR:
+    return Object.assign({}, state, {
+      error: action.message,
+      saveState: undefined
+    });
+
+  // SPONSORSHIP UPDATE
+
+  case SPONSORSHIP_UPDATE:
+    return Object.assign({}, state, {
+      sponsorship: action.sponsorship,
+      saveState: saveState.dirty
+    });
+
+  case SPONSORSHIP_POPULATE_BLANK:
+    return Object.assign({}, state, {
+      sponsorship: action.sponsorship,
+      saveState: saveState.clean
+    });
+
+  // SPONSORSHIP SAVE
+
+  case SPONSORSHIP_SAVE_REQUEST:
+    return Object.assign({}, state, {
+      saveState: saveState.inprogress
+    });
+  case SPONSORSHIP_SAVE_RECEIVE:
+    return Object.assign({}, state, {
+      sponsorship: action.sponsorship,
+      saveState: saveState.clean
+    });
+  case SPONSORSHIP_SAVE_ERROR:
     return Object.assign({}, state, {
       error: action.message
     });

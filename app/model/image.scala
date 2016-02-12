@@ -1,8 +1,9 @@
 package model
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import com.gu.tagmanagement.{Image => ThriftImage, ImageAsset => ThriftImageAsset}
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
+import com.gu.tagmanagement.{Image => ThriftImage}
 
 
 case class Image(imageId: String, assets: List[ImageAsset]) {
@@ -17,10 +18,7 @@ case class Image(imageId: String, assets: List[ImageAsset]) {
 }
 
 object Image {
-  implicit val imageFormat: Format[Image] = (
-    (JsPath \ "imageId").format[String] and
-      (JsPath \ "assets").formatNullable[List[ImageAsset]].inmap[List[ImageAsset]](_.getOrElse(Nil), Some(_))
-    )(Image.apply, unlift(Image.unapply))
+  implicit val imageFormat = Jsonx.formatCaseClass[Image]
 
   def apply(thriftImage: ThriftImage): Image = Image(
     imageId = thriftImage.imageId,
@@ -28,32 +26,3 @@ object Image {
   )
 }
 
-
-
-
-case class ImageAsset(imageUrl: String, width: Long, height: Long, mimeType: String) {
-  def asThrift = ThriftImageAsset(imageUrl, width, height, mimeType)
-  def asExportedXml = {<imageAsset>
-    <imageUrl>{this.imageUrl}</imageUrl>
-    <width>{this.width}</width>
-    <height>{this.height}</height>
-    <mimeType>{this.mimeType}</mimeType>
-    </imageAsset>}
-}
-
-object ImageAsset {
-  implicit val imageAssetFormat: Format[ImageAsset] = (
-      (JsPath \ "imageUrl").format[String] and
-      (JsPath \ "width").format[Long] and
-      (JsPath \ "height").format[Long] and
-      (JsPath \ "mimeType").format[String]
-
-    )(ImageAsset.apply, unlift(ImageAsset.unapply))
-
-  def apply(thriftImageAsset: ThriftImageAsset): ImageAsset = ImageAsset(
-    imageUrl = thriftImageAsset.imageUrl,
-    width = thriftImageAsset.width,
-    height = thriftImageAsset.height,
-    mimeType = thriftImageAsset.mimeType
-  )
-}

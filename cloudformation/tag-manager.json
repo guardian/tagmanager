@@ -147,6 +147,26 @@
         "Roles": [{"Ref": "TagManagerRole"}]
       }
     },
+    "TagManagerCommercialFilesBucketPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TagManagerCommercialFilesBucketPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:DeleteObject",
+                "s3:GetObject",
+                "s3:PutObject"
+              ],
+              "Resource": "arn:aws:s3:::static-theguardian-com/commercial/*"
+            }
+          ]
+        },
+        "Roles": [{"Ref": "TagManagerRole"}]
+      }
+    },
 
     "TagManagerGetTeamKeysPolicy": {
       "Type": "AWS::IAM::Policy",

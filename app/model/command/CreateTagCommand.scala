@@ -61,7 +61,7 @@ case class CreateTagCommand(
       categories = categories,
       description = description,
       parents = parents,
-      references = references,
+      externalReferences = references,
       podcastMetadata = podcastMetadata,
       contributorInformation = contributorInformation,
       publicationInformation = publicationInformation,

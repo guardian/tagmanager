@@ -30,7 +30,7 @@ object TagEntity {
         tag.slug,
         getTagSection(tag.section),
         tag.parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
-        tag.references
+        tag.externalReferences
       )
   }
 
