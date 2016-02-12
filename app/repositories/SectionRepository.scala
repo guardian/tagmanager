@@ -72,6 +72,7 @@ object SectionLookupCache {
     do {
       currentSections = allSections.get
       newSections = currentSections - id
+      count += 1
     } while (!allSections.compareAndSet(currentSections, newSections))
     Logger.info(s"Successfully removed section (${id}) from cache after ${count} attempts")
   }

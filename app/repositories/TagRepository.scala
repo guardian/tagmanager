@@ -136,6 +136,7 @@ object TagLookupCache {
     do {
       currentTags = allTags.get()
       newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+      count += 1
     } while (!allTags.compareAndSet(currentTags, newTags))
     Logger.info(s"Successfully inserted tag (${tag.id}) into cache after ${count} attempts")
   }
@@ -154,6 +155,7 @@ object TagLookupCache {
     do {
       currentTags = allTags.get()
       newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
+      count += 1
     } while (!allTags.compareAndSet(currentTags, newTags))
     Logger.info(s"Successfully removed tag (${tagId}) from cache after ${count} attempts")
   }
