@@ -17,7 +17,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def getTag(id: Long) = APIAuthAction {
 
-    TagRepository.getTag(id).map{ tag =>
+    TagLookupCache.getTag(id).map{ tag =>
       Ok(Json.toJson(tag))
     }.getOrElse(NotFound)
   }

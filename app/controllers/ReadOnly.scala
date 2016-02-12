@@ -19,7 +19,7 @@ object ReadOnlyApi extends Controller {
   }
 
   def getSectionsAsXml() = Action {
-    val sections = SectionRepository.loadAllSections
+    val sections = SectionLookupCache.allSections.get.valuesIterator
 
     //Lack of a Section in TagManager was previously represented as a "Global" section.
     val globalSection = new Section(
@@ -41,7 +41,7 @@ object ReadOnlyApi extends Controller {
   }
 
   def tagAsXml(id: Long) = Action {
-    TagRepository.getTag(id).map { tag =>
+    TagLookupCache.getTag(id).map { tag =>
       Ok(<tags>
         {tag.asExportedXml}
       </tags>)
@@ -109,7 +109,7 @@ object ReadOnlyApi extends Controller {
       case (_ , _) => None
     }
 
-    val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
+    val tags = audits.map(x => TagLookupCache.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
 
     val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))

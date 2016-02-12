@@ -129,6 +129,7 @@ object TagLookupCache {
   def insertTag(tag: Tag): Unit = {
     var currentTags: List[Tag] = null
     var newTags: List[Tag] = null
+
     do {
       currentTags = allTags.get()
       newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
@@ -142,6 +143,7 @@ object TagLookupCache {
   def removeTag(tagId: Long): Unit = {
     var currentTags: List[Tag] = null
     var newTags: List[Tag] = null
+
     do {
       currentTags = allTags.get()
       newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)

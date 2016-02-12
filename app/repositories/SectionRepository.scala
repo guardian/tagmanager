@@ -31,12 +31,10 @@ object SectionRepository {
 object SectionLookupCache {
 
   // a map makes this faster to lookup
-  private val m = Map[Long,Section]()
-  val allSections = new AtomicReference[Map[Long, Section]](m)
+  val allSections = new AtomicReference[Map[Long, Section]](Map())
 
   def refresh = {
-    val sections = SectionRepository.loadAllSections
-    sections.foreach { section =>
+    SectionRepository.loadAllSections.foreach { section =>
       insertSection(section)
     }
   }
@@ -47,13 +45,23 @@ object SectionLookupCache {
     }
   }
 
-  def insertSection(section: Section): Map[Long, Section] = {
-    val current = allSections.get
-    allSections.getAndSet(current + (section.id -> section))
+  def insertSection(section: Section) = {
+    var currentSections: Map[Long, Section] = null
+    var newSections: Map[Long, Section] = null
+
+    do {
+      currentSections = allSections.get
+      newSections = currentSections + (section.id -> section)
+    } while (!allSections.compareAndSet(currentSections, newSections))
   }
 
-  def removeSection(id: Long): Map[Long, Section] = {
-    val current = allSections.get
-    allSections.getAndSet(current - id)
+  def removeSection(id: Long) = {
+    var currentSections: Map[Long, Section] = null
+    var newSections: Map[Long, Section] = null
+
+    do {
+      currentSections = allSections.get
+      newSections = currentSections - id
+    } while (!allSections.compareAndSet(currentSections, newSections))
   }
 }
