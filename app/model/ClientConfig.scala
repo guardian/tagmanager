@@ -1,7 +1,8 @@
 package model
 
+import org.cvogt.play.json.Jsonx
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsValue, Json, JsPath, Format}
+import play.api.libs.json.Json
 import scala.concurrent.{Future}
 
 case class ClientConfig(capiUrl: String,
@@ -14,13 +15,5 @@ case class ClientConfig(capiUrl: String,
 
 object ClientConfig {
 
-  implicit val clientConfigFormat: Format[ClientConfig] = (
-    (JsPath \ "capiUrl").format[String] and
-      (JsPath \ "capiPreviewUrl").format[String] and
-      (JsPath \ "capiKey").format[String] and
-      (JsPath \ "tagTypes").format[List[String]] and
-      (JsPath \ "permittedTagTypes").format[List[String]] and
-      (JsPath \ "permissions").format[Map[String, Boolean]] and
-      (JsPath \ "reauthUrl").format[String]
-    )(ClientConfig.apply, unlift(ClientConfig.unapply))
+  implicit val clientConfigFormat = Jsonx.formatCaseClass[ClientConfig]
 }

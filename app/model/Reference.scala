@@ -1,7 +1,8 @@
 package model
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{Reference => ThriftReference}
 import helpers.XmlHelpers._
 
@@ -23,12 +24,7 @@ case class Reference(`type`: String, value: String, capiType: Option[String]) {
 
 object Reference {
 
-  implicit val referenceFormat: Format[Reference] = (
-      (JsPath \ "type").format[String] and
-      (JsPath \ "value").format[String] and
-        (JsPath \ "capiType").formatNullable[String]
-
-    )(Reference.apply, unlift(Reference.unapply))
+  implicit val referenceFormat = Jsonx.formatCaseClass[Reference]
 
   def apply(thriftReference: ThriftReference): Reference = Reference(thriftReference.`type`, thriftReference.value, thriftReference.capiType)
 

@@ -1,6 +1,8 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json._
@@ -8,6 +10,13 @@ import play.api.libs.functional.syntax._
 import repositories.{SectionRepository, TagRepository, TagLookupCache}
 
 import scala.util.control.NonFatal
+
+
+case class SponsorshipTargeting(publishedSince: Option[DateTime], validGeos: Option[List[String]])
+
+object SponsorshipTargeting {
+  implicit val sponsorshipTargettingFormat = Jsonx.formatCaseClass[SponsorshipTargeting]
+}
 
 case class Sponsorship (
   id: Long,
@@ -28,20 +37,7 @@ case class Sponsorship (
 
 object Sponsorship {
 
-  implicit val sponsorshipFormat: Format[Sponsorship] = (
-    (JsPath \ "id").format[Long] and
-      (JsPath \ "validFrom").formatNullable[DateTime] and
-      (JsPath \ "validTo").formatNullable[DateTime] and
-      (JsPath \ "status").format[String] and
-      (JsPath \ "sponsorshipType").format[String] and
-      (JsPath \ "sponsorName").format[String] and
-      (JsPath \ "sponsorLogo").format[Image] and
-      (JsPath \ "sponsorLink").format[String] and
-      (JsPath \ "tag").formatNullable[Long] and
-      (JsPath \ "section").formatNullable[Long] and
-      (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
-
-    )(Sponsorship.apply, unlift(Sponsorship.unapply))
+  implicit val sponsorshipFormat = Jsonx.formatCaseClass[Sponsorship]
 
   def fromJson(json: JsValue) = json.as[Sponsorship]
 
@@ -55,16 +51,6 @@ object Sponsorship {
   }
 }
 
-case class SponsorshipTargeting(
-  publishedSince: Option[DateTime],
-  validGeos: Option[List[String]])
-
-object SponsorshipTargeting {
-  implicit val sponsorshipTargettingFormat: Format[SponsorshipTargeting] = (
-    (JsPath \ "publishedSince").formatNullable[DateTime] and
-      (JsPath \ "validGeos").formatNullable[List[String]]
-    )(SponsorshipTargeting.apply, unlift(SponsorshipTargeting.unapply))
-}
 
 case class DenormalisedSponsorship (
                          id: Long,
@@ -81,20 +67,7 @@ case class DenormalisedSponsorship (
 
 object DenormalisedSponsorship {
 
-  implicit val denormalisedSponsorshipFormat: Format[DenormalisedSponsorship] = (
-    (JsPath \ "id").format[Long] and
-      (JsPath \ "validFrom").formatNullable[DateTime] and
-      (JsPath \ "validTo").formatNullable[DateTime] and
-      (JsPath \ "status").format[String] and
-      (JsPath \ "sponsorshipType").format[String] and
-      (JsPath \ "sponsorName").format[String] and
-      (JsPath \ "sponsorLogo").format[Image] and
-      (JsPath \ "sponsorLink").format[String] and
-      (JsPath \ "tag").formatNullable[Tag] and
-      (JsPath \ "section").formatNullable[Section] and
-      (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
-
-    )(DenormalisedSponsorship.apply, unlift(DenormalisedSponsorship.unapply))
+  implicit val denormalisedSponsorshipFormat = Jsonx.formatCaseClass[DenormalisedSponsorship]
 
   def apply(s: Sponsorship): DenormalisedSponsorship = {
     new DenormalisedSponsorship(
