@@ -2,6 +2,7 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import model.Section
+import play.api.Logger
 import play.api.libs.json.JsValue
 import services.Dynamo
 import scala.collection.JavaConversions._
