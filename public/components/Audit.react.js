@@ -71,7 +71,7 @@ export default class Audit extends React.Component {
       }
 
       return (
-        <table className="audit__table">
+        <table className="grid-table audit__table">
           <thead className="audit__header">
             <tr>
               <th>Date</th>

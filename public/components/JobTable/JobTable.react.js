@@ -75,7 +75,7 @@ export default class JobTable extends React.Component {
     render () {
 
       return (
-          <table className="jobtable">
+          <table className="grid-table jobtable">
             <thead className="jobtable__header">
               <tr>
                 <th>Started</th>
