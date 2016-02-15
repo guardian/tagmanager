@@ -20,7 +20,7 @@ export default class PublicationInfoEdit extends React.Component {
   removeNewspaperBook(tagIdToRemove) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
       publicationInformation: Object.assign({}, this.props.tag.publicationInformation, {
-        newspaperBooks: this.props.tag.publicationInformation.newspaperBooks.filter((tagId) => tagIdToRemove !== tagId)
+        newspaperBooks: this.props.tag.publicationInformation.newspaperBooks.filter((tag) => tagIdToRemove !== tag.id)
       })
     }));
   }
