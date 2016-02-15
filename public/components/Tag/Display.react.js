@@ -22,10 +22,7 @@ class TagDisplay extends React.Component {
 
     componentDidMount() {
       if (!this.isTagFetched()) {
-        this.props.tagActions.getTag(this.props.routeParams.tagId)
-        .then(() => {
-            this.props.tagActions.getNewspaperBooks(this.props.tag.publicationInformation.newspaperBooks.map(b => b.id))
-        })
+        this.getTagExtended(this.props.routeParams.tagId)
       }
 
       if (!this.props.sections || !this.props.sections.length) {
@@ -43,12 +40,19 @@ class TagDisplay extends React.Component {
       }
     }
 
+    getTagExtended(id) {
+      return this.props.tagActions.getTag(id)
+      .then(() => {
+        this.props.tagActions.getNewspaperBooks(this.props.tag.publicationInformation.newspaperBooks.map(b => b.id))
+      })
+    }
+
     saveTag() {
       this.props.tagActions.saveTag(this.props.tag);
     }
 
     resetTag() {
-      this.props.tagActions.getTag(this.props.routeParams.tagId);
+      this.getTagExtended(this.props.routeParams.tagId)
     }
 
     deleteTag() {
