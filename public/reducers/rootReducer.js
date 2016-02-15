@@ -58,14 +58,15 @@ export default function tag(state = {
     });
 
   case TAG_GET_RECEIVE:
-    if(action.tag.publicationInformation && action.tag.publicationInformation.newspaperBooks) {
-      action.tag.publicationInformation.newspaperBooks = action.tag.publicationInformation.newspaperBooks.map(b => {
-          return {
-              id: b.id || b,
-              externalName: b.externalName || b
-          }
-      })
-    }
+    action.tag.publicationInformation = action.tag.publicationInformation || {}
+    action.tag.publicationInformation.newspaperBooks = action.tag.publicationInformation.newspaperBooks || []
+
+    action.tag.publicationInformation.newspaperBooks = action.tag.publicationInformation.newspaperBooks.map(b => {
+      return {
+        id: b.id || b,
+        externalName: b.externalName || b
+      }
+    })
 
     return Object.assign({}, state, {
       tag: action.tag,
