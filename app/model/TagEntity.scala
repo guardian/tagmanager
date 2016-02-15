@@ -23,7 +23,13 @@ object TagEntity {
   def apply(tag: Tag): TagEntity = {
     /* The Section is implicitly populated when this is called */
 
-    val convertedType = if (tag.`type`.toLowerCase == "topic") "Keyword" else tag.`type`
+    val convertedType = tag.`type`.toLowerCase match {
+      case "topic" => "Keyword"
+      case "contenttype" => "Content Type"
+      case "newspaperbook" => "Newspaper Book"
+      case "newspaperbooksection" => "Newspaper Book Section"
+      case _ => tag.`type`
+    }
 
       TagEntity(
         tag.id,
