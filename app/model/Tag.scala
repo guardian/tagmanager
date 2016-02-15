@@ -62,7 +62,7 @@ case class Tag(
   )
 
   // in this limited format for inCopy to consume
-  def asExportedXml = {
+  def asExportedXml(sectionCache: Map[Long, Section]) = {
 
 
     val oldType = this.`type` match {
@@ -70,7 +70,7 @@ case class Tag(
       case t => t
     }
 
-    val section = this.section.map(SectionRepository.getSection(_))
+    val section = this.section.map(sectionCache.get(_))
     val el = createElem("tag")
     val id = createAttribute("id", Some(this.id))
     val externalName = createAttribute("externalname", Some(this.externalName))
