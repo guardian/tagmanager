@@ -16,21 +16,24 @@ case class TagEntity(
   slug: String,
   section: SectionEntity,
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
-  references: List[Reference] = Nil
+  references: List[ReferenceEntity] = Nil
 )
 
 object TagEntity {
   def apply(tag: Tag): TagEntity = {
     /* The Section is implicitly populated when this is called */
+
+    val convertedType = if (tag.`type`.toLowerCase == "topic") "Keyword" else tag.`type`
+
       TagEntity(
         tag.id,
-        tag.`type`,
+        convertedType,
         tag.internalName,
         tag.externalName,
         tag.slug,
         getTagSection(tag.section),
         tag.parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
-        tag.references
+        tag.references.map(ReferenceEntity(_))
       )
   }
 
@@ -86,6 +89,27 @@ object SectionEntity {
       section.name,
       section.path,
       section.wordsForUrl
+    )
+  }
+}
+
+case class ReferenceEntity(
+  `type`: String,
+  token: String
+)
+
+object ReferenceEntity {
+  implicit def referenceEntityWrites: Writes[ReferenceEntity] = new Writes[ReferenceEntity] {
+    def writes(re: ReferenceEntity) = JsObject(Seq(
+      "type" -> JsString(re.`type`),
+      "token" -> JsString(re.token)
+    ))
+  }
+
+  def apply(reference: Reference): ReferenceEntity = {
+    ReferenceEntity(
+      reference.`type`,
+      reference.value
     )
   }
 }

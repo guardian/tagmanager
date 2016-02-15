@@ -49,11 +49,13 @@ export function createTag(tag) {
     };
 }
 
-export function populateEmptyTag(tag) {
+export function populateEmptyTag(tagType) {
   return {
       type:        TAG_POPULATE_BLANK,
       tagEditable: true,
-      tag:         Object.assign({}, BLANK_TAG),
+      tag:         Object.assign({}, BLANK_TAG, {
+        type: tagType
+      }),
       receivedAt:  Date.now()
   };
 }

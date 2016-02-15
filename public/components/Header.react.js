@@ -17,41 +17,39 @@ export default class Header extends React.Component {
         return (
             <header className="top-toolbar">
 
-                <Link to="/" className="top-toolbar__title">
-                    <div className="top-toolbar__letter">
-                        <span className="top-toolbar__letter-text">T</span>
-                    </div>
-                    <h1 className="top-toolbar__page-title">
-                        <span className="top-toolbar__page-title-text">Tags</span>
-                    </h1>
+                <Link to="/" className="home-logo">
+                    <span className="home-logo__text-large">Tags</span>
+                    <span className="home-logo__text-small">home</span>
                 </Link>
 
                 <div className="header__children">
-                    <ul className="links">
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/audit">Audit Logs</Link>
-                        </li>
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/microsite">Microsite Manager</Link>
-                        </li>
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/section">Section Editor</Link>
-                        </li>
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/mapping">Mapping Manager</Link>
-                        </li>
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/batch">Batch tag</Link>
-                        </li>
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/merge">Merge tag</Link>
-                        </li>
-                        <li className="links__item top-toolbar__item--highlight">
-                            <Link to="/status">Job Status</Link>
-                        </li>
-                    </ul>
+                    <nav className="links">
+                        <HeaderMenuItem to="/audit">Audit Logs</HeaderMenuItem>
+                        <HeaderMenuItem to="/microsite">Microsite Manager</HeaderMenuItem>
+                        <HeaderMenuItem to="/section">Section Editor</HeaderMenuItem>
+                        <HeaderMenuItem to="/mapping">Mapping Manager</HeaderMenuItem>
+                        <HeaderMenuItem to="/batch">Batch tag</HeaderMenuItem>
+                        <HeaderMenuItem to="/merge">Merge tag</HeaderMenuItem>
+                        <HeaderMenuItem to="/status">Job Status</HeaderMenuItem>
+                    </nav>
                 </div>
             </header>
         );
     }
+}
+
+class HeaderMenuItem extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <Link
+        to={this.props.to}
+        activeClassName="links__item--active"
+        className="links__item top-toolbar__item--highlight"
+      >{this.props.children}</Link>
+    )
+  }
 }

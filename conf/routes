@@ -33,7 +33,7 @@ DELETE     /api/section/:id/edition/:editionName       controllers.TagManagement
 
 GET        /api/referenceTypes            controllers.TagManagementApi.listReferenceTypes
 
-GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long])
+GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long], trackingTagType: Option[String])
 POST       /api/batchTag                  controllers.TagManagementApi.batchTag
 POST       /api/mergeTag                  controllers.TagManagementApi.mergeTag
 

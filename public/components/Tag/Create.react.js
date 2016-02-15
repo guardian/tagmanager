@@ -70,7 +70,7 @@ class TagCreate extends React.Component {
     }
 
     checkPathInUse(tag) {
-      tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section)
+      tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section, tag.trackingInformation ? tag.trackingInformation : undefined)
         .then(res => this.setState({pathInUse: res.inUse}))
         .fail((error) => {
           console.log(error);
@@ -79,7 +79,7 @@ class TagCreate extends React.Component {
     }
 
     onUpdateType(e) {
-      this.props.tagActions.updateTag(Object.assign({}, this.props.tag, {type: e.target.value}));
+      this.props.tagActions.populateEmptyTag(e.target.value);
     }
 
     render () {
@@ -96,8 +96,8 @@ class TagCreate extends React.Component {
                 <label className="tag-edit__input-group__header">Tag Type</label>
                 <TypeSelect selectedType={this.props.tag.type} types={this.props.config.permittedTagTypes} onChange={this.onUpdateType.bind(this)}/>
               </div>
-              <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/>
-              <TagValidationErrors validations={this.generateValidationErrors()} />
+              {this.props.tag.type ? <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/> : false}
+              {this.props.tag.type ? <TagValidationErrors validations={this.generateValidationErrors()} /> : false }
             </div>
             <div className="tag__column"></div>
             <div className="tag__column"></div>

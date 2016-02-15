@@ -52,7 +52,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def tags = CORSable(conf.corsableDomains: _*) {
     Action { implicit req =>
       // we need to map keyword to topic in the types changes as flex searches for keywords - this might change (07/01/2016)
-      val types = req.getQueryString("type").map(_.split(",").toList.map { x =>
+      val types = req.getQueryString("type").map(_.replaceAll(" ", "").split(",").toList.map { x =>
         if(x.toLowerCase() == "keyword") "topic" else x
       })
 

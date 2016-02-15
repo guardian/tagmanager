@@ -10,7 +10,7 @@ class SectionList extends React.Component {
 
     onSectionClick(section) {
       const path = this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id;
-      history.replaceState(null, path);
+      history.pushState(null, path);
     }
 
     componentWillMount() {

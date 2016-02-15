@@ -30,8 +30,8 @@ case class CreateTagCommand(
                       publicationInformation: Option[PublicationInformation] = None,
                       isMicrosite: Boolean,
                       capiSectionId: Option[String] = None,
+                      trackingInformation: Option[TrackingInformation] = None,
                       preCalculatedPath: Option[String] = None //This is used so path isn't calculated
-
                            ) extends Command {
 
   type T = Tag
@@ -40,7 +40,7 @@ case class CreateTagCommand(
 
     val calculatedPath = preCalculatedPath match {
       case Some(path) => path
-      case None => TagPathCalculator.calculatePath(`type`, slug, section)
+      case None => TagPathCalculator.calculatePath(`type`, slug, section, trackingInformation.map(_.trackingType))
     }
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
@@ -66,7 +66,8 @@ case class CreateTagCommand(
       contributorInformation = contributorInformation,
       publicationInformation = publicationInformation,
       isMicrosite = isMicrosite,
-      capiSectionId = capiSectionId
+      capiSectionId = capiSectionId,
+      trackingInformation = trackingInformation
     )
     
     val result = TagRepository.upsertTag(tag)
@@ -100,6 +101,7 @@ object CreateTagCommand {
       (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
       (JsPath \ "isMicrosite").format[Boolean] and
       (JsPath \ "capiSectionId").formatNullable[String] and
+      (JsPath \ "trackingInformation").formatNullable[TrackingInformation] and
       (JsPath \ "preCalculatedPath").formatNullable[String]
     )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
 }
