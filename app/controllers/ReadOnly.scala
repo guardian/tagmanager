@@ -14,7 +14,7 @@ object ReadOnlyApi extends Controller {
     val tags = TagLookupCache.allTags
 
     val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
-    val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml(sections))
+    val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml)
 
     Ok(<tags>
       {xmlTags.seq.map { x => x }}
@@ -114,7 +114,7 @@ object ReadOnlyApi extends Controller {
     val tags = audits.map(x => TagLookupCache.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
 
-    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml(sections)))
+    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))
     Ok(ret)
   }
 
