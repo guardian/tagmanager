@@ -31,6 +31,11 @@ object TagEntity {
       case _ => tag.`type`
     }
 
+    val parents = tag.publication match {
+      case Some(publications) => tag.parents ++ Set(publications)
+      case None => tag.parents
+    }
+
       TagEntity(
         tag.id,
         convertedType,
@@ -38,7 +43,7 @@ object TagEntity {
         tag.externalName,
         tag.slug,
         getTagSection(tag.section),
-        tag.parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
+        parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
         tag.references.map(ReferenceEntity(_))
       )
   }
