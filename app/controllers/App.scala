@@ -11,26 +11,10 @@ import permissions._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.Future
-
 
 object App extends Controller with PanDomainAuthActions {
 
-  def BasicSecured[A](username: String, password: String)(action: Action[A]): Action[A] = Action.async(action.parser) { request =>
-    request.headers.get("Authorization").flatMap { authorization =>
-      authorization.split(" ").drop(1).headOption.filter { encoded =>
-        new String(org.apache.commons.codec.binary.Base64.decodeBase64(encoded.getBytes)).split(":").toList match {
-          case u :: p :: Nil if u == username && password == p => true
-          case _ => false
-        }
-      }
-    }.map(_ => action(request)).getOrElse {
-      Future.successful(Unauthorized.withHeaders("WWW-Authenticate" -> """Basic realm="TagManager is not yet available""""))
-    }
-  }
-
-  //Basic auth to be removed once released publically
-  def index(id: String = "") = BasicSecured("tagmin", "tagword") { AuthAction.async { req =>
+  def index(id: String = "") = AuthAction.async { req =>
 
     val jsFileName = "build/app.js"
 
@@ -70,7 +54,7 @@ object App extends Controller with PanDomainAuthActions {
       Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
     }
 
-  }}
+  }
 
   def hello = AuthAction {
     Logger.info("saying hello")
