@@ -36,6 +36,10 @@ object SectionLookupCache {
 
   def initialLoad = allSections.set(SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut))
 
+  def getSection(id: Long): Option[Section] = {
+    getSection(Some(id))
+  }
+
   def getSection(id: Option[Long]): Option[Section] = {
     id.flatMap { i =>
       allSections.get.get(i)

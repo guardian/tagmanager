@@ -1,14 +1,14 @@
 package model.command.logic
 
 import model.command.CommandError._
-import repositories.SectionRepository
+import repositories.SectionLookupCache
 
 
 object TagPathCalculator {
 
   def calculatePath(`type`: String, slug: String, sectionId: Option[Long]) = {
 
-    val loadedSection = sectionId.map(SectionRepository.getSection(_).getOrElse(SectionNotFound))
+    val loadedSection = sectionId.map(SectionLookupCache.getSection(_).getOrElse(SectionNotFound))
 
     val sectionPathPrefix = loadedSection.map(_.wordsForUrl + "/").getOrElse("")
 

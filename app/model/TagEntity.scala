@@ -1,6 +1,6 @@
 package model
 import play.api.libs.json._
-import repositories.SectionRepository
+import repositories.SectionLookupCache
 
 /* Flex expects the old api so this essentially mimics the old functionality
  * by adding a SectionEntity and TagEntity. It does mean that some of the new
@@ -36,7 +36,7 @@ object TagEntity {
 
   def getTagSection(id: Option[Long]): SectionEntity = {
     val section = id.map(sectionId =>
-      SectionRepository.getSection(sectionId).map(section =>
+      SectionLookupCache.getSection(sectionId).map(section =>
         SectionEntity(section))
       ).flatten
 

@@ -6,7 +6,7 @@ import model.command.CommandError._
 import model.command.logic.SectionEditionPathCalculator
 import model.{EditionalisedPage, Section, SectionAudit}
 import play.api.Logger
-import repositories.{PathManager, PathRegistrationFailed, PathRemoveFailed, SectionAuditRepository, SectionRepository}
+import repositories.{PathManager, PathRegistrationFailed, PathRemoveFailed, SectionAuditRepository, SectionLookupCache, SectionRepository}
 import services.KinesisStreams
 
 
@@ -17,7 +17,7 @@ case class RemoveEditionFromSectionCommand(sectionId: Long, editionName: String)
   override def process()(implicit username: Option[String] = None): Option[Section] = {
     Logger.info(s"removing ${editionName} from section ${sectionId}")
 
-    val section = SectionRepository.getSection(sectionId).getOrElse(SectionNotFound)
+    val section = SectionLookupCache.getSection(sectionId).getOrElse(SectionNotFound)
 
     val editionInfo = section.editions.get(editionName.toUpperCase).getOrElse(EditionNotFound)
 

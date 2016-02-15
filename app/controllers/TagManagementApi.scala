@@ -77,7 +77,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def getSection(id: Long) = APIAuthAction {
-    SectionRepository.getSection(id).map{ section =>
+    SectionLookupCache.getSection(id).map{ section =>
       Ok(Json.toJson(section))
     }.getOrElse(NotFound)
   }
