@@ -6,7 +6,7 @@ import model.jobs.{BatchTagAddCompleteCheck, Job}
 import org.joda.time.DateTime
 import permissions.Permissions
 import play.api.Logger
-import model.{Sponsorship, DenormalisedSponsorship, Tag, Section}
+import model._
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
@@ -17,7 +17,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def getTag(id: Long) = APIAuthAction {
 
     TagRepository.getTag(id).map{ tag =>
-      Ok(Json.toJson(tag))
+      Ok(Json.toJson(DenormalisedTag(tag)))
     }.getOrElse(NotFound)
   }
 
@@ -26,7 +26,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
     req.body.asJson.map { json =>
       try {
-        UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }
@@ -39,7 +39,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
-        json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }

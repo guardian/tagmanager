@@ -3,13 +3,55 @@ package model.command
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
 import model._
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import org.joda.time.DateTime
-import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
 import CommandError._
 import services.KinesisStreams
 
+case class InlinePaidContentSponsorshipCommand(
+                         validFrom: Option[DateTime],
+                         validTo: Option[DateTime],
+                         sponsorName: String,
+                         sponsorLogo: Image,
+                         sponsorLink: String
+                                    ) {
+
+  def createSponsorship(tagId: Long) = {
+    val status = (validFrom, validTo) match {
+      case(None, None)                              => "active"
+      case(Some(from), None) if from.isBeforeNow    => "active"
+      case(Some(from), None)                        => "pending"
+      case(None, Some(to)) if to.isBeforeNow        => "expired"
+      case(None, Some(to))                          => "active"
+      case(Some(from), Some(to)) if from.isAfterNow => "pending"
+      case(Some(from), Some(to)) if to.isBeforeNow  => "expired"
+      case(_)                                       => "active"
+    }
+
+    val sponsorship = Sponsorship(
+      id = Sequences.sponsorshipId.getNextId,
+      validFrom = validFrom,
+      validTo = validTo,
+      status = status,
+      sponsorshipType = "paidContent",
+      sponsorName = sponsorName,
+      sponsorLogo = sponsorLogo,
+      sponsorLink = sponsorLink,
+      tag = Some(tagId),
+      section = None,
+      targeting = None
+    )
+
+    SponsorshipRepository.updateSponsorship(sponsorship)
+  }
+}
+
+object InlinePaidContentSponsorshipCommand {
+  implicit val inlinePaidContentSponsorshipFormat = Jsonx.formatCaseClassUseDefaults[InlinePaidContentSponsorshipCommand]
+}
 
 case class CreateTagCommand(
                       `type`: String,
@@ -31,7 +73,8 @@ case class CreateTagCommand(
                       isMicrosite: Boolean,
                       capiSectionId: Option[String] = None,
                       trackingInformation: Option[TrackingInformation] = None,
-                      preCalculatedPath: Option[String] = None //This is used so path isn't calculated
+                      preCalculatedPath: Option[String] = None, //This is used so path isn't calculated
+                      sponsorship: Option[InlinePaidContentSponsorshipCommand] = None
                            ) extends Command {
 
   type T = Tag
@@ -45,8 +88,13 @@ case class CreateTagCommand(
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
+    val tagId = Sequences.tagId.getNextId
+
+    val createdSponsorship = sponsorship flatMap(_.createSponsorship(tagId))
+    val createdSponsorshipActive = createdSponsorship.map(_.status == "active").getOrElse(false)
+
     val tag = Tag(
-      id = Sequences.tagId.getNextId,
+      id = tagId,
       path = calculatedPath,
       pageId = pageId,
       `type`= `type`,
@@ -67,7 +115,10 @@ case class CreateTagCommand(
       publicationInformation = publicationInformation,
       isMicrosite = isMicrosite,
       capiSectionId = capiSectionId,
-      trackingInformation = trackingInformation
+      trackingInformation = trackingInformation,
+      activeSponsorships = if(createdSponsorshipActive) List(createdSponsorship.map(_.id).get) else Nil,
+      sponsorship = createdSponsorship.map(_.id),
+      expired = createdSponsorship.map(_.status == "expired").getOrElse(false)
     )
     
     val result = TagRepository.upsertTag(tag)
@@ -82,26 +133,5 @@ case class CreateTagCommand(
 
 object CreateTagCommand {
 
-  implicit val createTagCommandFormat: Format[CreateTagCommand] = (
-    (JsPath \ "type").format[String] and
-      (JsPath \ "internalName").format[String] and
-      (JsPath \ "externalName").format[String] and
-      (JsPath \ "slug").format[String] and
-      (JsPath \ "hidden").format[Boolean] and
-      (JsPath \ "legallySensitive").format[Boolean] and
-      (JsPath \ "comparableValue").format[String] and
-      (JsPath \ "categories").formatNullable[Set[String]].inmap[Set[String]](_.getOrElse(Set()), Some(_)) and
-      (JsPath \ "section").formatNullable[Long] and
-      (JsPath \ "publication").formatNullable[Long] and
-      (JsPath \ "description").formatNullable[String] and
-      (JsPath \ "parents").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_)) and
-      (JsPath \ "externalReferences").formatNullable[List[Reference]].inmap[List[Reference]](_.getOrElse(Nil), Some(_)) and
-      (JsPath \ "podcastMetadata").formatNullable[PodcastMetadata] and
-      (JsPath \ "contributorInformation").formatNullable[ContributorInformation] and
-      (JsPath \ "publicationInformation").formatNullable[PublicationInformation] and
-      (JsPath \ "isMicrosite").format[Boolean] and
-      (JsPath \ "capiSectionId").formatNullable[String] and
-      (JsPath \ "trackingInformation").formatNullable[TrackingInformation] and
-      (JsPath \ "preCalculatedPath").formatNullable[String]
-    )(CreateTagCommand.apply, unlift(CreateTagCommand.unapply))
+  implicit val createTagCommandFormat = Jsonx.formatCaseClassUseDefaults[CreateTagCommand]
 }
