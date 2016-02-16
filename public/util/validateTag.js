@@ -44,6 +44,14 @@ function validatePodcast(tag) {
 
 
 function validatePaidContent(tag) {
+
+  if (!tag.sponsorship) {
+    return [{
+      fieldName: 'sponsorship',
+      message: 'Mandatory paid content information is missing.'
+    }];
+  }
+
   const mandatoryPaidContentFields = ['sponsorName', 'sponsorLogo', 'sponsorLink'];
 
   return validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship);
