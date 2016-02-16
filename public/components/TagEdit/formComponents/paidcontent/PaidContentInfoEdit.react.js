@@ -13,7 +13,6 @@ export default class PaidContentInfoEdit extends React.Component {
   }
 
   updatePaidContentSponsorship(updated) {
-    console.log(updated);
     this.props.updateTag(R.merge(this.props.tag, {
       sponsorship: updated
     }));

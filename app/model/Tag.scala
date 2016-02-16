@@ -1,6 +1,7 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
+import model.command.logic.SponsorshipStatusCalculator
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -174,7 +175,49 @@ case class DenormalisedTag (
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Sponsorship] = None, // for paid content tags, they have an associated sponsorship but it may not be active
   expired: Boolean = false
-  )
+  ) {
+
+  def normalise(): (Tag, Option[Sponsorship]) = {
+
+    val updatedSponsorship: Option[Sponsorship] = sponsorship.map { s => s.copy(status = SponsorshipStatusCalculator.calculateStatus(s.validFrom, s.validTo)) }
+
+    val updatedActiveSponsorships = if (`type` == "PaidContent") {
+      // only paid content tags control the active sponsorships on update
+      updatedSponsorship.toList.filter(_.status == "active").map(_.id)
+    } else {
+      activeSponsorships
+    }
+
+    val tag = Tag(
+      id = id,
+      path = path,
+      pageId = pageId,
+      `type` = `type`,
+      internalName = internalName,
+      externalName = externalName,
+      slug = slug,
+      hidden = hidden,
+      legallySensitive = legallySensitive,
+      comparableValue = comparableValue,
+      categories = categories,
+      section = section,
+      publication = publication,
+      description = description,
+      parents = parents,
+      externalReferences = externalReferences,
+      podcastMetadata = podcastMetadata,
+      contributorInformation = contributorInformation,
+      publicationInformation = publicationInformation,
+      isMicrosite = isMicrosite,
+      capiSectionId = capiSectionId,
+      trackingInformation = trackingInformation,
+      activeSponsorships = updatedActiveSponsorships,
+      sponsorship = updatedSponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
+      expired = updatedSponsorship.map(_.status == "expired").getOrElse(false)
+    )
+    (tag, updatedSponsorship)
+  }
+}
 
 object DenormalisedTag{
 

@@ -26,7 +26,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
     req.body.asJson.map { json =>
       try {
-        UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
+        UpdateTagCommand(json.as[DenormalisedTag]).process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }
