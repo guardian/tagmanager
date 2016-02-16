@@ -92,7 +92,6 @@ export default class TagRelationship extends React.Component {
       if (this.props.tagEditable) {
         return <AddTagToContext onAddTag={this.addParentTag.bind(this)} tagEditable={this.props.tagEditable}/>
       }
-      return false;
     }
 
     render () {
@@ -105,19 +104,13 @@ export default class TagRelationship extends React.Component {
         return false;
       }
 
-      if (!this.props.tag.parents) {
-        return (
-          <div className="tag-context__item">
-            No parent tags found
-          </div>
-        );
-      }
-
       return (
         <div className="tag-context__item">
           <div className="tag-context__header">Parents</div>
           <div className="tag-relationship">
-              {this.props.tag.parents.map(this.renderTag)}
+              <div className="tag-relationship__tags">
+                {this.props.tag.parents.map(this.renderTag)}
+              </div>
               {this.renderAddTagToContext()}
           </div>
         </div>
