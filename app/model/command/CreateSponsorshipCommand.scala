@@ -2,6 +2,7 @@ package model.command
 
 import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
 import model._
+import model.command.logic.SponsorshipStatusCalculator
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -24,16 +25,7 @@ case class CreateSponsorshipCommand(
 
   override def process()(implicit username: Option[String]): Option[T] = {
 
-    val status = (validFrom, validTo) match {
-      case(None, None)                              => "active"
-      case(Some(from), None) if from.isBeforeNow    => "active"
-      case(Some(from), None)                        => "pending"
-      case(None, Some(to)) if to.isBeforeNow        => "expired"
-      case(None, Some(to))                          => "active"
-      case(Some(from), Some(to)) if from.isAfterNow => "pending"
-      case(Some(from), Some(to)) if to.isBeforeNow  => "expired"
-      case(_)                                       => "active"
-    }
+    val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
     val sponsorship = Sponsorship(
       id = Sequences.sponsorshipId.getNextId,

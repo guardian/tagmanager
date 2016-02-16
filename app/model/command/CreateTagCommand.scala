@@ -1,7 +1,7 @@
 package model.command
 
 import com.gu.tagmanagement.{EventType, TagEvent}
-import model.command.logic.TagPathCalculator
+import model.command.logic.{SponsorshipStatusCalculator, TagPathCalculator}
 import model._
 import org.cvogt.play.json.Jsonx
 import org.cvogt.play.json.implicits.optionWithNull
@@ -20,16 +20,7 @@ case class InlinePaidContentSponsorshipCommand(
                                     ) {
 
   def createSponsorship(tagId: Long) = {
-    val status = (validFrom, validTo) match {
-      case(None, None)                              => "active"
-      case(Some(from), None) if from.isBeforeNow    => "active"
-      case(Some(from), None)                        => "pending"
-      case(None, Some(to)) if to.isBeforeNow        => "expired"
-      case(None, Some(to))                          => "active"
-      case(Some(from), Some(to)) if from.isAfterNow => "pending"
-      case(Some(from), Some(to)) if to.isBeforeNow  => "expired"
-      case(_)                                       => "active"
-    }
+    val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
     val sponsorship = Sponsorship(
       id = Sequences.sponsorshipId.getNextId,
