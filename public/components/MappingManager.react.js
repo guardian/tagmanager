@@ -22,7 +22,7 @@ export class MappingManager extends React.Component {
     }
 
     fetchReferences(referenceType) {
-      tagManagerApi.getTagsByReferenceType(referenceType || this.state.selectedReferenceType).then(tags => {
+      tagManagerApi.getTagsByReferenceType(referenceType.typeName || this.state.selectedReferenceType.typeName).then(tags => {
         this.setState({
           tags: tags
         });
@@ -30,11 +30,14 @@ export class MappingManager extends React.Component {
     }
 
     onSelectedReferenceTypeChange(e) {
+
+      const referenceType = this.props.referenceTypes.filter(type => type.typeName === e.target.value)[0];
+
       this.setState({
-        selectedReferenceType: e.target.value
+        selectedReferenceType: referenceType
       });
 
-      this.fetchReferences(e.target.value);
+      this.fetchReferences(referenceType);
     }
 
     updateTag(newTag) {
@@ -66,7 +69,7 @@ export class MappingManager extends React.Component {
               <ReferenceTypeSelect
                 referenceTypes={this.props.referenceTypes}
                 onChange={this.onSelectedReferenceTypeChange.bind(this)}
-                selectedType={this.state.selectedReferenceType}
+                selectedType={this.state.selectedReferenceType ? this.state.selectedReferenceType.typeName : undefined}
               />
             </div>
             <AddTagMapping
