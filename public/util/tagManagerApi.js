@@ -68,7 +68,6 @@ export default {
 
   saveTag: (id, tag) => {
     const clean = cleanTag(tag);
-    debugger;
     return PandaReqwest({
         url: '/api/tag/' + id,
         data: JSON.stringify(clean),
@@ -86,7 +85,7 @@ export default {
   },
 
   createTag: (tag) => {
-      const clean = cleanTag(tag);
+    const clean = cleanTag(tag);
     return PandaReqwest({
         url: '/api/tag',
         data: JSON.stringify(clean),
