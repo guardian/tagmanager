@@ -8,28 +8,28 @@ export default class MappingTableRow extends React.Component {
     }
 
     deleteMapping(e) {
-      this.props.deleteMapping(this.props.tagId, this.props.referenceType, this.props.referenceValue);
+      this.props.deleteMapping(this.props.tag, this.props.reference);
     }
 
     updateMapping(e) {
-      this.props.updateMapping(this.props.tagId, this.props.referenceType, this.props.referenceValue, e.target.value);
+      this.props.updateMapping(this.props.tag, this.props.reference, e.target.value);
     }
 
     saveTag() {
-      this.props.saveTag(this.props.tagId);
+      this.props.saveTag(this.props.tag);
     }
 
     render() {
       return (
         <tr>
           <td>
-            {this.props.tagInternalName}
-            <Link to={'/tag/' + this.props.tagId}>
+            {this.props.tag.internalName}
+            <Link to={'/tag/' + this.props.tag.id}>
               <i className="i-preview-eye"/>
             </Link>
           </td>
           <td>
-            <input value={this.props.referenceValue} onChange={this.updateMapping.bind(this)}/>
+            <input value={this.props.reference.value} onChange={this.updateMapping.bind(this)}/>
             <input type="submit" onClick={this.saveTag.bind(this)} />
           </td>
           <td style={{textAlign: 'center'}}>
