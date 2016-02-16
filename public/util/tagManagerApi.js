@@ -30,6 +30,33 @@ function PandaReqwest(reqwestBody) {
   });
 }
 
+function cleanTag(tag) {
+    var cleaned = Object.assign({}, tag);
+    removeEmptyStringsFromObject(cleaned);
+    return cleaned;
+}
+
+function removeEmptyStringsFromObject(obj) {
+    var fields = Object.keys(obj);
+    fields.forEach(f => {
+        if (obj[f] === "") {
+            delete obj[f];
+        } else if (Array.isArray(obj[f])) {
+            removeEmptyStringsFromArray(obj[f]);
+        } else if (typeof obj[f] === "object" && obj[f] !== null) {
+            removeEmptyStringsFromObject(obj[f]);
+        }
+    });
+}
+
+function removeEmptyStringsFromArray(array) {
+    var idx = array.indexOf("");
+    while (idx !== -1) {
+        array.splice(idx, 1);
+        idx = array.indexOf("");
+    }
+}
+
 export default {
   getTag: (id) => {
       return PandaReqwest({
@@ -40,9 +67,11 @@ export default {
   },
 
   saveTag: (id, tag) => {
+    const clean = cleanTag(tag);
+    debugger;
     return PandaReqwest({
         url: '/api/tag/' + id,
-        data: JSON.stringify(tag),
+        data: JSON.stringify(clean),
         contentType: 'application/json',
         method: 'put'
     });
@@ -57,9 +86,10 @@ export default {
   },
 
   createTag: (tag) => {
+      const clean = cleanTag(tag);
     return PandaReqwest({
         url: '/api/tag',
-        data: JSON.stringify(tag),
+        data: JSON.stringify(clean),
         contentType: 'application/json',
         method: 'post'
     });
