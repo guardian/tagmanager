@@ -27,8 +27,10 @@ function getCapiPreviewUrl() {
 export function getByTag (tag, params) {
     const query = paramsObjectToQuery(params);
 
+    const tagPath = tag.type === 'ContentType' ? 'type/' + tag.slug : tag.path;
+
     return Reqwest({
-      url: getCapiUrl() + '&tag=' + tag.path  + '&' + query,
+      url: getCapiUrl() + '&tag=' + tagPath  + '&' + query,
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'
