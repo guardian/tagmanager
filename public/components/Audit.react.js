@@ -1,6 +1,7 @@
 import React from 'react';
 import {allowedAuditReports} from '../constants/allowedAuditReports';
 import tagManagerApi from '../util/tagManagerApi';
+import moment from 'moment';
 
 const reportSubjects = ['tag', 'section'];
 
@@ -33,9 +34,11 @@ export default class Audit extends React.Component {
     }
 
     renderListItem(logItem) {
+      const date = moment.unix(logItem.date).format('ddd DD MMM HH:mm')
+
       return (
         <tr key={logItem.operation + logItem.date} className="taglist__results-item">
-          <td>{logItem.date}</td>
+          <td>{date}</td>
           <td>{logItem.operation}</td>
           <td>{logItem.description}</td>
           <td>{logItem.user}</td>
