@@ -38,10 +38,8 @@ export function getByTag (tag, params) {
 export function searchContent (searchString, params) {
     const query = paramsObjectToQuery(params);
 
-    const searchQueryString = searchString || '';
-
     return Reqwest({
-      url: getCapiUrl() + '&q=' + searchQueryString.replace(' ', ' AND ')  + '&' + query,
+      url: getCapiUrl() + '&q=' + searchString.replace(' ', ' AND ')  + '&' + query,
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'
@@ -51,10 +49,8 @@ export function searchContent (searchString, params) {
 export function searchPreviewContent (searchString, params) {
     const query = paramsObjectToQuery(params);
 
-    const searchQueryString = searchString || '';
-
     return Reqwest({
-      url: getCapiPreviewUrl() + '&q=' + searchQueryString.replace(' ', ' AND ')  + '&' + query + '&show-fields=isLive',
+      url: getCapiPreviewUrl() + '&q=' + searchString.replace(' ', ' AND ')  + '&' + query + '&show-fields=isLive',
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'
