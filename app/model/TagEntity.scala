@@ -16,21 +16,35 @@ case class TagEntity(
   slug: String,
   section: SectionEntity,
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
-  references: List[Reference] = Nil
+  references: List[ReferenceEntity] = Nil
 )
 
 object TagEntity {
   def apply(tag: Tag): TagEntity = {
     /* The Section is implicitly populated when this is called */
+
+    val convertedType = tag.`type`.toLowerCase match {
+      case "topic" => "Keyword"
+      case "contenttype" => "Content Type"
+      case "newspaperbook" => "Newspaper Book"
+      case "newspaperbooksection" => "Newspaper Book Section"
+      case _ => tag.`type`
+    }
+
+    val parents = tag.publication match {
+      case Some(publications) => tag.parents ++ Set(publications)
+      case None => tag.parents
+    }
+
       TagEntity(
         tag.id,
-        tag.`type`,
+        convertedType,
         tag.internalName,
         tag.externalName,
         tag.slug,
         getTagSection(tag.section),
-        tag.parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
-        tag.externalReferences
+        parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
+        tag.externalReferences.map(ReferenceEntity(_))
       )
   }
 
@@ -86,6 +100,27 @@ object SectionEntity {
       section.name,
       section.path,
       section.wordsForUrl
+    )
+  }
+}
+
+case class ReferenceEntity(
+  `type`: String,
+  token: String
+)
+
+object ReferenceEntity {
+  implicit def referenceEntityWrites: Writes[ReferenceEntity] = new Writes[ReferenceEntity] {
+    def writes(re: ReferenceEntity) = JsObject(Seq(
+      "type" -> JsString(re.`type`),
+      "token" -> JsString(re.token)
+    ))
+  }
+
+  def apply(reference: Reference): ReferenceEntity = {
+    ReferenceEntity(
+      reference.`type`,
+      reference.value
     )
   }
 }
