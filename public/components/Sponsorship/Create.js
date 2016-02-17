@@ -3,6 +3,7 @@ import SponsorshipTypeEdit from '../SponsorshipEdit/SponsorshipTypeEdit.react';
 import SponsorEdit from '../SponsorshipEdit/SponsorEdit.react';
 import ValidityEdit from '../SponsorshipEdit/ValidityEdit.react';
 import TargetingEdit from '../SponsorshipEdit/TargetingEdit.react';
+import ClashWarning from '../SponsorshipEdit/ClashWarning.react';
 import SaveButton from '../utils/SaveButton.react';
 
 class SponsorshipCreate extends React.Component {
@@ -30,7 +31,8 @@ class SponsorshipCreate extends React.Component {
         this.props.sponsorship.sponsorName &&
         this.props.sponsorship.sponsorLink &&
         this.props.sponsorship.sponsorLogo &&
-        (this.props.sponsorship.tag || this.props.sponsorship.section)
+        (this.props.sponsorship.tag || this.props.sponsorship.section) &&
+        (this.props.clashingSponsorships && this.props.clashingSponsorships.length == 0)
     }
 
     resetSponsorship() {
@@ -39,6 +41,13 @@ class SponsorshipCreate extends React.Component {
 
     saveSponsorship() {
       this.props.sponsorshipActions.createSponsorship(this.props.sponsorship);
+    }
+
+    updateSponsorshipAndCheckClashes(sponsorship) {
+      this.props.sponsorshipActions.updateSponsorship(sponsorship);
+      if(sponsorship.tag || sponsorship.section) {
+        this.props.sponsorshipActions.getClashingSponsorships(sponsorship);
+      }
     }
 
     render () {
@@ -50,10 +59,11 @@ class SponsorshipCreate extends React.Component {
             <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
           </div>
           <div className="sponsorship-edit__column">
-            <ValidityEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
+            <ValidityEdit sponsorship={this.props.sponsorship} updateSponsorship={this.updateSponsorshipAndCheckClashes.bind(this)} />
           </div>
           <div className="sponsorship-edit__column">
-            <TargetingEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship} sections={this.props.sections}/>
+            <TargetingEdit sponsorship={this.props.sponsorship} updateSponsorship={this.updateSponsorshipAndCheckClashes.bind(this)} sections={this.props.sections} />
+            <ClashWarning clashingSponsorships={this.props.clashingSponsorships} />
           </div>
           <SaveButton isHidden={!this.isSponsorshipValid() || !this.isSponsorshipDirty()} onSaveClick={this.saveSponsorship.bind(this)} onResetClick={this.resetSponsorship.bind(this)}/>
         </div>
@@ -66,6 +76,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as createSponsorship from '../../actions/SponsorshipActions/createSponsorship';
 import * as updateSponsorship from '../../actions/SponsorshipActions/updateSponsorship';
+import * as getClashingSponsorships from '../../actions/SponsorshipActions/getClashingSponsorships.js';
 import * as getSections from '../../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
@@ -73,13 +84,14 @@ function mapStateToProps(state) {
     config: state.config,
     saveState: state.saveState,
     sponsorship: state.sponsorship,
+    clashingSponsorships: state.clashingSponsorships,
     sections: state.sections
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    sponsorshipActions: bindActionCreators(Object.assign({}, createSponsorship, updateSponsorship), dispatch),
+    sponsorshipActions: bindActionCreators(Object.assign({}, createSponsorship, updateSponsorship, getClashingSponsorships), dispatch),
     sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch)
   };
 }

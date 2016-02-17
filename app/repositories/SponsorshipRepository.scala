@@ -38,7 +38,10 @@ object SponsorshipRepository {
 case class SponsorshipSearchCriteria(
   q: Option[String] = None,
   status: Option[String] = None,
-  `type`: Option[String] = None) {
+  `type`: Option[String] = None,
+  tagId: Option[Long] = None,
+  sectionId: Option[Long] = None
+) {
 
   def optionalise(s: Option[String]) = s.map(_.trim) match {
     case Some("") => None
@@ -49,8 +52,14 @@ case class SponsorshipSearchCriteria(
     Seq() ++
       optionalise(q).map{query => new ScanFilter("sponsorName").beginsWith(query)} ++
       typeFilter ++
-      statusFilter
+      statusFilter ++
+      tagFilter ++
+      sectionFilter
   }
+
+  private def tagFilter: Option[ScanFilter] = tagId map (new ScanFilter("tag").eq(_))
+
+  private def sectionFilter: Option[ScanFilter] = sectionId map (new ScanFilter("section").eq(_))
 
   private def typeFilter: Option[ScanFilter] = {
     `type`.flatMap( _ match {

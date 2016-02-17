@@ -237,6 +237,15 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
+  def clashingSponsorships(id: Option[Long], tagId: Option[Long], sectionId: Option[Long], validFrom: Option[Long], validTo: Option[Long]) = APIAuthAction { req =>
+    try {
+      new ClashingSponsorshipsFetch(id, tagId, sectionId, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)))
+        .process.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
   def getAuditForTag(tagId: Long) = APIAuthAction { req =>
     Ok(Json.toJson(TagAuditRepository.getAuditTrailForTag(tagId)))
   }

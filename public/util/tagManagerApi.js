@@ -171,6 +171,23 @@ export default {
     });
   },
 
+  getClashingSponsorships: (sponsorship) => {
+    const command = {}
+
+    if(sponsorship.id) {command.id = sponsorship.id;}
+    if(sponsorship.validFrom) {command.validFrom = sponsorship.validFrom;}
+    if(sponsorship.validTo) {command.validTo = sponsorship.validTo;}
+    if(sponsorship.tag) {command.tagId = sponsorship.tag.id;}
+    if(sponsorship.section) {command.sectionId = sponsorship.section.id;}
+
+    return Reqwest({
+      url: '/api/clashingSponsorships',
+      data: command,
+      contentType: 'application/json',
+      method: 'get'
+    });
+  },
+
   getReferenceTypes: () => {
     return PandaReqwest({
       url: '/api/referenceTypes',

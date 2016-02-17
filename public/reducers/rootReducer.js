@@ -9,6 +9,7 @@ import {SECTION_UPDATE} from '../actions/SectionsActions/updateSection';
 import {SECTION_SAVE_REQUEST, SECTION_SAVE_RECEIVE, SECTION_SAVE_ERROR} from '../actions/SectionsActions/saveSection';
 import {SPONSORSHIP_GET_REQUEST, SPONSORSHIP_GET_RECEIVE, SPONSORSHIP_GET_ERROR} from '../actions/SponsorshipActions/getSponsorship';
 import {SPONSORSHIP_SAVE_REQUEST, SPONSORSHIP_SAVE_RECEIVE, SPONSORSHIP_SAVE_ERROR} from '../actions/SponsorshipActions/saveSponsorship';
+import {CLASHING_SPONSORSHIPS_GET_REQUEST, CLASHING_SPONSORSHIPS_GET_RECEIVE, CLASHING_SPONSORSHIPS_GET_ERROR} from '../actions/SponsorshipActions/getClashingSponsorships';
 import {SPONSORSHIP_UPDATE} from '../actions/SponsorshipActions/updateSponsorship';
 import {REFERENCE_TYPES_GET_REQUEST, REFERENCE_TYPES_GET_RECEIVE, REFERENCE_TYPES_GET_ERROR} from '../actions/ReferenceTypeActions/getReferenceTypes';
 import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
@@ -238,6 +239,17 @@ export default function tag(state = {
       saveState: saveState.clean
     });
   case SPONSORSHIP_SAVE_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
+    });
+
+  // CLASHING SPONSORSHIPS GET
+  case CLASHING_SPONSORSHIPS_GET_RECEIVE:
+    return Object.assign({}, state, {
+      clashingSponsorships: action.clashingSponsorships
+    });
+
+  case CLASHING_SPONSORSHIPS_GET_ERROR:
     return Object.assign({}, state, {
       error: action.message
     });
