@@ -35,7 +35,7 @@ export default class MergeTag extends React.Component {
       .then((res) => {
         history.pushState(null, '/status');
       })
-      .error((error) => {
+      .fail((error) => {
         showError(error);
       });
     }
