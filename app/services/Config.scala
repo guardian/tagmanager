@@ -94,7 +94,7 @@ sealed trait Config {
   def appAuditTableName: String
 
   def jobQueueName: String
-  
+
   def logShippingStreamName: Option[String] = None
   def pandaDomain: String
   def pandaAuthCallback: String

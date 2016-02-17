@@ -13,11 +13,14 @@ import org.apache.thrift.protocol.{TCompactProtocol, TProtocol}
 import org.apache.thrift.transport.TIOStreamTransport
 import play.api.Logger
 
+import java.util.concurrent.Executors
+
 import scala.collection.JavaConversions._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) {
+
+  implicit val executionContext = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,

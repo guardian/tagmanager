@@ -16,7 +16,7 @@ case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: Str
 
   override def process()(implicit username: Option[String] = None): Option[Long] = {
     val tag = TagRepository.getTag(tagId) getOrElse(TagNotFound)
-    val section = tag.section.flatMap( SectionRepository.getSection(_) )
+    val section = tag.section.flatMap( SectionLookupCache.getSection(_) )
 
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(

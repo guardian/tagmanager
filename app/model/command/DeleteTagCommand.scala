@@ -18,8 +18,8 @@ case class DeleteTagCommand(removingTagId: Long) extends Command {
   override type T = Long
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
-    val removingTag = TagRepository.getTag(removingTagId) getOrElse(TagNotFound)
-    val removingTagSection = removingTag.section.flatMap( SectionRepository.getSection(_) )
+    val removingTag = TagLookupCache.getTag(removingTagId) getOrElse(TagNotFound)
+    val removingTagSection = removingTag.section.flatMap( SectionLookupCache.getSection(_) )
 
     val jobId = Sequences.jobId.getNextId
 

@@ -124,22 +124,40 @@ object TagLookupCache {
 
   val allTags = new AtomicReference[List[Tag]](Nil)
 
-  def refresh = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
+  def initialLoad = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
 
   def insertTag(tag: Tag): Unit = {
-    val currentTags = allTags.get()
-    val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+    var currentTags: List[Tag] = null
+    var newTags: List[Tag] = null
 
-    if (!allTags.compareAndSet(currentTags, newTags))
-      Logger.warn("failed to update cache")
+    var count = 0
+
+    Logger.info(s"Attempting to insert tag (${tag.id}) into cache")
+    do {
+      currentTags = allTags.get()
+      newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+      count += 1
+    } while (!allTags.compareAndSet(currentTags, newTags))
+    Logger.info(s"Successfully inserted tag (${tag.id}) into cache after ${count} attempts")
+  }
+
+  def getTag(id: Long): Option[Tag] = {
+    allTags.get().find(_.id == id)
   }
 
   def removeTag(tagId: Long): Unit = {
-    val currentTags = allTags.get()
-    val newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
+    var currentTags: List[Tag] = null
+    var newTags: List[Tag] = null
 
-    if (!allTags.compareAndSet(currentTags, newTags))
-      Logger.warn("failed to update cache")
+    var count = 0
+
+    Logger.info(s"Attempting to remove tag (${tagId}) from cache")
+    do {
+      currentTags = allTags.get()
+      newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
+      count += 1
+    } while (!allTags.compareAndSet(currentTags, newTags))
+    Logger.info(s"Successfully removed tag (${tagId}) from cache after ${count} attempts")
   }
 
   def search(tagSearchCriteria: TagSearchCriteria) = {

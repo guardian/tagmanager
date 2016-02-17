@@ -2,6 +2,7 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import model.Section
+import play.api.Logger
 import play.api.libs.json.JsValue
 import services.Dynamo
 import scala.collection.JavaConversions._
@@ -31,14 +32,12 @@ object SectionRepository {
 object SectionLookupCache {
 
   // a map makes this faster to lookup
-  private val m = Map[Long,Section]()
-  val allSections = new AtomicReference[Map[Long, Section]](m)
+  val allSections = new AtomicReference[Map[Long, Section]](Map())
 
-  def refresh = {
-    val sections = SectionRepository.loadAllSections
-    sections.foreach { section =>
-      insertSection(section)
-    }
+  def initialLoad = allSections.set(SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut))
+
+  def getSection(id: Long): Option[Section] = {
+    getSection(Some(id))
   }
 
   def getSection(id: Option[Long]): Option[Section] = {
@@ -47,13 +46,34 @@ object SectionLookupCache {
     }
   }
 
-  def insertSection(section: Section): Map[Long, Section] = {
-    val current = allSections.get
-    allSections.getAndSet(current + (section.id -> section))
+  def insertSection(section: Section) = {
+    var currentSections: Map[Long, Section] = null
+    var newSections: Map[Long, Section] = null
+
+    var count = 0
+
+    Logger.info(s"Attempting to insert section (${section.id}) into cache")
+    do {
+      currentSections = allSections.get
+      newSections = currentSections + (section.id -> section)
+      count += 1
+    } while (!allSections.compareAndSet(currentSections, newSections))
+
+    Logger.info(s"Successfully inserted section (${section.id}) into cache after ${count} attempts")
   }
 
-  def removeSection(id: Long): Map[Long, Section] = {
-    val current = allSections.get
-    allSections.getAndSet(current - id)
+  def removeSection(id: Long) = {
+    var currentSections: Map[Long, Section] = null
+    var newSections: Map[Long, Section] = null
+
+    var count = 0;
+
+    Logger.info(s"Attempting to remove section (${id}) from cache")
+    do {
+      currentSections = allSections.get
+      newSections = currentSections - id
+      count += 1
+    } while (!allSections.compareAndSet(currentSections, newSections))
+    Logger.info(s"Successfully removed section (${id}) from cache after ${count} attempts")
   }
 }

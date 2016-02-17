@@ -18,11 +18,11 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
   override type T = Long
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
-    val removingTag = TagRepository.getTag(removingTagId) getOrElse(TagNotFound)
-    val removingTagSection = removingTag.section.flatMap( SectionRepository.getSection(_) )
+    val removingTag = TagLookupCache.getTag(removingTagId) getOrElse(TagNotFound)
+    val removingTagSection = removingTag.section.flatMap( SectionLookupCache.getSection(_) )
 
-    val replacementTag = TagRepository.getTag(replacementTagId) getOrElse(TagNotFound)
-    val replacementTagSection = replacementTag.section.flatMap( SectionRepository.getSection(_) )
+    val replacementTag = TagLookupCache.getTag(replacementTagId) getOrElse(TagNotFound)
+    val replacementTagSection = replacementTag.section.flatMap( SectionLookupCache.getSection(_) )
 
     val jobId = Sequences.jobId.getNextId
     Future {

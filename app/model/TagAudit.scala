@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, JsPath, Format}
-import repositories.SectionRepository
+import repositories.SectionLookupCache
 
 import scala.util.control.NonFatal
 
@@ -105,7 +105,7 @@ object TagSummary {
       externalName = tag.externalName,
       slug = tag.slug,
       `type` = tag.`type`,
-      sectionName = tag.section.flatMap{ sid => SectionRepository.getSection(sid).map(_.name)}.getOrElse("global")
+      sectionName = tag.section.flatMap{ sid => SectionLookupCache.getSection(sid).map(_.name)}.getOrElse("global")
     )
 }
 

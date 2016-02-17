@@ -39,12 +39,21 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
       reservation.set(Some(ns))
 
       Logger.info("loading tag cache")
-      TagLookupCache.refresh
+      TagLookupCache.initialLoad
+
+      Logger.info("loading section cache")
+      SectionLookupCache.initialLoad
 
       val tagUpdateConsumer = new KinesisConsumer(Config().tagUpdateStreamName, s"tag-cache-syncroniser-${ns.nodeId}", TagSyncUpdateProcessor)
       Logger.info("starting tag sync consumer")
       tagUpdateConsumer.start()
       tagCacheSynchroniser.set(Some(tagUpdateConsumer))
+
+      val sectionUpdateConsumer = new KinesisConsumer(Config().sectionUpdateStreamName, s"section-cache-syncroniser-${ns.nodeId}", SectionSyncUpdateProcessor)
+      Logger.info("starting section sync consumer")
+      sectionUpdateConsumer.start()
+      sectionCacheSynchroniser.set(Some(sectionUpdateConsumer))
+
     } catch {
       case he: HeartbeatException => Logger.error("failed to register in the cluster, will try again next heartbeat")
       case NonFatal(e) => {
@@ -57,9 +66,15 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
   def pause {
     Logger.warn("pausing cluster synchronisation")
     tagCacheSynchroniser.get.foreach{consumer =>
-      Logger.warn("stopping consumer")
+      Logger.warn("stopping tag consumer")
       consumer.stop()
       tagCacheSynchroniser.set(None)
+    }
+
+    sectionCacheSynchroniser.get.foreach{consumer =>
+      Logger.warn("stopping section consumer")
+      consumer.stop()
+      sectionCacheSynchroniser.set(None)
     }
 
     reservation.get.foreach{ns =>
@@ -100,6 +115,9 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
 
     Logger.info("heartbeater stopped, stopping tag cache sync")
     tagCacheSynchroniser.get foreach { consumer => consumer.stop() }
+
+    Logger.info("tag cache sync stopped, stopping section cache sync")
+    sectionCacheSynchroniser.get foreach { consumer => consumer.stop() }
 
     Logger.info("deregistering node")
     reservation.get foreach { ns => NodeStatusRepository.deregister(ns) }

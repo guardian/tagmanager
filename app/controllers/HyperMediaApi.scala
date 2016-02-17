@@ -43,7 +43,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
 
   def tag(id: Long) = CORSable(conf.corsableDomains: _*) {
     Action {
-      TagRepository.getTag(id).map { tag =>
+      TagLookupCache.getTag(id).map { tag =>
         Ok(Json.toJson(EntityResponse(TagEntity(tag))))
       }.getOrElse(NotFound)
     }
