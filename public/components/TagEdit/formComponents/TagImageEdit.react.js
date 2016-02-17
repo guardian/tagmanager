@@ -105,7 +105,7 @@ export default class TagImageEdit extends React.Component {
       return (
         <div className="tag-edit__image__add--error">
           <i className="i-cross-red" />
-          Url Not Valid. The image should be located on https://static.guim.co.uk or https://uploads.guim.co.uk
+          Invalid image URL. Upload your image with the <a href="https://s3-uploader.gutools.co.uk/">image uploader</a> and use the URL it provides.
         </div>
       );
     }
