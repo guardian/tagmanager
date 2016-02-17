@@ -59,16 +59,16 @@ export default class MergeTag extends React.Component {
 
       if (blockedTagTypes.indexOf(this.state.fromTag.type) !== -1) {
           // This should never happen since the TagSelect component should prevent it
-          return (<div className="merge__warning">
-                    <div>The 'from' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
-                  </div>);
+        return (<div className="merge__warning">
+                  <div>The 'from' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
+                </div>);
       }
 
       if (blockedTagTypes.indexOf(this.state.toTag.type) !== -1) {
           // This should never happen since the TagSelect component should prevent it
-          return (<div className="merge__warning">
-                    <div>The 'to' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
-                  </div>);
+        return (<div className="merge__warning">
+                  <div>The 'to' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
+                </div>);
       }
 
       return (
@@ -81,7 +81,7 @@ export default class MergeTag extends React.Component {
 
     renderTag(tag, setTagFn) {
       if (!tag) {
-          return <TagSelect onTagClick={setTagFn} blockedTagTypes={blockedTagTypes} />;
+        return <TagSelect onTagClick={setTagFn} blockedTagTypes={blockedTagTypes} />;
       }
 
       return (
