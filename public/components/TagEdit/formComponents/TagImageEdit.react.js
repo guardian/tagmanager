@@ -38,7 +38,7 @@ export default class TagImageEdit extends React.Component {
   }
 
   updateInputUrl(e) {
-    const url = e.target.value.replace('http://static.guim.co.uk', 'https://static.guim.co.uk')
+    const url = e.target.value.replace('http://', 'https://')
 
     this.setState({
       inputUrl: url,
@@ -105,7 +105,7 @@ export default class TagImageEdit extends React.Component {
       return (
         <div className="tag-edit__image__add--error">
           <i className="i-cross-red" />
-          Url Not Valid. The image should be located on https://static.guim.co.uk
+          Url Not Valid. The image should be located on https://static.guim.co.uk or https://uploads.guim.co.uk
         </div>
       );
     }
