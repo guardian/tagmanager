@@ -1,13 +1,16 @@
 import React from 'react';
+import R from 'ramda';
 import TagSelect from './utils/TagSelect.js';
 import CapiStats from './CapiStats/CapiStats.react';
 import ConfirmButton from './utils/ConfirmButton.react';
 import tagManagerApi from '../util/tagManagerApi';
 import history from '../routes/history';
 import showError from '../actions/UIActions/showError';
+import * as tagTypes from '../constants/tagTypes';
+
+const blockedTagTypes = ["Publication", "NewspaperBook", "NewspaperBookSection", "Tracking", "ContentType", "Contributor"];
 
 export default class MergeTag extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -44,6 +47,31 @@ export default class MergeTag extends React.Component {
         return false;
       }
 
+      if (this.state.fromTag.id === this.state.toTag.id) {
+        return (<div> className="merge__warning">
+                  <div>Cannot merge a tag into itself.</div>
+                </div>);
+      }
+
+      if (this.state.fromTag.type !== this.state.toTag.type) {
+        return (<div className="merge__warning">
+                  <div>Cannot merge tags of differing types.</div>
+                </div>);
+      }
+
+      if (blockedTagTypes.indexOf(this.state.fromTag.type) !== -1) {
+          // This should never happen since the TagSelect function should block
+          return (<div className="merge__warning">
+                    <div>The 'from' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
+                  </div>);
+      }
+
+      if (blockedTagTypes.indexOf(this.state.toTag.type) !== -1) {
+          return (<div className="merge__warning">
+                    <div>The 'to' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
+                  </div>);
+      }
+
       return (
         <div className="merge__confirmation">
           <div>This operation will DELETE all instances of the tag "{this.state.fromTag.internalName}" and replace them with the "{this.state.toTag.internalName}" tag. This operation is not reversible.</div>
@@ -54,7 +82,9 @@ export default class MergeTag extends React.Component {
 
     renderTag(tag, setTagFn) {
       if (!tag) {
-        return <TagSelect onTagClick={setTagFn} />;
+          return <TagSelect
+            onTagClick={setTagFn}
+            blockedTagTypes={blockedTagTypes} />;
       }
 
       return (
