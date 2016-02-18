@@ -17,7 +17,7 @@
         "cloudFormationStackName": "TagManager",
         "prependStackToCloudFormationStackName": false,
         "templateParameters": {
-          "MachineImagesAMI": "ami-a09931d3"
+          "MachineImagesAMI": "ami-6857e51b"
         }
       }
     }
