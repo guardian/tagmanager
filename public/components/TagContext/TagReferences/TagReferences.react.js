@@ -54,7 +54,7 @@ export default class TagReferences extends React.Component {
       return (
         <div className="tag-context__item">
           <div className="tag-context__header">External References</div>
-          <table className="tag-references">
+          <table className="grid-table tag-references">
             <thead className="tag-references__header">
               <tr>
                 <th>

@@ -36,7 +36,7 @@ export default class SectionEdit extends React.Component {
       }
 
       return (
-        <table>
+        <table className="grid-table">
           <thead>
             <tr>
               <th>

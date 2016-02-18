@@ -42,7 +42,7 @@ export default class TagAudit extends React.Component {
     return (
       <div className="tag-audit">
         <div className="tag-audit__header">Tag history</div>
-          <table>
+          <table className="grid-table">
             <thead>
               <tr>
                 <th>Date</th>

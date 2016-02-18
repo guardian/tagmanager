@@ -1,36 +1,33 @@
 $table-border-color: $c-grey-300;
 
-table {
+table.grid-table {
+    @extend %f-header;
+    @extend %fs-data-3;
 
-  @extend %f-header;
-  @extend %fs-data-3;
+    width: 100%;
 
-  width: 100%;
+    td, th {
+        padding: $standard-padding/2 $standard-padding;
+    }
 
-  td, th {
-    padding: $standard-padding/2 $standard-padding;
-  }
+    thead {
+        background-color: $c-grey-200;
 
-}
+        font-weight: bold;
 
-thead {
-  background-color: $c-grey-200;
+        border: 1px solid $c-grey-300;
+    }
 
-  font-weight: bold;
+    tbody tr {
 
-  border: 1px solid $c-grey-300;
-}
+        border: 1px solid $c-grey-300;
 
+        td {
+            border-right: 1px solid $c-grey-300;
+        }
 
-tbody tr {
-
-  border: 1px solid $c-grey-300;
-
-  td {
-    border-right: 1px solid $c-grey-300;
-  }
-
-  &.row-warning {
-    color: $c-red;
-  }
+        &.row-warning {
+            color: $c-red;
+        }
+    }
 }
