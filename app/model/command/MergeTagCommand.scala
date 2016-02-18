@@ -18,10 +18,23 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
   override type T = Long
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
-    val removingTag = TagRepository.getTag(removingTagId) getOrElse(TagNotFound)
-    val removingTagSection = removingTag.section.flatMap( SectionRepository.getSection(_) )
+    if (removingTagId == replacementTagId) {
+      AttemptedSelfMergeTag
+    }
 
+    val removingTag = TagRepository.getTag(removingTagId) getOrElse(TagNotFound)
     val replacementTag = TagRepository.getTag(replacementTagId) getOrElse(TagNotFound)
+
+    if (removingTag.`type` != replacementTag.`type`) {
+      MergeTagTypesDontMatch
+    }
+
+    if (MergeTagCommand.blockedTagTypes.contains(removingTag.`type`)
+      || MergeTagCommand.blockedTagTypes.contains(replacementTag.`type`)) {
+      IllegalMergeTagType
+    }
+
+    val removingTagSection = removingTag.section.flatMap( SectionRepository.getSection(_) )
     val replacementTagSection = replacementTag.section.flatMap( SectionRepository.getSection(_) )
 
     val jobId = Sequences.jobId.getNextId
@@ -66,6 +79,8 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
 }
 
 object MergeTagCommand {
+  val blockedTagTypes = List("Publication", "NewspaperBook", "NewspaperBookSection", "Tracking", "ContentType", "Contributor")
+
   implicit val mergeTagCommandFormat: Format[MergeTagCommand] = (
       (JsPath \ "removingTagId").format[Long] and
       (JsPath \ "replacementTagId").format[Long]

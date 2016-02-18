@@ -29,7 +29,12 @@
   font-weight: bold;
 }
 
+.merge__warning,
 .merge__confirmation {
   color: $c-red;
   font-weight: bold;
+}
+
+.merge__warning {
+    color: $c-orange;
 }

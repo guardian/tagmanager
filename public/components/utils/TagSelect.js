@@ -50,6 +50,13 @@ export default class TagSelect extends React.Component {
         });
     }
 
+    isAllowedTagType(tagType) {
+      if (this.props.blockedTagTypes) {
+        return this.props.blockedTagTypes.indexOf(tagType) === -1;
+      }
+      return true;
+    }
+
     renderSuggestions() {
       if (!this.state.suggestions.length) {
         return false;
@@ -58,8 +65,7 @@ export default class TagSelect extends React.Component {
       return (
         <div className="tag-select__suggestions">
           <ul>
-            {this.state.suggestions.map(tag => {
-
+            {this.state.suggestions.filter(tag => this.isAllowedTagType(tag.type)).map(tag => {
               const tagTypeKey = Object.keys(tagTypes).filter((tagTypeKey) => {
                 return tagTypes[tagTypeKey].name === tag.type;
               })[0];
