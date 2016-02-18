@@ -33,6 +33,32 @@ object SponsorshipRepository {
     }
   }
 
+  def getSponsorshipsToActivate: List[Sponsorship] = {
+    val now = new DateTime().getMillis
+    val withEnd = Dynamo.sponsorshipTable.scan(
+      new ScanFilter("validFrom").lt(now),
+      new ScanFilter("validTo").gt(now),
+      new ScanFilter("status").ne("active")
+    ).map(Sponsorship.fromItem).toList
+
+    val withoutEnd = Dynamo.sponsorshipTable.scan(
+      new ScanFilter("validFrom").lt(now),
+      new ScanFilter("validTo").notExist(),
+      new ScanFilter("status").ne("active")
+    ).map(Sponsorship.fromItem).toList
+
+    withEnd ::: withoutEnd
+  }
+
+  def getSponsorshipsToExpire: List[Sponsorship] = {
+    val now = new DateTime().getMillis
+
+    Dynamo.sponsorshipTable.scan(
+      new ScanFilter("validTo").lt(now),
+      new ScanFilter("status").eq("active")
+    ).map(Sponsorship.fromItem).toList
+  }
+
 }
 
 case class SponsorshipSearchCriteria(

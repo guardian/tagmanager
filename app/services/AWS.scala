@@ -89,4 +89,5 @@ object KinesisStreams {
   lazy val reindexTagsStream = new KinesisStreamProducer(Config().reindexTagsStreamName, true)
   lazy val reindexSectionsStream = new KinesisStreamProducer(Config().reindexSectionsStreamName, true)
   lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, false)
+  lazy val commercialExpiryStream = new KinesisStreamProducer(Config().commercialExpiryStreamName, false)
 }
