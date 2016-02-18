@@ -7,16 +7,14 @@ export default class MappingTable extends React.Component {
         super(props);
     }
 
-    updateMappingValue (tagId, externalReferencesType, oldValue, newValue) {
+    updateMappingValue (oldTag, oldReference, newValue) {
 
-      const oldTag = this.props.tags.filter((tag) => tag.id === tagId)[0];
       const newTag = Object.assign({}, oldTag, {
         externalReferences: oldTag.externalReferences.map((reference) => {
-          if (reference.type === externalReferencesType && reference.value === oldValue) {
-            return {
-              type: externalReferencesType,
+          if (reference.type === oldReference.type && reference.value === oldReference.value) {
+            return Object.assign({}, reference, {
               value: newValue
-            };
+            });
           }
 
           return reference;
@@ -26,16 +24,14 @@ export default class MappingTable extends React.Component {
       this.props.updateTag(newTag);
     }
 
-    saveTag(tagId) {
-      const tag = this.props.tags.filter((tag) => tag.id === tagId)[0];
+    saveTag(tag) {
       this.props.saveTag(tag);
     }
 
-    deleteMapping(tagId, externalReferencesType, value) {
-      const oldTag = this.props.tags.filter((tag) => tag.id === tagId)[0];
+    deleteMapping(oldTag, oldReference) {
       const newTag = Object.assign({}, oldTag, {
         externalReferences: oldTag.externalReferences.filter((reference) => {
-          if (reference.type === externalReferencesType && reference.value === value) {
+          if (reference.type === oldReference.type && reference.value === oldReference.value) {
             return false;
           }
 
@@ -56,16 +52,13 @@ export default class MappingTable extends React.Component {
       this.props.tags.forEach((tag) => {
         tag.externalReferences.forEach((reference, i) => {
 
-          if (this.props.selectedType !== reference.type) {
-            return
+          if (this.props.selectedType.typeName !== reference.type) {
+            return;
           }
 
           mappings.push({
-            tagId: tag.id,
-            tagInternalName: tag.internalName,
-            referenceType: reference.type,
-            referenceValue: reference.value,
-            referenceIndex: i //this is used to provide a key for this item in table below
+            tag: tag,
+            reference: reference
           });
         });
       });
@@ -83,14 +76,11 @@ export default class MappingTable extends React.Component {
             {mappings.sort((a, b) => a.tagInternalName > b.tagInternalName ? 1 : -1).map((mapping) => {
               return (
                 <MappingTableRow
-                  tagId={mapping.tagId}
-                  tagInternalName={mapping.tagInternalName}
-                  referenceType={mapping.referenceType}
-                  referenceValue={mapping.referenceValue}
+                  tag={mapping.tag}
+                  reference={mapping.reference}
                   updateMapping={this.updateMappingValue.bind(this)}
                   deleteMapping={this.deleteMapping.bind(this)}
                   saveTag={this.saveTag.bind(this)}
-                  key={mapping.tagId + mapping.referenceType + mapping.referenceIndex}
                 />
             );
             }, this)}

@@ -42,20 +42,20 @@ object SectionAudit {
     }
   }
 
-  def created(section: Section)(implicit user: Option[User] = None): SectionAudit = {
-    SectionAudit(section.id, "created", new DateTime(), user.map(_.email).getOrElse("default user"), s"section '${section.name}' created", SectionSummary(section))
+  def created(section: Section)(implicit user: Option[String] = None): SectionAudit = {
+    SectionAudit(section.id, "created", new DateTime(), user.getOrElse("default user"), s"section '${section.name}' created", SectionSummary(section))
   }
 
-  def updated(section: Section)(implicit user: Option[User] = None): SectionAudit = {
-    SectionAudit(section.id, "updated", new DateTime(), user.map(_.email).getOrElse("default user"), s"section '${section.name}' updated", SectionSummary(section))
+  def updated(section: Section)(implicit user: Option[String] = None): SectionAudit = {
+    SectionAudit(section.id, "updated", new DateTime(), user.getOrElse("default user"), s"section '${section.name}' updated", SectionSummary(section))
   }
 
-  def addedEdition(section: Section, editionName: String)(implicit user: Option[User] = None): SectionAudit = {
-    SectionAudit(section.id, "added edition", new DateTime(), user.map(_.email).getOrElse("default user"), s"added ${editionName} edition to section '${section.name}", SectionSummary(section))
+  def addedEdition(section: Section, editionName: String)(implicit user: Option[String] = None): SectionAudit = {
+    SectionAudit(section.id, "added edition", new DateTime(), user.getOrElse("default user"), s"added ${editionName} edition to section '${section.name}", SectionSummary(section))
   }
 
-  def removedEdition(section: Section, editionName: String)(implicit user: Option[User] = None): SectionAudit = {
-    SectionAudit(section.id, "removed edition", new DateTime(), user.map(_.email).getOrElse("default user"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
+  def removedEdition(section: Section, editionName: String)(implicit user: Option[String] = None): SectionAudit = {
+    SectionAudit(section.id, "removed edition", new DateTime(), user.getOrElse("default user"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
   }
 
 }

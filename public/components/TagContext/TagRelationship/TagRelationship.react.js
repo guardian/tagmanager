@@ -75,16 +75,19 @@ export default class TagRelationship extends React.Component {
       const tag = this.state.cachedTags[tagId];
 
       if (!tag) {
-        return 'Fetching: ' + tagId;
+          return (
+            <tr>
+              <td colspan="3">Fetching tag #{tagId}</td>
+            </tr>
+        )
       }
 
       return (
-        <div key={tag.id} className="tag-relationship__tag">
-          <Link to={`/tag/${tag.id}`}>{tag.internalName}</Link>
-          <div className="tag-relationship__tag__remove" onClick={this.removeParentTag.bind(this, tag)}>
-            <i className="i-delete" />
-          </div>
-        </div>
+         <tr>
+           <td><Link to={`/tag/${tag.id}`}>{tag.internalName}</Link></td>
+           <td>{tag.type}</td>
+           <td onClick={this.removeParentTag.bind(this, tag)}><i className="i-delete" /></td>
+         </tr>
       );
     }
 
@@ -92,7 +95,6 @@ export default class TagRelationship extends React.Component {
       if (this.props.tagEditable) {
         return <AddTagToContext onAddTag={this.addParentTag.bind(this)} tagEditable={this.props.tagEditable}/>
       }
-      return false;
     }
 
     render () {
@@ -104,23 +106,31 @@ export default class TagRelationship extends React.Component {
       if (this.props.tag.type !== tagTypes.topic.name) {
         return false;
       }
-
-      if (!this.props.tag.parents) {
-        return (
-          <div className="tag-context__item">
-            No parent tags found
-          </div>
-        );
-      }
-
       return (
-        <div className="tag-context__item">
-          <div className="tag-context__header">Parents</div>
-          <div className="tag-relationship">
-              {this.props.tag.parents.map(this.renderTag)}
-              {this.renderAddTagToContext()}
+          <div className="tag-context__item">
+            <div className="tag-context__header">Parents</div>
+            <table className="tag-references">
+              <thead className="tag-references__header">
+                <tr>
+                  <th>
+                    Tag
+                  </th>
+                  <th>
+                    Type
+                  </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody className="tag-references__references">
+                {this.props.tag.parents.map(this.renderTag)}
+                <tr>
+                  <td colSpan="3" className="tag-references__addrow">
+                    {this.renderAddTagToContext()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-      );
+      )
     }
 }

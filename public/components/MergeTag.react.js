@@ -6,8 +6,9 @@ import tagManagerApi from '../util/tagManagerApi';
 import history from '../routes/history';
 import showError from '../actions/UIActions/showError';
 
-export default class MergeTag extends React.Component {
+const blockedTagTypes = ["Publication", "NewspaperBook", "NewspaperBookSection", "ContentType", "Contributor"];
 
+export default class MergeTag extends React.Component {
     constructor(props) {
         super(props);
 
@@ -34,7 +35,7 @@ export default class MergeTag extends React.Component {
       .then((res) => {
         history.pushState(null, '/status');
       })
-      .error((error) => {
+      .fail((error) => {
         showError(error);
       });
     }
@@ -42,6 +43,32 @@ export default class MergeTag extends React.Component {
     renderButton() {
       if (!this.state.fromTag || !this.state.toTag) {
         return false;
+      }
+
+      if (this.state.fromTag.id === this.state.toTag.id) {
+        return (<div> className="merge__warning">
+                  <div>Cannot merge a tag into itself.</div>
+                </div>);
+      }
+
+      if (this.state.fromTag.type !== this.state.toTag.type) {
+        return (<div className="merge__warning">
+                  <div>Cannot merge tags of differing types.</div>
+                </div>);
+      }
+
+      if (blockedTagTypes.indexOf(this.state.fromTag.type) !== -1) {
+          // This should never happen since the TagSelect component should prevent it
+        return (<div className="merge__warning">
+                  <div>The 'from' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
+                </div>);
+      }
+
+      if (blockedTagTypes.indexOf(this.state.toTag.type) !== -1) {
+          // This should never happen since the TagSelect component should prevent it
+        return (<div className="merge__warning">
+                  <div>The 'to' tag type ({this.state.fromTag.type}) is not a mergable tag type.</div>
+                </div>);
       }
 
       return (
@@ -54,7 +81,7 @@ export default class MergeTag extends React.Component {
 
     renderTag(tag, setTagFn) {
       if (!tag) {
-        return <TagSelect onTagClick={setTagFn} />;
+        return <TagSelect onTagClick={setTagFn} blockedTagTypes={blockedTagTypes} />;
       }
 
       return (

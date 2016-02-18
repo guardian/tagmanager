@@ -3,6 +3,7 @@ import Scribe from 'scribe-editor';
 import scribeKeyboardShortcutsPlugin from 'scribe-plugin-keyboard-shortcuts';
 import scribePluginToolbar from 'scribe-plugin-toolbar';
 import scribePluginLinkPromptCommand from 'scribe-plugin-link-prompt-command';
+import scribePluginSanitizer from 'scribe-plugin-sanitizer'
 
 export default class ReactScribe extends React.Component {
 
@@ -36,6 +37,16 @@ export default class ReactScribe extends React.Component {
       italic: function (event) { return event.metaKey && event.keyCode === 73; }, // i
       linkPrompt: function (event) { return event.metaKey && !event.shiftKey && event.keyCode === 75; }, // k
       unlink: function (event) { return event.metaKey && event.shiftKey && event.keyCode === 75; } // shft + k
+    }));
+    this.scribe.use(scribePluginSanitizer({
+      tags: {
+        p: {},
+        i: {},
+        b: {},
+        a: {
+          href: true
+        }
+      }
     }));
 
     this.scribe.use(scribePluginToolbar(this.refs.toolbar));

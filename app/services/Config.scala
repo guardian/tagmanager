@@ -135,8 +135,6 @@ class DevConfig extends Config {
 
   override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(composerDomain)
-
-
 }
 
 class CodeConfig extends Config {
@@ -169,9 +167,7 @@ class CodeConfig extends Config {
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
 
   override def composerDomain: String = "https://composer.code.dev-gutools.co.uk"
-  override def corsableDomains: Seq[String] = Seq(composerDomain)
-
-
+  override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer.local.dev-gutools.co.uk")
 }
 
 class ProdConfig extends Config {

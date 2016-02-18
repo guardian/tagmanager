@@ -62,14 +62,14 @@ export default class AddReference extends React.Component {
 
       if (!this.state.expanded) {
         return (
-          <div className="tag-reference__add" onClick={this.expand.bind(this)}>
+          <div onClick={this.expand.bind(this)}>
             <i className="i-plus" /> Add Reference
           </div>
         );
       }
 
       return (
-        <div className="tag-reference__add">
+        <div>
           <form onSubmit={this.addReference.bind(this)}>
             <ReferenceTypeSelect referenceTypes={this.props.referenceTypes} onChange={this.onTypeChange.bind(this)} selectedType={this.state.newType} />
             <input type="text" placeholder="Value" onChange={this.onValueChange.bind(this)} value={this.state.newValue}/>

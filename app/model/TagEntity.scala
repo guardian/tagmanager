@@ -55,7 +55,7 @@ object TagEntity {
       ).flatten
 
     // else use the global section
-    val globalSection = SectionEntity(281, "Global", "global", "global")
+    val globalSection = SectionEntity(281, "Global", "global", "global", 14821)
 
     section getOrElse globalSection
   }
@@ -81,7 +81,8 @@ case class SectionEntity(
   id: Long,
   name: String,
   pathPrefix: String,
-  slug: String
+  slug: String,
+  sectionTagId: Long
 )
 
 object SectionEntity {
@@ -90,6 +91,7 @@ object SectionEntity {
       "id" -> JsNumber(se.id),
       "name" -> JsString(se.name),
       "pathPrefix" -> JsString(se.pathPrefix),
+      "sectionTagId" -> JsNumber(se.sectionTagId),
       "slug" -> JsString(se.slug)
     ))
   }
@@ -99,7 +101,8 @@ object SectionEntity {
       section.id,
       section.name,
       section.path,
-      section.wordsForUrl
+      section.wordsForUrl,
+      section.sectionTagId
     )
   }
 }

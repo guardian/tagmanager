@@ -30,13 +30,17 @@ export default class AddTagMapping extends React.Component {
 
       const existingReferences = this.state.selectedTag.externalReferences ? this.state.selectedTag.externalReferences : [];
 
+      const newReference = {
+        type: this.props.selectedType.typeName,
+        value: this.state.referenceValue
+      };
+
+      if (this.props.selectedType.capiType) {
+        newReference.capiType = this.props.selectedType.capiType;
+      }
+
       const newTag = Object.assign({}, this.state.selectedTag, {
-        externalReferences: existingReferences.concat([
-          {
-            type: this.props.selectedType,
-            value: this.state.referenceValue
-          }
-        ])
+        externalReferences: existingReferences.concat([newReference])
       });
 
       this.setState(BLANK_STATE);
@@ -66,9 +70,8 @@ export default class AddTagMapping extends React.Component {
       return (
         <div className="mapping__add">
           <div>
-            <label className="mapping__add__title">Add a {this.props.selectedType}</label>
+            <label className="mapping__add__title">Add a {this.props.selectedType.typeName}</label>
           </div>
-
           <div className="mapping__add__block">
             <label className="mapping__add__title">Tag</label>
             {this.renderTagInput()}
