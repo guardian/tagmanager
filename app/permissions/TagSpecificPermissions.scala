@@ -20,7 +20,7 @@ object TagTypePermissionMap {
       case TagType.Publication.name => Some(Permissions.TagAdmin)
       case TagType.NewspaperBook.name => Some(Permissions.TagAdmin)
       case TagType.NewspaperBookSection.name => Some(Permissions.TagAdmin)
-      case TagType.Tracking.name => Some(Permissions.TagUnaccessible)
+      case TagType.Tracking.name => Some(Permissions.TagAdmin)
       case _ => None
     }
   }

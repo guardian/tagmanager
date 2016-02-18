@@ -12,7 +12,10 @@ import scala.xml.Node
 object ReadOnlyApi extends Controller {
   def getTagsAsXml() = Action {
     val tags = TagLookupCache.allTags
-    val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml)
+
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
+    val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml(sections))
+
     Ok(<tags>
       {xmlTags.seq.map { x => x }}
       </tags>)
@@ -41,9 +44,13 @@ object ReadOnlyApi extends Controller {
   }
 
   def tagAsXml(id: Long) = Action {
+
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
+
+
     TagRepository.getTag(id).map { tag =>
       Ok(<tags>
-        {tag.asExportedXml}
+        {tag.asExportedXml(sections)}
       </tags>)
     }.getOrElse(NotFound)
   }
@@ -89,8 +96,9 @@ object ReadOnlyApi extends Controller {
 
     val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
 
-    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))
+    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml(sections)))
     Ok(ret)
   }
 
@@ -110,10 +118,11 @@ object ReadOnlyApi extends Controller {
       case (_ , _) => None
     }
 
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
     val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
 
-    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml))
+    val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml(sections)))
     Ok(ret)
   }
 

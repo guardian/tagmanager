@@ -90,8 +90,9 @@ export default class BatchFilters extends React.Component {
     }
 
     addTag(tag) {
+      const tagPath = tag.type === "ContentType" ? "type/" + tag.slug : tag.path;
       this.props.updateFilters(Object.assign({}, this.props.filters, {
-        'tag': R.uniq(this.getTagArray().concat([tag.path])).join(',')
+        'tag': R.uniq(this.getTagArray().concat([tagPath])).join(',')
       }));
     }
 

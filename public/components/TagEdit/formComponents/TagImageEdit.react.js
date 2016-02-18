@@ -38,7 +38,7 @@ export default class TagImageEdit extends React.Component {
   }
 
   updateInputUrl(e) {
-    const url = e.target.value.replace('http://static.guim.co.uk', 'https://static.guim.co.uk')
+    const url = e.target.value.replace('http://', 'https://')
 
     this.setState({
       inputUrl: url,
@@ -105,7 +105,7 @@ export default class TagImageEdit extends React.Component {
       return (
         <div className="tag-edit__image__add--error">
           <i className="i-cross-red" />
-          Url Not Valid. The image should be located on https://static.guim.co.uk
+          Invalid image URL. Upload your image with the <a href="https://s3-uploader.gutools.co.uk/">image uploader</a> and use the URL it provides.
         </div>
       );
     }
@@ -143,7 +143,7 @@ export default class TagImageEdit extends React.Component {
           <div>Width: {imageAsset.width}px</div>
           <div>Height: {imageAsset.height}px</div>
           <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
-            <i className="i-cross-red" />Remove image
+            <i className="i-delete" />Remove image
           </div>
         </div>
       </div>

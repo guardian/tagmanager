@@ -23,7 +23,18 @@ object TagEntity {
   def apply(tag: Tag): TagEntity = {
     /* The Section is implicitly populated when this is called */
 
-    val convertedType = if (tag.`type`.toLowerCase == "topic") "Keyword" else tag.`type`
+    val convertedType = tag.`type`.toLowerCase match {
+      case "topic" => "Keyword"
+      case "contenttype" => "Content Type"
+      case "newspaperbook" => "Newspaper Book"
+      case "newspaperbooksection" => "Newspaper Book Section"
+      case _ => tag.`type`
+    }
+
+    val parents = tag.publication match {
+      case Some(publications) => tag.parents ++ Set(publications)
+      case None => tag.parents
+    }
 
       TagEntity(
         tag.id,
@@ -32,7 +43,7 @@ object TagEntity {
         tag.externalName,
         tag.slug,
         getTagSection(tag.section),
-        tag.parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
+        parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
         tag.references.map(ReferenceEntity(_))
       )
   }
@@ -44,7 +55,7 @@ object TagEntity {
       ).flatten
 
     // else use the global section
-    val globalSection = SectionEntity(281, "Global", "global", "global")
+    val globalSection = SectionEntity(281, "Global", "global", "global", 14821)
 
     section getOrElse globalSection
   }
@@ -70,7 +81,8 @@ case class SectionEntity(
   id: Long,
   name: String,
   pathPrefix: String,
-  slug: String
+  slug: String,
+  sectionTagId: Long
 )
 
 object SectionEntity {
@@ -79,6 +91,7 @@ object SectionEntity {
       "id" -> JsNumber(se.id),
       "name" -> JsString(se.name),
       "pathPrefix" -> JsString(se.pathPrefix),
+      "sectionTagId" -> JsNumber(se.sectionTagId),
       "slug" -> JsString(se.slug)
     ))
   }
@@ -88,7 +101,8 @@ object SectionEntity {
       section.id,
       section.name,
       section.path,
-      section.wordsForUrl
+      section.wordsForUrl,
+      section.sectionTagId
     )
   }
 }
