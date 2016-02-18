@@ -10,7 +10,11 @@ export default class SponsorshipList extends React.Component {
     }
 
     onSponsorshipClick(sponsorship) {
-      history.replaceState(null, '/sponsorship/' + sponsorship.id);
+      if(sponsorship.sponsorshipType === 'paidContent'){
+        history.replaceState(null, '/tag/' + sponsorship.tag.id);
+      } else {
+        history.replaceState(null, '/sponsorship/' + sponsorship.id);
+      }
     }
 
     renderTargeting(sponsorship) {
@@ -43,6 +47,7 @@ export default class SponsorshipList extends React.Component {
 
       return (
         <tr key={sponsorship.id} className="taglist__results-item" onClick={this.onSponsorshipClick.bind(this, sponsorship)}>
+          <td>{sponsorship.sponsorshipType} </td>
           <td><img src={sponsorship.sponsorLogo.assets[0].imageUrl} />{sponsorship.sponsorName} </td>
           <td>{this.renderTargeting(sponsorship)}</td>
           <td>{this.renderValidFrom(sponsorship)}</td>
@@ -64,6 +69,7 @@ export default class SponsorshipList extends React.Component {
         <table className="taglist">
           <thead className="taglist__header">
             <tr>
+              <th onClick={this.props.sortBy.bind(this, 'sponsorshipType')}>Type</th>
               <th onClick={this.props.sortBy.bind(this, 'sponsor')}>Sponsor</th>
               <th>Target</th>
               <th onClick={this.props.sortBy.bind(this, 'from')}>Active from</th>
