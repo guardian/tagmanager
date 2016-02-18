@@ -109,7 +109,7 @@ export default class TagRelationship extends React.Component {
       return (
           <div className="tag-context__item">
             <div className="tag-context__header">Parents</div>
-            <table className="tag-references">
+            <table className="grid-table tag-references">
               <thead className="tag-references__header">
                 <tr>
                   <th>
