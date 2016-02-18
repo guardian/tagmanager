@@ -49,7 +49,7 @@ export default class TagList extends React.Component {
         }
 
         return (
-            <table className="taglist">
+            <table className="grid-table taglist">
               <thead className="taglist__header">
                 <tr>
                   <th onClick={this.sortBy.bind(this, 'type')}>Type</th>

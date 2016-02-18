@@ -48,7 +48,7 @@ class SectionList extends React.Component {
             }
 
           </div>
-          <table >
+          <table className="grid-table" >
             <thead className="sectionlist__header">
               <tr>
                 <th>Name</th>

@@ -22,7 +22,7 @@ export default class ContentList extends React.Component {
         const unselectedContent = R.difference(contentIds, this.props.selectedContent);
 
         return (
-            <table className="taglist">
+            <table className="grid-table taglist">
               <thead className="taglist__header">
                 <tr>
                   <th>
