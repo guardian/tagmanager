@@ -11,9 +11,9 @@ export default class AddRelationship extends React.Component {
         };
     }
 
-    expand() {
+    toggle() {
       this.setState({
-        expanded: true
+        expanded: !this.state.expanded
       });
     }
 
@@ -28,21 +28,29 @@ export default class AddRelationship extends React.Component {
       this.minimise();
     }
 
-    render () {
-
-      if (!this.state.expanded) {
+    renderTagSelect() {
+      if(this.state.expanded) {
         return (
-          <div className="tag-relationship__add" onClick={this.expand.bind(this)}>
-            <i className="i-plus" />
-          </div>
-        );
-      }
-
-      return (
-        <div className="tag-relationship__add--expanded">
+          <div className="tag-relationship__add--expanded">
           <TagSelect onTagClick={this.onAddTag.bind(this)} disabled={!this.props.tagEditable}/>
           <i className="i-cross" onClick={this.minimise.bind(this)}></i>
-        </div>
+          </div>
+        )
+      } else {
+        return (
+          <span></span>
+        )
+      }
+    }
+
+    render () {
+      return (
+        <span>
+          <div className="tag-relationship__add" onClick={this.toggle.bind(this)}>
+            <i className="i-plus" /> Add parent
+          </div>
+          {this.renderTagSelect()}
+        </span>
       );
     }
-}
+  }

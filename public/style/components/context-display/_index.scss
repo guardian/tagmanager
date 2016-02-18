@@ -21,7 +21,6 @@
 .tag-relationship {
   border: 1px solid $c-grey-300;
   padding: $standard-padding;
-  min-height: 100px;
 }
 
 .tag-relationship__tag {
@@ -61,23 +60,19 @@
 
 %context__add {
   display: inline-block;
-
   position: relative;
-
-  margin-left: $standard-padding;
 }
 
 .tag-relationship__add {
   @extend %context__add;
   line-height: 35px;
-
+  cursor: pointer;
 }
 
 .tag-relationship__add--expanded {
   @extend %context__add;
-
   width: 300px;
-
+  margin-left: $standard-padding;
 }
 
 .tag-references__header {
