@@ -12,6 +12,7 @@ import repositories.SponsorshipOperations._
 import repositories.SponsorshipRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 class SponsorshipLifecycleModule extends AbstractModule {
   override def configure(): Unit = {
@@ -46,20 +47,26 @@ class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) {
 }
 
 class SponsorshipLauncher extends AbstractScheduledService {
-  override def runOneIteration(): Unit = {
+  override def runOneIteration(): Unit = try {
     implicit val username = Some("Sponsorship launcher")
     Logger.debug("checking for sponsorships to launch")
 
     val sponsorships = SponsorshipRepository.getSponsorshipsToActivate
 
     sponsorships foreach { s =>
-      Logger.info(s"activating sponsorship ${s.sponsorName} ${s.id}")
-      val activated = s.copy(status = "active")
-      SponsorshipRepository.updateSponsorship(activated)
+      try {
+        Logger.info(s"activating sponsorship ${s.sponsorName} ${s.id}")
+        val activated = s.copy(status = "active")
+        SponsorshipRepository.updateSponsorship(activated)
 
-      s.tag foreach {tagId => addSponsorshipToTag(s.id, tagId)}
-      s.section foreach {sectionId => addSponsorshipToSection(s.id, sectionId)}
+        s.tag foreach { tagId => addSponsorshipToTag(s.id, tagId) }
+        s.section foreach { sectionId => addSponsorshipToSection(s.id, sectionId) }
+      } catch {
+        case NonFatal(e) => Logger.error("failed to activate sponsorship", e)
+      }
     }
+  } catch {
+    case NonFatal(e) => Logger.error("failed to activate sponsorships", e)
   }
 
   override def scheduler(): Scheduler = Scheduler.newFixedDelaySchedule(0, 1, TimeUnit.MINUTES)
@@ -68,20 +75,27 @@ class SponsorshipLauncher extends AbstractScheduledService {
 class SponsorshipExpirer extends AbstractScheduledService {
   implicit val username = Some("Sponsorship expirer")
 
-  override def runOneIteration(): Unit = {
+  override def runOneIteration(): Unit = try {
 
     Logger.debug("checking for sponsorships to expire")
     val sponsorships = SponsorshipRepository.getSponsorshipsToExpire
 
     sponsorships foreach { s =>
-      Logger.info(s"expiring sponsorship ${s.sponsorName} ${s.id}")
-      if(s.sponsorshipType == "paidContent") {
-        expirePaidContent(s)
-      } else {
-        expireSponsorship(s)
+      try {
+        Logger.info(s"expiring sponsorship ${s.sponsorName} ${s.id}")
+        if(s.sponsorshipType == "paidContent") {
+          expirePaidContent(s)
+        } else {
+          expireSponsorship(s)
+        }
+      } catch {
+        case NonFatal(e) => Logger.error("failed to expire sponsorship", e)
       }
     }
+  } catch {
+    case NonFatal(e) => Logger.error("failed to expire sponsorships", e)
   }
+
 
   private def expirePaidContent(s: Sponsorship): Unit = {
     val expired = s.copy(status = "expired")
