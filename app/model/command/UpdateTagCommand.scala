@@ -9,7 +9,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import model.command._
 
 
-case class UpdateTagCommand(var tag: Tag) extends Command {
+case class UpdateTagCommand(tag: Tag) extends Command {
 
   type T = Tag
 
