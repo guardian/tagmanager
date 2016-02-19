@@ -23,6 +23,7 @@ function recieveTagGet(tag, canEdit) {
 }
 
 function errorTagGet(error) {
+    debugger;
     return {
         type:       TAG_GET_ERROR,
         message:    'Could not get tag',

@@ -20,6 +20,7 @@ function receiveSectionsGet(sections) {
 }
 
 function errorSectionsGet(error) {
+    debugger;
     return {
         type:       SECTIONS_GET_ERROR,
         message:    'Could not get sections list',

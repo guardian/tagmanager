@@ -129,6 +129,13 @@ object TagLookupCache {
   def insertTag(tag: Tag): Unit = {
     while (true) {
       val currentTags = allTags.get()
+
+      val current = currentTags.find(_.id == tag.id).foreach(currentTag => {
+        if (tag.updatedAt < currentTag.updatedAt) {
+          return;
+        }
+      })
+
       val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
 
       if (allTags.compareAndSet(currentTags, newTags)) {
@@ -146,7 +153,6 @@ object TagLookupCache {
         return
       }
     }
-
   }
 
   def search(tagSearchCriteria: TagSearchCriteria) = {

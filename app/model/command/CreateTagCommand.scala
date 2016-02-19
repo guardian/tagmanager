@@ -67,9 +67,10 @@ case class CreateTagCommand(
       publicationInformation = publicationInformation,
       isMicrosite = isMicrosite,
       capiSectionId = capiSectionId,
-      trackingInformation = trackingInformation
+      trackingInformation = trackingInformation,
+      updatedAt = new DateTime(DateTimeZone.UTC).getMillis
     )
-    
+
     val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
