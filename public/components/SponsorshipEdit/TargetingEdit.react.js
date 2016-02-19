@@ -1,5 +1,6 @@
 import React from 'react';
 import R from 'ramda';
+import {allowedEditions} from '../../constants/allowedEditions';
 import SectionSelect from '../utils/SectionSelect.react';
 import TagSelect from '../utils/TagSelect.js';
 
@@ -68,6 +69,66 @@ export default class TargetingEdit extends React.Component {
     return this.props.sponsorship.tag && this.props.sponsorship.tag.id;
   }
 
+  isTargettingAllEditions() {
+    return !this.props.sponsorship.targeting || !this.props.sponsorship.targeting.validEditions;
+  }
+
+  isTargettingEdition(ed) {
+    return !!this.props.sponsorship.targeting &&
+      !!this.props.sponsorship.targeting.validEditions &&
+      this.props.sponsorship.targeting.validEditions.includes(ed);
+  }
+
+  targetAllEditions() {
+    if(this.props.sponsorship.targeting) {
+      console.log("here's some ramda", R);
+      const targetingWithoutEditions = R.omit(['validEditions'], this.props.sponsorship.targeting);
+      if (Object.keys(targetingWithoutEditions).length === 0) {
+        this.props.updateSponsorship(R.omit(['targeting'], this.props.sponsorship));
+      } else {
+        this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
+          targeting: targetingWithoutEditions
+        }));
+      }
+    }
+  }
+
+  toggleTargetEdition(ed) {
+
+    var editions = [];
+    if(this.props.sponsorship.targeting && this.props.sponsorship.targeting.validEditions) {
+      editions = this.props.sponsorship.targeting.validEditions;
+    }
+
+    if(editions.includes(ed)) {
+      editions = editions.filter(function(e){ return e !== ed; });
+    } else {
+      editions.push(ed);
+    }
+
+    if(editions.length === 0 || editions.length === allowedEditions.length) {
+      this.targetAllEditions();
+
+    } else {
+      console.log('setting validEditions to', editions);
+      this.props.updateSponsorship(R.merge(this.props.sponsorship, {targeting: {validEditions: editions}}));
+    }
+  }
+
+  renderEditionToggles() {
+    return allowedEditions.map((ed) => {
+      console.log("rendering editions", ed, this.isTargettingEdition(ed));
+      return (
+        <span key={ed}>
+          <input type="checkbox"
+                 onChange={this.toggleTargetEdition.bind(this, ed)}
+                 checked={this.isTargettingEdition(ed)} />
+          <label className="tag-edit__label"> {ed}</label>
+        </span>
+      );
+    });
+  }
+
   render () {
 
     if (!this.props.sponsorship) {
@@ -88,6 +149,15 @@ export default class TargetingEdit extends React.Component {
           {this.renderSection()}
         </div>
 
+        <div className="tag-edit__field" >
+          <label className="tag-edit__input-group__header">Editions</label>
+          <input type="checkbox"
+                 onChange={this.targetAllEditions.bind(this)}
+                 checked={this.isTargettingAllEditions()} />
+          <label className="tag-edit__label"> All</label>
+          {this.renderEditionToggles()}
+
+        </div>
       </div>
     );
   }

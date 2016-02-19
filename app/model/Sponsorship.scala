@@ -12,7 +12,7 @@ import repositories.{SectionRepository, TagRepository, TagLookupCache}
 import scala.util.control.NonFatal
 
 
-case class SponsorshipTargeting(publishedSince: Option[DateTime], validGeos: Option[List[String]])
+case class SponsorshipTargeting(publishedSince: Option[DateTime], validEditions: Option[List[String]])
 
 object SponsorshipTargeting {
   implicit val sponsorshipTargettingFormat = Jsonx.formatCaseClass[SponsorshipTargeting]
