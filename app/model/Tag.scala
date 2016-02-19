@@ -34,7 +34,7 @@ case class Tag(
   isMicrosite: Boolean,
   capiSectionId: Option[String] = None,
   trackingInformation: Option[TrackingInformation],
-  updatedAt: Long = 0L
+  var updatedAt: Long = 0L
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())

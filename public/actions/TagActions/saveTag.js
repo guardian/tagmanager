@@ -29,7 +29,6 @@ function errorTagSave(error) {
 }
 
 export function saveTag(tag) {
-    tag.updatedAt = Date.UTC()
     return dispatch => {
         dispatch(requestTagSave());
         return tagManagerApi.saveTag(tag.id, tag)
