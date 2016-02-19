@@ -69,11 +69,11 @@ export default class PublicationInfoEdit extends React.Component {
 
       return (
           <tr className="tag-references__item" key={i}>
-          <td><Link to={`/tag/${tagId}`}>{tagId}</Link></td>
-          <td>{tagType}</td>
-          <td>
-          <i className="i-delete" onClick={this.removeNewspaperBook.bind(this, tagId)} />
-          </td>
+            <td><Link to={`/tag/${tagId}`}>{tagId}</Link></td>
+            <td>{tagType}</td>
+            <td>
+              <i className="i-delete" onClick={this.removeNewspaperBook.bind(this, tagId)} />
+            </td>
           </tr>
       )
   }
@@ -81,10 +81,14 @@ export default class PublicationInfoEdit extends React.Component {
   renderNewspaperBooks() {
     const publicationInfo = this.props.tag.publicationInformation;
     const newspaperBooks = publicationInfo && publicationInfo.newspaperBooks ? publicationInfo.newspaperBooks : [];
-    const addTag = <TagSelect onTagClick={this.addNewspaperBookTag.bind(this)} tagType="NewspaperBook" disabled={!this.props.tagEditable}/>
+    const addTag = (
+      <span>
+        Select new tag: <TagSelect onTagClick={this.addNewspaperBookTag.bind(this)} tagType="NewspaperBook" disabled={!this.props.tagEditable}/>
+      </span>
+    )
 
     return (
-        <TagReferenceList title="Newspaper Books" headers={["Name", "Type", ""]} actionButton={addTag}>
+        <TagReferenceList title="Newspaper Books" headers={["Name", "Type", ""]} actionButton={addTag} tableClassName="grid-table--light">
             {newspaperBooks.map(this.renderRow.bind(this))}
         </TagReferenceList>
     )
