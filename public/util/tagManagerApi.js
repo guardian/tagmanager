@@ -179,6 +179,7 @@ export default {
     if(sponsorship.validTo) {command.validTo = sponsorship.validTo;}
     if(sponsorship.tag) {command.tagId = sponsorship.tag.id;}
     if(sponsorship.section) {command.sectionId = sponsorship.section.id;}
+    if(sponsorship.targeting && sponsorship.targeting.validEditions) {command.editions = sponsorship.targeting.validEditions.toString();}
 
     return Reqwest({
       url: '/api/clashingSponsorships',
