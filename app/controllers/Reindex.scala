@@ -20,30 +20,22 @@ object ExpectedItemCount {
 object Reindex extends Controller with PanDomainAuthActions {
   def reindexTags = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
     // Get the reindex id provided by CAPI
-    req.body.asJson.map { json =>
-        try {
-          ReindexTagsCommand((json \ "jobId").as[String]).process.map{ count =>
-            Ok(Json.toJson(ExpectedItemCount(count)))
-          } getOrElse InternalServerError
-        } catch {
-          commandErrorAsResult
-        }
-      }.getOrElse {
-        BadRequest("Expecting reindex id in body")
-      }
+    try {
+      ReindexTagsCommand().process.map{ count =>
+        Ok(Json.toJson(ExpectedItemCount(count)))
+      } getOrElse InternalServerError
+    } catch {
+      commandErrorAsResult
+    }
   }
 
   def reindexSections = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
-    req.body.asJson.map { json =>
-        try {
-          ReindexSectionsCommand((json \ "jobId").as[String]).process.map{ count =>
-            Ok(Json.toJson(ExpectedItemCount(count)))
-          } getOrElse InternalServerError
-        } catch {
-          commandErrorAsResult
-        }
-      }.getOrElse {
-        BadRequest("Expecting reindex id in body")
-      }
+    try {
+      ReindexSectionsCommand().process.map{ count =>
+        Ok(Json.toJson(ExpectedItemCount(count)))
+      } getOrElse InternalServerError
+    } catch {
+      commandErrorAsResult
+    }
   }
 }
