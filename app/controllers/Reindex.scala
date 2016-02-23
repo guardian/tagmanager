@@ -41,7 +41,6 @@ object Reindex extends Controller with PanDomainAuthActions {
 
   def getTagReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
     try {
-
       ReindexProgressRepository.getTagReindexProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
       } getOrElse NotFound
