@@ -127,19 +127,32 @@ object TagLookupCache {
   def refresh = allTags.set(TagRepository.loadAllTags.toList.sortBy(_.internalName))
 
   def insertTag(tag: Tag): Unit = {
-    val currentTags = allTags.get()
-    val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+    while (true) {
+      val currentTags = allTags.get()
 
-    if (!allTags.compareAndSet(currentTags, newTags))
-      Logger.warn("failed to update cache")
+      val current = currentTags.find(_.id == tag.id).foreach(currentTag => {
+        if (tag.updatedAt < currentTag.updatedAt) {
+          return;
+        }
+      })
+
+      val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
+
+      if (allTags.compareAndSet(currentTags, newTags)) {
+        return
+      }
+    }
   }
 
   def removeTag(tagId: Long): Unit = {
-    val currentTags = allTags.get()
-    val newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
+    while (true) {
+      val currentTags = allTags.get()
+      val newTags = currentTags.filterNot(_.id == tagId).sortBy(_.internalName)
 
-    if (!allTags.compareAndSet(currentTags, newTags))
-      Logger.warn("failed to update cache")
+      if (allTags.compareAndSet(currentTags, newTags)) {
+        return
+      }
+    }
   }
 
   def search(tagSearchCriteria: TagSearchCriteria) = {

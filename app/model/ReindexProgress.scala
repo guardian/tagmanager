@@ -4,8 +4,6 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import org.cvogt.play.json.Jsonx
 import play.api.libs.json._
 import play.api.Logger
-import play.json.extra.JsonFormat;
-import play.json.extra.Picklers._
 import scala.util.control.NonFatal
 
 case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsExpected: Int) {
