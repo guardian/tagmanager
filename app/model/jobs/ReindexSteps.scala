@@ -3,21 +3,30 @@ package model.jobs
 import model.{Section, Tag}
 import org.cvogt.play.json.Jsonx
 import repositories._
+import play.api.Logger
 import play.api.libs.json._
 import services.{Config, KinesisStreams}
+import scala.util.control.NonFatal
 
 case class ReindexTags() extends Step {
   override def process: Option[Step] = {
     val total = TagLookupCache.allTags.get.size
     var progress: Int = 0
 
-    TagLookupCache.allTags.get.grouped(Config().reindexTagsBatchSize).foreach { tags =>
-      KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags))
+    try {
+      TagLookupCache.allTags.get.grouped(Config().reindexTagsBatchSize).foreach { tags =>
+        KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags))
 
-      progress += tags.size
-      ReindexProgressRepository.updateTagReindexProgress(progress, total)
+        progress += tags.size
+        ReindexProgressRepository.updateTagReindexProgress(progress, total)
+      }
+      ReindexProgressRepository.completeTagReindex(progress, total)
+    } catch {
+      case NonFatal(e) => {
+        Logger.error("Tag reindex failed", e)
+        ReindexProgressRepository.failTagReindex(progress, total)
+      }
     }
-    ReindexProgressRepository.completeTagReindex(progress, total)
     None
   }
 }
@@ -32,13 +41,20 @@ case class ReindexSections() extends Step {
     val total = sections.size
     var progress: Int = 0
 
-    sections.foreach { section =>
-      KinesisStreams.reindexSectionsStream.publishUpdate("sectionReindex", section.asThrift)
+    try {
+      sections.foreach { section =>
+        KinesisStreams.reindexSectionsStream.publishUpdate("sectionReindex", section.asThrift)
 
-      progress += 1
-      ReindexProgressRepository.updateSectionReindexProgress(progress, total)
+        progress += 1
+        ReindexProgressRepository.updateSectionReindexProgress(progress, total)
+      }
+      ReindexProgressRepository.completeSectionReindex(progress, total)
+    } catch {
+      case NonFatal(e) => {
+        Logger.error("Section reindex failed", e)
+        ReindexProgressRepository.failSectionReindex(progress, total)
+      }
     }
-    ReindexProgressRepository.completeSectionReindex(progress, total)
     None
   }
 }

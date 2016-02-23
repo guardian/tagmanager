@@ -66,6 +66,14 @@ object ReindexProgress {
   def completeSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Completed, docsSent, docsExpected)
   }
+
+  def failTag(docsSent: Int, docsExpected: Int) = {
+    ReindexProgress(TagTypeName, Failed, docsSent, docsExpected)
+  }
+
+  def failSection(docsSent: Int, docsExpected: Int) = {
+    ReindexProgress(SectionTypeName, Failed, docsSent, docsExpected)
+  }
 }
 
 // Version of the reindex progress without the type string

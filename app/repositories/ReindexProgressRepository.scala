@@ -29,6 +29,14 @@ object ReindexProgressRepository {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.completeSection(docsSent, docsTotal).toItem)
   }
 
+  def failTagReindex(docsSent: Int, docsTotal: Int) = {
+    Dynamo.reindexProgressTable.putItem(ReindexProgress.failTag(docsSent, docsTotal).toItem)
+  }
+
+  def failSectionReindex(docsSent: Int, docsTotal: Int) = {
+    Dynamo.reindexProgressTable.putItem(ReindexProgress.failSection(docsSent, docsTotal).toItem)
+  }
+
   // Read
   def getTagReindexProgress(): ReindexProgress = {
     Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.TagTypeName))
