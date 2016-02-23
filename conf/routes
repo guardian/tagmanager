@@ -49,7 +49,9 @@ DELETE     /api/jobs/:id                  controllers.TagManagementApi.deleteJob
 
 
 POST       /reindex/tags                  controllers.Reindex.reindexTags
+GET        /reindex/tags                  controllers.Reindex.getTagReindexProgress
 POST       /reindex/sections              controllers.Reindex.reindexSections
+GET        /reindex/sections              controllers.Reindex.getSectionReindexProgress
 
 
 # Hypmedia API
