@@ -41,7 +41,10 @@ object Reindex extends Controller with PanDomainAuthActions {
 
   def getTagReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
     try {
-      Ok(ReindexProgressRepository.getTagReindexProgress.toCapiForm().toJson)
+
+      ReindexProgressRepository.getTagReindexProgress.map { progress =>
+        Ok(progress.toCapiForm().toJson)
+      } getOrElse NotFound
     } catch {
       commandErrorAsResult
     }
@@ -49,7 +52,9 @@ object Reindex extends Controller with PanDomainAuthActions {
 
   def getSectionReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
     try {
-      Ok(ReindexProgressRepository.getSectionReindexProgress.toCapiForm().toJson)
+      ReindexProgressRepository.getSectionReindexProgress.map { progress =>
+        Ok(progress.toCapiForm().toJson)
+      } getOrElse NotFound
     } catch {
       commandErrorAsResult
     }

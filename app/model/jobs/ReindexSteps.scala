@@ -14,8 +14,8 @@ case class ReindexTags() extends Step {
     var progress: Int = 0
 
     try {
-      TagLookupCache.allTags.get.grouped(Config().reindexTagsBatchSize).foreach { tags =>
-        KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags))
+      TagRepository.loadAllTags.grouped(Config().reindexTagsBatchSize).foreach { tags =>
+        KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags.toList))
 
         progress += tags.size
         ReindexProgressRepository.updateTagReindexProgress(progress, total)

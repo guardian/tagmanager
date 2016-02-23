@@ -38,21 +38,21 @@ object ReindexProgressRepository {
   }
 
   // Read
-  def getTagReindexProgress(): ReindexProgress = {
+  def getTagReindexProgress(): Option[ReindexProgress] = {
     Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.TagTypeName))
-      .map(i => ReindexProgress.fromItem(i)).getOrElse(ReindexProgress.unknownTag)
+      .map(ReindexProgress.fromItem(_))
   }
 
-  def getSectionReindexProgress(): ReindexProgress = {
+  def getSectionReindexProgress(): Option[ReindexProgress] = {
     Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.SectionTypeName))
-      .map(i => ReindexProgress.fromItem(i)).getOrElse(ReindexProgress.unknownSection)
+      .map(ReindexProgress.fromItem(_))
   }
 
   def isTagReindexInProgress(): Boolean = {
-    getTagReindexProgress.status == ReindexProgress.InProgress
+    getTagReindexProgress.map(_.status == ReindexProgress.InProgress).getOrElse(false)
   }
 
   def isSectionReindexInProgress(): Boolean = {
-    getSectionReindexProgress.status == ReindexProgress.InProgress
+    getSectionReindexProgress.map(_.status == ReindexProgress.InProgress).getOrElse(false)
   }
 }

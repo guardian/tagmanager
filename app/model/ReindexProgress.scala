@@ -18,8 +18,7 @@ object ReindexProgress {
   val InProgress = "in progress"
   val Failed = "failed"
   val Completed = "completed"
-  val Cancelled = "cancelled"
-  val Unknown = "unknown"
+  val Cancelled = "cancelled" // Not used yet.
 
   implicit val reindexProgressFormat: Format[ReindexProgress] = Jsonx.formatCaseClassUseDefaults[ReindexProgress]
 
@@ -31,14 +30,6 @@ object ReindexProgress {
       Logger.error(s"failed to load reindex progress ${item.toJSON}")
       throw e
     }
-  }
-
-  def unknownTag() = {
-    ReindexProgress(TagTypeName, Unknown, 0, 0)
-  }
-
-  def unknownSection() = {
-    ReindexProgress(SectionTypeName, Unknown, 0, 0)
   }
 
   def resetTag(docsExpected: Int) = {
