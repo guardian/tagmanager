@@ -12,6 +12,7 @@ lazy val dependencies = Seq(
   "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.8",
   "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
+  "io.megl" % "play-json-extra_2.11" % "2.4.3",
   "org.cvogt" %% "play-json-extensions" % "0.6.0",
   "com.squareup.okhttp" % "okhttp" % "2.4.0",
   "org.apache.thrift" % "libthrift" % "0.8.0",

@@ -7,23 +7,19 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.Logger
 import play.api.mvc.Controller
-
-case class ExpectedItemCount(expectedItemCount: Int)
-
-object ExpectedItemCount {
-  implicit val expectedItemCountFormat: Format[ExpectedItemCount] = (
-    JsPath \ "expectedItemCount"
-  ).format[Int].inmap(count => ExpectedItemCount(count), (itemsCount: ExpectedItemCount) => itemsCount.expectedItemCount)
-}
-
+import repositories.ReindexProgressRepository
 
 object Reindex extends Controller with PanDomainAuthActions {
   def reindexTags = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
     // Get the reindex id provided by CAPI
     try {
-      ReindexTagsCommand().process.map{ count =>
-        Ok(Json.toJson(ExpectedItemCount(count)))
-      } getOrElse InternalServerError
+      if (ReindexProgressRepository.isTagReindexInProgress) {
+        Forbidden
+      } else {
+        ReindexTagsCommand().process.map{ count =>
+          Ok
+        } getOrElse InternalServerError
+      }
     } catch {
       commandErrorAsResult
     }
@@ -31,9 +27,29 @@ object Reindex extends Controller with PanDomainAuthActions {
 
   def reindexSections = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
     try {
-      ReindexSectionsCommand().process.map{ count =>
-        Ok(Json.toJson(ExpectedItemCount(count)))
-      } getOrElse InternalServerError
+      if (ReindexProgressRepository.isSectionReindexInProgress) {
+        Forbidden
+      } else {
+        ReindexSectionsCommand().process.map{ count =>
+          Ok
+        } getOrElse InternalServerError
+      }
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
+  def getTagReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
+    try {
+      Ok(ReindexProgressRepository.getTagReindexProgress.toCapiForm().toJson)
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
+  def getSectionReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
+    try {
+      Ok(ReindexProgressRepository.getSectionReindexProgress.toCapiForm().toJson)
     } catch {
       commandErrorAsResult
     }

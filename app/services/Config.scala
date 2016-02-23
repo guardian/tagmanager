@@ -91,10 +91,12 @@ sealed trait Config {
   def reindexTagsBatchSize: Int
   def reindexSectionsStreamName: String
 
+  def reindexProgressTableName: String
+
   def appAuditTableName: String
 
   def jobQueueName: String
-  
+
   def logShippingStreamName: Option[String] = None
   def pandaDomain: String
   def pandaAuthCallback: String
@@ -122,6 +124,8 @@ class DevConfig extends Config {
   override def reindexTagsStreamName: String = "tag-reindex-dev"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-dev"
+
+  override def reindexProgressTableName: String = "tag-manager-reindex-progress-DEV"
 
   override def appAuditTableName: String = "tag-manager-app-audit-dev"
 
@@ -155,6 +159,8 @@ class CodeConfig extends Config {
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-CODE"
 
+  override def reindexProgressTableName: String = "tag-manager-reindex-progress-CODE"
+
   override def appAuditTableName: String = "tag-manager-app-audit-CODE"
 
   override def jobQueueName: String = "tag-manager-job-queue-CODE"
@@ -186,6 +192,8 @@ class ProdConfig extends Config {
   override def reindexTagsStreamName: String = "tag-reindex-PROD"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-PROD"
+
+  override def reindexProgressTableName: String = "tag-manager-reindex-progress-PROD"
 
   override def appAuditTableName: String = "tag-manager-app-audit-PROD"
 

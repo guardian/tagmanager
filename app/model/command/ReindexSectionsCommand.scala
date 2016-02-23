@@ -10,7 +10,7 @@ import play.api.Logger
 import repositories._
 
 case class ReindexSectionsCommand() extends Command {
-  override type T = Int
+  override type T = Unit
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
     val reindexJob = Job(
@@ -23,12 +23,14 @@ case class ReindexSectionsCommand() extends Command {
       steps = List(ReindexSections())
     )
 
+    ReindexProgressRepository.resetSectionReindexProgress(SectionRepository.count)
+
     JobRepository.upsertJob(reindexJob)
-    SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 15)
+    SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 5)
 
     AppAuditRepository.upsertAppAudit(AppAudit.reindexSections);
 
-    Some(SectionRepository.count)
+    Some(())
   }
 }
 

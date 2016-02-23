@@ -11,7 +11,7 @@ import play.api.Logger
 import repositories._
 
 case class ReindexTagsCommand() extends Command {
-  override type T = Int
+  override type T = Unit
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
     val reindexJob = Job(
@@ -24,12 +24,15 @@ case class ReindexTagsCommand() extends Command {
       steps = List(ReindexTags())
     )
 
+    val expectedDocs = TagLookupCache.allTags.get().size
+    ReindexProgressRepository.resetTagReindexProgress(expectedDocs)
+
     JobRepository.upsertJob(reindexJob)
-    SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 15)
+    SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 5)
 
     AppAuditRepository.upsertAppAudit(AppAudit.reindexTags);
 
-    Some(TagLookupCache.allTags.get.count(_ => true))
+    Some(())
   }
 }
 
