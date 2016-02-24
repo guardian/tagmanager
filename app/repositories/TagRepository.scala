@@ -109,8 +109,8 @@ case class TagSearchCriteria(
   private def internalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.internalName.toLowerCase == n }
   private def externalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalName.toLowerCase == n }
 
-  private def referenceTypeFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.references.exists(_.`type`.toLowerCase == n) }
-  private def referenceTokenFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.references.exists(_.value.toLowerCase == n) }
+  private def referenceTypeFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalReferences.exists(_.`type`.toLowerCase == n) }
+  private def referenceTokenFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalReferences.exists(_.value.toLowerCase == n) }
 
 
   def asFilters = {

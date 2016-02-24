@@ -27,7 +27,7 @@ case class Tag(
   publication: Option[Long],
   description: Option[String] = None,
   parents: Set[Long] = Set(),
-  references: List[Reference] = Nil,
+  externalReferences: List[Reference] = Nil,
   podcastMetadata: Option[PodcastMetadata] = None,
   contributorInformation: Option[ContributorInformation] = None,
   publicationInformation: Option[PublicationInformation] = None,
@@ -54,7 +54,7 @@ case class Tag(
     publication       = publication,
     description       = description,
     parents           = parents,
-    references        = references.map(_.asThrift),
+    references        = externalReferences.map(_.asThrift),
     podcastMetadata   = podcastMetadata.map(_.asThrift),
     contributorInformation = contributorInformation.map(_.asThrift),
     publicationInformation = publicationInformation.map(_.asThrift),
@@ -87,7 +87,7 @@ case class Tag(
 
     val withAttrs = el % id % externalName % internalName % urlWords % sectionId % sectionName % sectionUrl % `type` % cmsPrefix
 
-    val withRefs: Node = this.references.foldLeft(withAttrs: Node) { (x, y) =>
+    val withRefs: Node = this.externalReferences.foldLeft(withAttrs: Node) { (x, y) =>
       addChild(x, y.asExportedXml)
     }
     val withParents: Node = this.parents.foldLeft(withRefs: Node) { (x, parent) =>
@@ -136,7 +136,7 @@ object Tag {
       publication       = thriftTag.publication,
       description       = thriftTag.description,
       parents           = thriftTag.parents.toSet,
-      references        = thriftTag.references.map(Reference(_)).toList,
+      externalReferences        = thriftTag.references.map(Reference(_)).toList,
       podcastMetadata   = thriftTag.podcastMetadata.map(PodcastMetadata(_)),
       contributorInformation = thriftTag.contributorInformation.map(ContributorInformation(_)),
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
