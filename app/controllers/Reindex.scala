@@ -6,11 +6,11 @@ import permissions.ReindexPermissionsCheck
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.Logger
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 import repositories.ReindexProgressRepository
 
 object Reindex extends Controller with PanDomainAuthActions {
-  def reindexTags = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
+  def reindexTags = Action { req =>
     // Get the reindex id provided by CAPI
     try {
       if (ReindexProgressRepository.isTagReindexInProgress) {
@@ -25,7 +25,7 @@ object Reindex extends Controller with PanDomainAuthActions {
     }
   }
 
-  def reindexSections = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
+  def reindexSections = Action { req =>
     try {
       if (ReindexProgressRepository.isSectionReindexInProgress) {
         Forbidden
@@ -39,7 +39,7 @@ object Reindex extends Controller with PanDomainAuthActions {
     }
   }
 
-  def getTagReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
+  def getTagReindexProgress = Action { req =>
     try {
       ReindexProgressRepository.getTagReindexProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
@@ -49,7 +49,7 @@ object Reindex extends Controller with PanDomainAuthActions {
     }
   }
 
-  def getSectionReindexProgress = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
+  def getSectionReindexProgress = Action { req =>
     try {
       ReindexProgressRepository.getSectionReindexProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
