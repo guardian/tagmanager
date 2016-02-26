@@ -1,9 +1,11 @@
 package controllers
 
 import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
+import org.cvogt.play.json.Jsonx
 import play.api.Logger
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
+import repositories.TagRepository
 import services.{Config, ImageMetadataService}
 import java.util.concurrent.TimeUnit
 
@@ -38,5 +40,12 @@ object Support extends Controller with PanDomainAuthActions {
       }
     }
 
+  }
+
+
+  def flexMigrationSpecificData = Action {
+    Ok(
+      Json.toJson(TagRepository.loadAllTags.map(tag => tag.id.toString -> JsString(tag.path)).toMap)
+    )
   }
 }
