@@ -21,11 +21,6 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
         Some(Results.Unauthorized)}
 }
 
-object ReindexPermissionsCheck extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "reindex"
-}
-
 object AddEditionToSectionPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "add edition to section"
