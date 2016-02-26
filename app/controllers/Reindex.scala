@@ -9,7 +9,7 @@ import play.api.Logger
 import play.api.mvc.{Action, Controller}
 import repositories.ReindexProgressRepository
 
-object Reindex extends Controller with PanDomainAuthActions {
+object Reindex extends Controller {
   def reindexTags = Action { req =>
     // Get the reindex id provided by CAPI
     try {
