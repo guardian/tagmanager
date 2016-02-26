@@ -11,7 +11,6 @@ import repositories.ReindexProgressRepository
 
 object Reindex extends Controller {
   def reindexTags = Action { req =>
-    // Get the reindex id provided by CAPI
     try {
       if (ReindexProgressRepository.isTagReindexInProgress) {
         Forbidden
