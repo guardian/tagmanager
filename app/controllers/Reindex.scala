@@ -2,7 +2,6 @@ package controllers
 
 import model.command.CommandError._
 import model.command.{ReindexSectionsCommand, ReindexTagsCommand}
-import permissions.ReindexPermissionsCheck
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.Logger
