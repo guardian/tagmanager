@@ -20,7 +20,7 @@ export default class PublicationInfoEdit extends React.Component {
   removeNewspaperBook(tagIdToRemove) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
       publicationInformation: Object.assign({}, this.props.tag.publicationInformation, {
-        newspaperBooks: this.props.tag.publicationInformation.newspaperBooks.filter((tagId) => tagIdToRemove !== tagId)
+        newspaperBooks: this.props.tag.publicationInformation.newspaperBooks.filter((tag) => tagIdToRemove !== tag.id)
       })
     }));
   }
@@ -37,9 +37,14 @@ export default class PublicationInfoEdit extends React.Component {
 
     const publicationInfo = this.props.tag.publicationInformation;
 
+    const newTag = {
+      id: tag.id,
+      externalName: tag.externalName
+    }
+
     this.props.updateTag(Object.assign({}, this.props.tag, {
       publicationInformation: Object.assign({}, publicationInfo, {
-        newspaperBooks: publicationInfo.newspaperBooks ? publicationInfo.newspaperBooks.concat([tag.id]) : [tag.id]
+        newspaperBooks: publicationInfo.newspaperBooks ? publicationInfo.newspaperBooks.concat([newTag]) : [newTag]
       })
     }));
   }
@@ -71,11 +76,11 @@ export default class PublicationInfoEdit extends React.Component {
     return (
       <div className="tag-edit__field">
         <label className="tag-edit__label">Newspaper Books</label> <br />
-        {newspaperBooks.map((tagId) => {
+        {newspaperBooks.map((tag, i) => {
           return (
-            <div key={tagId} className="tag-edit__tag">
-              <Link to={`/tag/${tagId}`}>{tagId}</Link>
-              <span className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tagId)}>
+            <div key={i} className="tag-edit__tag">
+              <Link to={`/tag/${tag.id}`}>{tag.externalName}</Link>
+              <span className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tag.id)}>
                 <i className="i-delete" />
               </span>
             </div>

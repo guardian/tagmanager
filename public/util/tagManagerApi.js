@@ -1,4 +1,3 @@
-
 import Reqwest from 'reqwest';
 import Q from 'q';
 import {reEstablishSession} from 'babel?presets[]=es2015!panda-session';
@@ -30,13 +29,23 @@ function PandaReqwest(reqwestBody) {
   });
 }
 
+const getTag = (id) => {
+    return PandaReqwest({
+        url: '/api/tag/' + id,
+        contentType: 'application/json',
+        method: 'get'
+    });
+}
+
 export default {
-  getTag: (id) => {
-      return PandaReqwest({
-          url: '/api/tag/' + id,
-          contentType: 'application/json',
-          method: 'get'
-      });
+  getTag,
+
+  getTags: (ids) => {
+    let qs = ids.slice(0).map(i => {
+        return getTag(i)
+    })
+
+    return Q.all(qs)
   },
 
   saveTag: (id, tag) => {

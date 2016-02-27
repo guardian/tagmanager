@@ -22,7 +22,7 @@ class TagDisplay extends React.Component {
 
     componentDidMount() {
       if (!this.isTagFetched()) {
-        this.props.tagActions.getTag(this.props.routeParams.tagId);
+        this.getTagExtended(this.props.routeParams.tagId)
       }
 
       if (!this.props.sections || !this.props.sections.length) {
@@ -40,12 +40,19 @@ class TagDisplay extends React.Component {
       }
     }
 
+    getTagExtended(id) {
+      return this.props.tagActions.getTag(id)
+      .then(() => {
+        this.props.tagActions.getNewspaperBooks(this.props.tag.publicationInformation.newspaperBooks.map(b => b.id))
+      })
+    }
+
     saveTag() {
       this.props.tagActions.saveTag(this.props.tag);
     }
 
     resetTag() {
-      this.props.tagActions.getTag(this.props.routeParams.tagId);
+      this.getTagExtended(this.props.routeParams.tagId)
     }
 
     deleteTag() {
@@ -141,6 +148,7 @@ import * as getTag from '../../actions/TagActions/getTag';
 import * as updateTag from '../../actions/TagActions/updateTag';
 import * as saveTag from '../../actions/TagActions/saveTag';
 import * as deleteTag from '../../actions/TagActions/deleteTag';
+import * as getNewspaperBooks from '../../actions/TagActions/getNewspaperBooks';
 import * as getSections from '../../actions/SectionsActions/getSections';
 import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getReferenceTypes';
 
@@ -157,7 +165,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag, deleteTag), dispatch),
+    tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag, deleteTag, getNewspaperBooks), dispatch),
     sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch),
     referenceTypeActions: bindActionCreators(Object.assign({}, getReferenceTypes), dispatch)
   };
