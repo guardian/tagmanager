@@ -1,9 +1,8 @@
-
 import React from 'react';
 import R from 'ramda';
 import {Link} from 'react-router';
-
 import TagSelect from '../../../utils/TagSelect.js';
+import TagReferenceList from '../../../TagContext/TagReferenceList.react'
 
 export default class PublicationInfoEdit extends React.Component {
 
@@ -63,27 +62,36 @@ export default class PublicationInfoEdit extends React.Component {
     );
   }
 
-  renderNewspaperBooks() {
+  renderRow(tag, i) {
+      const tagName = tag.internalName || tag
+      const tagType = tag.type || " "
+      const tagId = tag.id || tag
 
+      return (
+          <tr className="tag-references__item" key={i}>
+            <td><Link to={`/tag/${tagId}`}>{tagId}</Link></td>
+            <td>{tagType}</td>
+            <td>
+              <i className="i-delete" onClick={this.removeNewspaperBook.bind(this, tagId)} />
+            </td>
+          </tr>
+      )
+  }
+
+  renderNewspaperBooks() {
     const publicationInfo = this.props.tag.publicationInformation;
     const newspaperBooks = publicationInfo && publicationInfo.newspaperBooks ? publicationInfo.newspaperBooks : [];
+    const addTag = (
+      <span>
+        Select new tag: <TagSelect onTagClick={this.addNewspaperBookTag.bind(this)} tagType="NewspaperBook" disabled={!this.props.tagEditable}/>
+      </span>
+    )
 
     return (
-      <div className="tag-edit__field">
-        <label className="tag-edit__label">Newspaper Books</label> <br />
-        {newspaperBooks.map((tagId) => {
-          return (
-            <div key={tagId} className="tag-edit__tag">
-              <Link to={`/tag/${tagId}`}>{tagId}</Link>
-              <span className="tag-edit__tag__remove" onClick={this.removeNewspaperBook.bind(this, tagId)}>
-                <i className="i-delete" />
-              </span>
-            </div>
-          );
-        }, this)}
-        <TagSelect onTagClick={this.addNewspaperBookTag.bind(this)} tagType="NewspaperBook" disabled={!this.props.tagEditable}/>
-      </div>
-    );
+        <TagReferenceList title="Newspaper Books" headers={["Name", "Type", ""]} actionButton={addTag} tableClassName="grid-table--light">
+            {newspaperBooks.map(this.renderRow.bind(this))}
+        </TagReferenceList>
+    )
   }
 
   render () {
