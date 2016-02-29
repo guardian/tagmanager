@@ -5,6 +5,7 @@ import model.{TagAudit, Tag}
 import play.api.Logger
 import repositories.{TagAuditRepository, TagRepository}
 import services.KinesisStreams
+import org.joda.time.{DateTime, DateTimeZone}
 import model.command._
 
 
@@ -14,6 +15,7 @@ case class UpdateTagCommand(tag: Tag) extends Command {
 
   override def process()(implicit username: Option[String] = None): Option[Tag] = {
     Logger.info(s"updating tag ${tag.id}")
+    tag.updatedAt = new DateTime(DateTimeZone.UTC).getMillis
 
     val existingTag = TagRepository.getTag(tag.id)
 
@@ -24,7 +26,7 @@ case class UpdateTagCommand(tag: Tag) extends Command {
     //Need to trigger reindex?
 
     existingTag foreach {(existing) =>
-      if (tag.references != existing.references) {
+      if (tag.externalReferences != existing.externalReferences) {
         Logger.info("Detected references change, triggering reindex")
         FlexTagReindexCommand(tag).process
       }

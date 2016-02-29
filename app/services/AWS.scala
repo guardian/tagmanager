@@ -53,6 +53,8 @@ object Dynamo {
   lazy val sectionAuditTable = dynamoDb.getTable(Config().sectionAuditTableName)
   lazy val appAuditTable = dynamoDb.getTable(Config().appAuditTableName)
 
+  lazy val reindexProgressTable = dynamoDb.getTable(Config().reindexProgressTableName)
+
   lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
   lazy val referencesTypeTable = dynamoDb.getTable(Config().referencesTypeTableName)
 }

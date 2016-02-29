@@ -16,7 +16,8 @@ case class TagEntity(
   slug: String,
   section: SectionEntity,
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
-  references: List[ReferenceEntity] = Nil
+  references: List[ReferenceEntity] = Nil,
+  path: String
 )
 
 object TagEntity {
@@ -44,7 +45,8 @@ object TagEntity {
         tag.slug,
         getTagSection(tag.section),
         parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
-        tag.references.map(ReferenceEntity(_))
+        tag.externalReferences.map(ReferenceEntity(_)),
+        tag.path
       )
   }
 
@@ -70,8 +72,8 @@ object TagEntity {
       "slug" -> JsString(te.slug),
       "section" -> Json.toJson(te.section),
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
-      "externalReferences" -> JsArray(te.references.map(Json.toJson(_)))
-
+      "externalReferences" -> JsArray(te.references.map(Json.toJson(_))),
+      "path" -> JsString(te.path)
     ))
   }
 

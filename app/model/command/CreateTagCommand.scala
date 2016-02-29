@@ -3,7 +3,7 @@ package model.command
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.logic.TagPathCalculator
 import model._
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
@@ -61,15 +61,16 @@ case class CreateTagCommand(
       categories = categories,
       description = description,
       parents = parents,
-      references = references,
+      externalReferences = references,
       podcastMetadata = podcastMetadata,
       contributorInformation = contributorInformation,
       publicationInformation = publicationInformation,
       isMicrosite = isMicrosite,
       capiSectionId = capiSectionId,
-      trackingInformation = trackingInformation
+      trackingInformation = trackingInformation,
+      updatedAt = new DateTime(DateTimeZone.UTC).getMillis
     )
-    
+
     val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
