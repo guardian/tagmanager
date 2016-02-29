@@ -1,44 +1,64 @@
 package model.jobs
 
 import model.{Section, Tag}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import org.cvogt.play.json.Jsonx
 import repositories._
+import play.api.Logger
+import play.api.libs.json._
 import services.{Config, KinesisStreams}
+import scala.util.control.NonFatal
 
-// Tags
-
-case class ReindexTags(capiJobId: String) extends Step {
+case class ReindexTags() extends Step {
   override def process: Option[Step] = {
-    TagLookupCache.allTags.get.grouped(Config().reindexTagsBatchSize).foreach { tags =>
-      KinesisStreams.reindexTagsStream.publishUpdate(capiJobId, Tag.createReindexBatch(tags))
+    val total = TagLookupCache.allTags.get.size
+    var progress: Int = 0
+
+    try {
+      TagRepository.loadAllTags.grouped(Config().reindexTagsBatchSize).foreach { tags =>
+        KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags.toList))
+
+        progress += tags.size
+        ReindexProgressRepository.updateTagReindexProgress(progress, total)
+      }
+      ReindexProgressRepository.completeTagReindex(progress, total)
+    } catch {
+      case NonFatal(e) => {
+        Logger.error("Tag reindex failed", e)
+        ReindexProgressRepository.failTagReindex(progress, total)
+      }
     }
     None
   }
 }
 
 object ReindexTags {
-  //Weird inmapping required because of a "limitation" in the macro system in play. Meaning it doesn't allow for
-  //single field case classes to be serialized using the Format
-  //http://stackoverflow.com/questions/14754092/how-to-turn-json-to-case-class-when-case-class-has-only-one-field
-  implicit val reindexTagsFormat: Format[ReindexTags] = (
-    JsPath \ "capiJobId"
-  ).format[String].inmap(id => ReindexTags(id), (reindexTags: ReindexTags) => reindexTags.capiJobId)
+  implicit val reindexTagsFormat: Format[ReindexTags] = Jsonx.formatCaseClassUseDefaults[ReindexTags]
 }
 
-// Sections
-
-case class ReindexSections(capiJobId: String) extends Step {
+case class ReindexSections() extends Step {
   override def process: Option[Step] = {
-    SectionRepository.loadAllSections.foreach { section =>
-      KinesisStreams.reindexSectionsStream.publishUpdate(capiJobId, section.asThrift)
+    val sections = SectionRepository.loadAllSections.toList
+    val total = sections.size
+    var progress: Int = 0
+
+    try {
+      sections.foreach { section =>
+        KinesisStreams.reindexSectionsStream.publishUpdate("sectionReindex", section.asThrift)
+
+        progress += 1
+        ReindexProgressRepository.updateSectionReindexProgress(progress, total)
+      }
+      ReindexProgressRepository.completeSectionReindex(progress, total)
+    } catch {
+      case NonFatal(e) => {
+        Logger.error("Section reindex failed", e)
+        ReindexProgressRepository.failSectionReindex(progress, total)
+      }
     }
     None
   }
 }
 
 object ReindexSections {
-  implicit val reindexSectionsFormat: Format[ReindexSections] = (
-    JsPath \ "capiJobId"
-  ).format[String].inmap(id => ReindexSections(id), (reindexSections: ReindexSections) => reindexSections.capiJobId)
+  implicit val reindexSectionsFormat: Format[ReindexSections] = Jsonx.formatCaseClassUseDefaults[ReindexSections]
 }

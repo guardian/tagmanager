@@ -3,14 +3,14 @@ package model.command
 import model.AppAudit;
 import model.jobs.{Job, ReindexSections}
 import services.SQS
+import org.cvogt.play.json.Jsonx
 import org.joda.time.DateTime
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.Logger
 import repositories._
 
-case class ReindexSectionsCommand(capiJobId: String) extends Command {
-  override type T = Int
+case class ReindexSectionsCommand() extends Command {
+  override type T = Unit
 
   override def process()(implicit username: Option[String] = None): Option[T] = {
     val reindexJob = Job(
@@ -20,20 +20,20 @@ case class ReindexSectionsCommand(capiJobId: String) extends Command {
       startedBy = username,
       tagIds = List(),
       command = this,
-      steps = List(ReindexSections(capiJobId))
+      steps = List(ReindexSections())
     )
 
+    ReindexProgressRepository.resetSectionReindexProgress(SectionRepository.count)
+
     JobRepository.upsertJob(reindexJob)
-    SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 15)
+    SQS.jobQueue.postMessage(reindexJob.id.toString, delaySeconds = 5)
 
-    AppAuditRepository.upsertAppAudit(AppAudit.reindexSections(capiJobId));
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexSections);
 
-    Some(SectionRepository.count)
+    Some(())
   }
 }
 
 object ReindexSectionsCommand {
-  implicit val reindexSectionsCommandFormat: Format[ReindexSectionsCommand] = (
-    JsPath \ "capiJobId"
-  ).format[String].inmap(id => ReindexSectionsCommand(id), (reindexSectionsCommand: ReindexSectionsCommand) => reindexSectionsCommand.capiJobId)
+  implicit val reindexSectionsCommandFormat: Format[ReindexSectionsCommand] = Jsonx.formatCaseClassUseDefaults[ReindexSectionsCommand]
 }

@@ -5,7 +5,8 @@ import model.command.logic.{SponsorshipStatusCalculator, TagPathCalculator}
 import model._
 import org.cvogt.play.json.Jsonx
 import org.cvogt.play.json.implicits.optionWithNull
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
 import repositories._
 import CommandError._
@@ -109,9 +110,10 @@ case class CreateTagCommand(
       trackingInformation = trackingInformation,
       activeSponsorships = if(createdSponsorshipActive) List(createdSponsorship.map(_.id).get) else Nil,
       sponsorship = createdSponsorship.map(_.id),
-      expired = createdSponsorship.map(_.status == "expired").getOrElse(false)
+      expired = createdSponsorship.map(_.status == "expired").getOrElse(false),
+      updatedAt = new DateTime(DateTimeZone.UTC).getMillis
     )
-    
+
     val result = TagRepository.upsertTag(tag)
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))

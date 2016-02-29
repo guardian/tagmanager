@@ -5,6 +5,7 @@ import model.{DenormalisedTag, TagAudit, Tag}
 import play.api.Logger
 import repositories.{SponsorshipRepository, TagAuditRepository, TagRepository}
 import services.KinesisStreams
+import org.joda.time.{DateTime, DateTimeZone}
 import model.command._
 
 
@@ -16,6 +17,7 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     val (tag, sponsorship) = denormalisedTag.normalise()
 
     Logger.info(s"updating tag ${tag.id}")
+    tag.updatedAt = new DateTime(DateTimeZone.UTC).getMillis
 
     val existingTag = TagRepository.getTag(tag.id)
 

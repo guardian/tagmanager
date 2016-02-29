@@ -38,7 +38,8 @@ case class Tag(
   trackingInformation: Option[TrackingInformation],
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
-  expired: Boolean = false
+  expired: Boolean = false,
+  var updatedAt: Long = 0L
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -64,7 +65,8 @@ case class Tag(
     publicationInformation = publicationInformation.map(_.asThrift),
     isMicrosite       = isMicrosite,
     capiSectionId     = capiSectionId,
-    trackingInformation = trackingInformation.map(_.asThrift)
+    trackingInformation = trackingInformation.map(_.asThrift),
+    updatedAt = Some(updatedAt)
   )
 
   // in this limited format for inCopy to consume
@@ -95,16 +97,16 @@ case class Tag(
     }
     val withParents: Node = this.parents.foldLeft(withRefs: Node) { (x, parent) =>
       val el = createElem("parent") % createAttribute("id",
- Some(parent))
+        Some(parent))
       addChild(x, el)
-     }
+    }
     withParents
   }
 }
 
 object Tag {
 
-  implicit val tagFormat = Jsonx.formatCaseClassUseDefaults[Tag]
+  implicit val tagFormat: Format[Tag] = Jsonx.formatCaseClassUseDefaults[Tag]
 
   def fromItem(item: Item) = try {
     Json.parse(item.toJSON).as[Tag]
@@ -117,8 +119,8 @@ object Tag {
 
   def createReindexBatch(toBatch: List[Tag]): TagReindexBatch = {
     TagReindexBatch(
-        tags = toBatch.map(_.asThrift)
-      )
+      tags = toBatch.map(_.asThrift)
+    )
   }
 
   def fromJson(json: JsValue) = json.as[Tag]
@@ -145,7 +147,8 @@ object Tag {
       publicationInformation = thriftTag.publicationInformation.map(PublicationInformation(_)),
       isMicrosite       = thriftTag.isMicrosite,
       capiSectionId     = thriftTag.capiSectionId,
-      trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_))
+      trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_)),
+      updatedAt = thriftTag.updatedAt.getOrElse(0L)
     )
 }
 

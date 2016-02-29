@@ -2,48 +2,58 @@ package controllers
 
 import model.command.CommandError._
 import model.command.{ReindexSectionsCommand, ReindexTagsCommand}
-import permissions.ReindexPermissionsCheck
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.Logger
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
+import repositories.ReindexProgressRepository
 
-case class ExpectedItemCount(expectedItemCount: Int)
-
-object ExpectedItemCount {
-  implicit val expectedItemCountFormat: Format[ExpectedItemCount] = (
-    JsPath \ "expectedItemCount"
-  ).format[Int].inmap(count => ExpectedItemCount(count), (itemsCount: ExpectedItemCount) => itemsCount.expectedItemCount)
-}
-
-
-object Reindex extends Controller with PanDomainAuthActions {
-  def reindexTags = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
-    // Get the reindex id provided by CAPI
-    req.body.asJson.map { json =>
-        try {
-          ReindexTagsCommand((json \ "jobId").as[String]).process.map{ count =>
-            Ok(Json.toJson(ExpectedItemCount(count)))
-          } getOrElse InternalServerError
-        } catch {
-          commandErrorAsResult
-        }
-      }.getOrElse {
-        BadRequest("Expecting reindex id in body")
+object Reindex extends Controller {
+  def reindexTags = Action { req =>
+    try {
+      if (ReindexProgressRepository.isTagReindexInProgress) {
+        Forbidden
+      } else {
+        ReindexTagsCommand().process.map{ count =>
+          Ok
+        } getOrElse InternalServerError
       }
+    } catch {
+      commandErrorAsResult
+    }
   }
 
-  def reindexSections = (APIAuthAction andThen ReindexPermissionsCheck) { req =>
-    req.body.asJson.map { json =>
-        try {
-          ReindexSectionsCommand((json \ "jobId").as[String]).process.map{ count =>
-            Ok(Json.toJson(ExpectedItemCount(count)))
-          } getOrElse InternalServerError
-        } catch {
-          commandErrorAsResult
-        }
-      }.getOrElse {
-        BadRequest("Expecting reindex id in body")
+  def reindexSections = Action { req =>
+    try {
+      if (ReindexProgressRepository.isSectionReindexInProgress) {
+        Forbidden
+      } else {
+        ReindexSectionsCommand().process.map{ count =>
+          Ok
+        } getOrElse InternalServerError
       }
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
+  def getTagReindexProgress = Action { req =>
+    try {
+      ReindexProgressRepository.getTagReindexProgress.map { progress =>
+        Ok(progress.toCapiForm().toJson)
+      } getOrElse NotFound
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
+  def getSectionReindexProgress = Action { req =>
+    try {
+      ReindexProgressRepository.getSectionReindexProgress.map { progress =>
+        Ok(progress.toCapiForm().toJson)
+      } getOrElse NotFound
+    } catch {
+      commandErrorAsResult
+    }
   }
 }

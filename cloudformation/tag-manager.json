@@ -41,15 +41,13 @@
       "Description": "Github team name, used for giving ssh access to members of the team.",
       "Type": "String",
       "Default": "Editorial-Tools-SSHAccess"
+    },
+    "CertificateArn": {
+      "Description": "ARN of the SSL certificate for this service",
+      "Type": "String"
     }
   },
   "Mappings": {
-    "SSLCertificateId": {
-      "Environment": {
-        "CODE": "arn:aws:iam::743583969668:server-certificate/star.code.dev-gutools.co.uk-exp2018-02-15",
-        "PROD": "arn:aws:iam::743583969668:server-certificate/star.gutools.co.uk-exp2018-11-17"
-      }
-    },
      "Config":{
        "CODE":{
          "MinSize": 1,
@@ -357,15 +355,8 @@
           "LoadBalancerPort": "443",
           "InstancePort": "9000",
           "Protocol": "HTTPS",
-          "SSLCertificateId": {
-            "Fn::FindInMap": [
-              "SSLCertificateId",
-              "Environment",
-              {"Ref": "Stage"}
-            ]
-          }
+          "SSLCertificateId": {"Ref": "CertificateArn"}
         }],
-
         "HealthCheck" : {
           "Target" : "HTTP:9000/management/healthcheck",
           "HealthyThreshold" : "2",
