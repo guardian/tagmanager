@@ -66,7 +66,9 @@ case class Tag(
     isMicrosite       = isMicrosite,
     capiSectionId     = capiSectionId,
     trackingInformation = trackingInformation.map(_.asThrift),
-    updatedAt = Some(updatedAt)
+    updatedAt = Some(updatedAt),
+    activeSponsorships = None,
+    expired = expired
   )
 
   // in this limited format for inCopy to consume

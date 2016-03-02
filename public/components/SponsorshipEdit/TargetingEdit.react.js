@@ -1,5 +1,10 @@
 import React from 'react';
 import R from 'ramda';
+import moment from 'moment';
+
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+import momentLocalizer from 'react-widgets/lib/localizers/moment';
+
 import {allowedEditions} from '../../constants/allowedEditions';
 import SectionSelect from '../utils/SectionSelect.react';
 import TagSelect from '../utils/TagSelect.js';
@@ -81,7 +86,6 @@ export default class TargetingEdit extends React.Component {
 
   targetAllEditions() {
     if(this.props.sponsorship.targeting) {
-      console.log("here's some ramda", R);
       const targetingWithoutEditions = R.omit(['validEditions'], this.props.sponsorship.targeting);
       if (Object.keys(targetingWithoutEditions).length === 0) {
         this.props.updateSponsorship(R.omit(['targeting'], this.props.sponsorship));
@@ -110,14 +114,43 @@ export default class TargetingEdit extends React.Component {
       this.targetAllEditions();
 
     } else {
-      console.log('setting validEditions to', editions);
-      this.props.updateSponsorship(R.merge(this.props.sponsorship, {targeting: {validEditions: editions}}));
+      const t = this.props.sponsorship.targeting ? this.props.sponsorship.targeting : {};
+      const updatedTargeting = R.merge(t, {validEditions: editions});
+
+      this.props.updateSponsorship(R.merge(this.props.sponsorship, {targeting: updatedTargeting}));
+    }
+  }
+
+  publishedSince() {
+    if(!!this.props.sponsorship.targeting && !!this.props.sponsorship.targeting.publishedSince) {
+      return new Date(this.props.sponsorship.targeting.publishedSince);
+    } else {
+      return null;
+    }
+  }
+
+  setPublishedSince(date) {
+    if (date) {
+      const t = this.props.sponsorship.targeting ? this.props.sponsorship.targeting : {};
+      const updatedTargeting = R.merge(t, {publishedSince: moment(date).valueOf()});
+
+      this.props.updateSponsorship(R.merge(this.props.sponsorship, {targeting: updatedTargeting}));
+    } else {
+      if(this.props.sponsorship.targeting) {
+        const targetingWithoutPublishedSince = R.omit(['publishedSince'], this.props.sponsorship.targeting);
+        if (Object.keys(targetingWithoutPublishedSince).length === 0) {
+          this.props.updateSponsorship(R.omit(['targeting'], this.props.sponsorship));
+        } else {
+          this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
+            targeting: targetingWithoutPublishedSince
+          }));
+        }
+      }
     }
   }
 
   renderEditionToggles() {
     return allowedEditions.map((ed) => {
-      console.log("rendering editions", ed, this.isTargettingEdition(ed));
       return (
         <span key={ed}>
           <input type="checkbox"
@@ -157,6 +190,14 @@ export default class TargetingEdit extends React.Component {
           <label className="tag-edit__label"> All</label>
           {this.renderEditionToggles()}
 
+        </div>
+
+        <div className="tag-edit__field" >
+          <label className="tag-edit__input-group__header">Only show for content published after</label>
+          <DateTimePicker
+            format={"DD/MM/YYYY HH:mm"}
+            value={this.publishedSince()}
+            onChange={this.setPublishedSince.bind(this)}/>
         </div>
       </div>
     );
