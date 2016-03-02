@@ -67,7 +67,10 @@ case class Tag(
     capiSectionId     = capiSectionId,
     trackingInformation = trackingInformation.map(_.asThrift),
     updatedAt = Some(updatedAt),
-    activeSponsorships = None,
+    activeSponsorships = if (activeSponsorships.isEmpty) None else Some(activeSponsorships.flatMap {sid =>
+      SponsorshipRepository.getSponsorship(sid).map(_.asThrift)
+    }),
+    sponsorshipId = sponsorship,
     expired = expired
   )
 
@@ -150,7 +153,10 @@ object Tag {
       isMicrosite       = thriftTag.isMicrosite,
       capiSectionId     = thriftTag.capiSectionId,
       trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_)),
-      updatedAt = thriftTag.updatedAt.getOrElse(0L)
+      updatedAt = thriftTag.updatedAt.getOrElse(0L),
+      activeSponsorships = thriftTag.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil),
+      sponsorship = thriftTag.sponsorshipId,
+      expired = thriftTag.expired
     )
 }
 

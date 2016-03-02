@@ -7,6 +7,7 @@ import org.cvogt.play.json.implicits.optionWithNull
 import play.api.Logger
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
 import com.gu.tagmanagement.{Section => ThriftSection}
+import repositories.SponsorshipRepository
 
 import scala.util.control.NonFatal
 import scala.xml.Node
@@ -35,7 +36,10 @@ case class Section(
     pageId        = pageId,
     editions      = editions.mapValues(_.asThift),
     discriminator = discriminator,
-    isMicrosite   = isMicrosite
+    isMicrosite   = isMicrosite,
+    activeSponsorships = if (activeSponsorships.isEmpty) None else Some(activeSponsorships.flatMap {sid =>
+      SponsorshipRepository.getSponsorship(sid).map(_.asThrift)
+    })
   )
 
   // in this limited format for inCopy to consume
@@ -75,7 +79,8 @@ object Section {
       pageId        = thriftSection.pageId,
       editions      = thriftSection.editions.mapValues(EditionalisedPage(_)).toMap,
       discriminator = thriftSection.discriminator,
-      isMicrosite   = thriftSection.isMicrosite
+      isMicrosite   = thriftSection.isMicrosite,
+      activeSponsorships = thriftSection.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil)
     )
 
 }

@@ -8,11 +8,17 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import repositories.{SectionRepository, TagRepository, TagLookupCache}
+import com.gu.tagmanagement.{Sponsorship => ThriftSponsorship, SponsorshipTargeting => ThriftSponsorshipTargeting, SponsorshipType}
 
 import scala.util.control.NonFatal
 
 
-case class SponsorshipTargeting(publishedSince: Option[DateTime], validEditions: Option[List[String]])
+case class SponsorshipTargeting(publishedSince: Option[DateTime], validEditions: Option[List[String]]) {
+  def asThrift: ThriftSponsorshipTargeting = ThriftSponsorshipTargeting(
+    publishedSince = publishedSince.map(_.getMillis),
+    validEditions = validEditions
+  )
+}
 
 object SponsorshipTargeting {
   implicit val sponsorshipTargettingFormat = Jsonx.formatCaseClass[SponsorshipTargeting]
@@ -33,6 +39,15 @@ case class Sponsorship (
 
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
+
+  def asThrift: ThriftSponsorship = ThriftSponsorship(
+    id = id,
+    sponsorshipType = SponsorshipType.valueOf(sponsorshipType).get,
+    sponsorName = sponsorName,
+    sponsorLogo = sponsorLogo.asThrift,
+    sponsorLink = sponsorLink,
+    targeting = targeting.map(_.asThrift)
+  )
 }
 
 object Sponsorship {
