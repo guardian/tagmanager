@@ -1,5 +1,6 @@
 import React from 'react';
 import AddReference from './AddReference.react';
+import TagReferenceList from '../TagReferenceList.react'
 import R from 'ramda';
 
 export default class TagReferences extends React.Component {
@@ -52,30 +53,9 @@ export default class TagReferences extends React.Component {
 
     render() {
       return (
-        <div className="tag-context__item">
-          <div className="tag-context__header">External References</div>
-          <table className="grid-table tag-references">
-            <thead className="tag-references__header">
-              <tr>
-                <th>
-                  Name
-                </th>
-                <th>
-                  Value
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody className="tag-references__references">
-              { this.props.tag.externalReferences ? this.props.tag.externalReferences.sort((a, b) => a.type > b.type ? 1 : -1).map(this.renderReference, this) : false }
-              <tr>
-                <td colSpan="3" className="tag-references__addrow">
-                  {this.renderAddReferenceButton()}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      );
+        <TagReferenceList title="External References" headers={["Type", "Value", ""]} actionButton={this.renderAddReferenceButton()}>
+          {this.props.tag.externalReferences.sort((a, b) => a.type > b.type ? 1 : -1).map(this.renderReference, this)}
+        </TagReferenceList>
+      )
     }
 }

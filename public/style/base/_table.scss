@@ -1,7 +1,6 @@
 $table-border-color: $c-grey-300;
 
 table.grid-table {
-    @extend %f-header;
     @extend %fs-data-3;
 
     width: 100%;
@@ -29,5 +28,15 @@ table.grid-table {
         &.row-warning {
             color: $c-red;
         }
+    }
+}
+
+table.grid-table--light {
+    thead {
+        background-color: $c-grey-100;
+    }
+
+    td {
+        background-color: white;
     }
 }
