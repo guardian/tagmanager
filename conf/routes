@@ -101,4 +101,5 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 GET        /support/image-metadata        controllers.Support.imageMetadata(imageUrl: String)
 POST       /support/uploadLogo/:filename  controllers.Support.uploadLogo(filename: String)
 GET        /support/previewCapi/*path     controllers.Support.previewCapiProxy(path: String)
+GET        /support/flexMigrationData     controllers.Support.flexMigrationSpecificData
 

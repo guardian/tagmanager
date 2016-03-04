@@ -3,11 +3,15 @@ package controllers
 import com.amazonaws.services.s3.model._
 import model.{ImageAsset, Image}
 import org.joda.time.DateTime
+import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
+import org.cvogt.play.json.Jsonx
 import play.api.Logger
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
 import services.{AWS, Config, ImageMetadataService}
 import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
+import repositories.TagLookupCache
+import services.{Config, ImageMetadataService}
 import java.util.concurrent.TimeUnit
 
 object Support extends Controller with PanDomainAuthActions {
@@ -76,5 +80,12 @@ object Support extends Controller with PanDomainAuthActions {
         BadRequest
       }
     }
+  }
+
+
+  def flexMigrationSpecificData = Action {
+    Ok(
+      Json.toJson(TagLookupCache.allTags.get.map(tag => tag.id.toString -> JsString(tag.path)).toMap)
+    )
   }
 }
