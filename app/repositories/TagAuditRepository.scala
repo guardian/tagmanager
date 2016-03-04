@@ -35,9 +35,9 @@ object TagAuditRepository {
     .filter(x => (x.operation == "updated" && x.date.getMillis > since))
 
   private val getType: String => List[TagAudit] = operation => loadAllAudits.filter(_.operation == operation)
-  val getMerges: List[TagAudit] = getType("merged")
-  val getDeletes: List[TagAudit] = getType("deleted")
-  val getCreates: List[TagAudit] = getType("created")
+  lazy val getMerges: List[TagAudit] = getType("merged")
+  lazy val getDeletes: List[TagAudit] = getType("deleted")
+  lazy val getCreates: List[TagAudit] = getType("created")
 
 
 }
