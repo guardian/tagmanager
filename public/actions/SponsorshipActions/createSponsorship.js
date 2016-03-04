@@ -44,7 +44,7 @@ export function createSponsorship(sponsorship) {
 export function populateEmptySponsorship() {
   return {
       type:         SPONSORSHIP_POPULATE_BLANK,
-      sponsorship:  Object.assign({}, {sponsorshipType: 'sponsorship'}),
+      sponsorship:  Object.assign({}, {sponsorshipType: 'sponsored'}),
       receivedAt:   Date.now()
   };
 }
