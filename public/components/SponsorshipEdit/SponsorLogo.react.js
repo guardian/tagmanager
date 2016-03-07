@@ -1,6 +1,6 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
-import TagImageEdit from '../TagEdit/formcomponents/TagImageEdit.react';
+import TagImageEdit from '../TagEdit/formComponents/TagImageEdit.react';
 
 export default class SponsorEdit extends React.Component {
 
