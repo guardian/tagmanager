@@ -158,7 +158,7 @@
                 "s3:GetObject",
                 "s3:PutObject"
               ],
-              "Resource": "arn:aws:s3:::static-theguardian-com/commercial/*"
+              "Resource": [ "arn:aws:s3:::static-theguardian-com/commercial/*" ]
             }
           ]
         },
