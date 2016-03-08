@@ -2,7 +2,7 @@ package controllers
 
 import model.command.CommandError._
 import model.command._
-import model.jobs.{BatchTagAddCompleteCheck, Job}
+import model.jobs.Job
 import org.joda.time.DateTime
 import permissions.Permissions
 import play.api.Logger
@@ -207,11 +207,4 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
     Ok(Json.toJson(jobs))
   }
-
-  def deleteJob(id: Long) = (APIAuthAction andThen DeleteJobPermissionsCheck) {
-    JobRepository.deleteJob(id)
-
-    Ok("Deleted")
-  }
-
 }

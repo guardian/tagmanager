@@ -1,6 +1,7 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.{ScanFilter, Item}
+import com.amazonaws.services.dynamodbv2.document._
+import com.amazonaws.services.dynamodbv2.document.spec._
 import model.Section
 import model.jobs.Job
 import play.api.libs.json.JsValue
@@ -14,27 +15,45 @@ object JobRepository {
     Option(Dynamo.jobTable.getItem("id", id)).map(Job.fromItem)
   }
 
-  def upsertJob(job: Job) = {
-    try {
-      Dynamo.jobTable.putItem(job.toItem)
-      Some(job)
-    } catch {
-      case e: Error => None
-    }
+  def lock(job: Job, nodeId: String): Boolean = {
+    val updateItemSpec = new UpdateItemSpec()
+      .withUpdateExpression(s"SET owner = $nodeId")
+      .withConditionExpression(s"attribute_not_exists(owner) AND status = waiting")
+
+    val updateResult = Dynamo.jobTable.updateItem(updateItemSpec)
+
+    // TODO deal with dynamos consistency guarantees? ?? !??!?! ?! ?? !?
+    // Should be able to get the updateItem response to know if everthing went well...
+    // at this point we should know if we successfully took the lock
+
+    false
   }
 
-  def deleteJob(job: Job) {
-    deleteJob(job.id)
+  def unlock(job: Job) = {
+    val updateItemSpec = new UpdateItemSpec()
+      .withUpdateExpression("REMOVE owner")
+      .withConditionExpression(s"owner = ${job.owner.get}")
+
+    // TODO Call spec
   }
 
-  def deleteJob(jobId: Long) {
-    Dynamo.jobTable.deleteItem("id", jobId)
+  def addJob(job: Job) = {
+    // TODO Implement
+    // Add a job it a job with that id doesnt already exist
   }
 
-  def loadAllJobs = Dynamo.jobTable.scan().map(Job.fromItem).toList
+  /** You can only modify a job if you own it*/
+  def updateJobIfOwned(job: Job, nodeId: String) = {
+    // TODO Implement
+  }
+
+  def deleteIfCompleteOrFailed(id: Long) = {
+    // TODO Implement
+  }
+
+  def loadAllJobs = Dynamo.jobTable.scan().map(Job.fromItem(_)).toList
 
   def findJobsForTag(tagId: Long): List[Job] = {
     Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).map(Job.fromItem).toList
   }
-
 }

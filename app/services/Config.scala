@@ -112,7 +112,7 @@ class DevConfig extends Config {
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
 
-  override def jobTableName: String = "tag-manager-jobs-dev"
+  override def jobTableName: String = "tag-manager-jobs-dev-SC"
   override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
   override def sectionAuditTableName: String = "tag-manager-section-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
