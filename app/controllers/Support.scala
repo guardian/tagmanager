@@ -33,7 +33,7 @@ object Support extends Controller with PanDomainAuthActions {
         val objectMetadata = new ObjectMetadata()
         contentType.foreach(objectMetadata.setContentType(_))
 
-        AWS.S3Client.putObject(
+        AWS.frontendStaticFilesS3Client.putObject(
           new PutObjectRequest("static-theguardian-com", logoPath, picture.file)
             // .withAccessControlList(acl)
             .withCannedAcl(CannedAccessControlList.PublicRead)

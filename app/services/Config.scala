@@ -105,6 +105,8 @@ sealed trait Config {
 
   def composerDomain: String
   def corsableDomains: Seq[String]
+
+  def frontendBucketWriteRole: Option[String] = None
 }
 
 class DevConfig extends Config {
@@ -177,6 +179,8 @@ class CodeConfig extends Config {
 
   override def composerDomain: String = "https://composer.code.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer.local.dev-gutools.co.uk")
+
+  override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
 }
 
 class ProdConfig extends Config {
@@ -215,4 +219,5 @@ class ProdConfig extends Config {
   override def composerDomain: String = "https://composer.gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(composerDomain)
 
+  override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
 }
