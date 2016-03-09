@@ -39,16 +39,11 @@ case class ReindexTags() extends Step {
   }
 
   override def check: Boolean = {
-    // What to check?
     true
   }
 
   override def rollback = {
-    // TODO Can we meaningfully roll back?
-  }
-
-  override def audit = {
-
+    throw new UnsupportedOperationException("Rollback is not supported for reindexing tags.")
   }
 
   override def failureMessage = s"Failed to reindex tags."

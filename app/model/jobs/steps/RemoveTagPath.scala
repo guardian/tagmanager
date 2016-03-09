@@ -17,8 +17,7 @@ case class RemoveTagPath(var tag: Tag) extends Step {
   }
 
   override def check: Boolean = {
-    // TODO Check the path has been removed from path manager
-    false
+    PathManager.isPathInUse(tag.path)
   }
 
   override def rollback = {
@@ -26,10 +25,6 @@ case class RemoveTagPath(var tag: Tag) extends Step {
     val newTag = tag.copy(pageId = newId)
 
     TagRepository.upsertTag(newTag)
-  }
-
-  override def audit = {
-    // TODO Audit path removal specifically?
   }
 
   override def failureMessage = s"Failed to remove tag path '${tag.path}' from Path Manager."

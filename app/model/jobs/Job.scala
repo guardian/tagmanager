@@ -7,17 +7,19 @@ import org.cvogt.play.json.Jsonx
 import model.jobs.steps._
 import model.{AppAudit, Tag, TagAudit}
 import repositories._
+import org.joda.time.{DateTime, DateTimeZone}
 import scala.util.control.NonFatal
 
 case class Job(
   id: Long, // Useful so users can report job failures
-  createdAt: Long, // Created at in local time
-  `type`: JobType.Value, // The kind of job this (merge, delete, reindex, etc.)
-  status: JobStatus.Value, // Waiting, Owned, Failed, Complete
-  owner: Option[String], // Which node current owns this job
   steps: List[Step], // What are the steps in this job
-  var retries: Int, // How many times have we had to retry a check
-  waitUntil: Long // Signal to the runner to wait until a given time before processing
+
+  lockedAt: Long = 0,
+  status: String = JobStatus.waiting, // Waiting, Owned, Failed, Complete
+  owner: Option[String] = None, // Which node current owns this job
+  var retries: Int = 0, // How many times have we had to retry a check
+  var waitUntil: Long = new DateTime(DateTimeZone.UTC).getMillis, // Signal to the runner to wait until a given time before processing
+  createdAt: Long = new DateTime().getMillis // Created at in local time
 ) {
 
   val retryLimit = 10 // TODO tune
@@ -26,11 +28,12 @@ case class Job(
    *  returns a bool which tells the job runner to requeue the job in dynamo
    *  or simply continue processing. */
   def processStep() = {
-    steps.find(_.status != StepStatus.complete).map { step =>
+    steps.find(_.status != StepStatus.complete).foreach { step =>
       step.status match {
 
         case StepStatus.ready => {
           retries = 0
+          step.status = StepStatus.processing
           step.process
           step.status = StepStatus.processed
         }
@@ -48,6 +51,8 @@ case class Job(
         }
         case _ => {}
       }
+
+      waitUntil = new DateTime(DateTimeZone.UTC).getMillis() + step.waitDuration.map(_.toMillis).getOrElse(0L)
     }
   }
 
@@ -55,7 +60,7 @@ case class Job(
     // Undo in reverse order
     val revSteps = steps.reverse
     revSteps
-      .filter(s => s.status == StepStatus.complete || s.status == StepStatus.processed)
+      .filter(s => s.status == StepStatus.processing || s.status == StepStatus.processed || s.status == StepStatus.complete )
       .foreach(step => {
         try {
           step.rollback
@@ -69,7 +74,6 @@ case class Job(
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
-// Helpers to lauch jobs and to associated functions such as add audits
 object Job {
   implicit val jobFormat: Format[Job] = Jsonx.formatCaseClassUseDefaults[Job]
 
@@ -78,32 +82,21 @@ object Job {
   }
 }
 
-/** Describes the type of job. What it does. */
-object JobType extends Enumeration {
-  val delete          = Value("delete")
-  val merge           = Value("merge")
-  val reindexTags     = Value("reindex-tags")
-  val reindexSections = Value("reindex-sections")
-  implicit val jobTypeFormat: Format[JobType.Value] = Jsonx.formatAuto[JobType.Value]
-}
-
 /** The job status is used to indicate if a job can be picked up off by a node as well as indicating progress
  *  to clients.
  */
-object JobStatus extends Enumeration {
+object JobStatus {
   /** This job is waiting to be serviced */
-  val waiting  = Value("waiting")
+  val waiting  = "waiting"
 
   /** This job is owned by a node */
-  val owned    = Value("owned")
+  val owned    = "owned"
 
   /** This job is complete */
-  val complete = Value("complete")
+  val complete = "complete"
 
   /** This job has failed */
-  val failed   = Value("failed")
-
-  implicit val jobStatusFormat: Format[JobStatus.Value] = Jsonx.formatAuto[JobStatus.Value]
+  val failed   = "failed"
 }
 
 case class TooManyAttempts(message: String) extends RuntimeException(message)

@@ -6,6 +6,7 @@ import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 import play.api.Logger
 import services.KinesisStreams
+import repositories.ContentAPI
 
 case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: List[String]) extends Step {
   override def process = {
@@ -15,7 +16,6 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
-      Logger.info(s"raising delete tag ${tag.path} for content $contentPath")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
   }
@@ -25,14 +25,23 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
   }
 
   override def check: Boolean = {
-    false
+    val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
+    if (count == 0) {
+      true
+    } else {
+      false
+    }
   }
 
   override def rollback = {
-  }
-
-  override def audit = {
-
+    contentIds foreach { contentPath =>
+      val taggingOperation = TaggingOperation(
+        operation = OperationType.AddToBottom,
+        contentPath = contentPath,
+        tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
+      )
+      KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+    }
   }
 
   override def failureMessage = s"Failed to remove tag '${tag.id}' from listed content."

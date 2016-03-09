@@ -20,14 +20,11 @@ trait Step {
   /** Undo this step */
   def rollback
 
-  /** Audit this step */
-  def audit
-
   /** What to display to a user if this step fails */
   def failureMessage: String
 
   /** The status of this step: 'ready' to be processed, 'processed', 'complete', or one of the failed states 'rolledback' and 'rollbackfailed'*/
-  var status = StepStatus.ready
+  var status: String = StepStatus.ready
 
   /** The type of this step */
   val `type`: String
@@ -81,10 +78,11 @@ object Step {
 }
 
 // Step status is required so we know which steps require rollback
-object StepStatus extends Enumeration {
-  val ready          = Value("ready")
-  val processed      = Value("processed")
-  val complete       = Value("complete")
-  val rolledback     = Value("rolledback")
-  val rollbackfailed = Value("rollbackfailed")
+object StepStatus {
+  val ready          = "ready"
+  val processing     = "processing"
+  val processed      = "processed"
+  val complete       = "complete"
+  val rolledback     = "rolledback"
+  val rollbackfailed = "rollbackfailed"
 }

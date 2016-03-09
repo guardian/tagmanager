@@ -2,8 +2,10 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document._
 import com.amazonaws.services.dynamodbv2.document.spec._
+import com.amazonaws.services.dynamodbv2.document.utils._
+import com.amazonaws.services.dynamodbv2.model._
 import model.Section
-import model.jobs.Job
+import model.jobs.{Job, JobStatus}
 import play.api.libs.json.JsValue
 import services.Dynamo
 
@@ -15,31 +17,40 @@ object JobRepository {
     Option(Dynamo.jobTable.getItem("id", id)).map(Job.fromItem)
   }
 
-  def lock(job: Job, nodeId: String): Boolean = {
+  def lock(job: Job, nodeId: String): Option[Job] = {
     val updateItemSpec = new UpdateItemSpec()
-      .withUpdateExpression(s"SET owner = $nodeId")
-      .withConditionExpression(s"attribute_not_exists(owner) AND status = waiting")
+      .withPrimaryKey("id", job.id)
+      .withReturnValues(ReturnValue.ALL_NEW)
+      .withUpdateExpression("SET owner = :newOwner, status = :ownedStatus")
+      .withConditionExpression("attribute_not_exists(owner) AND status = :waitingStatus")
+      .withValueMap(new ValueMap()
+        .withString(":newOwner", nodeId)
+        .withString(":ownedStatus", JobStatus.owned)
+        .withString(":waitingStatus", JobStatus.waiting))
 
-    val updateResult = Dynamo.jobTable.updateItem(updateItemSpec)
+    val outcome = Job.fromItem(Dynamo.jobTable.updateItem(updateItemSpec).getItem())
 
-    // TODO deal with dynamos consistency guarantees? ?? !??!?! ?! ?? !?
-    // Should be able to get the updateItem response to know if everthing went well...
-    // at this point we should know if we successfully took the lock
-
-    false
+    if (outcome.owner == nodeId) {
+      Some(outcome)
+    } else {
+      None
+    }
   }
 
-  def unlock(job: Job) = {
+  def unlock(job: Job, nodeId: String) = {
     val updateItemSpec = new UpdateItemSpec()
-      .withUpdateExpression("REMOVE owner")
-      .withConditionExpression(s"owner = ${job.owner.get}")
+      .withPrimaryKey("id", job.id)
+      .withUpdateExpression("REMOVE owner SET status = :waitingStatus")
+      .withConditionExpression("owner = :currentOwner")
+      .withValueMap(new ValueMap()
+        .withString(":currentOwner", nodeId)
+        .withString(":waitingStatus", JobStatus.waiting))
 
-    // TODO Call spec
+      Dynamo.jobTable.updateItem(updateItemSpec)
   }
 
   def addJob(job: Job) = {
-    // TODO Implement
-    // Add a job it a job with that id doesnt already exist
+    Dynamo.jobTable.putItem(job.toItem)
   }
 
   /** You can only modify a job if you own it*/

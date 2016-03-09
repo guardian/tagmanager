@@ -6,6 +6,8 @@ import scala.concurrent.duration._
 import model.jobs.Step
 import play.api.Logger
 import services.KinesisStreams
+import repositories._
+import java.lang.UnsupportedOperationException
 
 case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], contentIds: List[String]) extends Step {
   override def process = {
@@ -26,15 +28,18 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
   }
 
   override def check: Boolean = {
-    false
+    val removedCount = ContentAPI.countContentWithTag(from.path)
+    val addedCount = ContentAPI.countContentWithTag(to.path)
+
+    if (removedCount == 0 && addedCount == contentIds.size) {
+      true
+    } else {
+      false
+    }
   }
 
   override def rollback = {
-
-  }
-
-  override def audit = {
-
+    throw new UnsupportedOperationException("Rollback is not supported for merging tags in content.")
   }
 
   override def failureMessage = s"Failed to merge tag '${from.id}' to '${to.id}' all content."

@@ -6,6 +6,7 @@ import scala.concurrent.duration._
 import model.jobs.Step
 import play.api.Logger
 import services.KinesisStreams
+import repositories.ContentAPI
 
 case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[String], top: Boolean) extends Step {
   override def process = {
@@ -17,7 +18,6 @@ case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
-      Logger.info(s"raising add tag ${tag.path} for content $contentPath")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
   }
@@ -27,15 +27,23 @@ case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[
   }
 
   override def check: Boolean = {
-    false
+    val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
+    if (count == contentIds.size) {
+      true
+    } else {
+      false
+    }
   }
 
   override def rollback = {
-
-  }
-
-  override def audit = {
-
+    contentIds foreach { contentPath =>
+      val taggingOperation = TaggingOperation(
+        operation = OperationType.Remove,
+        contentPath = contentPath,
+        tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
+      )
+      KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+    }
   }
 
   override def failureMessage = s"Failed to add tag '${tag.id}' to listed content."

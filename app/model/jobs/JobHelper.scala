@@ -3,7 +3,6 @@ package model.jobs
 import com.gu.tagmanagement.OperationType
 import model.{AppAudit, Tag, TagAudit}
 import model.jobs.steps._
-import org.joda.time.{DateTime, DateTimeZone}
 import repositories._
 
 /** Utilities for starting jobs */
@@ -11,29 +10,38 @@ object JobHelper {
   def beginBatchTagAddition(tag: Tag, operation: String, contentIds: List[String]) {
     val section = tag.section.flatMap( SectionRepository.getSection(_) )
     val top: Boolean = operation == OperationType.AddToTop
-    // TODO implement
+
+    JobRepository.addJob(
+      Job(
+        Sequences.jobId.getNextId,
+        List(AddTagToContent(tag, section, contentIds, top))
+        )
+      )
+
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
   }
 
   def beginBatchTagDeletion(tag: Tag, operation: String, contentIds: List[String]) {
     val section = tag.section.flatMap( SectionRepository.getSection(_) )
-    // TODO implement
+
+    JobRepository.addJob(
+      Job(
+        Sequences.jobId.getNextId,
+        List(RemoveTagFromContent(tag, section, contentIds))
+        )
+      )
+
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
   }
 
   def beginTagReindex() = {
     val expectedDocs = TagLookupCache.allTags.get().size
     ReindexProgressRepository.resetTagReindexProgress(expectedDocs)
+
     JobRepository.addJob(
       Job(
         Sequences.jobId.getNextId,
-        new DateTime().getMillis,
-        JobType.reindexTags,
-        JobStatus.waiting,
-        None,
-        List(ReindexTags()),
-        0,
-        new DateTime(DateTimeZone.UTC).getMillis
+        List(ReindexTags())
         )
       )
     AppAuditRepository.upsertAppAudit(AppAudit.reindexTags);
@@ -41,36 +49,27 @@ object JobHelper {
 
   def beginSectionReindex() = {
     ReindexProgressRepository.resetSectionReindexProgress(SectionRepository.count)
+
     JobRepository.addJob(
       Job(
         Sequences.jobId.getNextId,
-        new DateTime().getMillis,
-        JobType.reindexSections,
-        JobStatus.waiting,
-        None,
-        List(ReindexSections()),
-        0,
-        new DateTime(DateTimeZone.UTC).getMillis
+        List(ReindexSections())
         )
       )
     AppAuditRepository.upsertAppAudit(AppAudit.reindexSections);
   }
 
   def beginMergeTag(from: Tag, to: Tag) = {
-    val removingTagSection = from.section.flatMap( SectionRepository.getSection(_) )
-    val replacementTagSection = to.section.flatMap( SectionRepository.getSection(_) )
+    val fromSection = from.section.flatMap( SectionRepository.getSection(_) )
+    val toSection = to.section.flatMap( SectionRepository.getSection(_) )
+    val contentIds = ContentAPI.getContentIdsForTag(from.path)
+
     JobRepository.addJob(
       Job(
         Sequences.jobId.getNextId,
-        new DateTime().getMillis,
-        JobType.merge,
-        JobStatus.waiting,
-        None,
         List(
-          // TODO implement
-          ),
-        0,
-        new DateTime(DateTimeZone.UTC).getMillis
+          MergeTagForContent(from, to, fromSection, toSection, contentIds)
+          ) ++ removeTagSteps(from)
         )
       )
   }
@@ -82,21 +81,12 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         Sequences.jobId.getNextId,
-        new DateTime().getMillis,
-        JobType.delete,
-        JobStatus.waiting,
-        None,
         List(
-          RemoveTagFromContent(tag, section, contentIds),
-          RemoveTagPath(tag),
-          RemoveTagFromCapi(tag),
-          RemoveTag(tag)
-          ),
-        0,
-        new DateTime(DateTimeZone.UTC).getMillis
+          RemoveTagFromContent(tag, section, contentIds)
+          ) ++ removeTagSteps(tag)
         )
       )
   }
 
-
+  private def removeTagSteps(tag: Tag) = List(RemoveTagPath(tag), RemoveTagFromCapi(tag), RemoveTag(tag))
 }

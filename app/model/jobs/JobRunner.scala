@@ -8,34 +8,37 @@ import play.api.Logger
 import repositories._
 import services.Dynamo
 import scala.util.control.NonFatal
+import java.net.InetAddress
 
 @Singleton
 class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
-  val nodeId: String = "foo" // TODO set
+  val nodeId = InetAddress.getLocalHost().toString() // EC2 machines have a single eth0 so this should work?
+  val lockTimeOutMillis = 1000 * 60 * 5
 
   def run() = {
-    val allJobs = JobRepository.loadAllJobs
     val currentTime = new DateTime(DateTimeZone.UTC).getMillis
-
-    // Contention on table head?
-    allJobs.foreach { job =>
-      if (job.status == JobStatus.waiting && job.waitUntil < currentTime) {
-        if (JobRepository.lock(job, nodeId)) {
-          try {
-            job.processStep
-          } catch {
-            case NonFatal(e) => {
-              Logger.error(s"Background job failed on $nodeId, beginning roll back.")
-              job.rollback
-            }
-          } finally {
-            JobRepository.updateJobIfOwned(job, nodeId)
-            JobRepository.unlock(job)
+    JobRepository.loadAllJobs
+      .find(job => isPotentialJob(job, currentTime)) // Find first potential job
+      .flatMap(JobRepository.lock(_, nodeId)) // Lock it (will return None if lock fails)
+      .foreach(job => { // If we got a job, and locked it then process it
+        try {
+          job.processStep
+        } catch {
+          case NonFatal(e) => {
+            Logger.error(s"Background job failed on $nodeId, beginning roll back.")
+            job.rollback
           }
+        } finally {
+          JobRepository.updateJobIfOwned(job, nodeId)
+          JobRepository.unlock(job, nodeId)
         }
-      }
-    }
+      })
 
-    Thread.sleep(1000)
+    Thread.sleep(3000)
+  }
+
+  private def isPotentialJob(job: Job, currentTime: Long): Boolean = {
+    // Either waiting job OR the job is locked but it's lock has timed out
+    (job.status == JobStatus.waiting && job.waitUntil < currentTime) || (job.status == JobStatus.owned && job.lockedAt < currentTime - lockTimeOutMillis)
   }
 }

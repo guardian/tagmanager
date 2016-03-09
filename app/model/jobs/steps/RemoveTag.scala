@@ -24,10 +24,6 @@ case class RemoveTag(tag: Tag) extends Step {
     TagRepository.upsertTag(tag)
   }
 
-  override def audit = {
-
-  }
-
   override def failureMessage = s"Failed to remove tag '${tag.id}' from Tag Managers database."
 
   override val `type` = RemoveTag.`type`

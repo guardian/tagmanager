@@ -30,11 +30,9 @@ case class RemoveTagFromCapi(tag: Tag) extends Step {
   }
 
   override def rollback = {
-    // TODO Implement
-  }
-
-  override def audit = {
-    // TODO Implement
+      KinesisStreams.tagUpdateStream.publishUpdate(
+        tag.id.toString,
+        TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
   }
 
   override def failureMessage = s"Failed to remove tag '${tag.id}' from CAPI."
