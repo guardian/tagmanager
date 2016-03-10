@@ -29,6 +29,13 @@ object SponsorshipOperations {
     }
   }
 
+  def reindexTag(tagId: Long)(implicit username: Option[String]): Unit = {
+    Logger.info(s"reindexing tag $tagId to update sponsorship")
+    TagRepository.getTag(tagId).foreach { t =>
+      KinesisStreams.tagUpdateStream.publishUpdate(t.id.toString, TagEvent(EventType.Update, t.id, Some(t.asThrift)))
+    }
+  }
+
   def addSponsorshipToSection(sponsorshipId: Long, sectionId: Long)(implicit username: Option[String]): Unit = {
     Logger.info(s"adding sponsorship $sponsorshipId to section $sectionId")
     SectionRepository.getSection(sectionId).foreach { s =>
@@ -50,6 +57,13 @@ object SponsorshipOperations {
       KinesisStreams.sectionUpdateStream.publishUpdate(sponsoredSection.id.toString, SectionEvent(EventType.Update, sponsoredSection.id, Some(sponsoredSection.asThrift)))
 
       SectionAuditRepository.upsertSectionAudit(SectionAudit.updated(sponsoredSection))
+    }
+  }
+
+  def reindexSection(sectionId: Long)(implicit username: Option[String]): Unit = {
+    Logger.info(s"reindexing section $sectionId  to update sponsorship")
+    SectionRepository.getSection(sectionId).foreach { s =>
+      KinesisStreams.sectionUpdateStream.publishUpdate(s.id.toString, SectionEvent(EventType.Update, s.id, Some(s.asThrift)))
     }
   }
 

@@ -54,6 +54,7 @@ case class UpdateSponsorshipCommand(
           removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
           addSponsorshipToTag(updatedSponsorship.id, newTagId)
         }
+        case (Some(oldTagId), Some(newTagId)) if oldTagId == newTagId => reindexTag(newTagId)
         case _ => // no change
       }
 
@@ -64,6 +65,7 @@ case class UpdateSponsorshipCommand(
           removeSponsorshipFromSection(updatedSponsorship.id, oldSectionId)
           addSponsorshipToSection(updatedSponsorship.id, newSectionId)
         }
+        case(Some(oldSectionId), Some(newSectionId)) if oldSectionId == newSectionId => reindexSection(newSectionId)
         case _ => // no change
       }
 
