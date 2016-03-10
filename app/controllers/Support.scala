@@ -33,6 +33,13 @@ object Support extends Controller with PanDomainAuthActions {
         val objectMetadata = new ObjectMetadata()
         contentType.foreach(objectMetadata.setContentType(_))
 
+        try {
+          val test = AWS.frontendStaticFilesS3Client.getObject("static-theguardian-com", "commercial/sponsor/03/Mar/2016/sponsorLogo.jpeg")
+          Logger.error(s"read test object ok ${test.getKey}")
+        } catch {
+          case e: Exception => Logger.error("error reading test object", e)
+        }
+
         AWS.frontendStaticFilesS3Client.putObject(
           new PutObjectRequest("static-theguardian-com", logoPath, picture.file)
             // .withAccessControlList(acl)
