@@ -29,6 +29,12 @@ export default class TargetingEdit extends React.Component {
     }));
   }
 
+  clearSection() {
+    this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
+      section: undefined
+    }));
+  }
+
   renderTag(tag, setTagFn) {
     if(!!this.props.sponsorship.section) {
       return (<div>Remove the targeted section to target by tag.</div>);
@@ -51,14 +57,23 @@ export default class TargetingEdit extends React.Component {
       return (<div>Remove the targeted tag to target by section.</div>);
     }
 
+    if(!this.sectionId()) {
+      return (
+        <SectionSelect
+          selectedId={this.sectionId()}
+          sections={this.props.sections}
+          isMicrosite={false}
+          onChange={this.onUpdateSection.bind(this)}
+          disabled={this.hasTag()}
+          />
+      );
+    }
+
     return (
-      <SectionSelect
-        selectedId={this.sectionId()}
-        sections={this.props.sections}
-        isMicrosite={false}
-        onChange={this.onUpdateSection.bind(this)}
-        disabled={this.hasTag()}
-        />
+      <div className="merge__tag">
+        {this.props.sponsorship.section.name}
+        <i className="i-cross" onClick={this.clearSection.bind(this)} />
+      </div>
     );
   }
 
