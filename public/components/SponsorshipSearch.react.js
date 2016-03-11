@@ -2,17 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
 import SponsorshipList from './SponsorshipList/SponsorshipList.react';
-
-const searchStatuses = {
-  'All': 'all',
-  'Active': 'active',
-  'Pending': 'pending',
-  'Expiring soon': 'expiringSoon',
-  'Expired recently': 'expiredRecently',
-  'Launching soon': 'launchingSoon',
-  'Launched recently': 'launchedRecently',
-  'Expired': 'expired'
-};
+import {sponsorshipSearchStatuses} from '../constants/sponsorshipSearchStatuses'
 
 const sponsorshipTypes = {
   'All': 'all',
@@ -92,8 +82,8 @@ export class SponsorshipSearch extends React.Component {
                         <span>
                           Status:
                           <select onChange={this.handleSearchStatusChange.bind(this)} value={this.state.status}>
-                            {Object.keys(searchStatuses).map((field) => {
-                              return (<option key={field} value={searchStatuses[field]}>{field}</option>);
+                            {Object.keys(sponsorshipSearchStatuses).map((field) => {
+                              return (<option key={field} value={sponsorshipSearchStatuses[field]}>{field}</option>);
                             })}
                           </select>
                         </span>
