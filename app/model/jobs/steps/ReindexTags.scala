@@ -8,9 +8,9 @@ import play.api.libs.json._
 import services.{Config, KinesisStreams}
 import scala.util.control.NonFatal
 import scala.concurrent.duration._
-import model.jobs.Step
+import model.jobs.{Step, StepStatus}
 
-case class ReindexTags() extends Step {
+case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: String = StepStatus.ready) extends Step {
   override def process = {
     val total = TagLookupCache.allTags.get.size
     var progress: Int = 0
@@ -47,8 +47,6 @@ case class ReindexTags() extends Step {
   }
 
   override def failureMessage = s"Failed to reindex tags."
-
-  override val `type` = ReindexTags.`type`
 }
 
 object ReindexTags {

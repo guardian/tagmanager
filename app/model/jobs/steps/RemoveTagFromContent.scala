@@ -8,7 +8,8 @@ import play.api.Logger
 import services.KinesisStreams
 import repositories.ContentAPI
 
-case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: List[String]) extends Step {
+case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, contentIds: List[String],
+  `type`: String = RemoveTagFromContent.`type`, var stepStatus: String = StepStatus.ready) extends Step {
   override def process = {
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
@@ -45,8 +46,6 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
   }
 
   override def failureMessage = s"Failed to remove tag '${tag.id}' from listed content."
-
-  override val `type` = RemoveTagFromContent.`type`
 }
 
 object RemoveTagFromContent {

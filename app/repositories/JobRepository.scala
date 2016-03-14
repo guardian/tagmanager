@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.model._
 import model.Section
 import model.jobs.{Job, JobStatus}
 import play.api.libs.json.JsValue
+import scala.util.control.NonFatal
 import services.Dynamo
 
 import scala.collection.JavaConversions._
@@ -17,52 +18,94 @@ object JobRepository {
     Option(Dynamo.jobTable.getItem("id", id)).map(Job.fromItem)
   }
 
-  def lock(job: Job, nodeId: String): Option[Job] = {
+  def lock(job: Job, nodeId: String, currentTime: Long, lockBreakTime: Long): Option[Job] = {
     val updateItemSpec = new UpdateItemSpec()
       .withPrimaryKey("id", job.id)
       .withReturnValues(ReturnValue.ALL_NEW)
-      .withUpdateExpression("SET owner = :newOwner, status = :ownedStatus")
-      .withConditionExpression("attribute_not_exists(owner) AND status = :waitingStatus")
+      .withUpdateExpression("SET ownedBy = :newOwner, lockedAt = :lockedAt, jobStatus = :ownedStatus")
+      .withConditionExpression("(attribute_not_exists(ownedBy) AND jobStatus = :waitingStatus) OR (attribute_exists(ownedBy) AND lockedAt < :lockBreakTime)")
       .withValueMap(new ValueMap()
         .withString(":newOwner", nodeId)
+        .withString(":lockedAt", currentTime.toString())
+        .withString(":lockBreakTime", lockBreakTime.toString())
         .withString(":ownedStatus", JobStatus.owned)
         .withString(":waitingStatus", JobStatus.waiting))
 
-    val outcome = Job.fromItem(Dynamo.jobTable.updateItem(updateItemSpec).getItem())
-
-    if (outcome.owner == nodeId) {
-      Some(outcome)
-    } else {
-      None
+    try {
+      Some(Job.fromItem(Dynamo.jobTable.updateItem(updateItemSpec).getItem()))
+    } catch {
+      case NonFatal(e) => {
+        println(e) // Someone else got here first
+        None
+      }
     }
   }
 
   def unlock(job: Job, nodeId: String) = {
+    val status = if (job.jobStatus == JobStatus.owned) {
+      JobStatus.waiting
+    } else { // If we've failed or completed then we don't want to set the stauts to waiting
+      job.jobStatus
+    }
+
     val updateItemSpec = new UpdateItemSpec()
       .withPrimaryKey("id", job.id)
-      .withUpdateExpression("REMOVE owner SET status = :waitingStatus")
-      .withConditionExpression("owner = :currentOwner")
+      .withUpdateExpression("REMOVE ownedBy SET jobStatus = :status")
+      .withConditionExpression("ownedBy = :currentOwner")
       .withValueMap(new ValueMap()
         .withString(":currentOwner", nodeId)
-        .withString(":waitingStatus", JobStatus.waiting))
+        .withString(":status", status))
 
+    try {
       Dynamo.jobTable.updateItem(updateItemSpec)
+    } catch {
+      case NonFatal(e) => {
+        println(e) // Should only happen if someone stole our lock, at which point we can't really do anything
+      }
+    }
   }
 
   def addJob(job: Job) = {
     Dynamo.jobTable.putItem(job.toItem)
   }
 
-  /** You can only modify a job if you own it*/
-  def updateJobIfOwned(job: Job, nodeId: String) = {
-    // TODO Implement
+  /** You can only modify a job if you own it */
+  def upsertJobIfOwned(job: Job, nodeId: String) = {
+    val putItemSpec = new PutItemSpec()
+      .withItem(job.toItem)
+      .withConditionExpression("ownedBy = :currentOwner")
+      .withValueMap(new ValueMap()
+        .withString(":currentOwner", nodeId))
+
+    try {
+      Dynamo.jobTable.putItem(putItemSpec)
+    } catch {
+      case NonFatal(e) => {
+        println(e) // Should only happen if someone stole our lock, at which point we can't really do anything
+      }
+    }
   }
 
   def deleteIfCompleteOrFailed(id: Long) = {
-    // TODO Implement
+    val deleteItemSpec = new DeleteItemSpec()
+      .withPrimaryKey("id", id)
+      .withConditionExpression("jobStatus = :complete OR jobStatus = :failed")
+      .withValueMap(new ValueMap()
+        .withString(":compete", JobStatus.complete)
+        .withString(":failed", JobStatus.failed))
+
+    try {
+      Dynamo.jobTable.deleteItem(deleteItemSpec)
+    } catch {
+      case NonFatal(e) => {
+        println(e) // Should only happen if someone stole our lock, at which point we can't really do anything
+      }
+    }
   }
 
-  def loadAllJobs = Dynamo.jobTable.scan().map(Job.fromItem(_)).toList
+  def loadAllJobs = {
+    Dynamo.jobTable.scan().map(Job.fromItem(_)).toList
+  }
 
   def findJobsForTag(tagId: Long): List[Job] = {
     Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).map(Job.fromItem).toList

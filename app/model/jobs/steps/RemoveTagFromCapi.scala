@@ -7,7 +7,8 @@ import services.KinesisStreams
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 
-case class RemoveTagFromCapi(tag: Tag) extends Step {
+case class RemoveTagFromCapi(tag: Tag,
+  `type`: String = RemoveTagFromCapi.`type`, var stepStatus: String = StepStatus.ready) extends Step {
   override def process = {
       KinesisStreams.tagUpdateStream.publishUpdate(
         tag.id.toString,
@@ -36,8 +37,6 @@ case class RemoveTagFromCapi(tag: Tag) extends Step {
   }
 
   override def failureMessage = s"Failed to remove tag '${tag.id}' from CAPI."
-
-  override val `type` = RemoveTagFromCapi.`type`
 }
 
 object RemoveTagFromCapi {

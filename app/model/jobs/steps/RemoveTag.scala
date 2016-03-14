@@ -3,10 +3,10 @@ package model.jobs.steps
 import repositories.TagRepository
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
-import model.jobs.Step
+import model.jobs.{Step, StepStatus}
 import model.Tag
 
-case class RemoveTag(tag: Tag) extends Step {
+case class RemoveTag(tag: Tag, `type`: String = RemoveTag.`type`, var stepStatus: String = StepStatus.ready) extends Step {
   override def process = {
     TagRepository.deleteTag(tag.id)
   }
@@ -25,8 +25,6 @@ case class RemoveTag(tag: Tag) extends Step {
   }
 
   override def failureMessage = s"Failed to remove tag '${tag.id}' from Tag Managers database."
-
-  override val `type` = RemoveTag.`type`
 }
 
 object RemoveTag {

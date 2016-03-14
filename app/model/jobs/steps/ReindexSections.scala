@@ -5,9 +5,9 @@ import play.api.Logger
 import services.KinesisStreams
 import repositories._
 import scala.util.control.NonFatal
-import model.jobs.Step
+import model.jobs.{Step, StepStatus}
 
-case class ReindexSections() extends Step {
+case class ReindexSections(`type`: String = ReindexSections.`type`, var stepStatus: String = StepStatus.ready) extends Step {
   override def process = {
     val sections = SectionRepository.loadAllSections.toList
     val total = sections.size
@@ -44,8 +44,6 @@ case class ReindexSections() extends Step {
   }
 
   override def failureMessage = s"Failed to reindex sections."
-
-  override val `type` = ReindexSections.`type`
 }
 
 object ReindexSections {

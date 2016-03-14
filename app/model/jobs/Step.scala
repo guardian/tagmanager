@@ -24,10 +24,7 @@ trait Step {
   def failureMessage: String
 
   /** The status of this step: 'ready' to be processed, 'processed', 'complete', or one of the failed states 'rolledback' and 'rollbackfailed'*/
-  var status: String = StepStatus.ready
-
-  /** The type of this step */
-  val `type`: String
+  var stepStatus: String
 }
 
 object Step {
@@ -42,18 +39,20 @@ object Step {
   val removeTagPathFormat        = Jsonx.formatCaseClassUseDefaults[RemoveTagPath]
 
   val stepWrites = new Writes[Step] {
-    override def writes(step: Step): JsValue = step match {
-      case s: AddTagToContent      => addTagToContentFormat.writes(s)
-      case s: MergeTagForContent   => mergeTagForContentFormat.writes(s)
-      case s: ReindexSections      => reindexSectionsFormat.writes(s)
-      case s: ReindexTags          => reindexTagsFormat.writes(s)
-      case s: RemoveTag            => removeTagFormat.writes(s)
-      case s: RemoveTagFromCapi    => removeTagFromCapiFormat.writes(s)
-      case s: RemoveTagFromContent => removeTagFromContentFormat.writes(s)
-      case s: RemoveTagPath        => removeTagPathFormat.writes(s)
-      case other => {
-        Logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
-        throw new UnsupportedOperationException(s"unable to serialize step of type ${other.getClass}")
+    override def writes(step: Step): JsValue = {
+      step match {
+        case s: AddTagToContent      => addTagToContentFormat.writes(s)
+        case s: MergeTagForContent   => mergeTagForContentFormat.writes(s)
+        case s: ReindexSections      => reindexSectionsFormat.writes(s)
+        case s: ReindexTags          => reindexTagsFormat.writes(s)
+        case s: RemoveTag            => removeTagFormat.writes(s)
+        case s: RemoveTagFromCapi    => removeTagFromCapiFormat.writes(s)
+        case s: RemoveTagFromContent => removeTagFromContentFormat.writes(s)
+        case s: RemoveTagPath        => removeTagPathFormat.writes(s)
+        case other => {
+          Logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
+          throw new UnsupportedOperationException(s"unable to serialize step of type ${other.getClass}")
+        }
       }
     }
   }
@@ -69,12 +68,13 @@ object Step {
         case JsString(RemoveTagFromCapi.`type`)    => removeTagFromCapiFormat.reads(json)
         case JsString(RemoveTagFromContent.`type`) => removeTagFromContentFormat.reads(json)
         case JsString(RemoveTagPath.`type`)        => removeTagPathFormat.reads(json)
-        case _ => JsError("unexpeted step type value")
+        case _ => JsError("unexpected step type value")
       }
     }
   }
 
   implicit val stepFormat = Format(stepReads, stepWrites)
+  //implicit val stepFormat = Format(stepReads, stepWrites)
 }
 
 // Step status is required so we know which steps require rollback

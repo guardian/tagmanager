@@ -16,7 +16,7 @@ import permissions._
 
 @Singleton
 class PermissionsLoader @Inject() (lifecycle: ApplicationLifecycle) {
-  //load
+  load
 
   def load {
     Permissions.list(PermissionsUser("preload@permissions"))

@@ -15,8 +15,8 @@ case class Job(
   steps: List[Step], // What are the steps in this job
 
   lockedAt: Long = 0,
-  status: String = JobStatus.waiting, // Waiting, Owned, Failed, Complete
-  owner: Option[String] = None, // Which node current owns this job
+  ownedBy: Option[String] = None, // Which node current owns this job
+  var jobStatus: String = JobStatus.waiting, // Waiting, Owned, Failed, Complete
   var retries: Int = 0, // How many times have we had to retry a check
   var waitUntil: Long = new DateTime(DateTimeZone.UTC).getMillis, // Signal to the runner to wait until a given time before processing
   createdAt: Long = new DateTime().getMillis // Created at in local time
@@ -28,14 +28,13 @@ case class Job(
    *  returns a bool which tells the job runner to requeue the job in dynamo
    *  or simply continue processing. */
   def processStep() = {
-    steps.find(_.status != StepStatus.complete).foreach { step =>
-      step.status match {
-
+    steps.find(_.stepStatus != StepStatus.complete).foreach { step =>
+      step.stepStatus match {
         case StepStatus.ready => {
           retries = 0
-          step.status = StepStatus.processing
+          step.stepStatus = StepStatus.processing
           step.process
-          step.status = StepStatus.processed
+          step.stepStatus = StepStatus.processed
         }
 
         case StepStatus.processed => {
@@ -44,7 +43,7 @@ case class Job(
           }
 
           if (step.check) {
-            step.status = StepStatus.complete
+            step.stepStatus = StepStatus.complete
           } else {
             retries = retries + 1
           }
@@ -60,15 +59,16 @@ case class Job(
     // Undo in reverse order
     val revSteps = steps.reverse
     revSteps
-      .filter(s => s.status == StepStatus.processing || s.status == StepStatus.processed || s.status == StepStatus.complete )
+      .filter(s => s.stepStatus == StepStatus.processing || s.stepStatus == StepStatus.processed || s.stepStatus == StepStatus.complete )
       .foreach(step => {
         try {
           step.rollback
-          step.status = StepStatus.rolledback
+          step.stepStatus = StepStatus.rolledback
         } catch {
-          case NonFatal(e) => step.status = StepStatus.rollbackfailed
+          case NonFatal(e) => step.stepStatus = StepStatus.rollbackfailed
         }
       })
+    jobStatus = JobStatus.failed
   }
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -77,8 +77,13 @@ case class Job(
 object Job {
   implicit val jobFormat: Format[Job] = Jsonx.formatCaseClassUseDefaults[Job]
 
-  def fromItem(item: Item): Job = {
-    Json.parse(item.toJSON).as[Job]
+  def fromItem(item: Item): Job = try {
+      Json.parse(item.toJSON).as[Job]
+    } catch {
+      case NonFatal(e) => {
+        println(e.printStackTrace())
+        throw e
+    }
   }
 }
 

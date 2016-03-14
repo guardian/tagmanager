@@ -146,7 +146,8 @@ class CodeConfig extends Config {
   override def sequenceTableName: String = "tag-manager-sequences-CODE"
   override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
 
-  override def jobTableName: String = "tag-manager-jobs-CODE"
+  //override def jobTableName: String = "tag-manager-jobs-CODE"
+  override def jobTableName: String = "tag-manager-jobs-dev-SC"
   override def tagAuditTableName: String = "tag-manager-tag-audit-CODE"
   override def sectionAuditTableName: String = "tag-manager-section-audit-CODE"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-CODE"

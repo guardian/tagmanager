@@ -3,13 +3,15 @@ package model.jobs.steps
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
 import model.{Section, Tag}
 import scala.concurrent.duration._
-import model.jobs.Step
+import model.jobs.{Step, StepStatus}
 import play.api.Logger
 import services.KinesisStreams
 import repositories._
 import java.lang.UnsupportedOperationException
 
-case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], contentIds: List[String]) extends Step {
+case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], contentIds: List[String],
+  `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+
   override def process = {
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
@@ -43,8 +45,6 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
   }
 
   override def failureMessage = s"Failed to merge tag '${from.id}' to '${to.id}' all content."
-
-  override val `type` = MergeTagForContent.`type`
 }
 
 object MergeTagForContent {
