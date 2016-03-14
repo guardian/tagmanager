@@ -1,7 +1,8 @@
 package model
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{PublicationInformation => ThriftPublicationInformation}
 
 case class PublicationInformation(
@@ -22,10 +23,7 @@ case class PublicationInformation(
 
 object PublicationInformation {
 
-  implicit val publicationInformationFormat: Format[PublicationInformation] = (
-    (JsPath \ "mainNewspaperBookSectionId").formatNullable[Long] and
-      (JsPath \ "newspaperBooks").formatNullable[Set[Long]].inmap[Set[Long]](_.getOrElse(Set()), Some(_))
-    )(PublicationInformation.apply, unlift(PublicationInformation.unapply))
+  implicit val publicationInformationFormat = Jsonx.formatCaseClassUseDefaults[PublicationInformation]
 
   def apply(thriftPublicationInformation: ThriftPublicationInformation): PublicationInformation =
     PublicationInformation(

@@ -10,6 +10,7 @@ import PodcastMetadata from  './formComponents/series/PodcastMetadata.react';
 import ContributorInfoEdit from './formComponents/contributor/ContributorInfoEdit.react';
 import PublicationInfoEdit from './formComponents/publication/PublicationInfoEdit.react';
 import NewspaperBookInfoEdit from './formComponents/newspaperbook/NewspaperBookInfoEdit.react';
+import PaidContentInfoEdit from './formComponents/paidcontent/PaidContentInfoEdit.react';
 import TrackingInfoEdit from './formComponents/tracking/TrackingInformation.react.js';
 
 import * as tagTypes from '../../constants/tagTypes';
@@ -106,6 +107,10 @@ export default class TagEdit extends React.Component {
       return <NewspaperBookInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
 
+    renderPaidContentFields() {
+      return <PaidContentInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
+    }
+
     renderTrackingFields() {
       return <TrackingInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
     }
@@ -134,6 +139,10 @@ export default class TagEdit extends React.Component {
 
       if (this.props.tag.type === tagTypes.newspaperBook.name) {
         return this.renderNewspaperBookFields();
+      }
+
+      if (this.props.tag.type === tagTypes.paidContent.name) {
+        return this.renderPaidContentFields();
       }
 
       if (this.props.tag.type === tagTypes.tracking.name) {

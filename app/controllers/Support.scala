@@ -1,10 +1,15 @@
 package controllers
 
+import com.amazonaws.services.s3.model._
+import model.{ImageAsset, Image}
+import org.joda.time.DateTime
 import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
 import org.cvogt.play.json.Jsonx
 import play.api.Logger
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
+import services.{AWS, Config, ImageMetadataService}
+import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
 import repositories.TagLookupCache
 import services.{Config, ImageMetadataService}
 import java.util.concurrent.TimeUnit
@@ -15,6 +20,40 @@ object Support extends Controller with PanDomainAuthActions {
     ImageMetadataService.fetch(imageUrl).map { imageMetadata =>
       Ok(Json.toJson(imageMetadata))
     }.getOrElse(NotFound)
+  }
+
+  def uploadLogo(filename: String) = APIAuthAction(parse.temporaryFile) { req =>
+    val picture = req.body
+
+    ImageMetadataService.imageDimensions(picture.file) match {
+      case (w, h) if w <= 140 && h <= 90 => {
+        val dateSlug = new DateTime().toString("dd/MMM/yyyy")
+        val logoPath = s"commercial/sponsor/${dateSlug}/${filename}"
+        val contentType = req.contentType
+        val objectMetadata = new ObjectMetadata()
+        contentType.foreach(objectMetadata.setContentType(_))
+
+        AWS.frontendStaticFilesS3Client.putObject(
+          new PutObjectRequest("static-theguardian-com", logoPath, picture.file)
+            .withMetadata(objectMetadata)
+        )
+
+        val uploadedImageUrl = s"https://static.theguardian.com/${logoPath}"
+
+        ImageMetadataService.fetch(uploadedImageUrl).map { imageMetadata =>
+          val image = Image(imageMetadata.mediaId, List(
+            ImageAsset(
+              imageUrl = uploadedImageUrl,
+              width = imageMetadata.width,
+              height = imageMetadata.height,
+              mimeType = imageMetadata.mimeType
+            )
+          ))
+          Ok(Json.toJson(image))
+        }.getOrElse(BadRequest("failed to upload image"))
+      }
+      case _ => BadRequest("sponsorship logos must be at most 140 x 90")
+    }
   }
 
   def previewCapiProxy(path: String) = APIAuthAction { request =>
@@ -39,7 +78,6 @@ object Support extends Controller with PanDomainAuthActions {
         BadRequest
       }
     }
-
   }
 
 
