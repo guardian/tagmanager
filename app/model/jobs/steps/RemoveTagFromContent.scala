@@ -9,7 +9,7 @@ import services.KinesisStreams
 import repositories.ContentAPI
 
 case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, contentIds: List[String],
-  `type`: String = RemoveTagFromContent.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+  `type`: String = RemoveTagFromContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
@@ -45,7 +45,9 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, conte
     }
   }
 
-  override def failureMessage = s"Failed to remove tag '${tag.id}' from listed content."
+  override val checkingMessage = s"Checking if '${tag.path}' was removed from all content in CAPI."
+  override val failureMessage = s"Failed to remove tag '${tag.path}' from listed content."
+  override val checkFailMessage = s"CAPI did not remove '${tag.path}' from all content."
 }
 
 object RemoveTagFromContent {

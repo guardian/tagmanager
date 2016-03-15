@@ -8,17 +8,21 @@ class Status extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          jobStatus: []
+          myJobs: [],
+          allJobs: [],
         };
     }
 
     fetchJobs() {
       tagManagerApi.getAllJobs()
       .then((logs) => {
+        const sortedJobs = logs.sort((a, b) => a.date > b.date ? -1 : 1);
         this.setState({
-          jobStatus: logs.sort((a, b) => a.date > b.date ? -1 : 1)
+          myJobs: sortedJobs.filter( (job) => job.createdBy == this.props.config.username),
+          allJobs: sortedJobs
         });
       });
+
     }
 
     componentDidMount() {
@@ -33,7 +37,10 @@ class Status extends React.Component {
     render () {
       return (
         <div className="status">
-          <JobTable jobs={this.state.jobStatus} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
+          <h1>Your jobs</h1>
+          <JobTable jobs={this.state.myJobs} simpleView={false} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
+          <h1>All jobs</h1>
+          <JobTable jobs={this.state.allJobs} simpleView={true} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
         </div>
       );
     }

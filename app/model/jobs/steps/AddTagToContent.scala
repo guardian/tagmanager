@@ -9,7 +9,7 @@ import play.api.Logger
 import services.KinesisStreams
 import repositories.ContentAPI
 
-case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds: List[String], top: Boolean, `type`: String = AddTagToContent.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds: List[String], top: Boolean, `type`: String = AddTagToContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
     val op =  if (top) OperationType.AddToTop else OperationType.AddToBottom
 
@@ -47,7 +47,9 @@ case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds
     }
   }
 
-  override def failureMessage = s"Failed to add tag '${tag.id}' to listed content."
+  override val checkingMessage = s"Checking if ${tag.id} was added to content in CAPI."
+  override val failureMessage = s"Failed to add tag '${tag.id}' to listed content."
+  override val checkFailMessage = s"Tag ${tag.id} was not added to all content in CAPI."
 }
 
 object AddTagToContent {

@@ -6,7 +6,7 @@ import scala.util.control.NonFatal
 import model.jobs.{Step, StepStatus}
 import model.Tag
 
-case class RemoveTag(tag: Tag, `type`: String = RemoveTag.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+case class RemoveTag(tag: Tag, `type`: String = RemoveTag.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
     TagRepository.deleteTag(tag.id)
   }
@@ -24,7 +24,9 @@ case class RemoveTag(tag: Tag, `type`: String = RemoveTag.`type`, var stepStatus
     TagRepository.upsertTag(tag)
   }
 
-  override def failureMessage = s"Failed to remove tag '${tag.id}' from Tag Managers database."
+  override val checkingMessage = s"Checking if '${tag.path}' was removed from Tag Manager."
+  override val failureMessage = s"Failed to remove tag '${tag.path}' from Tag Managers database."
+  override val checkFailMessage = s"Could not verify '${tag.path} was successfully removed from Tag Manager."
 }
 
 object RemoveTag {

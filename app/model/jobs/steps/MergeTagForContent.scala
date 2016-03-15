@@ -9,10 +9,13 @@ import services.KinesisStreams
 import repositories._
 import java.lang.UnsupportedOperationException
 
-case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], contentIds: List[String],
-  `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], var contentCount: Int = -1,
+  `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
 
   override def process = {
+    val contentIds = ContentAPI.getContentIdsForTag(from.path)
+    contentCount = contentIds.size
+
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
         operation = OperationType.Merge,
@@ -33,7 +36,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
     val removedCount = ContentAPI.countContentWithTag(from.path)
     val addedCount = ContentAPI.countContentWithTag(to.path)
 
-    if (removedCount == 0 && addedCount == contentIds.size) {
+    if (removedCount == 0 && addedCount == contentCount) {
       true
     } else {
       false
@@ -44,7 +47,9 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
     throw new UnsupportedOperationException("Rollback is not supported for merging tags in content.")
   }
 
-  override def failureMessage = s"Failed to merge tag '${from.id}' to '${to.id}' all content."
+  override val checkingMessage = s"Checking if '${from.path}' is merged into '${to.path}' for all content in CAPI."
+  override val failureMessage = s"Failed to merge tag '${from.path}' to '${to.path}' all content."
+  override val checkFailMessage = s"CAPI does not seem to have merged the tag '${from.path}' into '${to.path}'"
 }
 
 object MergeTagForContent {

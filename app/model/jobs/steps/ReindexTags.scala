@@ -10,7 +10,7 @@ import scala.util.control.NonFatal
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 
-case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
     val total = TagLookupCache.allTags.get.size
     var progress: Int = 0
@@ -46,7 +46,9 @@ case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: Stri
     throw new UnsupportedOperationException("Rollback is not supported for reindexing tags.")
   }
 
-  override def failureMessage = s"Failed to reindex tags."
+  override val checkingMessage = s"Checking tag reindex was successful" // Should not happen
+  override val failureMessage = s"Failed to reindex tags."
+  override val checkFailMessage = s"Failed to confirm tag reindex was successful." // Should not happen
 }
 
 object ReindexTags {

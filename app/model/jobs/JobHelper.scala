@@ -7,83 +7,91 @@ import repositories._
 
 /** Utilities for starting jobs */
 object JobHelper {
-  def beginBatchTagAddition(tag: Tag, operation: String, contentIds: List[String]) {
+  def beginBatchTagAddition(tag: Tag, operation: String, contentIds: List[String])(implicit username: Option[String]) {
     val section = tag.section.flatMap( SectionRepository.getSection(_) )
     val top: Boolean = operation == OperationType.AddToTop
 
     JobRepository.addJob(
       Job(
-        Sequences.jobId.getNextId,
-        List(AddTagToContent(tag, section, contentIds, top))
+        id = Sequences.jobId.getNextId,
+        createdBy = username,
+        steps = List(AddTagToContent(tag, section, contentIds, top))
         )
       )
 
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
   }
 
-  def beginBatchTagDeletion(tag: Tag, operation: String, contentIds: List[String]) {
+  def beginBatchTagDeletion(tag: Tag, operation: String, contentIds: List[String])(implicit username: Option[String]) {
     val section = tag.section.flatMap( SectionRepository.getSection(_) )
 
     JobRepository.addJob(
       Job(
-        Sequences.jobId.getNextId,
-        List(RemoveTagFromContent(tag, section, contentIds))
+        id = Sequences.jobId.getNextId,
+        createdBy = username,
+        steps = List(RemoveTagFromContent(tag, section, contentIds)),
+        tagIds = List(tag.id)
         )
       )
 
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
   }
 
-  def beginTagReindex() = {
+  def beginTagReindex()(implicit username: Option[String]) = {
     val expectedDocs = TagLookupCache.allTags.get().size
     ReindexProgressRepository.resetTagReindexProgress(expectedDocs)
 
     JobRepository.addJob(
       Job(
-        Sequences.jobId.getNextId,
-        List(ReindexTags())
+        id = Sequences.jobId.getNextId,
+        createdBy = username,
+        steps = List(ReindexTags())
         )
       )
     AppAuditRepository.upsertAppAudit(AppAudit.reindexTags);
   }
 
-  def beginSectionReindex() = {
+  def beginSectionReindex()(implicit username: Option[String]) = {
     ReindexProgressRepository.resetSectionReindexProgress(SectionRepository.count)
 
     JobRepository.addJob(
       Job(
-        Sequences.jobId.getNextId,
-        List(ReindexSections())
+        id = Sequences.jobId.getNextId,
+        createdBy = username,
+        steps = List(ReindexSections())
         )
       )
     AppAuditRepository.upsertAppAudit(AppAudit.reindexSections);
   }
 
-  def beginMergeTag(from: Tag, to: Tag) = {
+  def beginMergeTag(from: Tag, to: Tag)(implicit username: Option[String]) = {
     val fromSection = from.section.flatMap( SectionRepository.getSection(_) )
     val toSection = to.section.flatMap( SectionRepository.getSection(_) )
-    val contentIds = ContentAPI.getContentIdsForTag(from.path)
 
     JobRepository.addJob(
       Job(
-        Sequences.jobId.getNextId,
-        List(
-          MergeTagForContent(from, to, fromSection, toSection, contentIds)
-          ) ++ removeTagSteps(from)
+        id = Sequences.jobId.getNextId,
+        createdBy = username,
+        steps = List(
+          MergeTagForContent(from, to, fromSection, toSection)
+          ) ++ removeTagSteps(from),
+        tagIds = List(from.id, to.id)
         )
       )
   }
 
-  def beginTagDeletion(tag: Tag) = {
+  def beginTagDeletion(tag: Tag)(implicit username: Option[String]) = {
     val section = tag.section.flatMap( SectionRepository.getSection(_))
     val contentIds = ContentAPI.getContentIdsForTag(tag.path)
 
     JobRepository.addJob(
       Job(
-        Sequences.jobId.getNextId,
-        List(
+        id = Sequences.jobId.getNextId,
+        createdBy = username,
+        steps = List(
           RemoveTagFromContent(tag, section, contentIds)
-          ) ++ removeTagSteps(tag)
+          ) ++ removeTagSteps(tag),
+        tagIds = List(tag.id)
         )
       )
   }

@@ -253,5 +253,13 @@ export default {
       method: 'delete',
       type: 'json'
     });
+  },
+
+  rollbackJob: (id) => {
+    return PandaReqwest({
+      url: '/api/jobs/rollback/' + id,
+      method: 'put',
+      type: 'json'
+    });
   }
  };

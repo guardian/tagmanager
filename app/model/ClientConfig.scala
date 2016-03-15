@@ -4,7 +4,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
 import scala.concurrent.{Future}
 
-case class ClientConfig(capiUrl: String,
+case class ClientConfig(username: String,
+                        capiUrl: String,
                         capiPreviewUrl: String,
                         capiKey: String,
                         tagTypes: List[String],
@@ -15,7 +16,8 @@ case class ClientConfig(capiUrl: String,
 object ClientConfig {
 
   implicit val clientConfigFormat: Format[ClientConfig] = (
-    (JsPath \ "capiUrl").format[String] and
+      (JsPath \ "username").format[String] and
+      (JsPath \ "capiUrl").format[String] and
       (JsPath \ "capiPreviewUrl").format[String] and
       (JsPath \ "capiKey").format[String] and
       (JsPath \ "tagTypes").format[List[String]] and

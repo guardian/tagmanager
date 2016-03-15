@@ -6,28 +6,118 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.Logger
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
 
 trait Step {
+  // Inner details
   /** Do work. */
-  def process
+  protected def process
+
+  /** Confirm this check ran successfully */
+  protected def check: Boolean
+
+  /** Undo this step */
+  protected def rollback
+
+  // Public methods that wrap the status updates
+  def processStep() = {
+    try {
+      beginProcessing
+      process
+      doneProcessing
+    } catch {
+      case NonFatal(e) => {
+        processFailed
+        throw e // Need to rethrow the exception to inform the job to start a rollback
+      }
+    }
+  }
+
+  def checkStep() = {
+    attempts += 1
+    if (attempts > Step.retryLimit) {
+      checkFailed
+      throw TooManyAttempts(s"Too many attempts at checking ${this.`type`}")
+    }
+
+    try {
+      if (check) {
+          checkOk
+      }
+    } catch {
+      case NonFatal(e) => {
+        checkFailed
+        throw e // Need to rethrow the exception to inform the job to start a rollback
+      }
+    }
+  }
+
+  def rollbackStep() = {
+    try {
+      if ( stepStatus == StepStatus.processing
+        || stepStatus == StepStatus.processed
+        || stepStatus == StepStatus.complete
+        || stepStatus == StepStatus.failed) {
+          rollback
+          stepStatus = StepStatus.rolledback
+        }
+    } catch {
+      case NonFatal(e) => stepStatus = StepStatus.rollbackfailed
+    }
+  }
 
   /** The amount of time to wait inbetween steps */
   def waitDuration: Option[Duration]
 
-  /** Confirm this check ran successfully */
-  def check: Boolean
+  /** The type of this step - used in serialization */
+  val `type`: String
 
-  /** Undo this step */
-  def rollback
-
-  /** What to display to a user if this step fails */
-  def failureMessage: String
+  /** The number of attempts this step has made at checking */
+  var attempts: Int
 
   /** The status of this step: 'ready' to be processed, 'processed', 'complete', or one of the failed states 'rolledback' and 'rollbackfailed'*/
   var stepStatus: String
+
+  /** The current user friendly message for this step, utilizes the vals below. */
+  var stepMessage: String
+
+  // User friendly messages to help the user
+  val checkingMessage: String
+  val failureMessage: String
+  val checkFailMessage: String
+
+
+  // Helpers for setting status metadata
+  private def beginProcessing() = {
+    stepStatus = StepStatus.processing
+    stepMessage = "Processing..."
+  }
+
+  private def doneProcessing() = {
+    stepStatus = StepStatus.processed
+    stepMessage = checkingMessage
+  }
+
+  private def processFailed() = {
+    stepStatus = StepStatus.failed
+    stepMessage = failureMessage
+  }
+
+  private def checkOk() = {
+    stepStatus = StepStatus.complete
+    stepMessage = "Complete"
+  }
+
+  private def checkFailed() = {
+    stepStatus = StepStatus.failed
+    stepMessage = checkFailMessage
+  }
 }
 
 object Step {
+
+  private val retryLimit = 10
+
   // Keep all the serialization stuff in here just so it's in one place
   val addTagToContentFormat      = Jsonx.formatCaseClassUseDefaults[AddTagToContent]
   val mergeTagForContentFormat   = Jsonx.formatCaseClassUseDefaults[MergeTagForContent]
@@ -74,7 +164,6 @@ object Step {
   }
 
   implicit val stepFormat = Format(stepReads, stepWrites)
-  //implicit val stepFormat = Format(stepReads, stepWrites)
 }
 
 // Step status is required so we know which steps require rollback
@@ -83,6 +172,11 @@ object StepStatus {
   val processing     = "processing"
   val processed      = "processed"
   val complete       = "complete"
+
+  val failed         = "failed"
+
   val rolledback     = "rolledback"
   val rollbackfailed = "rollbackfailed"
 }
+
+case class TooManyAttempts(message: String) extends RuntimeException(message)

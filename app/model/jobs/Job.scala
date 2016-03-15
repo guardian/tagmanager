@@ -12,42 +12,25 @@ import scala.util.control.NonFatal
 
 case class Job(
   id: Long, // Useful so users can report job failures
+  createdBy: Option[String],
   steps: List[Step], // What are the steps in this job
 
+  tagIds: List[Long] = List(), // List of all the tags associated with this job
   lockedAt: Long = 0,
   ownedBy: Option[String] = None, // Which node current owns this job
   var jobStatus: String = JobStatus.waiting, // Waiting, Owned, Failed, Complete
-  var retries: Int = 0, // How many times have we had to retry a check
   var waitUntil: Long = new DateTime(DateTimeZone.UTC).getMillis, // Signal to the runner to wait until a given time before processing
   createdAt: Long = new DateTime().getMillis // Created at in local time
 ) {
 
-  val retryLimit = 10 // TODO tune
-
   /** Process the current step of a job
    *  returns a bool which tells the job runner to requeue the job in dynamo
    *  or simply continue processing. */
-  def processStep() = {
+  def process() = {
     steps.find(_.stepStatus != StepStatus.complete).foreach { step =>
       step.stepStatus match {
-        case StepStatus.ready => {
-          retries = 0
-          step.stepStatus = StepStatus.processing
-          step.process
-          step.stepStatus = StepStatus.processed
-        }
-
-        case StepStatus.processed => {
-          if (retries >= retryLimit) {
-            throw new TooManyAttempts("Took too many attempts to process step")
-          }
-
-          if (step.check) {
-            step.stepStatus = StepStatus.complete
-          } else {
-            retries = retries + 1
-          }
-        }
+        case StepStatus.ready => processStep(step)
+        case StepStatus.processed => checkStep(step)
         case _ => {}
       }
 
@@ -55,20 +38,30 @@ case class Job(
     }
   }
 
+  def processStep(step: Step) = {
+    try {
+      step.processStep
+    } catch {
+      case NonFatal(e) => {
+        jobStatus = JobStatus.failed
+      }
+    }
+  }
+
+  def checkStep(step: Step) = {
+    try {
+      step.checkStep
+    } catch {
+      case NonFatal(e) => {
+        jobStatus = JobStatus.failed
+      }
+    }
+  }
+
   def rollback = {
-    // Undo in reverse order
     val revSteps = steps.reverse
-    revSteps
-      .filter(s => s.stepStatus == StepStatus.processing || s.stepStatus == StepStatus.processed || s.stepStatus == StepStatus.complete )
-      .foreach(step => {
-        try {
-          step.rollback
-          step.stepStatus = StepStatus.rolledback
-        } catch {
-          case NonFatal(e) => step.stepStatus = StepStatus.rollbackfailed
-        }
-      })
-    jobStatus = JobStatus.failed
+    revSteps.foreach(step => step.rollbackStep)
+    jobStatus = JobStatus.rolledback
   }
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -102,6 +95,7 @@ object JobStatus {
 
   /** This job has failed */
   val failed   = "failed"
-}
 
-case class TooManyAttempts(message: String) extends RuntimeException(message)
+  /** This job has been rolled back by a user */
+  val rolledback   = "rolledback"
+}

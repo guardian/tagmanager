@@ -28,9 +28,6 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
     serviceManager.awaitStopped(20, TimeUnit.SECONDS)
   }
 
-  // Actual useful code
-  val nodeId = InetAddress.getLocalHost().toString() // EC2 machines have a single eth0 so this should work?
-  val lockTimeOutMillis = 1000 * 60 * 5
 
   def tryRun() = {
     try {
@@ -43,21 +40,21 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
   }
   def run() = {
     val currentTime = new DateTime(DateTimeZone.UTC).getMillis
-    val lockBreakTime = currentTime - lockTimeOutMillis
+    val lockBreakTime = currentTime - JobRunner.lockTimeOutMillis
     JobRepository.loadAllJobs
       .find(job => isPotentialJob(job, currentTime, lockBreakTime)) // Find first potential job
-      .flatMap(JobRepository.lock(_, nodeId, currentTime, lockBreakTime)) // Lock it (will return None if lock fails)
+      .flatMap(JobRepository.lock(_, JobRunner.nodeId, currentTime, lockBreakTime)) // Lock it (will return None if lock fails)
       .foreach(job => { // If we got a job, and locked it then process it
         try {
-          job.processStep
+          job.process
         } catch {
           case NonFatal(e) => {
-            Logger.error(s"Background job failed on $nodeId, beginning roll back.")
-            job.rollback
+            // This catch exists to prevent an unexpected failure knocking over the entire job runner
+            Logger.error(s"Background job failed on ${JobRunner.nodeId}.")
           }
         } finally {
-          JobRepository.upsertJobIfOwned(job, nodeId)
-          JobRepository.unlock(job, nodeId)
+          JobRepository.upsertJobIfOwned(job, JobRunner.nodeId)
+          JobRepository.unlock(job, JobRunner.nodeId)
         }
       })
   }
@@ -66,6 +63,11 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
     // Either waiting job OR the job is locked but it's lock has timed out
     (job.jobStatus == JobStatus.waiting && job.waitUntil < currentTime) || (job.jobStatus == JobStatus.owned && job.lockedAt < lockBreakTime)
   }
+}
+
+object JobRunner {
+  val nodeId = InetAddress.getLocalHost().toString() // EC2 machines have a single eth0 so this should work?
+  val lockTimeOutMillis = 1000 * 60 * 5
 }
 
 class JobRunnerScheduler(runner: JobRunner) extends AbstractScheduledService {

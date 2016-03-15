@@ -26,8 +26,17 @@ table.grid-table {
             border-right: 1px solid $c-grey-300;
         }
 
-        &.row-warning {
-            color: $c-red;
-        }
     }
+}
+
+.row-warning {
+    color: $c-red;
+}
+
+.row-complete {
+    color: $c-green;
+}
+
+.row-rolledback {
+    color: $c-grey-650;
 }

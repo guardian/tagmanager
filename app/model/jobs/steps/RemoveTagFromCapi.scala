@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 
 case class RemoveTagFromCapi(tag: Tag,
-  `type`: String = RemoveTagFromCapi.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+  `type`: String = RemoveTagFromCapi.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
       KinesisStreams.tagUpdateStream.publishUpdate(
         tag.id.toString,
@@ -36,7 +36,9 @@ case class RemoveTagFromCapi(tag: Tag,
         TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
   }
 
-  override def failureMessage = s"Failed to remove tag '${tag.id}' from CAPI."
+  override val checkingMessage = s"Checking if '${tag.path}' was removed from CAPI."
+  override val failureMessage = s"Failed to remove tag '${tag.path}' from CAPI."
+  override val checkFailMessage = s"CAPI did not remove '${tag.path}'."
 }
 
 object RemoveTagFromCapi {

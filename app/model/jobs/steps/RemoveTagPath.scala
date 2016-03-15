@@ -7,7 +7,7 @@ import model.Tag
 import model.jobs.{Step, StepStatus}
 import scala.util.control.NonFatal
 
-case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, var stepStatus: String = StepStatus.ready) extends Step {
+case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
       PathManager.removePathForId(tag.pageId)
   }
@@ -27,7 +27,9 @@ case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, va
     TagRepository.upsertTag(newTag)
   }
 
-  override def failureMessage = s"Failed to remove tag path '${tag.path}' from Path Manager."
+  override val checkingMessage = s"Checking if tag path '${tag.path}' was removed from path manager."
+  override val failureMessage = s"Failed to remove tag path '${tag.path}' from Path Manager."
+  override val checkFailMessage = s"Path '${tag.path}' is still in use."
 }
 
 object RemoveTagPath {

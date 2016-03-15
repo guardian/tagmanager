@@ -23,13 +23,12 @@ object JobRepository {
       .withPrimaryKey("id", job.id)
       .withReturnValues(ReturnValue.ALL_NEW)
       .withUpdateExpression("SET ownedBy = :newOwner, lockedAt = :lockedAt, jobStatus = :ownedStatus")
-      .withConditionExpression("(attribute_not_exists(ownedBy) AND jobStatus = :waitingStatus) OR (attribute_exists(ownedBy) AND lockedAt < :lockBreakTime)")
+      .withConditionExpression("(attribute_not_exists(ownedBy) AND jobStatus <> :ownedStatus) OR (attribute_exists(ownedBy) AND lockedAt < :lockBreakTime)")
       .withValueMap(new ValueMap()
         .withString(":newOwner", nodeId)
         .withString(":lockedAt", currentTime.toString())
         .withString(":lockBreakTime", lockBreakTime.toString())
-        .withString(":ownedStatus", JobStatus.owned)
-        .withString(":waitingStatus", JobStatus.waiting))
+        .withString(":ownedStatus", JobStatus.owned))
 
     try {
       Some(Job.fromItem(Dynamo.jobTable.updateItem(updateItemSpec).getItem()))
@@ -86,21 +85,17 @@ object JobRepository {
     }
   }
 
-  def deleteIfCompleteOrFailed(id: Long) = {
+  /** Delete a job if it's in a terminal state: complete, failed or rolled back */
+  def deleteIfTerminal(id: Long) = {
     val deleteItemSpec = new DeleteItemSpec()
       .withPrimaryKey("id", id)
-      .withConditionExpression("jobStatus = :complete OR jobStatus = :failed")
+      .withConditionExpression("jobStatus = :complete OR jobStatus = :failed OR jobStatus = :rolledback")
       .withValueMap(new ValueMap()
-        .withString(":compete", JobStatus.complete)
+        .withString(":complete", JobStatus.complete)
+        .withString(":rolledback", JobStatus.rolledback)
         .withString(":failed", JobStatus.failed))
 
-    try {
-      Dynamo.jobTable.deleteItem(deleteItemSpec)
-    } catch {
-      case NonFatal(e) => {
-        println(e) // Should only happen if someone stole our lock, at which point we can't really do anything
-      }
-    }
+    Dynamo.jobTable.deleteItem(deleteItemSpec)
   }
 
   def loadAllJobs = {

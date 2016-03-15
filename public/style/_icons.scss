@@ -15,7 +15,7 @@
 
 .i-add-image-grey {
 	@extend %svg-common;
-	background-position: 52.459016393442624% 66.66666666666667%;
+	background-position: 77.41935483870968% 33.333333333333336%;
 	width: 16px;
 	height: 16px;
 }
@@ -29,21 +29,21 @@
 
 .i-clock {
 	@extend %svg-common;
-	background-position: 26.229508196721312% 33.333333333333336%;
+	background-position: 25.806451612903224% 33.333333333333336%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-cross {
 	@extend %svg-common;
-	background-position: 52.459016393442624% 0;
+	background-position: 51.61290322580645% 0;
 	width: 16px;
 	height: 16px;
 }
 
 .i-cross-red {
 	@extend %svg-common;
-	background-position: 68.75% 94.11764705882354%;
+	background-position: 98.46153846153847% 54.90196078431372%;
 	width: 13px;
 	height: 13px;
 }
@@ -55,72 +55,93 @@
 	height: 16px;
 }
 
+.i-delete-red {
+	@extend %svg-common;
+	background-position: 25.806451612903224% 66.66666666666667%;
+	width: 16px;
+	height: 16px;
+}
+
 .i-down-arrow {
 	@extend %svg-common;
-	background-position: 25.396825396825395% 96%;
+	background-position: 100% 0;
 	width: 14px;
 	height: 14px;
 }
 
+.i-failed-face-red {
+	@extend %svg-common;
+	background-position: 77.41935483870968% 0;
+	width: 16px;
+	height: 16px;
+}
+
 .i-info-grey {
 	@extend %svg-common;
-	background-position: 47.61904761904762% 96%;
+	background-position: 100% 28%;
 	width: 14px;
 	height: 14px;
 }
 
 .i-plus {
 	@extend %svg-common;
-	background-position: 78.68852459016394% 0;
+	background-position: 77.41935483870968% 66.66666666666667%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-preview-eye {
 	@extend %svg-common;
-	background-position: 78.68852459016394% 33.333333333333336%;
+	background-position: 0 100%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-publish {
 	@extend %svg-common;
-	background-position: 78.68852459016394% 66.66666666666667%;
+	background-position: 25.806451612903224% 100%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-publish-disabled {
 	@extend %svg-common;
-	background-position: 0 100%;
+	background-position: 51.61290322580645% 100%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-rollback-grey {
+	@extend %svg-common;
+	background-position: 77.41935483870968% 100%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-tag-white-30 {
 	@extend %svg-common;
-	background-position: 26.229508196721312% 66.66666666666667%;
+	background-position: 51.61290322580645% 66.66666666666667%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-tick {
 	@extend %svg-common;
-	background-position: 52.459016393442624% 33.333333333333336%;
+	background-position: 51.61290322580645% 33.333333333333336%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-tick-green {
 	@extend %svg-common;
-	background-position: 100% 0;
+	background-position: 98.46153846153847% 80.3921568627451%;
 	width: 13px;
 	height: 13px;
 }
 
 .i-tick-selected {
 	@extend %svg-common;
-	background-position: 26.229508196721312% 0;
+	background-position: 25.806451612903224% 0;
 	width: 16px;
 	height: 16px;
 }

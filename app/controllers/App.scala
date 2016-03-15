@@ -42,6 +42,7 @@ object App extends Controller with PanDomainAuthActions {
       }
 
       val clientConfig = ClientConfig(
+        username = s"${req.user.firstName} ${req.user.lastName}",
         capiUrl = Config().capiUrl,
         capiPreviewUrl = "/support/previewCapi",
         capiKey = Config().capiKey,
