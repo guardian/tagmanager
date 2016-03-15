@@ -145,7 +145,22 @@
         "Roles": [{"Ref": "TagManagerRole"}]
       }
     },
-
+    "TagManagerStaticFilesWritePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TagManagerStaticFilesWritePolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "sts:AssumeRole",
+              "Resource": "arn:aws:iam::642631414762:role/composerWriteToStaticBucket"
+            }
+          ]
+        },
+        "Roles": [{"Ref": "TagManagerRole"}]
+      }
+    },
     "TagManagerGetTeamKeysPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {

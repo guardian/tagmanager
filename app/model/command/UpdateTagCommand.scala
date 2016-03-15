@@ -1,19 +1,21 @@
 package model.command
 
 import com.gu.tagmanagement._
-import model.{TagAudit, Tag}
+import model.{DenormalisedTag, TagAudit, Tag}
 import play.api.Logger
-import repositories.{TagAuditRepository, TagRepository}
+import repositories.{SponsorshipRepository, TagAuditRepository, TagRepository}
 import services.KinesisStreams
 import org.joda.time.{DateTime, DateTimeZone}
 import model.command._
 
 
-case class UpdateTagCommand(tag: Tag) extends Command {
+case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
 
   type T = Tag
 
   override def process()(implicit username: Option[String] = None): Option[Tag] = {
+    val (tag, sponsorship) = denormalisedTag.normalise()
+
     Logger.info(s"updating tag ${tag.id}")
     tag.updatedAt = new DateTime(DateTimeZone.UTC).getMillis
 
@@ -23,6 +25,7 @@ case class UpdateTagCommand(tag: Tag) extends Command {
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
+    sponsorship.foreach( SponsorshipRepository.updateSponsorship )
     //Need to trigger reindex?
 
     existingTag foreach {(existing) =>

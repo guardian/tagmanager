@@ -75,6 +75,7 @@ sealed trait Config {
 
   def tagsTableName: String
   def sectionsTableName: String
+  def sponsorshipTableName: String
   def sequenceTableName: String
   def jobTableName: String
   def tagAuditTableName: String
@@ -105,12 +106,15 @@ sealed trait Config {
 
   def composerDomain: String
   def corsableDomains: Seq[String]
+
+  def frontendBucketWriteRole: Option[String] = None
 }
 
 class DevConfig extends Config {
 
   override def tagsTableName: String = "tag-manager-tags-DEV"
   override def sectionsTableName: String = "tag-manager-sections-DEV"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
 
@@ -122,8 +126,7 @@ class DevConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
   override def sectionUpdateStreamName: String = "section-update-stream-dev"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
-
-  override def commercialExpiryStreamName: String = "commercial-expiry-stream-CODE"
+  override def commercialExpiryStreamName: String = "commercial-expiry-stream-DEV-KELVIN"
 
   override def reindexTagsStreamName: String = "tag-reindex-dev"
   override def reindexTagsBatchSize: Int = 500
@@ -147,6 +150,7 @@ class CodeConfig extends Config {
 
   override def tagsTableName: String = "tag-manager-tags-CODE"
   override def sectionsTableName: String = "tag-manager-sections-CODE"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-CODE"
   override def sequenceTableName: String = "tag-manager-sequences-CODE"
   override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
 
@@ -158,7 +162,6 @@ class CodeConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-CODE"
   override def sectionUpdateStreamName: String = "section-update-stream-CODE"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-CODE"
-
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-CODE"
 
   override def reindexTagsStreamName: String = "tag-reindex-CODE"
@@ -177,12 +180,16 @@ class CodeConfig extends Config {
 
   override def composerDomain: String = "https://composer.code.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer.local.dev-gutools.co.uk")
+
+  override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
 }
 
 class ProdConfig extends Config {
 
+
   override def tagsTableName: String = "tag-manager-tags-PROD"
   override def sectionsTableName: String = "tag-manager-sections-PROD"
+  override def sponsorshipTableName: String = "tag-manager-sponsorships-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
   override def referencesTypeTableName: String = "tag-manager-reference-type-PROD"
 
@@ -194,7 +201,6 @@ class ProdConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
   override def sectionUpdateStreamName: String = "section-update-stream-PROD"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-PROD"
-
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-PROD"
 
   override def reindexTagsStreamName: String = "tag-reindex-PROD"
@@ -214,4 +220,5 @@ class ProdConfig extends Config {
   override def composerDomain: String = "https://composer.gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(composerDomain)
 
+  override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
 }

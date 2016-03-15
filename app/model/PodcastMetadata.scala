@@ -1,7 +1,8 @@
 package model
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata}
 
 case class PodcastMetadata( linkUrl: String,
@@ -39,16 +40,7 @@ case class PodcastMetadata( linkUrl: String,
 
 object PodcastMetadata {
 
-  implicit val podcastMetadataFormat: Format[PodcastMetadata] = (
-      (JsPath \ "linkUrl").format[String] and
-        (JsPath \ "copyrightText").formatNullable[String] and
-        (JsPath \ "authorText").formatNullable[String] and
-        (JsPath \ "iTunesUrl").formatNullable[String] and
-        (JsPath \ "iTunesBlock").format[Boolean] and
-        (JsPath \ "clean").format[Boolean] and
-        (JsPath \ "explicit").format[Boolean] and
-        (JsPath \ "image").formatNullable[Image]
-    )(PodcastMetadata.apply, unlift(PodcastMetadata.unapply))
+  implicit val podcastMetadataFormat = Jsonx.formatCaseClassUseDefaults[PodcastMetadata]
 
   def apply(thriftPodcastMetadata: ThriftPodcastMetadata): PodcastMetadata =
     PodcastMetadata(

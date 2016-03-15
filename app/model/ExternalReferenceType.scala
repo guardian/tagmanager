@@ -1,6 +1,8 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
@@ -17,12 +19,7 @@ case class ExternalReferenceType (
 
 object ExternalReferenceType {
 
-  implicit val sectionFormat: Format[ExternalReferenceType] = (
-    (JsPath \ "typeName").format[String] and
-      (JsPath \ "displayName").format[String] and
-      (JsPath \ "path").format[String] and
-      (JsPath \ "capiType").formatNullable[String]
-    )(ExternalReferenceType.apply, unlift(ExternalReferenceType.unapply))
+  implicit val sectionFormat = Jsonx.formatCaseClass[ExternalReferenceType]
 
   def fromItem(item: Item) = try{
     Json.parse(item.toJSON).as[ExternalReferenceType]

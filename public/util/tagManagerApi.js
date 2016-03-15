@@ -116,6 +116,79 @@ export default {
     });
   },
 
+  getSponsorship: (id) => {
+    return Reqwest({
+      url: '/api/sponsorship/' + id,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  saveSponsorship: (id, sponsorship) => {
+    const command = Object.assign({}, sponsorship, {
+      tag: sponsorship.tag ? sponsorship.tag.id : undefined,
+      section: sponsorship.section ? sponsorship.section.id : undefined
+    });
+
+    return Reqwest({
+      url: '/api/sponsorship/' + id,
+      data: JSON.stringify(command),
+      contentType: 'application/json',
+      method: 'put'
+    });
+  },
+
+  createSponsorship: (sponsorship) => {
+    const command = Object.assign({}, sponsorship, {
+      tag: sponsorship.tag ? sponsorship.tag.id : undefined,
+      section: sponsorship.section ? sponsorship.section.id : undefined
+    });
+
+    return Reqwest({
+      url: '/api/sponsorship',
+      data: JSON.stringify(command),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  },
+
+  searchSponsorships: (options) => {
+    const query = {
+      q: options.searchString,
+      status: options.status,
+      type: options.type
+    };
+
+    if (options.sortBy) {
+      query.sortBy = options.sortBy;
+    }
+
+    return PandaReqwest({
+      url: '/api/sponsorships',
+      method: 'get',
+      data: query,
+      type: 'json'
+    });
+  },
+
+  getClashingSponsorships: (sponsorship) => {
+    const command = {}
+
+    if(sponsorship.id) {command.id = sponsorship.id;}
+    if(sponsorship.validFrom) {command.validFrom = sponsorship.validFrom;}
+    if(sponsorship.validTo) {command.validTo = sponsorship.validTo;}
+    if(sponsorship.tag) {command.tagId = sponsorship.tag.id;}
+    if(sponsorship.section) {command.sectionId = sponsorship.section.id;}
+    if(sponsorship.targeting && sponsorship.targeting.validEditions) {command.editions = sponsorship.targeting.validEditions.toString();}
+
+    return Reqwest({
+      url: '/api/clashingSponsorships',
+      data: command,
+      contentType: 'application/json',
+      method: 'get'
+    });
+  },
+
   getReferenceTypes: () => {
     return PandaReqwest({
       url: '/api/referenceTypes',

@@ -25,7 +25,7 @@ case class UnexpireSectionContentCommand(sectionId: Long) extends Command {
       contentIds.foreach(contentId => {
         Logger.info(s"Triggering unexpiry for content $contentId")
 
-        KinesisStreams.commericalExpiryStream.publishUpdate(contentId, false.toString)
+        KinesisStreams.commercialExpiryStream.publishUpdate(contentId, false.toString)
       })
 
       section

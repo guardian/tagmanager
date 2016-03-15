@@ -1,7 +1,6 @@
 package model
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import org.cvogt.play.json.Jsonx
 import com.gu.tagmanagement.{EditionalisedPage => ThriftEditionalisedPage}
 
 case class EditionalisedPage(path: String, pageId: Long) {
@@ -10,10 +9,7 @@ case class EditionalisedPage(path: String, pageId: Long) {
 
 object EditionalisedPage {
 
-  implicit val editionalisedPageFormat: Format[EditionalisedPage] = (
-      (JsPath \ "path").format[String] and
-      (JsPath \ "pageId").format[Long]
-    )(EditionalisedPage.apply, unlift(EditionalisedPage.unapply))
+  implicit val editionalisedPageFormat = Jsonx.formatCaseClass[EditionalisedPage]
 
   def apply(thriftEditionalisedPage: ThriftEditionalisedPage): EditionalisedPage =
     EditionalisedPage(thriftEditionalisedPage.path, thriftEditionalisedPage.pageId)
