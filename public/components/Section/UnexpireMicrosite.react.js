@@ -36,7 +36,7 @@ export default class UnexpireMicrosite extends React.Component {
 
       return (
         <div className="section__unexpiry">
-          <ConfirmButton disabled={this.state.unexpiryTriggered} onClick={this.triggerUnexpiry.bind(this)} buttonText="Unexpire Microsite"/>
+          <ConfirmButton className="section__unexpiry__button" disabled={this.state.unexpiryTriggered} onClick={this.triggerUnexpiry.bind(this)} buttonText="Unexpire Microsite"/>
         </div>
       );
 
