@@ -3,10 +3,11 @@ package model.command
 import java.nio.ByteBuffer
 
 import com.gu.tagmanagement._
+import com.squareup.okhttp.{Credentials, Request}
 import model.{Tag, TagAudit, Section}
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
-import repositories.{SectionRepository, ContentAPI, TagAuditRepository, TagRepository}
+import repositories._
 import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
 import services.{KinesisStreams, Config}
 
@@ -20,7 +21,7 @@ case class UnexpireSectionContentCommand(sectionId: Long) extends Command {
 
     SectionRepository.getSection(sectionId).map(section => {
 
-      val contentIds = ContentAPI.getContentIdsForSection(section.path)
+      val contentIds = ContentAPI.getDraftContentIdsForSection(section.path)
 
       contentIds.foreach(contentId => {
         Logger.info(s"Triggering unexpiry for content $contentId")
