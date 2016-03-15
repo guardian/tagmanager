@@ -1,3 +1,8 @@
+
+.section__unexpiry button {
+  @extend %button--red;
+}
+
 .section-edit {
   display: flex;
 
