@@ -253,5 +253,13 @@ export default {
       method: 'delete',
       type: 'json'
     });
+  },
+  unexpireContentForSection: (sectionId) => {
+    return PandaReqwest({
+      url: '/support/unexpireSectionContent',
+      method: 'post',
+      contentType: 'application/json',
+      data: JSON.stringify({sectionId: sectionId})
+    });
   }
  };

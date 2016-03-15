@@ -91,6 +91,22 @@ object ContentAPI {
     }
   }
 
+  @tailrec
+  def getContentIdsForSection(apiSectionId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
+    Logger.debug(s"Loading page ${page} of contentent ids for section ${apiSectionId}")
+    val response = apiClient.getResponse(new SearchQuery().section(apiSectionId).pageSize(100).page(page))
+
+    val resultPage = Await.result(response, 5 seconds)
+
+    val allIds = ids ::: resultPage.results.map(_.id)
+
+    if (page >= resultPage.pages) {
+      allIds
+    } else {
+      getContentIdsForSection(apiSectionId, page + 1, allIds)
+    }
+  }
+
 
   def shutdown: Unit = {
     apiClient.shutdown()

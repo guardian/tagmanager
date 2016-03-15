@@ -9,6 +9,10 @@ class ReactApp extends React.Component {
         this.renderErrorBar = this.renderErrorBar.bind(this);
     }
 
+    clearError() {
+      this.props.uiActions.clearError();
+    }
+
     renderErrorBar() {
       if (!this.props.error) {
         return false;
@@ -17,6 +21,9 @@ class ReactApp extends React.Component {
       return (
         <div className="error-bar">
           {this.props.error || 'An error has occured, please refresh your browser. If this problem persists please contact Central Production'}
+          <span className="error-bar__dismiss" onClick={this.clearError.bind(this)}>
+            <i className="i-cross-white"></i>
+          </span>
         </div>
       );
     }
@@ -36,6 +43,8 @@ class ReactApp extends React.Component {
 
 //REDUX CONNECTIONS
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as clearError from '../actions/UIActions/clearError';
 
 function mapStateToProps(state) {
   return {
@@ -43,4 +52,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ReactApp);
+function mapDispatchToProps(dispatch) {
+  return {
+    uiActions: bindActionCreators(Object.assign({}, clearError), dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReactApp);
