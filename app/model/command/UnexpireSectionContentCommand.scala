@@ -23,7 +23,7 @@ case class UnexpireSectionContentCommand(sectionId: Long) extends Command {
       val contentIds = ContentAPI.getContentIdsForSection(section.path)
 
       contentIds.foreach(contentId => {
-        Logger.info(s"I'd be unexpiring the content $contentId now")
+        Logger.info(s"Triggering unexpiry for content $contentId")
 
         KinesisStreams.commericalExpiryStream.publishUpdate(contentId, false.toString)
       })
