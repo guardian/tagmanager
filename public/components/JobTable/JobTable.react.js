@@ -111,7 +111,7 @@ export default class JobTable extends React.Component {
 
     stepRowClass(step) {
       if (step.stepStatus == 'failed' || step.stepStatus == 'rollbackfailed') {
-        return 'row-warning';
+        return 'row-failed';
       } else if (step.stepStatus == 'complete') {
         return 'row-complete';
       } else if (step.stepStatus == 'rolledback') {

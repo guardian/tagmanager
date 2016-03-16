@@ -17,7 +17,9 @@ case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, va
   }
 
   override def check: Boolean = {
-    PathManager.isPathInUse(tag.path)
+    // Our PathManager object will throw if path manager returns anything other than a 204
+    // so we can assume this went ok - otherwise we'd have a process failure.
+    true
   }
 
   override def rollback = {
