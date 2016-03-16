@@ -9,26 +9,30 @@ export default class SponsorshipList extends React.Component {
         super(props);
     }
 
-    onSponsorshipClick(sponsorship) {
-      if(sponsorship.sponsorshipType === 'paidContent'){
-        history.replaceState(null, '/tag/' + sponsorship.tag.id);
+    generateSponsorshipUrl(sponsorship) {
+      if (sponsorship.sponsorshipType === 'paidContent' && sponsorship.tag) {
+        return '/tag/' + sponsorship.tag.id;
       } else {
-        history.replaceState(null, '/sponsorship/' + sponsorship.id);
+        return '/sponsorship/' + sponsorship.id;
       }
     }
 
+    onSponsorshipClick(sponsorship) {
+      history.replaceState(null, this.generateSponsorshipUrl(sponsorship));
+    }
+
     renderTargeting(sponsorship) {
-      if(sponsorship.tag) {
-        return (<div>Tag: {sponsorship.tag.internalName}</div>);
-      } else if(sponsorship.section) {
-        return (<div>Section: {sponsorship.section.name}</div>);
+      if (sponsorship.tag) {
+        return (<span>Tag: {sponsorship.tag.internalName}</span>);
+      } else if (sponsorship.section) {
+        return (<span>Section: {sponsorship.section.name}</span>);
       } else {
-        return (<div>Untargeted</div>);
+        return (<span>Untargeted</span>);
       }
     }
 
     renderValidFrom(sponsorship) {
-      if(sponsorship.validFrom) {
+      if (sponsorship.validFrom) {
         return moment(sponsorship.validFrom).format('DD/MM/YYYY HH:mm:ss');
       } else {
         return 'creation'
@@ -45,15 +49,25 @@ export default class SponsorshipList extends React.Component {
 
     renderListItem(sponsorship) {
 
+      const sponsorshipClickHandler = (e) => {
+        e.preventDefault();
+        this.onSponsorshipClick(sponsorship);
+      };
+
       return (
-        <tr key={sponsorship.id} className="taglist__results-item" onClick={this.onSponsorshipClick.bind(this, sponsorship)}>
-          <td>{sponsorship.sponsorshipType} </td>
-          <td><img src={sponsorship.sponsorLogo.assets[0].imageUrl} />{sponsorship.sponsorName} </td>
-          <td>{this.renderTargeting(sponsorship)}</td>
-          <td>{this.renderValidFrom(sponsorship)}</td>
-          <td>{this.renderValidTo(sponsorship)}</td>
-          <td>{sponsorship.status}</td>
-        </tr>
+        <a key={sponsorship.id}  href={this.generateSponsorshipUrl(sponsorship)} onClick={sponsorshipClickHandler}>
+          <div className="sponsorshiplist__row" onClick={this.onSponsorshipClick.bind(this, sponsorship)}>
+            <div className="sponsorshiplist__sponsortype">{sponsorship.sponsorshipType} </div>
+            <div className="sponsorshiplist__sponsorname">
+              <img className="sponsorshiplist__sponsorname__image" src={sponsorship.sponsorLogo.assets[0].imageUrl} />
+              {sponsorship.sponsorName}
+            </div>
+            <div className="sponsorshiplist__sponsortarget">{this.renderTargeting(sponsorship)}</div>
+            <div className="sponsorshiplist__sponsorfrom">{this.renderValidFrom(sponsorship)}</div>
+            <div className="sponsorshiplist__sponsorto">{this.renderValidTo(sponsorship)}</div>
+            <div className="sponsorshiplist__sponsorstatus">{sponsorship.status}</div>
+          </div>
+        </a>
       );
     }
 
@@ -66,22 +80,17 @@ export default class SponsorshipList extends React.Component {
       }
 
       return (
-        <table className="taglist">
-          <thead className="taglist__header">
-            <tr>
-              <th onClick={this.props.sortBy.bind(this, 'sponsorshipType')}>Type</th>
-              <th onClick={this.props.sortBy.bind(this, 'sponsor')}>Sponsor</th>
-              <th>Target</th>
-              <th onClick={this.props.sortBy.bind(this, 'from')}>Active from</th>
-              <th onClick={this.props.sortBy.bind(this, 'to')}>Active to</th>
-              <th onClick={this.props.sortBy.bind(this, 'status')}>Status</th>
-            </tr>
-          </thead>
-          <tbody className="taglist__results">
+        <div className="sponsorshiplist">
+          <div className="sponsorshiplist__row">
+              <div className="sponsorshiplist__sponsortype--header" onClick={this.props.sortBy.bind(this, 'sponsorshipType')}>Type</div>
+              <div className="sponsorshiplist__sponsorname--header" onClick={this.props.sortBy.bind(this, 'sponsor')}>Sponsor</div>
+              <div className="sponsorshiplist__sponsortarget--header">Target</div>
+              <div className="sponsorshiplist__sponsorfrom--header" onClick={this.props.sortBy.bind(this, 'from')}>Active from</div>
+              <div className="sponsorshiplist__sponsorto--header" onClick={this.props.sortBy.bind(this, 'to')}>Active to</div>
+              <div className="sponsorshiplist__sponsorstatus--header" onClick={this.props.sortBy.bind(this, 'status')}>Status</div>
+          </div>
           {this.props.sponsorships.map(this.renderListItem.bind(this))}
-          </tbody>
-        </table>
-
+        </div>
       );
     }
 }
