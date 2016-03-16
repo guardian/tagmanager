@@ -1,0 +1,33 @@
+
+.job__delete,
+.job__rollback,
+.job__button--disabled {
+
+  @extend %f-header;
+  @extend %fs-data-4;
+
+  background-color: white;
+
+  padding: $standard-padding/2 $standard-padding;
+
+  font-weight: bold;
+
+  outline: none;
+
+  margin: $standard-padding;
+}
+
+.job__delete {
+  border: 1px solid $c-red;
+  color: $c-red;
+}
+
+.job__rollback {
+  border: 1px solid $c-gray-500;
+  color: $c-grey-500;
+}
+
+.job__button--disabled {
+  border: 1px solid $c-grey-200;
+  color: $c-grey-200;
+}

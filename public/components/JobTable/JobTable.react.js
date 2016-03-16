@@ -96,6 +96,7 @@ export default class JobTable extends React.Component {
         return <i className="i-tick-green" title="Complete"/>;
 
       } else if (stepStatus == 'rolledback') {
+        return <span className="fs-data-1">Rolled back</span>
         return <i className="i-rollback-grey" title="Rollback successful"/>;
 
       } else if (stepStatus == 'failed') {
@@ -163,15 +164,15 @@ export default class JobTable extends React.Component {
     }
 
     renderDeleteButton(job) {
-      if (job.jobStatus == "failed" || job.jobStatus == "rolledback" || job.jobstatus == "complete") {
-        return <ConfirmButton buttonText="Delete" onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+      if (job.jobStatus == "failed" || job.jobStatus == "rolledback" || job.jobStatus == "complete") {
+        return <ConfirmButton className="job__delete" buttonText="Delete" onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
       return false;
     }
 
     renderRollbackButton(job) {
-      if (job.jobStatus == "failed") {
-        return <ConfirmButton buttonText="Rollback" onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+      if (job.jobStatus == "failed" || job.jobStatus == "complete") {
+        return <ConfirmButton className="job__rollback" buttonText="Rollback" onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
       return false;
     }
