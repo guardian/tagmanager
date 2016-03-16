@@ -14,6 +14,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
+        title = s"Batch tag add ${tag.path}",
         createdBy = username,
         steps = List(AddTagToContent(tag, section, contentIds, top))
         )
@@ -28,6 +29,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
+        title = s"Batch tag remove ${tag.path}",
         createdBy = username,
         steps = List(RemoveTagFromContent(tag, section, contentIds)),
         tagIds = List(tag.id)
@@ -44,6 +46,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
+        title = "Tag reindex",
         createdBy = username,
         steps = List(ReindexTags())
         )
@@ -57,6 +60,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
+        title = "Section reindex",
         createdBy = username,
         steps = List(ReindexSections())
         )
@@ -71,6 +75,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
+        title = s"Merging from ${from.path} to ${to.path}",
         createdBy = username,
         steps = List(
           MergeTagForContent(from, to, fromSection, toSection)
@@ -87,6 +92,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
+        title = s"Deleting ${tag.path}",
         createdBy = username,
         steps = List(
           RemoveTagFromContent(tag, section, contentIds)

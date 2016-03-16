@@ -12,6 +12,7 @@ import scala.util.control.NonFatal
 
 case class Job(
   id: Long, // Useful so users can report job failures
+  title: String,
   createdBy: Option[String],
   steps: List[Step], // What are the steps in this job
 

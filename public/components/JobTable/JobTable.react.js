@@ -177,9 +177,10 @@ export default class JobTable extends React.Component {
       const itemTime = moment(job.createdAt, 'x');
 
       return (
-        <tbody className="jobtable__results">
+        <tbody className='jobtable__results'>
           <tr key={job.id}>
             <td>
+              {job.title}<br />
               {itemTime.format('DD/MM/YYYY')}<br />
               {itemTime.format('HH:mm:ss')}
             </td>
@@ -198,7 +199,7 @@ export default class JobTable extends React.Component {
           <table className='grid-table jobtable'>
             <thead className='jobtable__header'>
               <tr>
-                <th>Started</th>
+                <th>Job</th>
                 <th>User</th>
                 <th>
                   {this.props.simpleView ? 'Current Step' : 'Progress'}
