@@ -5,3 +5,36 @@
   padding: $standard-padding;
 
 }
+
+.sectionlist__table__row {
+  @extend %table__row;
+}
+
+.sectionlist__table__sectionName,
+.sectionlist__table__sectionPath,
+.sectionlist__table__sectionEditions {
+  @extend %table__cell;
+
+  &--header {
+    @extend %table__cell;
+
+    background-color: $c-grey-200;
+
+    font-weight: bold;
+  }
+}
+
+.sectionlist__table__sectionName,
+.sectionlist__table__sectionName--header {
+  width: 30%;
+}
+
+.sectionlist__table__sectionPath,
+.sectionlist__table__sectionPath--header {
+  width: 50%;
+}
+
+.sectionlist__table__sectionEditions,
+.sectionlist__table__sectionEditions--header {
+  width: 20%;
+}

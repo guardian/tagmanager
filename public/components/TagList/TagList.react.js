@@ -24,13 +24,20 @@ export default class TagList extends React.Component {
 
       const sectionName = sections[0] ? sections[0].name : '';
 
+      const tagClickHandler = (e) => {
+        e.preventDefault();
+        this.onTagClick(tag);
+      };
+
       return (
-          <tr key={tag.id} className="taglist__results-item" onClick={this.onTagClick.bind(this, tag)}>
-            <td>{this.tagTypesMap[tag.type] ? this.tagTypesMap[tag.type] : tag.type}</td>
-            <td>{tag.internalName}</td>
-            <td>{sectionName}</td>
-            <td>{tag.path}</td>
-          </tr>
+        <a key={tag.id} href={'/tag/' + tag.id} onClick={tagClickHandler}>
+          <div className="taglist__row">
+            <div className="taglist__type">{this.tagTypesMap[tag.type] ? this.tagTypesMap[tag.type] : tag.type}</div>
+            <div className="taglist__internalName">{tag.internalName}</div>
+            <div className="taglist__sectionName">{sectionName}</div>
+            <div className="taglist__path">{tag.path}</div>
+          </div>
+        </a>
       );
     }
 
@@ -49,19 +56,15 @@ export default class TagList extends React.Component {
         }
 
         return (
-            <table className="grid-table taglist">
-              <thead className="taglist__header">
-                <tr>
-                  <th onClick={this.sortBy.bind(this, 'type')}>Type</th>
-                  <th onClick={this.sortBy.bind(this, 'internalName')}>Tag Name</th>
-                  <th onClick={this.sortBy.bind(this, 'path')}>Section</th>
-                  <th onClick={this.sortBy.bind(this, 'path')}>Path</th>
-                </tr>
-              </thead>
-              <tbody className="taglist__results">
-                {this.props.tags.map(this.renderListItem)}
-              </tbody>
-            </table>
+            <div className="taglist">
+              <div className="taglist__row">
+                  <div className="taglist__type--header" onClick={this.sortBy.bind(this, 'type')}>Type</div>
+                  <div className="taglist__internalName--header" onClick={this.sortBy.bind(this, 'internalName')}>Tag Name</div>
+                  <div className="taglist__sectionName--header" onClick={this.sortBy.bind(this, 'path')}>Section</div>
+                  <div className="taglist__path--header" onClick={this.sortBy.bind(this, 'path')}>Path</div>
+              </div>
+              {this.props.tags.map(this.renderListItem)}
+            </div>
         );
     }
 }
