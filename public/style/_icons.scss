@@ -15,7 +15,7 @@
 
 .i-add-image-grey {
 	@extend %svg-common;
-	background-position: 52.459016393442624% 66.66666666666667%;
+	background-position: 78.68852459016394% 0;
 	width: 16px;
 	height: 16px;
 }
@@ -43,6 +43,13 @@
 
 .i-cross-red {
 	@extend %svg-common;
+	background-position: 100% 0;
+	width: 13px;
+	height: 13px;
+}
+
+.i-cross-white {
+	@extend %svg-common;
 	background-position: 68.75% 94.11764705882354%;
 	width: 13px;
 	height: 13px;
@@ -50,7 +57,7 @@
 
 .i-delete {
 	@extend %svg-common;
-	background-position: 0 66.66666666666667%;
+	background-position: 26.229508196721312% 66.66666666666667%;
 	width: 16px;
 	height: 16px;
 }
@@ -71,35 +78,35 @@
 
 .i-plus {
 	@extend %svg-common;
-	background-position: 78.68852459016394% 0;
+	background-position: 78.68852459016394% 33.333333333333336%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-preview-eye {
 	@extend %svg-common;
-	background-position: 78.68852459016394% 33.333333333333336%;
+	background-position: 78.68852459016394% 66.66666666666667%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-publish {
 	@extend %svg-common;
-	background-position: 78.68852459016394% 66.66666666666667%;
+	background-position: 0 100%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-publish-disabled {
 	@extend %svg-common;
-	background-position: 0 100%;
+	background-position: 52.459016393442624% 66.66666666666667%;
 	width: 16px;
 	height: 16px;
 }
 
 .i-tag-white-30 {
 	@extend %svg-common;
-	background-position: 26.229508196721312% 66.66666666666667%;
+	background-position: 0 66.66666666666667%;
 	width: 16px;
 	height: 16px;
 }
@@ -113,7 +120,7 @@
 
 .i-tick-green {
 	@extend %svg-common;
-	background-position: 100% 0;
+	background-position: 100% 25.49019607843137%;
 	width: 13px;
 	height: 13px;
 }

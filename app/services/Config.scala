@@ -87,6 +87,7 @@ sealed trait Config {
   def tagUpdateStreamName: String
   def sectionUpdateStreamName: String
   def taggingOperationsStreamName: String
+
   def commercialExpiryStreamName: String
 
   def reindexTagsStreamName: String

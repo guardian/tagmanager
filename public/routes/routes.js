@@ -22,11 +22,11 @@ import SponsorshipDisplay from '../components/Sponsorship/Display';
 import SponsorshipCreate from '../components/Sponsorship/Create';
 
 import {getStore}   from '../util/storeAccessor';
-import {clearError} from '../actions/UIActions/clearError'
+import {clearError} from '../actions/UIActions/clearError';
+import {hasPermission} from '../util/verifyPermission';
 
 function requirePermission(permissionName, nextState, replaceState) {
-  const store = getStore();
-  if (!store.getState().config.permissions[permissionName]) {
+  if (!hasPermission(permissionName)) {
     replaceState(null, '/unauthorised');
   }
 }

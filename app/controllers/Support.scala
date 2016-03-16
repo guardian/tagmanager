@@ -4,15 +4,19 @@ import com.amazonaws.services.s3.model._
 import model.{ImageAsset, Image}
 import org.joda.time.DateTime
 import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
-import org.cvogt.play.json.Jsonx
+import model.command.UnexpireSectionContentCommand
+import model.command.CommandError._
 import play.api.Logger
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
+import repositories.{TagLookupCache}
 import services.{AWS, Config, ImageMetadataService}
 import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
 import repositories.TagLookupCache
 import services.{Config, ImageMetadataService}
 import java.util.concurrent.TimeUnit
+import permissions.{TriggerSectionUnexpiryPermissionsCheck}
+
 
 object Support extends Controller with PanDomainAuthActions {
 
@@ -80,10 +84,27 @@ object Support extends Controller with PanDomainAuthActions {
     }
   }
 
-
   def flexMigrationSpecificData = Action {
     Ok(
       Json.toJson(TagLookupCache.allTags.get.map(tag => tag.id.toString -> JsString(tag.path)).toMap)
     )
+  }
+
+  def unexpireSectionContent = (APIAuthAction andThen TriggerSectionUnexpiryPermissionsCheck) { req =>
+
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      val sectionId = (json \ "sectionId").as[Long]
+
+      try {
+        UnexpireSectionContentCommand(sectionId).process.map(t => Ok("Unexpiry Completed Successfully")) getOrElse BadRequest("Failed to trigger unexpiry")
+
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting sectionId in JSON")
+    }
+
   }
 }
