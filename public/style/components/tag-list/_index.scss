@@ -10,3 +10,43 @@
 .taglist__results-info {
     cursor: help;
 }
+
+.taglist__row {
+  @extend %table__row;
+}
+
+.taglist__type,
+.taglist__internalName,
+.taglist__sectionName,
+.taglist__path {
+  @extend %table__cell;
+
+  &--header {
+    @extend %table__cell;
+
+    background-color: $c-grey-200;
+
+    font-weight: bold;
+  }
+}
+
+.taglist__type,
+.taglist__type--header {
+  width: 13%;
+}
+
+.taglist__internalName,
+.taglist__internalName--header {
+  width: 48%;
+}
+
+.taglist__sectionName,
+.taglist__sectionName--header {
+  width: 12%;
+}
+
+
+.taglist__path,
+.taglist__path--header {
+  width: 27%;
+}
