@@ -37,9 +37,9 @@ class Status extends React.Component {
     render () {
       return (
         <div className="status">
-          <h1>Your jobs</h1>
+          <div className="job__status--heading">Your jobs</div>
           <JobTable jobs={this.state.myJobs} simpleView={false} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
-          <h1>All jobs</h1>
+          <div className="job__status--heading">All jobs</div>
           <JobTable jobs={this.state.allJobs} simpleView={true} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
         </div>
       );

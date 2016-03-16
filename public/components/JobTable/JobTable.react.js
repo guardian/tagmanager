@@ -3,6 +3,7 @@ import moment from 'moment';
 import {Link} from 'react-router';
 import ConfirmButton from '../utils/ConfirmButton.react';
 import ProgressSpinner from '../utils/ProgressSpinner.react';
+import {hasPermission} from '../../util/verifyPermission';
 
 import tagManagerApi from '../../util/tagManagerApi';
 
@@ -53,13 +54,13 @@ export default class JobTable extends React.Component {
     prettyJobStatus(jobStatus) {
       if (jobStatus == 'waiting' || jobStatus == 'owned') {
         // This is a pretty meaningless distinction to end users so just wrap it up as 'in progress'
-        return 'In Progress';
+        return 'In progress';
       } else if (jobStatus == 'complete') {
         return 'Done';
       } else if (jobStatus == 'failed') {
         return 'Failed';
       } else if (jobStatus == 'rolledback') {
-        return 'Rolled Back';
+        return 'Rolled back';
       }
       return jobStatus;
     }
@@ -87,23 +88,23 @@ export default class JobTable extends React.Component {
 
     prettyStepStatus(stepStatus){
       if (stepStatus == 'ready') {
-        return <i className="i-clock" title="Waiting to be processed"/>;
+        return "Waiting";
 
       } else if (stepStatus == 'processing' || stepStatus == 'processed') {
         return <ProgressSpinner/>
 
       } else if (stepStatus == 'complete') {
+        return "Complete";
         return <i className="i-tick-green" title="Complete"/>;
 
       } else if (stepStatus == 'rolledback') {
-        return <span className="fs-data-1">Rolled back</span>
-        return <i className="i-rollback-grey" title="Rollback successful"/>;
+        return "Reverted";
 
       } else if (stepStatus == 'failed') {
-        return <i className="i-cross-red" title="Failed"/>;
+        return "Failed";
 
-      } else if ( stepStatus == 'rollbackfailed') {
-        return <i className="i-failed-face-red" title="Rollback failed"/>;
+      } else if (stepStatus == 'rollbackfailed') {
+        return "Revert Failed";
       }
       return <span>{stepStatus}</span>
     }
@@ -164,25 +165,25 @@ export default class JobTable extends React.Component {
     }
 
     renderDeleteButton(job) {
-      if (job.jobStatus == "failed" || job.jobStatus == "rolledback" || job.jobStatus == "complete") {
+      if ((job.jobStatus == "failed" || job.jobStatus == "rolledback" || job.jobStatus == "complete") && (hasPermission("tag_admin") || job.createdBy == this.props.config.username)) {
         return <ConfirmButton className="job__delete" buttonText="Delete" onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
-      return false;
+      return <ConfirmButton className="job__button--disabled" disabled={true} buttonText="Delete" />
     }
 
     renderRollbackButton(job) {
-      if (job.jobStatus == "failed" || job.jobStatus == "complete") {
+      if ((job.jobStatus == "failed" || job.jobStatus == "complete") && (hasPermission("tag_admin") || job.createdBy == this.props.config.username)) {
         return <ConfirmButton className="job__rollback" buttonText="Rollback" onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
-      return false;
+      return <ConfirmButton className="job__button--disabled" disabled={true} buttonText="Rollback" />
     }
 
     renderStatusCell(job) {
-      return <div>
-        <h4>{this.prettyJobStatus(job.jobStatus)}</h4>
-        {this.renderDeleteButton(job)}
-        {this.renderRollbackButton(job)}
-      </div>;
+      return (<div>
+        <div className="job__status">{this.prettyJobStatus(job.jobStatus)}</div>
+        <div>{this.renderDeleteButton(job)}</div>
+        <div>{this.renderRollbackButton(job)}</div>
+        </div>);
     }
 
     renderListItem(job) {
@@ -216,7 +217,7 @@ export default class JobTable extends React.Component {
                 <th>
                   {this.props.simpleView ? "Current Step" : "Progress"}
                 </th>
-                <th></th>
+                <th>Status</th>
               </tr>
             </thead>
             {this.props.jobs.map(this.renderListItem, this)}
@@ -225,3 +226,14 @@ export default class JobTable extends React.Component {
       );
     }
 }
+
+//REDUX CONNECTIONS
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {
+  return {
+    config: state.config
+  };
+}
+
+export default connect(mapStateToProps)(JobTable);

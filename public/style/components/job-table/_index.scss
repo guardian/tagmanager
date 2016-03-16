@@ -4,7 +4,7 @@
 .job__button--disabled {
 
   @extend %f-header;
-  @extend %fs-data-4;
+  @extend %fs-data-2;
 
   background-color: white;
 
@@ -12,9 +12,10 @@
 
   font-weight: bold;
 
-  outline: none;
+  width: 82px;
 
-  margin: $standard-padding;
+  outline: none;
+  margin-bottom: 10px;
 }
 
 .job__delete {
@@ -23,11 +24,23 @@
 }
 
 .job__rollback {
-  border: 1px solid $c-gray-500;
-  color: $c-grey-500;
+  border: 1px solid $c-orange;
+  color: $c-orange;
 }
 
 .job__button--disabled {
   border: 1px solid $c-grey-200;
   color: $c-grey-200;
+}
+
+.job__status--heading {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.job__status {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
