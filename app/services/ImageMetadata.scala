@@ -1,6 +1,6 @@
 package services
 
-import java.io.ByteArrayInputStream
+import java.io.{File, ByteArrayInputStream}
 import javax.imageio.ImageIO
 
 import java.security.MessageDigest
@@ -61,5 +61,10 @@ object ImageMetadataService {
         throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message ${response.body}")
       }
     }
+  }
+
+  def imageDimensions(imageFile: File) = {
+    val image = ImageIO.read(imageFile)
+    (image.getWidth, image.getHeight)
   }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import SectionEdit from '../SectionEdit/SectionEdit.react';
 import SectionEdition from '../SectionEdit/SectionEditions.react';
 import SaveButton from '../utils/SaveButton.react';
+import UnexpireMicrosite from './UnexpireMicrosite.react';
 
 class SectionDisplay extends React.Component {
 
@@ -47,6 +48,7 @@ class SectionDisplay extends React.Component {
         <div className="section-edit">
           <div className="section-edit__column--sidebar">
             <SectionEdit section={this.props.section} updateSection={this.props.sectionActions.updateSection} pathLocked={true} />
+            <UnexpireMicrosite section={this.props.section} showError={this.props.uiActions.showError}/>
           </div>
           <div className="section-edit__column">
             <SectionEdition section={this.props.section} updateEditions={this.updateEditions.bind(this)} saveState={this.props.saveState} refreshSection={this.resetSection.bind(this)}/>
@@ -64,6 +66,7 @@ import { bindActionCreators } from 'redux';
 import * as getSection from '../../actions/SectionsActions/getSection';
 import * as updateSection from '../../actions/SectionsActions/updateSection';
 import * as saveSection from '../../actions/SectionsActions/saveSection';
+import * as showError from '../../actions/UIActions/showError';
 
 function mapStateToProps(state) {
   return {
@@ -75,7 +78,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    sectionActions: bindActionCreators(Object.assign({}, getSection, updateSection, saveSection), dispatch)
+    sectionActions: bindActionCreators(Object.assign({}, getSection, updateSection, saveSection), dispatch),
+    uiActions: bindActionCreators(Object.assign({}, showError), dispatch)
   };
 }
 

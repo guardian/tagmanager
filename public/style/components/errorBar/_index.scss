@@ -2,6 +2,8 @@
 .error-bar {
   display: block;
 
+  position: relative;
+
   padding: $standard-padding;
 
   background-color: $c-red;
@@ -11,4 +13,10 @@
 
 .warning-bar {
     background-color: $c-orange;
+}
+
+.error-bar__dismiss {
+  position: absolute;
+
+  right: $standard-padding;
 }

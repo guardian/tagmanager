@@ -1,13 +1,15 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
+import model.command.logic.SponsorshipStatusCalculator
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
 import helpers.XmlHelpers._
-import repositories.SectionRepository
+import repositories.{SponsorshipRepository, SectionRepository}
 import scala.util.control.NonFatal
 import scala.xml.Node
 
@@ -34,6 +36,9 @@ case class Tag(
   isMicrosite: Boolean,
   capiSectionId: Option[String] = None,
   trackingInformation: Option[TrackingInformation],
+  activeSponsorships: List[Long] = Nil,
+  sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
+  expired: Boolean = false,
   var updatedAt: Long = 0L
 ) {
 
@@ -61,7 +66,12 @@ case class Tag(
     isMicrosite       = isMicrosite,
     capiSectionId     = capiSectionId,
     trackingInformation = trackingInformation.map(_.asThrift),
-    updatedAt = Some(updatedAt)
+    updatedAt = Some(updatedAt),
+    activeSponsorships = if (activeSponsorships.isEmpty) None else Some(activeSponsorships.flatMap {sid =>
+      SponsorshipRepository.getSponsorship(sid).map(_.asThrift)
+    }),
+    sponsorshipId = sponsorship,
+    expired = expired
   )
 
   // in this limited format for inCopy to consume
@@ -143,6 +153,112 @@ object Tag {
       isMicrosite       = thriftTag.isMicrosite,
       capiSectionId     = thriftTag.capiSectionId,
       trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_)),
-      updatedAt = thriftTag.updatedAt.getOrElse(0L)
+      updatedAt = thriftTag.updatedAt.getOrElse(0L),
+      activeSponsorships = thriftTag.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil),
+      sponsorship = thriftTag.sponsorshipId,
+      expired = thriftTag.expired
     )
+}
+
+case class DenormalisedTag (
+  id: Long,
+  path: String,
+  pageId: Long,
+  `type`: String,
+  internalName: String,
+  externalName: String,
+  slug: String,
+  hidden: Boolean = false,
+  legallySensitive: Boolean = false,
+  comparableValue: String,
+  categories: Set[String] = Set(),
+  section: Option[Long],
+  publication: Option[Long],
+  description: Option[String] = None,
+  parents: Set[Long] = Set(),
+  externalReferences: List[Reference] = Nil,
+  podcastMetadata: Option[PodcastMetadata] = None,
+  contributorInformation: Option[ContributorInformation] = None,
+  publicationInformation: Option[PublicationInformation] = None,
+  isMicrosite: Boolean,
+  capiSectionId: Option[String] = None,
+  trackingInformation: Option[TrackingInformation],
+  activeSponsorships: List[Long] = Nil,
+  sponsorship: Option[Sponsorship] = None, // for paid content tags, they have an associated sponsorship but it may not be active
+  expired: Boolean = false
+  ) {
+
+  def normalise(): (Tag, Option[Sponsorship]) = {
+
+    val updatedSponsorship: Option[Sponsorship] = sponsorship.map { s => s.copy(status = SponsorshipStatusCalculator.calculateStatus(s.validFrom, s.validTo)) }
+
+    val updatedActiveSponsorships = if (`type` == "PaidContent") {
+      // only paid content tags control the active sponsorships on update
+      updatedSponsorship.toList.filter(_.status == "active").map(_.id)
+    } else {
+      activeSponsorships
+    }
+
+    val tag = Tag(
+      id = id,
+      path = path,
+      pageId = pageId,
+      `type` = `type`,
+      internalName = internalName,
+      externalName = externalName,
+      slug = slug,
+      hidden = hidden,
+      legallySensitive = legallySensitive,
+      comparableValue = comparableValue,
+      categories = categories,
+      section = section,
+      publication = publication,
+      description = description,
+      parents = parents,
+      externalReferences = externalReferences,
+      podcastMetadata = podcastMetadata,
+      contributorInformation = contributorInformation,
+      publicationInformation = publicationInformation,
+      isMicrosite = isMicrosite,
+      capiSectionId = capiSectionId,
+      trackingInformation = trackingInformation,
+      activeSponsorships = updatedActiveSponsorships,
+      sponsorship = updatedSponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
+      expired = updatedSponsorship.map(_.status == "expired").getOrElse(false)
+    )
+    (tag, updatedSponsorship)
+  }
+}
+
+object DenormalisedTag{
+
+  implicit val tagFormat = Jsonx.formatCaseClassUseDefaults[DenormalisedTag]
+
+  def apply(t: Tag): DenormalisedTag = DenormalisedTag(
+    id = t.id,
+    path = t.path,
+    pageId = t.pageId,
+    `type` = t.`type`,
+    internalName = t.internalName,
+    externalName = t.externalName,
+    slug = t.slug,
+    hidden = t.hidden,
+    legallySensitive = t.legallySensitive,
+    comparableValue = t.comparableValue,
+    categories = t.categories,
+    section = t.section,
+    publication = t.publication,
+    description = t.description,
+    parents = t.parents,
+    externalReferences = t.externalReferences,
+    podcastMetadata = t.podcastMetadata,
+    contributorInformation = t.contributorInformation,
+    publicationInformation = t.publicationInformation,
+    isMicrosite = t.isMicrosite,
+    capiSectionId = t.capiSectionId,
+    trackingInformation = t.trackingInformation,
+    activeSponsorships = t.activeSponsorships,
+    sponsorship = t.sponsorship.flatMap(SponsorshipRepository.getSponsorship), // for paid content tags, they have an associated sponsorship but it may not be active
+    expired = t.expired
+  )
 }

@@ -1,6 +1,7 @@
 package services
 
 import java.nio.ByteBuffer
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.amazonaws.regions.{Regions, Region}
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
@@ -22,6 +23,10 @@ object AWS {
   lazy val CloudWatch = region.createClient(classOf[AmazonCloudWatchAsyncClient], null, null)
   lazy val Kinesis = region.createClient(classOf[AmazonKinesisClient], null, null)
   lazy val S3Client = region.createClient(classOf[AmazonS3Client], null, null)
+
+  private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map(new STSAssumeRoleSessionCredentialsProvider(_, "tagManager"))
+
+  lazy val frontendStaticFilesS3Client = region.createClient(classOf[AmazonS3Client], frontendCredentialsProvider.getOrElse(null), null)
 }
 
 trait AwsInstanceTags {
@@ -47,6 +52,7 @@ object Dynamo {
 
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
   lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
+  lazy val sponsorshipTable = dynamoDb.getTable(Config().sponsorshipTableName)
   lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
   lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
   lazy val tagAuditTable = dynamoDb.getTable(Config().tagAuditTableName)
@@ -90,4 +96,5 @@ object KinesisStreams {
   lazy val reindexTagsStream = new KinesisStreamProducer(Config().reindexTagsStreamName, true)
   lazy val reindexSectionsStream = new KinesisStreamProducer(Config().reindexSectionsStreamName, true)
   lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, false)
+  lazy val commercialExpiryStream = new KinesisStreamProducer(Config().commercialExpiryStreamName, false)
 }

@@ -17,12 +17,16 @@ import SectionList from '../components/SectionList/SectionList.react';
 import SectionDisplay from '../components/Section/Display';
 import SectionCreate from '../components/Section/Create';
 
+import SponsorshipSearch from '../components/SponsorshipSearch.react';
+import SponsorshipDisplay from '../components/Sponsorship/Display';
+import SponsorshipCreate from '../components/Sponsorship/Create';
+
 import {getStore}   from '../util/storeAccessor';
-import {clearError} from '../actions/UIActions/clearError'
+import {clearError} from '../actions/UIActions/clearError';
+import {hasPermission} from '../util/verifyPermission';
 
 function requirePermission(permissionName, nextState, replaceState) {
-  const store = getStore();
-  if (!store.getState().config.permissions[permissionName]) {
+  if (!hasPermission(permissionName)) {
     replaceState(null, '/unauthorised');
   }
 }
@@ -44,6 +48,9 @@ export default [
       <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+      <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
       <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
       <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />

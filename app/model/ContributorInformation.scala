@@ -1,7 +1,8 @@
 package model
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import org.cvogt.play.json.Jsonx
+import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{ContributorInformation => ThriftContributorInformation}
 
 case class ContributorInformation(
@@ -30,13 +31,7 @@ case class ContributorInformation(
 
 object ContributorInformation {
 
-  implicit val contributorInformationFormat: Format[ContributorInformation] = (
-    (JsPath \ "rcsId").formatNullable[String] and
-      (JsPath \ "bylineImage").formatNullable[Image] and
-      (JsPath \ "largeBylineImage").formatNullable[Image] and
-      (JsPath \ "twitterHandle").formatNullable[String] and
-      (JsPath \ "contactEmail").formatNullable[String]
-    )(ContributorInformation.apply, unlift(ContributorInformation.unapply))
+  implicit val contributorInformationFormat = Jsonx.formatCaseClass[ContributorInformation]
 
   def apply(thriftContributorInformation: ThriftContributorInformation): ContributorInformation =
     ContributorInformation(

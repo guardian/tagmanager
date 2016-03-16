@@ -45,6 +45,11 @@ export const newspaperBookSection = {
   pathPrefix: ' '
 };
 
+export const paidContent = {
+  name: 'PaidContent',
+  displayName: 'Paid Content'
+};
+
 export const blog = {
   name: 'Blog',
   displayName: 'Blog - DEPRECATED'

@@ -42,6 +42,21 @@ function validatePodcast(tag) {
   return validateMandatoryFields(mandatoryPodcastFields, tag.podcastMetadata);
 }
 
+
+function validatePaidContent(tag) {
+
+  if (!tag.sponsorship) {
+    return [{
+      fieldName: 'sponsorship',
+      message: 'Mandatory paid content information is missing.'
+    }];
+  }
+
+  const mandatoryPaidContentFields = ['sponsorName', 'sponsorLogo', 'sponsorLink'];
+
+  return validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship);
+}
+
 function validateTrackingTag(tag) {
 
   if (!tag.trackingInformation) {
@@ -66,6 +81,8 @@ export function validateTag(tag) {
     mandatoryFields = mandatoryFields.concat(['section']);
   } else if (tag.type === tagTypes.series.name) {
     additionalErrors = additionalErrors.concat(validatePodcast(tag));
+  } else if (tag.type === tagTypes.paidContent.name) {
+    additionalErrors = additionalErrors.concat(validatePaidContent(tag));
   } else if (tag.type === tagTypes.tracking.name) {
     additionalErrors = additionalErrors.concat(validateTrackingTag(tag))
   }

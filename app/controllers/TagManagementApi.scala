@@ -6,9 +6,8 @@ import model.jobs.Job
 import org.joda.time.{DateTime, DateTimeZone}
 import permissions.Permissions
 import play.api.Logger
-import model.Tag
-import model.Section
 import model.jobs.JobRunner
+import model._
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import repositories._
@@ -19,7 +18,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   def getTag(id: Long) = APIAuthAction {
 
     TagRepository.getTag(id).map{ tag =>
-      Ok(Json.toJson(tag))
+      Ok(Json.toJson(DenormalisedTag(tag)))
     }.getOrElse(NotFound)
   }
 
@@ -28,7 +27,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
     req.body.asJson.map { json =>
       try {
-        UpdateTagCommand(json.as[Tag]).process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        UpdateTagCommand(json.as[DenormalisedTag]).process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }
@@ -41,7 +40,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
-        json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
       } catch {
         commandErrorAsResult
       }
@@ -180,6 +179,70 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     try {
       (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
+    } catch {
+      commandErrorAsResult
+    }
+  }
+
+  def searchSponsorships = APIAuthAction { req =>
+    val criteria = SponsorshipSearchCriteria(
+      q = req.getQueryString("q"),
+      status = req.getQueryString("status"),
+      `type` = req.getQueryString("type")
+    )
+
+    val orderBy = req.getQueryString("sortBy").getOrElse("internalName")
+
+    val sponsorships = SponsorshipRepository.searchSponsorships(criteria)
+
+    val orderedSponsorships: List[Sponsorship] = orderBy match {
+      case("sponsor") => sponsorships.sortBy(_.sponsorName)
+      case("from") => sponsorships.sortBy(_.validFrom.map(_.getMillis).getOrElse(0l))
+      case("to") => sponsorships.sortBy(_.validTo.map(_.getMillis).getOrElse(Long.MaxValue))
+      case("status") => sponsorships.sortBy(_.status)
+      case(_) => sponsorships.sortBy(_.sponsorName)
+    }
+
+    val resultsCount = req.getQueryString("pageSize").getOrElse("25").toInt
+
+    Ok(Json.toJson((orderedSponsorships take resultsCount).map(DenormalisedSponsorship(_))))
+  }
+
+  def getSponsorship(id: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(SponsorshipRepository.getSponsorship(id).map(DenormalisedSponsorship(_))))
+  }
+
+  def createSponsorship = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[CreateSponsorshipCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def updateSponsorship(id: Long) = APIAuthAction { req =>
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      try {
+        json.as[UpdateSponsorshipCommand].process.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting Json data")
+    }
+  }
+
+  def clashingSponsorships(id: Option[Long], tagId: Option[Long], sectionId: Option[Long], validFrom: Option[Long], validTo: Option[Long], editions: Option[String]) = APIAuthAction { req =>
+    val editionSearch = editions.map(_.split(",").toList)
+    try {
+      new ClashingSponsorshipsFetch(id, tagId, sectionId, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
+        .process.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
     } catch {
       commandErrorAsResult
     }
