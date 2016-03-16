@@ -58,6 +58,12 @@ case class Job(
     }
   }
 
+  def checkIfComplete() = {
+    if (steps.find(_.stepStatus != StepStatus.complete).isEmpty){
+      jobStatus = JobStatus.complete
+    }
+  }
+
   def rollback = {
     val revSteps = steps.reverse
     revSteps.foreach(step => step.rollbackStep)

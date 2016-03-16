@@ -53,6 +53,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
             Logger.error(s"Background job failed on ${JobRunner.nodeId}.")
           }
         } finally {
+          job.checkIfComplete
           JobRepository.upsertJobIfOwned(job, JobRunner.nodeId)
           JobRepository.unlock(job, JobRunner.nodeId)
         }

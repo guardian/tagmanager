@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import {Link} from 'react-router';
 import ConfirmButton from '../utils/ConfirmButton.react';
 import ProgressSpinner from '../utils/ProgressSpinner.react';
 import {hasPermission} from '../../util/verifyPermission';
@@ -31,95 +30,73 @@ export default class JobTable extends React.Component {
       });
     }
 
-    stepProgress(step) {
-      if (step.type === 'AllUsagesOfTagRemovedCheck') {
-        return (
-          <span>
-            <b>{(step.originalCount - step.completed)}/{step.originalCount}</b> content still contain <b>{step.apiTagId}</b>
-          </span>
-        );
-      }
-
-      if (step.type === 'TagRemovedCheck') {
-        return (
-          <span>
-            Confirming <b>{step.apiTagId}</b> has been removed from CAPI
-          </span>
-        );
-      }
-
-      return false;
-    }
-
     prettyJobStatus(jobStatus) {
-      if (jobStatus == 'waiting' || jobStatus == 'owned') {
+      if (jobStatus === 'waiting' || jobStatus === 'owned') {
         // This is a pretty meaningless distinction to end users so just wrap it up as 'in progress'
         return 'In progress';
-      } else if (jobStatus == 'complete') {
+      } else if (jobStatus === 'complete') {
         return 'Done';
-      } else if (jobStatus == 'failed') {
+      } else if (jobStatus === 'failed') {
         return 'Failed';
-      } else if (jobStatus == 'rolledback') {
+      } else if (jobStatus === 'rolledback') {
         return 'Rolled back';
       }
       return jobStatus;
     }
 
     prettyStepType(stepType) {
-      if (stepType == 'remove-tag-from-content') {
+      if (stepType === 'remove-tag-from-content') {
         return 'Remove tag from all content';
-      } else if (stepType == 'remove-tag-path') {
+      } else if (stepType === 'remove-tag-path') {
         return 'Remove path for tag';
-      } else if (stepType == 'remove-tag-from-capi') {
+      } else if (stepType === 'remove-tag-from-capi') {
         return 'Remove tag from CAPI';
-      } else if (stepType == 'remove-tag') {
+      } else if (stepType === 'remove-tag') {
         return 'Remove tag from Tag Manager';
-      } else if (stepType == 'add-tag-to-content') {
+      } else if (stepType === 'add-tag-to-content') {
         return 'Add tag to content';
-      } else if (stepType == 'merge-tag-for-content') {
+      } else if (stepType === 'merge-tag-for-content') {
         return 'Merging tag in content';
-      } else if (stepType == 'reindex-tags') {
+      } else if (stepType === 'reindex-tags') {
         return 'Reindexing tags';
-      } else if (stepType == 'reindex-sections') {
+      } else if (stepType === 'reindex-sections') {
         return 'Reindexing sections';
       }
       return stepType;
     }
 
-    prettyStepStatus(stepStatus){
-      if (stepStatus == 'ready') {
-        return "Waiting";
+    prettyStepStatus(stepStatus) {
+      if (stepStatus === 'ready') {
+        return 'Waiting';
 
-      } else if (stepStatus == 'processing' || stepStatus == 'processed') {
-        return <ProgressSpinner/>
+      } else if (stepStatus === 'processing' || stepStatus === 'processed') {
+        return <ProgressSpinner/>;
 
-      } else if (stepStatus == 'complete') {
-        return "Complete";
-        return <i className="i-tick-green" title="Complete"/>;
+      } else if (stepStatus === 'complete') {
+        return 'Complete';
 
-      } else if (stepStatus == 'rolledback') {
-        return "Reverted";
+      } else if (stepStatus === 'rolledback') {
+        return 'Reverted';
 
-      } else if (stepStatus == 'failed') {
-        return "Failed";
+      } else if (stepStatus === 'failed') {
+        return 'Failed';
 
-      } else if (stepStatus == 'rollbackfailed') {
-        return "Revert Failed";
+      } else if (stepStatus === 'rollbackfailed') {
+        return 'Revert Failed';
       }
-      return <span>{stepStatus}</span>
+      return stepStatus;
     }
 
     stepRowClass(step) {
-      if (step.stepStatus == 'failed' || step.stepStatus == 'rollbackfailed') {
+      if (step.stepStatus === 'failed' || step.stepStatus === 'rollbackfailed') {
         return 'row-failed';
-      } else if (step.stepStatus == 'complete') {
+      } else if (step.stepStatus === 'complete') {
         return 'row-complete';
-      } else if (step.stepStatus == 'rolledback') {
-        return 'row-rolledback'
+      } else if (step.stepStatus === 'rolledback') {
+        return 'row-rolledback';
       }
       return '';
     }
-
 
     renderJobStep(step, job) {
       return (
@@ -137,8 +114,8 @@ export default class JobTable extends React.Component {
             <thead>
               <tr>
                 <th>Step</th>
+                <th>Message</th>
                 <th>Status</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -151,8 +128,18 @@ export default class JobTable extends React.Component {
 
     renderCurrentStep(job) {
       const step = job.steps.find(s => {
-          return s.stepStatus != "complete";
+          return s.stepStatus !== 'complete';
       });
+
+      if (!step) {
+        return (
+          <td>
+            <span className='row-complete'>
+              Job done
+            </span>
+          </td>
+        );
+      }
 
       const rowClass = this.stepRowClass(step);
       return (
@@ -165,22 +152,22 @@ export default class JobTable extends React.Component {
     }
 
     renderDeleteButton(job) {
-      if ((job.jobStatus == "failed" || job.jobStatus == "rolledback" || job.jobStatus == "complete") && (hasPermission("tag_admin") || job.createdBy == this.props.config.username)) {
-        return <ConfirmButton className="job__delete" buttonText="Delete" onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+      if ((job.jobStatus === 'failed' || job.jobStatus === 'rolledback' || job.jobStatus === 'complete') && (hasPermission('tag_admin') || job.createdBy === this.props.config.username)) {
+        return <ConfirmButton className='job__delete' buttonText='Delete' onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
-      return <ConfirmButton className="job__button--disabled" disabled={true} buttonText="Delete" />
+      return <ConfirmButton className='job__button--disabled' disabled={true} buttonText='Delete' />;
     }
 
     renderRollbackButton(job) {
-      if ((job.jobStatus == "failed" || job.jobStatus == "complete") && (hasPermission("tag_admin") || job.createdBy == this.props.config.username)) {
-        return <ConfirmButton className="job__rollback" buttonText="Rollback" onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+      if ((job.jobStatus === 'failed' || job.jobStatus === 'complete') && (hasPermission('tag_admin') || job.createdBy === this.props.config.username)) {
+        return <ConfirmButton className='job__rollback' buttonText='Rollback' onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
-      return <ConfirmButton className="job__button--disabled" disabled={true} buttonText="Rollback" />
+      return <ConfirmButton className='job__button--disabled' disabled={true} buttonText='Rollback' />;
     }
 
     renderStatusCell(job) {
       return (<div>
-        <div className="job__status">{this.prettyJobStatus(job.jobStatus)}</div>
+        <div className='job__status'>{this.prettyJobStatus(job.jobStatus)}</div>
         <div>{this.renderDeleteButton(job)}</div>
         <div>{this.renderRollbackButton(job)}</div>
         </div>);
@@ -207,15 +194,14 @@ export default class JobTable extends React.Component {
     }
 
     render () {
-
       return (
-          <table className="grid-table jobtable">
-            <thead className="jobtable__header">
+          <table className='grid-table jobtable'>
+            <thead className='jobtable__header'>
               <tr>
                 <th>Started</th>
                 <th>User</th>
                 <th>
-                  {this.props.simpleView ? "Current Step" : "Progress"}
+                  {this.props.simpleView ? 'Current Step' : 'Progress'}
                 </th>
                 <th>Status</th>
               </tr>
