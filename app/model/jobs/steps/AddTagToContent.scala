@@ -30,6 +30,7 @@ case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds
 
   override def check: Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
+    Logger.info(s"Checking batch tag addition. Expected=${contentIds.size} Actual=${count}")
     if (count == contentIds.size) {
       true
     } else {

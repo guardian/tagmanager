@@ -28,6 +28,7 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, conte
 
   override def check: Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
+    Logger.info(s"Checking batch tag deletion. Expected=0 Actual=${count}")
     if (count == 0) {
       true
     } else {
