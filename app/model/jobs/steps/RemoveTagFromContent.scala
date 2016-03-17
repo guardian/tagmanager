@@ -17,6 +17,7 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, conte
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
+      Logger.info(s"raising ${OperationType.Remove} for ${tag.id} on ${contentPath} operation")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
   }

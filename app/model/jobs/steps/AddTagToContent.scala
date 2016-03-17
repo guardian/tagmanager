@@ -19,6 +19,7 @@ case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
+      Logger.info(s"raising ${op} for ${tag.id} on ${contentPath} operation")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
   }
@@ -47,9 +48,9 @@ case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds
     }
   }
 
-  override val checkingMessage = s"Checking if ${tag.id} was added to content in CAPI."
-  override val failureMessage = s"Failed to add tag '${tag.id}' to listed content."
-  override val checkFailMessage = s"Tag ${tag.id} was not added to all content in CAPI."
+  override val checkingMessage = s"Checking if '${tag.path}' was added to content in CAPI."
+  override val failureMessage = s"Failed to add tag '${tag.path}' to listed content."
+  override val checkFailMessage = s"Tag '${tag.path}' was not added to all content in CAPI."
 }
 
 object AddTagToContent {

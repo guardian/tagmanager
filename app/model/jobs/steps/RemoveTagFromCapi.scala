@@ -6,6 +6,7 @@ import repositories.ContentAPI
 import services.KinesisStreams
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
+import play.api.Logger
 
 case class RemoveTagFromCapi(tag: Tag,
   `type`: String = RemoveTagFromCapi.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
@@ -13,6 +14,7 @@ case class RemoveTagFromCapi(tag: Tag,
       KinesisStreams.tagUpdateStream.publishUpdate(
         tag.id.toString,
         TagEvent(EventType.Delete, tag.id, Some(tag.asThrift)))
+      Logger.info(s"Removing tag ${tag.id} from CAPI")
   }
 
   override def waitDuration: Option[Duration] = {
