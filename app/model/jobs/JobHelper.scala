@@ -9,14 +9,13 @@ import repositories._
 object JobHelper {
   def beginBatchTagAddition(tag: Tag, operation: String, contentIds: List[String])(implicit username: Option[String]) {
     val section = tag.section.flatMap( SectionRepository.getSection(_) )
-    val top: Boolean = operation == OperationType.AddToTop
 
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
         title = s"Batch tag add '${tag.path}'",
         createdBy = username,
-        steps = List(AddTagToContent(tag, section, contentIds, top))
+        steps = List(AddTagToContent(tag, section, contentIds, operation))
         )
       )
 

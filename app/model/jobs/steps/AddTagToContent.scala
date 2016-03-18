@@ -9,13 +9,11 @@ import play.api.Logger
 import services.KinesisStreams
 import repositories.ContentAPI
 
-case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds: List[String], top: Boolean, `type`: String = AddTagToContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds: List[String], op: String, `type`: String = AddTagToContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
-    val op =  if (top) OperationType.AddToTop else OperationType.AddToBottom
-
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
-        operation = op,
+        operation = OperationType.valueOf(op).get,
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
