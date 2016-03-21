@@ -159,7 +159,9 @@ export default class JobTable extends React.Component {
     }
 
     renderRollbackButton(job) {
-      if ((job.jobStatus === 'failed' || job.jobStatus === 'complete') && (hasPermission('tag_admin') || job.createdBy === this.props.config.username)) {
+      if (job.rollbackEnabled
+        && (job.jobStatus === 'failed' || job.jobStatus === 'complete')
+        && (hasPermission('tag_admin') || job.createdBy === this.props.config.username)) {
         return <ConfirmButton className='job__rollback' buttonText='Rollback' onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
       return <ConfirmButton className='job__button--disabled' disabled={true} buttonText='Rollback' />;

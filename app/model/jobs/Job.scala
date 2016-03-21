@@ -17,6 +17,7 @@ case class Job(
   steps: List[Step], // What are the steps in this job
 
   tagIds: List[Long] = List(), // List of all the tags associated with this job
+  rollbackEnabled: Boolean = false,
   lockedAt: Long = 0,
   ownedBy: Option[String] = None, // Which node current owns this job
   var jobStatus: String = JobStatus.waiting, // Waiting, Owned, Failed, Complete
@@ -66,9 +67,11 @@ case class Job(
   }
 
   def rollback = {
-    val revSteps = steps.reverse
-    revSteps.foreach(step => step.rollbackStep)
-    jobStatus = JobStatus.rolledback
+    if (rollbackEnabled) {
+      val revSteps = steps.reverse
+      revSteps.foreach(step => step.rollbackStep)
+      jobStatus = JobStatus.rolledback
+    }
   }
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())

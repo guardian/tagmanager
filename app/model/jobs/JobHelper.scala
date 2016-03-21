@@ -13,7 +13,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
-        title = s"Batch tag add '${tag.path}'",
+        title = s"Batch tag: adding '${tag.path}' to ${contentIds.size} pieces of content",
         createdBy = username,
         steps = List(AddTagToContent(tag, section, contentIds, operation))
         )
@@ -28,7 +28,7 @@ object JobHelper {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
-        title = s"Batch tag remove '${tag.path}'",
+        title = s"Batch tag: removing '${tag.path}' from ${contentIds.size} pieces of content",
         createdBy = username,
         steps = List(RemoveTagFromContent(tag, section, contentIds)),
         tagIds = List(tag.id)
@@ -96,7 +96,8 @@ object JobHelper {
         steps = List(
           RemoveTagFromContent(tag, section, contentIds)
           ) ++ removeTagSteps(tag),
-        tagIds = List(tag.id)
+        tagIds = List(tag.id),
+        rollbackEnabled = true
         )
       )
   }
