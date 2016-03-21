@@ -27,7 +27,7 @@ trait Step {
       doneProcessing
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"Error thrown during step processing: ${e.getStackTrace}")
+        Logger.error(s"Error thrown during step processing: ${e.getStackTrace.toString}")
         processFailed
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
@@ -47,7 +47,7 @@ trait Step {
       }
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"Error thrown during step check: ${e.getStackTrace}")
+        Logger.error(s"Error thrown during step check: ${e.getStackTrace.toString}")
         checkFailed
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }

@@ -47,9 +47,9 @@ case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds
     }
   }
 
-  override val checkingMessage = s"Checking if '${tag.path}' was added to content in CAPI."
-  override val failureMessage = s"Failed to add tag '${tag.path}' to listed content."
-  override val checkFailMessage = s"Tag '${tag.path}' was not added to all content in CAPI."
+  override val checkingMessage = s"Checking if '${tag.path}' has been added to requested content in CAPI."
+  override val failureMessage = s"Failed to issue the tagging operation for adding '${tag.path}' to content."
+  override val checkFailMessage = s"Tag '${tag.path}' was not detected on all content in CAPI."
 }
 
 object AddTagToContent {

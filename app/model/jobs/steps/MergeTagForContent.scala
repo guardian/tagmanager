@@ -50,7 +50,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
 
   override val checkingMessage = s"Checking if '${from.path}' is merged into '${to.path}' for all content in CAPI."
   override val failureMessage = s"Failed to merge tag '${from.path}' to '${to.path}' all content."
-  override val checkFailMessage = s"CAPI does not seem to have merged the tag '${from.path}' into '${to.path}'"
+  override val checkFailMessage = s"CAPI still contains content where tag '${from.path}' has not been merged into '${to.path}'."
 }
 
 object MergeTagForContent {

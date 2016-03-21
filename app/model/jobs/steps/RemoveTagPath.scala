@@ -15,7 +15,7 @@ case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, va
   }
 
   override def waitDuration: Option[Duration] = {
-    Some(5 seconds)
+    None
   }
 
   override def check: Boolean = {

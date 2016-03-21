@@ -15,6 +15,7 @@ case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: Stri
     val total = TagLookupCache.allTags.get.size
     var progress: Int = 0
 
+    Logger.info("Starting tag reindex")
     try {
       TagRepository.loadAllTags.grouped(Config().reindexTagsBatchSize).foreach { tags =>
         KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags.toList))

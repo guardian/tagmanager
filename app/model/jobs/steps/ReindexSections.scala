@@ -13,6 +13,7 @@ case class ReindexSections(`type`: String = ReindexSections.`type`, var stepStat
     val total = sections.size
     var progress: Int = 0
 
+    Logger.info("Starting section reindex")
     try {
       sections.foreach { section =>
         KinesisStreams.reindexSectionsStream.publishUpdate("sectionReindex", section.asThrift)
@@ -42,7 +43,6 @@ case class ReindexSections(`type`: String = ReindexSections.`type`, var stepStat
   override def rollback = {
     throw new UnsupportedOperationException("Rollback is not supported for reindexing sections.")
   }
-
 
   override val checkingMessage = s"Checking section reindex was successful" // Should not happen
   override val failureMessage = s"Failed to reindex sections."
