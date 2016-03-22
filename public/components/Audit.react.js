@@ -23,7 +23,7 @@ export default class Audit extends React.Component {
       updateFn(state.selectedReport)
       .then((logs) => {
         this.setState({
-          auditLog: logs.sort((a, b) => a.date > b.date ? -1 : 1)
+          auditLog: logs
         });
       });
     }
@@ -35,7 +35,7 @@ export default class Audit extends React.Component {
     }
 
     renderListItem(logItem) {
-      const date = moment.unix(logItem.date).format('ddd DD MMM HH:mm')
+      const date = moment(logItem.date).format('HH:mm DD/MM/YY')
       const summary = Object.keys(logItem.tagSummary).map(k => `${k}: ${logItem.tagSummary[k]}`).join('<br />')
 
       return (
@@ -88,7 +88,7 @@ export default class Audit extends React.Component {
             </tr>
           </thead>
           <tbody className="audit__results">
-            {this.state.auditLog.sort((a, b) => a.name > b.name ? 1 : -1).map(this.renderListItem, this)}
+            {this.state.auditLog.sort((a, b) => a.date < b.date ? 1 : -1).map(this.renderListItem, this)}
           </tbody>
         </table>
       );
