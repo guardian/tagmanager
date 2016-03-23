@@ -17,8 +17,8 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, conte
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
-      Logger.info(s"raising ${OperationType.Remove} for ${tag.id} on ${contentPath} operation")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+      Logger.info(s"raising ${OperationType.Remove} for ${tag.id} on ${contentPath} operation")
     }
   }
 
@@ -28,7 +28,7 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, conte
 
   override def check: Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
-    Logger.info(s"Checking batch tag deletion. Expected=0 Actual=${count}")
+    Logger.info(s"Checking tags removed from content. Expected=0 Actual=${count}")
     if (count == 0) {
       true
     } else {

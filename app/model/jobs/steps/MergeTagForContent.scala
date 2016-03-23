@@ -23,8 +23,8 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
         tag = Some(TagWithSection(from.asThrift, fromSection.map(_.asThrift))),
         destinationTag = Some(TagWithSection(to.asThrift, toSection.map(_.asThrift)))
       )
-      Logger.info(s"raising merge tag ${from.path} -> ${to.path} for content $contentPath")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+      Logger.info(s"raising merge tag ${from.path} -> ${to.path} for content $contentPath")
     }
   }
 

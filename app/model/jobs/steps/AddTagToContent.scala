@@ -17,8 +17,8 @@ case class AddTagToContent(tag: Tag, section: Option[Section] = None, contentIds
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
-      Logger.info(s"raising ${op} for ${tag.id} on ${contentPath} operation")
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+      Logger.info(s"raising ${op} for ${tag.id} on ${contentPath} operation")
     }
   }
 
