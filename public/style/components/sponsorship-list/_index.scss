@@ -1,0 +1,65 @@
+
+.sponsorshiplist__row {
+  @extend %table__row;
+}
+
+.sponsorshiplist__sponsortype,
+.sponsorshiplist__sponsorname,
+.sponsorshiplist__sponsortarget,
+.sponsorshiplist__sponsorfrom,
+.sponsorshiplist__sponsorto,
+.sponsorshiplist__sponsorstatus {
+  @extend %table__cell;
+
+  position: relative;
+
+  overflow: auto;
+
+  &--header {
+    @extend %table__cell;
+
+    background-color: $c-grey-200;
+
+    font-weight: bold;
+    white-space: normal;
+  }
+}
+
+.sponsorshiplist__sponsorname__image {
+  max-width: 50px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.sponsorshiplist__sponsortype,
+.sponsorshiplist__sponsortype--header {
+  text-transform: capitalize;
+  width: 13%;
+}
+
+.sponsorshiplist__sponsorname,
+.sponsorshiplist__sponsorname--header {
+  width: 27%;
+}
+.sponsorshiplist__sponsortarget,
+.sponsorshiplist__sponsortarget--header {
+  width: 20%;
+}
+.sponsorshiplist__sponsorfrom,
+.sponsorshiplist__sponsorfrom--header {
+  text-transform: capitalize;
+
+  width: 15%;
+}
+.sponsorshiplist__sponsorto,
+.sponsorshiplist__sponsorto--header {
+  text-transform: capitalize;
+
+  width: 15%;
+}
+.sponsorshiplist__sponsorstatus,
+.sponsorshiplist__sponsorstatus--header {
+  text-transform: capitalize;
+
+  width: 10%;
+}

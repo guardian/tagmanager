@@ -1,5 +1,31 @@
-$table-border-color: $c-grey-300;
+%table__row {
+  display: flex;
 
+  &:hover {
+    background-color: $c-grey-200;
+  }
+}
+
+%table__cell {
+  @extend %fs-data-3;
+
+  display: inline-block;
+
+  padding: $standard-padding/2 $standard-padding;
+
+  border-left: 1px solid $c-grey-300;
+  border-bottom: 1px solid $c-grey-300;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:last-child {
+    border-right: 1px solid $c-grey-300;
+  }
+}
+
+//When you use a <table>
 table.grid-table {
     @extend %fs-data-3;
 

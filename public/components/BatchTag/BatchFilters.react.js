@@ -90,7 +90,14 @@ export default class BatchFilters extends React.Component {
     }
 
     addTag(tag) {
-      const tagPath = tag.type === "ContentType" ? "type/" + tag.slug : tag.path;
+      const tagPath = tag.type === 'ContentType' ? 'type/' + tag.slug : tag.path;
+      this.props.updateFilters(Object.assign({}, this.props.filters, {
+        'tag': R.uniq(this.getTagArray().concat([tagPath])).join(',')
+      }));
+    }
+
+    addExcludedTag(tag) {
+      const tagPath = tag.type === 'ContentType' ? '-type/' + tag.slug : '-' + tag.path;
       this.props.updateFilters(Object.assign({}, this.props.filters, {
         'tag': R.uniq(this.getTagArray().concat([tagPath])).join(',')
       }));
@@ -98,6 +105,14 @@ export default class BatchFilters extends React.Component {
 
     getTagArray() {
       return this.props.filters.tag ? this.props.filters.tag.split(',') : [];
+    }
+
+    getExcludedTagArray() {
+      return this.getTagArray().filter(t => t[0] === '-');
+    }
+
+    getRequiredTagArray() {
+      return this.getTagArray().filter(t => t[0] !== '-');
     }
 
     updateSectionFilter(e) {
@@ -170,7 +185,7 @@ export default class BatchFilters extends React.Component {
                   Has Tag
                 </div>
                 <div className="batch-filters__taglist">
-                  {this.getTagArray().map(tag => {
+                  {this.getRequiredTagArray().map(tag => {
                     return (
                       <div className='batch-filters__option--active' key={tag}>
                         {tag}
@@ -181,6 +196,24 @@ export default class BatchFilters extends React.Component {
                     );
                   })}
                   <TagSelect onTagClick={this.addTag.bind(this)} />
+                </div>
+              </div>
+              <div className="batch-filters__filter">
+                <div className="batch-filters__header">
+                  Exclude Tag
+                </div>
+                <div className="batch-filters__taglist">
+                  {this.getExcludedTagArray().map(tag => {
+                    return (
+                      <div className='batch-filters__option--active' key={tag}>
+                        {tag}
+                        <div className="batch-filters__option__clear" onClick={this.removeTag.bind(this, tag)}>
+                          <i className="i-cross"></i>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <TagSelect onTagClick={this.addExcludedTag.bind(this)} />
                 </div>
               </div>
               <div className="batch-filters__filter">

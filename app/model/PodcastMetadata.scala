@@ -6,12 +6,12 @@ import org.cvogt.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata}
 
 case class PodcastMetadata( linkUrl: String,
-                            copyrightText: Option[String],
-                            authorText: Option[String],
-                            iTunesUrl: Option[String],
-                            iTunesBlock: Boolean,
-                            clean: Boolean,
-                            explicit: Boolean,
+                            copyrightText: Option[String] = None,
+                            authorText: Option[String] = None,
+                            iTunesUrl: Option[String] = None,
+                            iTunesBlock: Boolean = false,
+                            clean: Boolean = false,
+                            explicit: Boolean = false,
                             image: Option[Image] = None
 ) {
 

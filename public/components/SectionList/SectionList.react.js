@@ -20,12 +20,20 @@ class SectionList extends React.Component {
     }
 
     renderListItem(section) {
+
+      const sectionClickHandler = (e) => {
+        e.preventDefault();
+        this.onSectionClick(section);
+      };
+
       return (
-        <tr key={section.id} className="taglist__results-item" onClick={this.onSectionClick.bind(this, section)}>
-          <td>{section.name}</td>
-          <td>{section.path}</td>
-          <td>{Object.keys(section.editions).length + ' editions'}</td>
-        </tr>
+        <a key={section.id}  href={this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id} onClick={sectionClickHandler}>
+          <div className="sectionlist__table__row" onClick={sectionClickHandler}>
+            <div className="sectionlist__table__sectionName">{section.name}</div>
+            <div className="sectionlist__table__sectionPath">{section.path}</div>
+            <div className="sectionlist__table__sectionEditions">{Object.keys(section.editions).length + ' editions'}</div>
+          </div>
+        </a>
       );
     }
 
@@ -46,20 +54,15 @@ class SectionList extends React.Component {
               <Link className="tag-search__create" to="/microsite/create">Create a new Microsite</Link> :
               <Link className="tag-search__create" to="/section/create">Create a new Section</Link>
             }
-
           </div>
-          <table className="grid-table" >
-            <thead className="sectionlist__header">
-              <tr>
-                <th>Name</th>
-                <th>Path</th>
-                <th>Editionalised</th>
-              </tr>
-            </thead>
-            <tbody className="sectionlist__results">
-              {sections.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(this.renderListItem, this)}
-            </tbody>
-          </table>
+          <div className="sectionlist__table" >
+            <div className="sectionlist__table__row">
+              <div className="sectionlist__table__sectionName--header">Name</div>
+              <div className="sectionlist__table__sectionPath--header">Path</div>
+              <div className="sectionlist__table__sectionEditions--header">Editionalised</div>
+            </div>
+            {sections.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(this.renderListItem, this)}
+          </div>
         </div>
 
       );
