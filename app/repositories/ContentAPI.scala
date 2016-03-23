@@ -19,11 +19,10 @@ object ContentAPI {
   private val executorService = Executors.newFixedThreadPool(25)
   private implicit val executionContext = ExecutionContext.fromExecutor(executorService)
 
-  private val apiClient = new LiveContentApiClass(Config().capiKey, Config().capiUrl)
   private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewUrl)
 
   def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String): Int= {
-    val response = apiClient.getResponse(new SearchQuery()
+    val response = previewApiClient.getResponse(new SearchQuery()
       .ids(contentIds mkString(","))
       .pageSize(contentIds.length)
       .showTags("all")
@@ -40,7 +39,7 @@ object ContentAPI {
   def getTag(apiTagId: String) = {
 
     try {
-      val response = apiClient.getResponse(new ItemQuery(apiTagId))
+      val response = previewApiClient.getResponse(new ItemQuery(apiTagId))
       Await.result(response.map(_.tag), 5 seconds)
     } catch {
       case GuardianContentApiError(404, _, _) => {
@@ -52,7 +51,7 @@ object ContentAPI {
 
   @tailrec
   def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
-    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page).showFields("internalComposerCode"))
+    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page).showFields("internalComposerCode"))
 
     val resultPage = Await.result(response, 5 seconds)
 
@@ -81,7 +80,7 @@ object ContentAPI {
   @tailrec
   def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
     Logger.debug(s"Loading page ${page} of contentent ids for tag ${apiTagId}")
-    val response = apiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page))
+    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
 
@@ -112,16 +111,11 @@ object ContentAPI {
 
 
   def shutdown: Unit = {
-    apiClient.shutdown()
     previewApiClient.shutdown()
 
     executorService.shutdown()
   }
 
-}
-
-class LiveContentApiClass(override val apiKey: String, apiUrl: String) extends ContentApiClientLogic() {
-  override val targetUrl = apiUrl
 }
 
 class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends ContentApiClientLogic() {
