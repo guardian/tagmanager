@@ -49,7 +49,7 @@ object ContentAPI {
   }
 
   private def countTags(ids: String, pageSize: Int, apiTagId: String): Int = {
-    val response = apiClient.getResponse(new SearchQuery()
+    val response = previewApiClient.getResponse(new SearchQuery()
       .ids(ids)
       .pageSize(pageSize)
       .showTags("all")
