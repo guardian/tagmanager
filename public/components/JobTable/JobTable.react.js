@@ -157,11 +157,11 @@ export default class JobTable extends React.Component {
         var buttonClass = 'job__delete';
 
         if (job.jobStatus == 'complete' || job.jobStatus == 'rolledback') {
-          text = 'Clear';
+          text = 'Finished';
           buttonClass = 'job__delete--complete';
         }
 
-        return <ConfirmButton className='job__delete' buttonText={text} onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+        return <ConfirmButton className={buttonClass} buttonText={text} onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
       }
       return <ConfirmButton className='job__button--disabled' disabled={true} buttonText='Delete' />;
     }
