@@ -28,6 +28,7 @@ case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, va
     val newId = PathManager.registerPathAndGetPageId(tag.path)
     val newTag = tag.copy(pageId = newId)
 
+    // TODO Replace with simple update?
     TagRepository.upsertTag(newTag)
   }
 

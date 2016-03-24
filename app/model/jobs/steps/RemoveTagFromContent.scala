@@ -8,7 +8,7 @@ import play.api.Logger
 import services.KinesisStreams
 import repositories.ContentAPI
 
-case class RemoveTagFromContent(tag: Tag, section: Option[Section] = None, contentIds: List[String],
+case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: List[String],
   `type`: String = RemoveTagFromContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
     contentIds foreach { contentPath =>

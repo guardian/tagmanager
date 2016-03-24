@@ -1,5 +1,6 @@
 
 .job__delete,
+.job__delete--complete,
 .job__rollback,
 .job__button--disabled {
 
@@ -21,6 +22,11 @@
 .job__delete {
   border: 1px solid $c-red;
   color: $c-red;
+}
+
+.job__delete--complete {
+  border: 1px solid $c-green;
+  color: $c-green;
 }
 
 .job__rollback {
