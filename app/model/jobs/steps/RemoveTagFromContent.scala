@@ -47,9 +47,9 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
     }
   }
 
-  override val checkingMessage = s"Checking if '${tag.path}' was removed from all content in CAPI."
-  override val failureMessage = s"Failed to remove tag '${tag.path}' from listed content."
-  override val checkFailMessage = s"Tag '${tag.path}' was not removed from all pieces of content in CAPI."
+  override val checkingMessage = s"Checking if '${tag.path}' was removed from content in CAPI."
+  override val failureMessage = s"Failed to remove tag '${tag.path}' from content."
+  override val checkFailMessage = s"Tag '${tag.path}' was not removed from all selected content in CAPI."
 }
 
 object RemoveTagFromContent {

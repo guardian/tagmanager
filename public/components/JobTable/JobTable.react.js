@@ -46,7 +46,7 @@ export default class JobTable extends React.Component {
 
     prettyStepType(stepType) {
       if (stepType === 'remove-tag-from-content') {
-        return 'Remove tag from all content';
+        return 'Remove tag from content';
       } else if (stepType === 'remove-tag-path') {
         return 'Remove path for tag';
       } else if (stepType === 'remove-tag-from-capi') {
