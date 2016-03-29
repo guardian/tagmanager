@@ -75,18 +75,13 @@ object ContentAPI {
 
   @tailrec
   def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
-    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page).showFields("internalComposerCode"))
+    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
 
     val newCount = count + resultPage.results.count((result) => {
       result.fields match {
-        case Some(fields) => {
-          fields.internalComposerCode match {
-            case Some(_) => true
-            case None => false
-          }
-        }
+        case Some(_) => true
         case None => false
       }
     })
