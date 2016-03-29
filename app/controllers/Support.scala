@@ -1,21 +1,22 @@
 package controllers
 
 import com.amazonaws.services.s3.model._
-import model.{ImageAsset, Image}
+import model.{DenormalisedTag, Image, ImageAsset}
 import org.joda.time.DateTime
-import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
-import model.command.UnexpireSectionContentCommand
+import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
+import model.command.{UnexpireSectionContentCommand, UpdateTagCommand}
 import model.command.CommandError._
 import play.api.Logger
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
-import repositories.{TagLookupCache}
+import repositories.{TagLookupCache, TagRepository}
 import services.{AWS, Config, ImageMetadataService}
-import com.squareup.okhttp.{Request, OkHttpClient, Credentials}
+import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
 import repositories.TagLookupCache
 import services.{Config, ImageMetadataService}
 import java.util.concurrent.TimeUnit
-import permissions.{TriggerSectionUnexpiryPermissionsCheck}
+
+import permissions.TriggerSectionUnexpiryPermissionsCheck
 
 
 object Support extends Controller with PanDomainAuthActions {
@@ -106,5 +107,29 @@ object Support extends Controller with PanDomainAuthActions {
       BadRequest("Expecting sectionId in JSON")
     }
 
+  }
+
+  def fixDanglingParents = APIAuthAction { req =>
+
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+
+    val knownTags = TagRepository.loadAllTags
+    var danglingParentsCount = 0
+
+    knownTags foreach {tag =>
+      tag.parents.foreach { parentId =>
+        if (knownTags.filter(tag => tag.id == parentId).isEmpty) {
+
+          Logger.info(s"Tag ID: ${tag.id}, detected dangling parent ${parentId}")
+
+          val updatedTag = tag.copy(parents = tag.parents.filterNot(_.equals(parentId)))
+
+          UpdateTagCommand(DenormalisedTag(updatedTag)).process getOrElse InternalServerError(s"Could not update tag: ${tag.id}")
+          danglingParentsCount += 1
+        }
+      }
+    }
+
+    Ok(s"Removed $danglingParentsCount Dangling Parents")
   }
 }
