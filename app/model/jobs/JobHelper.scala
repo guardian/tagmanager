@@ -16,6 +16,7 @@ object JobHelper {
         title = s"Batch tag: adding '${tag.path}' to ${contentIds.size} pieces of content",
         createdBy = username,
         steps = List(AddTagToContent(tag, section, contentIds, operation))
+        rollbackEnabled = true
         )
       )
 
@@ -32,6 +33,7 @@ object JobHelper {
         createdBy = username,
         steps = List(RemoveTagFromContent(tag, section, contentIds)),
         tagIds = List(tag.id)
+        rollbackEnabled = true
         )
       )
 
