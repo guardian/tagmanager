@@ -36,7 +36,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
     val removedCount = ContentAPI.countContentWithTag(from.path)
     val addedCount = ContentAPI.countContentWithTag(to.path)
 
-    Logger.info(s"Checking merge tag CAPI counts. From: ${removedCount} remaining to delete. To: ${addedCount - contentCount} left to add.")
+    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on ${removedCount} pieces of content. To tag: '${to.path}' added to ${addedCount} pieces of content, ${contentCount - addedCount} left to add.")
     if (removedCount == 0 && addedCount == contentCount) {
       true
     } else {
