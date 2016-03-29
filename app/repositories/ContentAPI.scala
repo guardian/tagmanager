@@ -79,12 +79,7 @@ object ContentAPI {
 
     val resultPage = Await.result(response, 5 seconds)
 
-    val newCount = count + resultPage.results.count((result) => {
-      result.fields match {
-        case Some(_) => true
-        case None => false
-      }
-    })
+    val newCount = count + resultPage.results.size
 
     if (page >= resultPage.pages) {
       newCount
