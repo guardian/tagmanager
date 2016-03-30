@@ -73,21 +73,11 @@ object ContentAPI {
     }
   }
 
-  @tailrec
   def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
-    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page))
-
+    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(1))
     val resultPage = Await.result(response, 5 seconds)
 
-    val newCount = count + resultPage.results.size
-
-    if (page >= resultPage.pages) {
-      newCount
-    } else {
-      Logger.debug(s"Found ${count + newCount} pieces of content so far...")
-      countContentWithTag(apiTagId, page + 1, newCount)
-    }
-
+    resultPage.total
   }
 
 

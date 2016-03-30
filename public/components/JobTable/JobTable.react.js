@@ -30,13 +30,12 @@ export default class JobTable extends React.Component {
       });
     }
 
-
     renderJobStep(step, job) {
       return (
-        <tr className={stepRowClass(step)} key={job.id + step.type}>
-          <td>{prettyStepType(step.type)}</td>
+        <tr className={stepRowClass[step.stepStatus] ? stepRowClass[step.stepStatus] : ''} key={job.id + step.type}>
+          <td>{prettyStepType[step.type] ? prettyStepType[step.type] : step.type }</td>
           <td>{step.stepMessage}</td>
-          <td>{prettyStepStatus(step.stepStatus)}</td>
+          <td>{prettyStepStatus[step.stepStatus] ? prettyStepStatus[step.stepStatus] : step.stepStatus }</td>
         </tr>);
     }
 
@@ -74,11 +73,12 @@ export default class JobTable extends React.Component {
         );
       }
 
-      const rowClass = stepRowClass(step);
+      const rowClass = stepRowClass[step.stepStatus] ? stepRowClass[step.stepStatus] : '';
+
       return (
-          <td>
+          <td key={job.id + step.type}>
             <span className={rowClass}>
-              {prettyStepType(step.type)}
+              {prettyStepType[step.type] ? prettyStepType[step.type] : step.type }
             </span>
           </td>
         );
@@ -114,7 +114,7 @@ export default class JobTable extends React.Component {
 
     renderStatusCell(job) {
       return (<div>
-        <div className='job__status'>{prettyJobStatus(job.jobStatus)}</div>
+        <div className='job__status'>{prettyJobStatus[job.jobStatus]}</div>
         <div>{this.renderDeleteButton(job)}</div>
         <div>{this.renderRollbackButton(job)}</div>
         </div>);
@@ -124,8 +124,8 @@ export default class JobTable extends React.Component {
       const itemTime = moment(job.createdAt, 'x');
 
       return (
-        <tbody className='jobtable__results'>
-          <tr key={job.id}>
+        <tbody className='jobtable__results' key={job.id}>
+          <tr>
             <td>
               {job.title}<br />
               {itemTime.format('DD/MM/YYYY')}<br />

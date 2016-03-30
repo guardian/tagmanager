@@ -14,7 +14,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
 
   override def process = {
     val contentIds = ContentAPI.getContentIdsForTag(from.path)
-    contentCount = contentIds.size
+    contentCount = contentIds.size + ContentAPI.countContentWithTag(to.path)
 
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
@@ -33,11 +33,11 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
   }
 
   override def check: Boolean = {
-    val removedCount = ContentAPI.countContentWithTag(from.path)
-    val addedCount = ContentAPI.countContentWithTag(to.path)
+    val fromCount = ContentAPI.countContentWithTag(from.path)
+    val toCount = ContentAPI.countContentWithTag(to.path)
 
-    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on ${removedCount} pieces of content. To tag: '${to.path}' added to ${addedCount} pieces of content, ${contentCount - addedCount} left to add.")
-    if (removedCount == 0 && addedCount == contentCount) {
+    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on ${fromCount} pieces of content. To tag: '${to.path}' on to ${toCount} pieces of content, ${contentCount - toCount} left to add.")
+    if (fromCount == 0 && toCount == contentCount) {
       true
     } else {
       false
