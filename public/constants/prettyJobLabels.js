@@ -1,3 +1,5 @@
+import ProgressSpinner from '../components/utils/ProgressSpinner.react';
+
 export function prettyJobStatus(jobStatus) {
   if (jobStatus === 'waiting' || jobStatus === 'owned') {
     // This is a pretty meaningless distinction to end users so just wrap it up as 'in progress'

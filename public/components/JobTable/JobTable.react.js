@@ -1,8 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import ConfirmButton from '../utils/ConfirmButton.react';
-import ProgressSpinner from '../utils/ProgressSpinner.react';
-import {prettyJobStatus, prettyStepType, prettyStepStatus, stepRowClass} from '../../constants/prettyJobLabels'
+import {prettyJobStatus, prettyStepType, prettyStepStatus, stepRowClass} from '../../constants/prettyJobLabels';
 import {hasPermission} from '../../util/verifyPermission';
 
 import tagManagerApi from '../../util/tagManagerApi';
@@ -34,10 +33,10 @@ export default class JobTable extends React.Component {
 
     renderJobStep(step, job) {
       return (
-        <tr className={this.stepRowClass(step)} key={job.id + step.type}>
-          <td>{this.prettyStepType(step.type)}</td>
+        <tr className={stepRowClass(step)} key={job.id + step.type}>
+          <td>{prettyStepType(step.type)}</td>
           <td>{step.stepMessage}</td>
-          <td>{this.prettyStepStatus(step.stepStatus)}</td>
+          <td>{prettyStepStatus(step.stepStatus)}</td>
         </tr>);
     }
 
@@ -75,11 +74,11 @@ export default class JobTable extends React.Component {
         );
       }
 
-      const rowClass = this.stepRowClass(step);
+      const rowClass = stepRowClass(step);
       return (
           <td>
             <span className={rowClass}>
-              {this.prettyStepType(step.type)}
+              {prettyStepType(step.type)}
             </span>
           </td>
         );
@@ -115,7 +114,7 @@ export default class JobTable extends React.Component {
 
     renderStatusCell(job) {
       return (<div>
-        <div className='job__status'>{this.prettyJobStatus(job.jobStatus)}</div>
+        <div className='job__status'>{prettyJobStatus(job.jobStatus)}</div>
         <div>{this.renderDeleteButton(job)}</div>
         <div>{this.renderRollbackButton(job)}</div>
         </div>);
