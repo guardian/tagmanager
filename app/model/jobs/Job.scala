@@ -1,110 +1,111 @@
 package model.jobs
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import model.command.{Command, MergeTagCommand, DeleteTagCommand}
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import play.api.Logger
-import play.api.libs.functional.syntax._
-import play.api.libs.json.DefaultFormat
-import play.api.libs.json.Reads
 import play.api.libs.json._
-import repositories.JobRepository
-
+import play.api.libs.functional.syntax._
+import org.cvogt.play.json.Jsonx
+import model.jobs.steps._
+import model.{AppAudit, Tag, TagAudit}
+import repositories._
+import org.joda.time.{DateTime, DateTimeZone}
 import scala.util.control.NonFatal
 
 case class Job(
-  id: Long,
-  `type`: String,
-  started: DateTime,
-  startedBy: Option[String],
-  tagIds: List[Long],
-  command: Command,
-  steps: List[Step]) {
+  id: Long, // Useful so users can report job failures
+  title: String,
+  createdBy: Option[String],
+  steps: List[Step], // What are the steps in this job
+
+  tagIds: List[Long] = List(), // List of all the tags associated with this job
+  rollbackEnabled: Boolean = false,
+  lockedAt: Long = 0,
+  ownedBy: Option[String] = None, // Which node current owns this job
+  var jobStatus: String = JobStatus.waiting, // Waiting, Owned, Failed, Complete
+  var waitUntil: Long = new DateTime(DateTimeZone.UTC).getMillis, // Signal to the runner to wait until a given time before processing
+  createdAt: Long = new DateTime().getMillis // Created at in local time
+) {
+
+  /** Process the current step of a job
+   *  returns a bool which tells the job runner to requeue the job in dynamo
+   *  or simply continue processing. */
+  def process() = {
+    steps.find(_.stepStatus != StepStatus.complete).foreach { step =>
+      step.stepStatus match {
+        case StepStatus.ready => processStep(step)
+        case StepStatus.processed => checkStep(step)
+        case _ => {}
+      }
+
+      waitUntil = new DateTime(DateTimeZone.UTC).getMillis() + step.waitDuration.map(_.toMillis).getOrElse(0L)
+    }
+  }
+
+  def processStep(step: Step) = {
+    try {
+      step.processStep
+    } catch {
+      case NonFatal(e) => {
+        jobStatus = JobStatus.failed
+      }
+    }
+  }
+
+  def checkStep(step: Step) = {
+    try {
+      step.checkStep
+    } catch {
+      case NonFatal(e) => {
+        jobStatus = JobStatus.failed
+      }
+    }
+  }
+
+  def checkIfComplete() = {
+    if (steps.find(_.stepStatus != StepStatus.complete).isEmpty){
+      jobStatus = JobStatus.complete
+    }
+  }
+
+  def rollback = {
+    if (rollbackEnabled) {
+      val revSteps = steps.reverse
+      revSteps.foreach(step => step.rollbackStep)
+      jobStatus = JobStatus.rolledback
+    }
+  }
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
 object Job {
-  implicit val batchTagCommandFormat: Format[Job] = (
-      (JsPath \ "id").format[Long] and
-      (JsPath \ "type").format[String] and
-      (JsPath \ "started").format[Long].inmap[DateTime](new DateTime(_), _.getMillis) and
-      (JsPath \ "startedBy").formatNullable[String] and
-      (JsPath \ "tagIds").formatNullable[List[Long]].inmap[List[Long]](_.getOrElse(Nil), Some(_)) and
-      (JsPath \ "command").format[Command] and
-      (JsPath \ "steps").formatNullable[List[Step]].inmap[List[Step]](_.getOrElse(Nil), Some(_))
-    )(Job.apply, unlift(Job.unapply))
+  implicit val jobFormat: Format[Job] = Jsonx.formatCaseClassUseDefaults[Job]
 
-
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[Job]
-  } catch {
-    case NonFatal(e) => {
-      Logger.error(s"failed to load job ${item.toJSON}", e)
-      throw e
+  def fromItem(item: Item): Job = try {
+      Json.parse(item.toJSON).as[Job]
+    } catch {
+      case NonFatal(e) => {
+        println(e.printStackTrace())
+        throw e
     }
   }
 }
 
-object JobRunner {
+/** The job status is used to indicate if a job can be picked up off by a node as well as indicating progress
+ *  to clients.
+ */
+object JobStatus {
+  /** This job is waiting to be serviced */
+  val waiting  = "waiting"
 
-  /** runs the job up to the first incomplete step, returns the updated job state or None if the job is complete */
-  def run(job: Job): Option[Job] = {
-    job.steps match {
-      case Nil => {
-        Logger.info(s"job $job complete")
-        JobRepository.deleteJob(job.id)
-        None
-      }
-      case s :: ss => {
-        s.process match {
-          case Some(updatedStep) => {
-            Logger.info(s"job $job step $s not yet complete, updating state")
-            val updatedJob = job.copy(steps = updatedStep :: ss)
-            JobRepository.upsertJob(updatedJob)
-            Some(updatedJob)
-          }
-          case None => {
-            Logger.info(s"job $job step $s complete, processing next step")
-            run(job.copy(steps = ss))
-          }
-        }
-      }
-    }
-  }
-}
+  /** This job is owned by a node */
+  val owned    = "owned"
 
-case class Merge(id: Long,
-  started: DateTime,
-  startedBy: Option[String],
-  tagIds: List[Long],
-  command: MergeTagCommand
-) {
+  /** This job is complete */
+  val complete = "complete"
 
-  def asExportedXml = {
-    import xml.{Elem, TopScope, Null, Text}
-    import helpers.XmlHelpers._
+  /** This job has failed */
+  val failed   = "failed"
 
-    val el = Elem(null, "merge", Null, TopScope, Text(""))
-    val from = createAttribute("from", Some(this.command.removingTagId))
-    val to = createAttribute("to", Some(this.command.replacementTagId))
-    val timestamp = createAttribute("timestamp", Some(this.started.getMillis))
-    val date = createAttribute("date", Some(this.started.toString("MM/dd/yyy HH:mm:ss")))
-
-    el % timestamp % date % to % from
-  }
-}
-
-object Merge {
-  def apply(job: Job): Merge = {
-    val merge = commandToMergeCommand(job.command)
-    Merge(job.id, job.started, job.startedBy, job.tagIds, merge)
-  }
-
-  private def commandToMergeCommand(command: Command): MergeTagCommand = {
-    val json = Json.toJson(command)
-    val merge : MergeTagCommand = json.as[MergeTagCommand]
-    merge
-  }
+  /** This job has been rolled back by a user */
+  val rolledback   = "rolledback"
 }

@@ -21,19 +21,43 @@ object ContentAPI {
 
   private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewUrl)
 
-  def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String): Int= {
+  def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String): Int = {
+    val builder = StringBuilder.newBuilder
+    var pageSize = 0
+
+    var total = 0
+
+    for (id <- contentIds) {
+      // ~2048 chars is the max sensible amount for a URL.
+      // Rather than faff about subtracting our URL + query string junk from 2048 we'll just stay well below the max (1500)
+      // Also, CAPI maxes out at 50 items per query
+      if (pageSize >= 50 || builder.length + id.length > 1500) {
+        total += countTags(builder.toString, pageSize, apiTagId)
+        builder.setLength(0)
+        pageSize = 0
+      }
+
+      if (builder.length > 0) {
+        builder.append(',')
+      }
+      builder.append(id)
+      pageSize += 1
+    }
+    total += countTags(builder.toString, pageSize, apiTagId)
+
+    total
+  }
+
+  private def countTags(ids: String, pageSize: Int, apiTagId: String): Int = {
     val response = previewApiClient.getResponse(new SearchQuery()
-      .ids(contentIds mkString(","))
-      .pageSize(contentIds.length)
+      .ids(ids)
+      .pageSize(pageSize)
       .showTags("all")
     )
-
     val contentWithTag = response.map(_.results.filter{ c => c.tags.exists(_.id == apiTagId)})
-
     val contentWithTagCount = contentWithTag.map(_.length)
 
-    val count = Await.result(contentWithTagCount, 5 seconds)
-    count
+    Await.result(contentWithTagCount, 5 seconds)
   }
 
   def getTag(apiTagId: String) = {
@@ -51,21 +75,11 @@ object ContentAPI {
 
   @tailrec
   def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
-    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page).showFields("internalComposerCode"))
+    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
 
-    val newCount = count + resultPage.results.count((result) => {
-      result.fields match {
-        case Some(fields) => {
-          fields.internalComposerCode match {
-            case Some(_) => true
-            case None => false
-          }
-        }
-        case None => false
-      }
-    })
+    val newCount = count + resultPage.results.size
 
     if (page >= resultPage.pages) {
       newCount

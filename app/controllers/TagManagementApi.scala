@@ -2,10 +2,11 @@ package controllers
 
 import model.command.CommandError._
 import model.command._
-import model.jobs.{BatchTagAddCompleteCheck, Job}
-import org.joda.time.DateTime
+import model.jobs.Job
+import org.joda.time.{DateTime, DateTimeZone}
 import permissions.Permissions
 import play.api.Logger
+import model.jobs.JobRunner
 import model._
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
@@ -271,9 +272,32 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(jobs))
   }
 
-  def deleteJob(id: Long) = (APIAuthAction andThen DeleteJobPermissionsCheck) {
-    JobRepository.deleteJob(id)
+  def deleteJob(jobId: Long) = (APIAuthAction andThen JobDeletePermissionsCheck) { req =>
+    try {
+      JobRepository.deleteIfTerminal(jobId)
+      Ok
+    } catch {
+      case e: Exception => BadRequest("Job was not in a completed or failed state")
+    }
+  }
 
-    Ok("Deleted")
+  def rollbackJob(id: Long) = (APIAuthAction andThen JobRollbackPermissionsCheck) { req =>
+    val currentTime = new DateTime(DateTimeZone.UTC).getMillis
+    val lockBreakTime = currentTime - JobRunner.lockTimeOutMillis
+    val nodeId = JobRunner.nodeId
+
+    JobRepository.getJob(id)
+      .flatMap(JobRepository.lock(_, nodeId, currentTime, lockBreakTime))
+      .map(job => {
+        try {
+          job.rollback
+          Ok
+        } catch {
+          case e: Exception => InternalServerError("Failed to rollback")
+        } finally {
+          JobRepository.upsertJobIfOwned(job, nodeId)
+          JobRepository.unlock(job, nodeId)
+        }
+      }).getOrElse(NotFound)
   }
 }

@@ -327,6 +327,15 @@ export default {
       type: 'json'
     });
   },
+
+  rollbackJob: (id) => {
+    return PandaReqwest({
+      url: '/api/jobs/rollback/' + id,
+      method: 'put',
+      type: 'json'
+    });
+  },
+
   unexpireContentForSection: (sectionId) => {
     return PandaReqwest({
       url: '/support/unexpireSectionContent',

@@ -51,10 +51,19 @@ table.grid-table {
             border-right: 1px solid $c-grey-300;
         }
 
-        &.row-warning {
-            color: $c-red;
-        }
     }
+}
+
+.row-failed {
+    color: $c-red;
+}
+
+.row-complete {
+    color: $c-green;
+}
+
+.row-rolledback {
+    color: $c-orange;
 }
 
 table.grid-table--light {

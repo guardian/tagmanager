@@ -5,7 +5,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Json
 import scala.concurrent.{Future}
 
-case class ClientConfig(capiUrl: String,
+case class ClientConfig(username: String,
+                        capiUrl: String,
                         capiPreviewUrl: String,
                         capiKey: String,
                         tagTypes: List[String],
@@ -14,6 +15,5 @@ case class ClientConfig(capiUrl: String,
                         reauthUrl: String)
 
 object ClientConfig {
-
   implicit val clientConfigFormat = Jsonx.formatCaseClass[ClientConfig]
 }

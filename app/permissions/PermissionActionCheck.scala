@@ -46,6 +46,16 @@ object MergeTagPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "merge tag"
 }
 
+object JobDeletePermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
+  val restrictedAction = "job delete"
+}
+
+object JobRollbackPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
+  val restrictedAction = "job rollback"
+}
+
 object TriggerSectionUnexpiryPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "trigger unexpiry of section content"

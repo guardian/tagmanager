@@ -1,0 +1,52 @@
+
+.job__delete,
+.job__delete--complete,
+.job__rollback,
+.job__button--disabled {
+
+  @extend %f-header;
+  @extend %fs-data-2;
+
+  background-color: white;
+
+  padding: $standard-padding/2 $standard-padding;
+
+  font-weight: bold;
+
+  width: 82px;
+
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.job__delete {
+  border: 1px solid $c-red;
+  color: $c-red;
+}
+
+.job__delete--complete {
+  border: 1px solid $c-green;
+  color: $c-green;
+}
+
+.job__rollback {
+  border: 1px solid $c-orange;
+  color: $c-orange;
+}
+
+.job__button--disabled {
+  border: 1px solid $c-grey-200;
+  color: $c-grey-200;
+}
+
+.job__status--heading {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.job__status {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

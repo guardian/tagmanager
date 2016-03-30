@@ -1,7 +1,8 @@
 import React from 'react';
 import moment from 'moment';
-import {Link} from 'react-router';
 import ConfirmButton from '../utils/ConfirmButton.react';
+import {prettyJobStatus, prettyStepType, prettyStepStatus, stepRowClass} from '../../constants/prettyJobLabels';
+import {hasPermission} from '../../util/verifyPermission';
 
 import tagManagerApi from '../../util/tagManagerApi';
 
@@ -20,77 +21,153 @@ export default class JobTable extends React.Component {
       });
     }
 
-    stepProgress(step) {
-      if (step.type === 'AllUsagesOfTagRemovedCheck') {
+    rollbackJob(jobId) {
+      var self = this;
+      tagManagerApi.rollbackJob(jobId).then((res) => {
+        setTimeout(() => {
+          self.props.triggerRefresh();
+        }, 1000);
+      });
+    }
+
+
+    renderJobStep(step, job) {
+      return (
+        <tr className={stepRowClass(step)} key={job.id + step.type}>
+          <td>{prettyStepType(step.type)}</td>
+          <td>{step.stepMessage}</td>
+          <td>{prettyStepStatus(step.stepStatus)}</td>
+        </tr>);
+    }
+
+    renderAllSteps(job) {
+      return (
+        <td>
+          <table className="grid-table jobtable">
+            <thead>
+              <tr>
+                <th>Step</th>
+                <th>Message</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+            {job.steps.map(this.renderJobStep, this, job)}
+            </tbody>
+          </table>
+        </td>
+      );
+    }
+
+    renderCurrentStep(job) {
+      const step = job.steps.find(s => {
+          return s.stepStatus !== 'complete';
+      });
+
+      if (!step) {
         return (
-          <span>
-            <b>{(step.originalCount - step.completed)}/{step.originalCount}</b> content still contain <b>{step.apiTagId}</b>
-          </span>
+          <td>
+            <span className='row-complete'>
+              Job done
+            </span>
+          </td>
         );
       }
 
-      if (step.type === 'TagRemovedCheck') {
-        return (
-          <span>
-            Confirming <b>{step.apiTagId}</b> has been removed from CAPI
-          </span>
+      const rowClass = stepRowClass(step);
+      return (
+          <td>
+            <span className={rowClass}>
+              {prettyStepType(step.type)}
+            </span>
+          </td>
         );
+    }
+
+    renderDeleteButton(job) {
+      if ((job.jobStatus === 'failed' || job.jobStatus === 'rolledback' || job.jobStatus === 'complete') && (hasPermission('tag_admin') || job.createdBy === this.props.config.username)) {
+        var text = 'Delete';
+        var buttonClass = 'job__delete';
+
+        if (job.jobStatus == 'complete' || job.jobStatus == 'rolledback') {
+          text = 'Finished';
+          buttonClass = 'job__delete--complete';
+        }
+
+        return <ConfirmButton className={buttonClass} buttonText={text} onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+      }
+      return <ConfirmButton className='job__button--disabled' disabled={true} buttonText='Delete' />;
+    }
+
+    renderRollbackButton(job) {
+      if (job.rollbackEnabled) {
+        if ((job.jobStatus === 'failed' || job.jobStatus === 'complete')
+          && (hasPermission('tag_admin') || job.createdBy === this.props.config.username)) {
+          return <ConfirmButton className='job__rollback' buttonText='Rollback' onClick={this.rollbackJob.bind(this, job.id)} disabled={this.props.disableDelete}/>;
+        }
+        return <ConfirmButton className='job__button--disabled' disabled={true} buttonText='Rollback' />;
       }
 
+      // Dont even show the rollback button on jobs which cannot be rolledback
       return false;
     }
 
-    renderListItem(job) {
+    renderStatusCell(job) {
+      return (<div>
+        <div className='job__status'>{prettyJobStatus(job.jobStatus)}</div>
+        <div>{this.renderDeleteButton(job)}</div>
+        <div>{this.renderRollbackButton(job)}</div>
+        </div>);
+    }
 
-      const itemTime = moment(job.started, 'x');
-      const rowClass = moment().subtract(1, 'hour').isAfter(itemTime) ? 'row-warning' : '';
+    renderListItem(job) {
+      const itemTime = moment(job.createdAt, 'x');
 
       return (
-        <tr className={rowClass} key={job.id}>
-          <td>
-            {itemTime.format('DD/MM/YYYY')}<br />
-            {itemTime.format('HH:mm:ss')}
-          </td>
-          <td>{job.type}</td>
-          <td>
-            {job.tagIds.map((tagId) => {
-                return (
-                  <div key={tagId}>
-                    <Link to={'/tag/' + tagId}>{tagId}</Link>
-                  </div>
-                );
-            })}
-          </td>
-          <td>{job.startedBy}</td>
-          <td>
-            Currently Processing: {job.steps[0].type}<br />
-            {this.stepProgress(job.steps[0])}<br />
-            Remaining Steps: {job.steps.length}
-          </td>
-          <td><ConfirmButton buttonText="Delete Job" onClick={this.removeJob.bind(this, job.id)} disabled={this.props.disableDelete}/></td>
-        </tr>
+        <tbody className='jobtable__results'>
+          <tr key={job.id}>
+            <td>
+              {job.title}<br />
+              {itemTime.format('DD/MM/YYYY')}<br />
+              {itemTime.format('HH:mm:ss')}
+            </td>
+            <td>{job.createdBy}</td>
+              {this.props.simpleView ? this.renderCurrentStep(job) : this.renderAllSteps(job)}
+            <td>
+              {this.renderStatusCell(job)}
+            </td>
+          </tr>
+        </tbody>
       );
     }
 
     render () {
-
       return (
-          <table className="grid-table jobtable">
-            <thead className="jobtable__header">
+          <table className='grid-table jobtable'>
+            <thead className='jobtable__header'>
               <tr>
-                <th>Started</th>
-                <th>Type</th>
-                <th>Tags</th>
+                <th>Job</th>
                 <th>User</th>
-                <th>Progress</th>
-                <th></th>
+                <th>
+                  {this.props.simpleView ? 'Current Step' : 'Progress'}
+                </th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody className="jobtable__results">
-              {this.props.jobs.sort((a, b) => a.started < b.started ? 1 : -1).map(this.renderListItem, this)}
-            </tbody>
+            {this.props.jobs.map(this.renderListItem, this)}
           </table>
 
       );
     }
 }
+
+//REDUX CONNECTIONS
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {
+  return {
+    config: state.config
+  };
+}
+
+export default connect(mapStateToProps)(JobTable);

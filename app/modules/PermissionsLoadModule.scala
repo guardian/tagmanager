@@ -1,4 +1,4 @@
-package modules.permissions
+package modules
 
 import com.google.inject.AbstractModule
 
@@ -14,17 +14,17 @@ import permissions._
 //
 // This should only be a temporary fix @ 2016/02/09
 
-class PermissionsLoadModule extends AbstractModule {
-  override def configure(): Unit = {
-    bind(classOf[PermissionsLoader]).asEagerSingleton()
-  }
-}
-
 @Singleton
 class PermissionsLoader @Inject() (lifecycle: ApplicationLifecycle) {
   load
 
   def load {
     Permissions.list(PermissionsUser("preload@permissions"))
+  }
+}
+
+class PermissionsLoadModule extends AbstractModule {
+  override def configure(): Unit = {
+    bind(classOf[PermissionsLoader]).asEagerSingleton()
   }
 }
