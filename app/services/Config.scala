@@ -118,7 +118,7 @@ class DevConfig extends Config {
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
 
-  override def jobTableName: String = "tag-manager-jobs-dev"
+  override def jobTableName: String = "tag-manager-background-jobs-dev"
   override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
   override def sectionAuditTableName: String = "tag-manager-section-audit-dev"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-dev"
@@ -154,7 +154,7 @@ class CodeConfig extends Config {
   override def sequenceTableName: String = "tag-manager-sequences-CODE"
   override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
 
-  override def jobTableName: String = "tag-manager-jobs-CODE"
+  override def jobTableName: String = "tag-manager-background-jobs-CODE"
   override def tagAuditTableName: String = "tag-manager-tag-audit-CODE"
   override def sectionAuditTableName: String = "tag-manager-section-audit-CODE"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-CODE"
@@ -193,7 +193,7 @@ class ProdConfig extends Config {
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
   override def referencesTypeTableName: String = "tag-manager-reference-type-PROD"
 
-  override def jobTableName: String = "tag-manager-jobs-PROD"
+  override def jobTableName: String = "tag-manager-background-jobs-PROD"
   override def tagAuditTableName: String = "tag-manager-tag-audit-PROD"
   override def sectionAuditTableName: String = "tag-manager-section-audit-PROD"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
