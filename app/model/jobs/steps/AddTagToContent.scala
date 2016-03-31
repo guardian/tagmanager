@@ -1,13 +1,13 @@
 package model.jobs.steps
 
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
-import model.{Section, Tag}
+import model.{Section, Tag, TagAudit}
 import model.jobs.StepStatus
 import scala.concurrent.duration._
 import model.jobs.Step
 import play.api.Logger
 import services.KinesisStreams
-import repositories.ContentAPI
+import repositories.{ContentAPI, TagAuditRepository}
 
 case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[String], op: String, `type`: String = AddTagToContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
@@ -20,6 +20,7 @@ case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
       Logger.info(s"raising ${op} for ${tag.id} on ${contentPath} operation")
     }
+    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, op, contentIds.length))
   }
 
   override def waitDuration: Option[Duration] = {
@@ -45,6 +46,7 @@ case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
+    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, "remove", contentIds.length))
   }
 
   override val checkingMessage = s"Checking if '${tag.path}' has been added to selected content in CAPI."

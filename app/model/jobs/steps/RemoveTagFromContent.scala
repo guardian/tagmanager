@@ -1,12 +1,12 @@
 package model.jobs.steps
 
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
-import model.{Section, Tag}
+import model.{Section, Tag, TagAudit}
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 import play.api.Logger
 import services.KinesisStreams
-import repositories.ContentAPI
+import repositories.{ContentAPI, TagAuditRepository}
 
 case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: List[String],
   `type`: String = RemoveTagFromContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
@@ -20,6 +20,8 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
       Logger.info(s"raising ${OperationType.Remove} for ${tag.id} on ${contentPath} operation")
     }
+
+    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, "remove", contentIds.length))
   }
 
   override def waitDuration: Option[Duration] = {
@@ -45,6 +47,7 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
+    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, OperationType.AddToBottom.toString, contentIds.length))
   }
 
   override val checkingMessage = s"Checking if '${tag.path}' was removed from content in CAPI."

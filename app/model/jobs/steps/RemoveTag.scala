@@ -1,16 +1,17 @@
 package model.jobs.steps
 
-import repositories.TagRepository
+import repositories.{TagRepository, TagAuditRepository}
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 import model.jobs.{Step, StepStatus}
-import model.Tag
+import model.{Tag, TagAudit}
 import play.api.Logger
 
-case class RemoveTag(tag: Tag, `type`: String = RemoveTag.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class RemoveTag(tag: Tag, username: Option[String], `type`: String = RemoveTag.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
     TagRepository.deleteTag(tag.id)
     Logger.info(s"Removing tag ${tag.id} from tag manager")
+    TagAuditRepository.upsertTagAudit(TagAudit.deleted(tag, username))
   }
 
   override def waitDuration: Option[Duration] = {
@@ -24,6 +25,9 @@ case class RemoveTag(tag: Tag, `type`: String = RemoveTag.`type`, var stepStatus
 
   override def rollback = {
     TagRepository.upsertTag(tag)
+
+    implicit val uname = username
+    TagAuditRepository.upsertTagAudit(TagAudit.created(tag))
   }
 
   override val checkingMessage = s"Checking if '${tag.path}' was removed from Tag Manager."
