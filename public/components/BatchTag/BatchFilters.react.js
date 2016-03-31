@@ -12,8 +12,6 @@ momentLocalizer(moment);
 
 const CAPI_DATE_FORMAT = 'YYYY-MM-DD';
 
-const blockedTagTypes = ["Contributor"];
-
 const PREDEFINED_VALUES = {
   today: {
     'from-date': moment().format(CAPI_DATE_FORMAT),
@@ -197,7 +195,7 @@ export default class BatchFilters extends React.Component {
                       </div>
                     );
                   })}
-                  <TagSelect blockedTagTypes={blockedTagTypes} onTagClick={this.addTag.bind(this)} />
+                  <TagSelect onTagClick={this.addTag.bind(this)} />
                 </div>
               </div>
               <div className="batch-filters__filter">
@@ -215,7 +213,7 @@ export default class BatchFilters extends React.Component {
                       </div>
                     );
                   })}
-                  <TagSelect blockedTagTypes={blockedTagTypes} onTagClick={this.addExcludedTag.bind(this)} />
+                  <TagSelect onTagClick={this.addExcludedTag.bind(this)} />
                 </div>
               </div>
               <div className="batch-filters__filter">
