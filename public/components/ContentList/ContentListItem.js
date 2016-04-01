@@ -40,11 +40,31 @@ export default class ContentListItem extends React.Component {
       </div>);
     }
 
+    renderCheckBox(content) {
+      if (content.fields.internalComposerCode) {
+        return (<input type="checkbox" checked={this.props.isChecked} readOnly={true}/>);
+      } else {
+        return (
+          <div>
+            Content not managed by composer
+          </div>
+        );
+      }
+    }
+
+    rowClicked() {
+      if (this.props.content.fields.internalComposerCode) {
+        this.props.contentClicked();
+      }
+    }
+
     render() {
+      const rowClass = this.props.content.fields.internalComposerCode ? "taglist__results-item" : "taglist__result-item--disabled";
+
       return (
-          <tr key={this.props.content.id} className="taglist__results-item" onClick={this.props.contentClicked}>
+        <tr key={this.props.content.id} className={rowClass} onClick={this.rowClicked.bind(this)}>
             <td>
-              <input type="checkbox" checked={this.props.isChecked} readOnly={true}/>
+              {this.renderCheckBox(this.props.content)}
             </td>
             <td>{this.props.content.type}</td>
             <td>{this.props.content.webTitle}</td>

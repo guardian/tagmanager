@@ -7,6 +7,10 @@
   text-align: center;
 }
 
+.taglist__result-item--disabled {
+    color: $c-grey-500;
+}
+
 .taglist__results-info {
     cursor: help;
 }

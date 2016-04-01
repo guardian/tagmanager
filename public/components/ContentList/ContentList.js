@@ -18,7 +18,7 @@ export default class ContentList extends React.Component {
           return false;
         }
 
-        const contentIds = this.props.content.map(content => content.id);
+        const contentIds = this.props.content.filter(c => !!c.fields.internalComposerCode).map(content => content.id);
         const unselectedContent = R.difference(contentIds, this.props.selectedContent);
 
         return (
