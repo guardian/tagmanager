@@ -81,7 +81,7 @@ export class BatchTag extends React.Component {
     }
 
     deselectAllContentFromPage(page) {
-      var newContent = R.difference(this.state.selectedContent, page.map(c => c.id));
+      var newContent = R.difference(this.state.selectedContent, page.filter(c => !!c.fields.internalComposerCode).map(c => c.id));
 
       this.setState({
               selectedContent: newContent
@@ -90,7 +90,7 @@ export class BatchTag extends React.Component {
 
     toggleAllSelected() {
       const currentPage = this.props.capiSearch.pages[this.props.capiSearch.currentPage];
-      const notSelectedResults = R.difference(currentPage.map((content) => content.id), this.state.selectedContent);
+      const notSelectedResults = R.difference(currentPage.filter(c => !!c.fields.internalComposerCode).map((content) => content.id), this.state.selectedContent);
 
       if (notSelectedResults.length) {
         this.selectAllContentFromPage(currentPage);

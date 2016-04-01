@@ -46,10 +46,7 @@ export default class ContentListItem extends React.Component {
       } else {
         return (
           <div>
-            <input type="checkbox" disabled={true} checked={this.props.isChecked} readOnly={true}/>
-            <div>
-              Content not managed by composer
-            </div>
+            Content not managed by composer
           </div>
         );
       }
