@@ -76,7 +76,7 @@ export class BatchTag extends React.Component {
 
     selectAllContentFromPage(page) {
       this.setState({
-          selectedContent: R.union(this.state.selectedContent, page.map(c => c.id))
+          selectedContent: R.union(this.state.selectedContent, page.filter(c => !!c.fields.internalComposerCode).map(c => c.id))
       });
     }
 
