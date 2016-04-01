@@ -79,7 +79,7 @@ object JobHelper {
         title = s"Merging from '${from.path}' to '${to.path}'",
         createdBy = username,
         steps = List(
-          MergeTagForContent(from, to, fromSection, toSection)
+          MergeTagForContent(from, to, fromSection, toSection, username)
           ) ++ removeTagSteps(from),
         tagIds = List(from.id, to.id)
         )
@@ -104,5 +104,5 @@ object JobHelper {
       )
   }
 
-  private def removeTagSteps(tag: Tag) = List(RemoveTagPath(tag), RemoveTagFromCapi(tag), RemoveTag(tag))
+  private def removeTagSteps(tag: Tag)(implicit username: Option[String]) = List(RemoveTagPath(tag), RemoveTagFromCapi(tag), RemoveTag(tag, username))
 }

@@ -1,7 +1,7 @@
 package model.jobs.steps
 
 import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
-import model.{Section, Tag}
+import model.{Section, Tag, TagAudit}
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 import play.api.Logger
@@ -9,7 +9,7 @@ import services.KinesisStreams
 import repositories._
 import java.lang.UnsupportedOperationException
 
-case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], var contentCount: Int = -1,
+case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], username: Option[String], var contentCount: Int = -1,
   `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
 
   override def process = {
@@ -26,6 +26,8 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
       Logger.info(s"raising merge tag ${from.path} -> ${to.path} for content $contentPath")
     }
+
+    TagAuditRepository.upsertTagAudit(TagAudit.merged(to, from, username))
   }
 
   override def waitDuration: Option[Duration] = {
