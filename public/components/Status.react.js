@@ -16,7 +16,7 @@ class Status extends React.Component {
     fetchJobs() {
       tagManagerApi.getAllJobs()
       .then((logs) => {
-        const sortedJobs = logs.sort((a, b) => a.date > b.date ? -1 : 1);
+        const sortedJobs = logs.sort((a, b) => a.createdAt > b.createdAt ? -1 : 1);
         this.setState({
           myJobs: sortedJobs.filter( (job) => job.createdBy == this.props.config.username),
           allJobs: sortedJobs
