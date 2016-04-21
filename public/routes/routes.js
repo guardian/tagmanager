@@ -49,8 +49,8 @@ export default [
       <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
       <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'commercial_tags')} />
+      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'commercial_tags')}/>
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
       <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
       <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />

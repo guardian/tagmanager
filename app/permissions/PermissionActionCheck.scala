@@ -60,3 +60,8 @@ object TriggerSectionUnexpiryPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "trigger unexpiry of section content"
 }
+
+object ManageSponsorshipsPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.CommercialTags)
+  val restrictedAction = "manage sponsorships"
+}
