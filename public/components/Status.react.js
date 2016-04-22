@@ -48,7 +48,9 @@ class Status extends React.Component {
           <JobTable jobs={this.state.myJobs} simpleView={false} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
           <div>
             <div className="job__status--heading">All jobs</div>
-            <button className="job__toggle-simple-view" onClick={this.toggleSimpleAllJobDetails.bind(this)}>Show details</button>
+            <button className="job__toggle-simple-view" onClick={this.toggleSimpleAllJobDetails.bind(this)}>
+                {this.state.simpleAllJobDetails ? 'Show Details' : 'Hide Details'}
+            </button>
           </div>
           <JobTable jobs={this.state.allJobs} simpleView={this.state.simpleAllJobDetails} triggerRefresh={this.fetchJobs.bind(this)}  disableDelete={!this.props.config.permissions.tag_admin}/>
         </div>
