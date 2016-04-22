@@ -212,7 +212,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(SponsorshipRepository.getSponsorship(id).map(DenormalisedSponsorship(_))))
   }
 
-  def createSponsorship = APIAuthAction { req =>
+  def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
@@ -225,7 +225,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def updateSponsorship(id: Long) = APIAuthAction { req =>
+  def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck) { req =>
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
       try {
