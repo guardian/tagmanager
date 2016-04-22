@@ -66,7 +66,8 @@ case class CreateTagCommand(
                       capiSectionId: Option[String] = None,
                       trackingInformation: Option[TrackingInformation] = None,
                       preCalculatedPath: Option[String] = None, //This is used so path isn't calculated
-                      sponsorship: Option[InlinePaidContentSponsorshipCommand] = None
+                      sponsorship: Option[InlinePaidContentSponsorshipCommand] = None,
+                      paidContentInformation: Option[PaidContentInformation] = None
                            ) extends Command {
 
   type T = Tag
@@ -110,6 +111,7 @@ case class CreateTagCommand(
       trackingInformation = trackingInformation,
       activeSponsorships = if(createdSponsorshipActive) List(createdSponsorship.map(_.id).get) else Nil,
       sponsorship = createdSponsorship.map(_.id),
+      paidContentInformation = paidContentInformation,
       expired = createdSponsorship.map(_.status == "expired").getOrElse(false),
       updatedAt = new DateTime(DateTimeZone.UTC).getMillis
     )

@@ -38,6 +38,7 @@ case class Tag(
   trackingInformation: Option[TrackingInformation],
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
+  paidContentInformation: Option[PaidContentInformation] = None,
   expired: Boolean = false,
   var updatedAt: Long = 0L
 ) {
@@ -71,6 +72,7 @@ case class Tag(
       SponsorshipRepository.getSponsorship(sid).map(_.asThrift)
     }),
     sponsorshipId = sponsorship,
+    paidContentInformation = paidContentInformation.map(_.asThrift),
     expired = expired
   )
 
@@ -156,6 +158,7 @@ object Tag {
       updatedAt = thriftTag.updatedAt.getOrElse(0L),
       activeSponsorships = thriftTag.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil),
       sponsorship = thriftTag.sponsorshipId,
+      paidContentInformation = thriftTag.paidContentInformation.map(PaidContentInformation(_)),
       expired = thriftTag.expired
     )
 }
@@ -185,6 +188,7 @@ case class DenormalisedTag (
   trackingInformation: Option[TrackingInformation],
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Sponsorship] = None, // for paid content tags, they have an associated sponsorship but it may not be active
+  paidContentInformation: Option[PaidContentInformation] = None,
   expired: Boolean = false
   ) {
 
@@ -224,6 +228,7 @@ case class DenormalisedTag (
       trackingInformation = trackingInformation,
       activeSponsorships = updatedActiveSponsorships,
       sponsorship = updatedSponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
+      paidContentInformation = paidContentInformation, // for paid content tags, they have an associated sponsorship but it may not be active
       expired = updatedSponsorship.map(_.status == "expired").getOrElse(false)
     )
     (tag, updatedSponsorship)
@@ -259,6 +264,7 @@ object DenormalisedTag{
     trackingInformation = t.trackingInformation,
     activeSponsorships = t.activeSponsorships,
     sponsorship = t.sponsorship.flatMap(SponsorshipRepository.getSponsorship), // for paid content tags, they have an associated sponsorship but it may not be active
+    paidContentInformation = t.paidContentInformation,
     expired = t.expired
   )
 }
