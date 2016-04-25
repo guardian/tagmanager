@@ -1,6 +1,6 @@
 package model.command
 
-import com.gu.tagmanagement.{EventType, TagEvent}
+import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
 import model.command.logic.{SponsorshipStatusCalculator, TagPathCalculator}
 import model._
 import org.cvogt.play.json.Jsonx
@@ -67,21 +67,51 @@ case class CreateTagCommand(
                       trackingInformation: Option[TrackingInformation] = None,
                       preCalculatedPath: Option[String] = None, //This is used so path isn't calculated
                       sponsorship: Option[InlinePaidContentSponsorshipCommand] = None,
-                      paidContentInformation: Option[PaidContentInformation] = None
+                      paidContentInformation: Option[PaidContentInformation] = None,
+                      createMicrosite: Boolean = false
                            ) extends Command {
 
   type T = Tag
 
   def process()(implicit username: Option[String] = None): Option[Tag] = {
 
+    val tagId = Sequences.tagId.getNextId
+
+    val sectionId: Option[Long] = if(createMicrosite) {
+      val sectionPageId: Long = try { PathManager.registerPathAndGetPageId(slug) } catch { case p: PathRegistrationFailed => PathInUse}
+
+      val nextSectionId = Sequences.sectionId.getNextId
+
+      val createdSection = Section(
+        id = nextSectionId,
+        sectionTagId = tagId,
+        name = externalName,
+        path = slug,
+        wordsForUrl = slug,
+        pageId = sectionPageId,
+        editions = Map(),
+        discriminator = Some("Navigation"),
+        isMicrosite = true,
+        activeSponsorships = Nil
+      )
+
+      val result = SectionRepository.updateSection(createdSection)
+
+      KinesisStreams.sectionUpdateStream.publishUpdate(createdSection.id.toString, SectionEvent(EventType.Update, createdSection.id, Some(createdSection.asThrift)))
+
+      SectionAuditRepository.upsertSectionAudit(SectionAudit.created(createdSection))
+
+      result.map(_.id)
+    } else {
+      section
+    }
+
     val calculatedPath = preCalculatedPath match {
       case Some(path) => path
-      case None => TagPathCalculator.calculatePath(`type`, slug, section, trackingInformation.map(_.trackingType))
+      case None => TagPathCalculator.calculatePath(`type`, slug, sectionId, trackingInformation.map(_.trackingType))
     }
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
-
-    val tagId = Sequences.tagId.getNextId
 
     val createdSponsorship = sponsorship flatMap(_.createSponsorship(tagId))
     val createdSponsorshipActive = createdSponsorship.map(_.status == "active").getOrElse(false)
@@ -97,7 +127,7 @@ case class CreateTagCommand(
       hidden = hidden,
       legallySensitive = legallySensitive,
       comparableValue = comparableValue,
-      section = section,
+      section = sectionId,
       publication = publication,
       categories = categories,
       description = description,
@@ -106,7 +136,7 @@ case class CreateTagCommand(
       podcastMetadata = podcastMetadata,
       contributorInformation = contributorInformation,
       publicationInformation = publicationInformation,
-      isMicrosite = isMicrosite,
+      isMicrosite = isMicrosite || createMicrosite,
       capiSectionId = capiSectionId,
       trackingInformation = trackingInformation,
       activeSponsorships = if(createdSponsorshipActive) List(createdSponsorship.map(_.id).get) else Nil,
