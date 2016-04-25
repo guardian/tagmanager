@@ -24,7 +24,7 @@ $batch-status-height: 30px;
 }
 
 .batch-status__info {
-  @extend %f-header;
+  @extend %f-heading;
   @extend %fs-data-3;
 
   display: inline-block;

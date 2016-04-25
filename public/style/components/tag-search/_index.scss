@@ -32,7 +32,7 @@
   display: inline-block;
 
   label {
-    @extend %f-header;
+    @extend %f-heading;
     @extend %fs-data-2;
 
     font-weight: bold;

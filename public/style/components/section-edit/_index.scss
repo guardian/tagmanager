@@ -37,7 +37,7 @@
 }
 
 .section-edit__input-group__header {
-  @extend %f-header;
+  @extend %f-heading;
   @extend %fs-data-4;
 
   font-weight: bold;
@@ -56,7 +56,7 @@
 }
 
 .section-edit__header {
-  @extend %f-header;
+  @extend %f-heading;
   @extend %fs-data-4;
 
   font-weight: bold;
