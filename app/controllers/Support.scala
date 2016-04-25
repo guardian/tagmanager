@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.UUID
+
 import com.amazonaws.services.s3.model._
 import model.{DenormalisedTag, Image, ImageAsset}
 import org.joda.time.DateTime
@@ -33,7 +35,7 @@ object Support extends Controller with PanDomainAuthActions {
     ImageMetadataService.imageDimensions(picture.file) match {
       case (w, h) if w <= 140 && h <= 90 => {
         val dateSlug = new DateTime().toString("dd/MMM/yyyy")
-        val logoPath = s"commercial/sponsor/${dateSlug}/${filename}"
+        val logoPath = s"commercial/sponsor/${dateSlug}/${UUID.randomUUID}-${filename}"
         val contentType = req.contentType
         val objectMetadata = new ObjectMetadata()
         contentType.foreach(objectMetadata.setContentType(_))
