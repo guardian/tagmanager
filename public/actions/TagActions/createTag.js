@@ -50,11 +50,13 @@ export function createTag(tag) {
 }
 
 export function populateEmptyTag(tagType) {
+  const createMicrosite = tagType === 'PaidContent';
   return {
       type:        TAG_POPULATE_BLANK,
       tagEditable: true,
       tag:         Object.assign({}, BLANK_TAG, {
-        type: tagType
+        type: tagType,
+        createMicrosite : createMicrosite
       }),
       receivedAt:  Date.now()
   };
