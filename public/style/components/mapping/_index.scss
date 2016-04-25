@@ -28,7 +28,7 @@
 
 .mapping__header__title,
 .mapping__add__title {
-  @extend %f-header;
+  @extend %f-heading;
   @extend %fs-data-2;
 
   font-weight: bold;
@@ -45,6 +45,6 @@
 }
 
 .mapping__add__selectedtag {
-  @extend %f-header;
+  @extend %f-heading;
   @extend %fs-data-3;
 }
