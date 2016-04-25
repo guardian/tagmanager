@@ -22,13 +22,15 @@ function requestTagCreate() {
     };
 }
 
-function recieveTagCreate(tag) {
+function recieveTagCreate(tag, refreshSections) {
     history.replaceState(null, '/tag/' + tag.id);
     return {
-        type:       TAG_CREATE_RECEIVE,
-        tag:        tag,
-        receivedAt: Date.now()
+      type: TAG_CREATE_RECEIVE,
+      tag: tag,
+      refreshSections: refreshSections,
+      receivedAt: Date.now()
     };
+
 }
 
 function errorTagCreate(error) {
@@ -44,7 +46,7 @@ export function createTag(tag) {
     return dispatch => {
         dispatch(requestTagCreate());
         return tagManagerApi.createTag(tag)
-            .then(res => dispatch(recieveTagCreate(res)))
+            .then(res => dispatch(recieveTagCreate(res, tag.createMicrosite)))
             .fail(error => dispatch(errorTagCreate(error)));
     };
 }

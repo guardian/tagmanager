@@ -1,6 +1,6 @@
 import {TAG_GET_REQUEST, TAG_GET_RECEIVE, TAG_GET_ERROR} from '../actions/TagActions/getTag';
 import {TAG_UPDATE} from '../actions/TagActions/updateTag';
-import {TAG_CREATE_ERROR} from '../actions/TagActions/createTag';
+import {TAG_CREATE_ERROR, TAG_CREATE_RECEIVE} from '../actions/TagActions/createTag';
 import {TAG_SAVE_REQUEST, TAG_SAVE_RECEIVE, TAG_SAVE_ERROR} from '../actions/TagActions/saveTag';
 import {TAG_DELETE_REQUEST, TAG_DELETE_RECEIVE, TAG_DELETE_ERROR} from '../actions/TagActions/deleteTag';
 import {SECTIONS_GET_REQUEST, SECTIONS_GET_RECEIVE, SECTIONS_GET_ERROR} from '../actions/SectionsActions/getSections';
@@ -97,6 +97,11 @@ export default function tag(state = {
     return Object.assign({}, state, {
       error: action.message,
       saveState: undefined
+    });
+
+  case TAG_CREATE_RECEIVE:
+    return Object.assign({}, state, {
+      sections: action.refreshSections ? undefined : state.sections
     });
 
 // TAG SAVE
