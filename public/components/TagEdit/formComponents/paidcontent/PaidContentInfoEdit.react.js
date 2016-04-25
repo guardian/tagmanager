@@ -55,21 +55,33 @@ export default class PaidContentInfoEdit extends React.Component {
     }));
   }
 
+  renderCreateMicrositeControl() {
+    if(this.props.pathLocked || !this.props.tagEditable) {
+      return
+    } else {
+      return (
+        <div>
+          <input type="checkbox" checked={this.props.tag.createMicrosite} onChange={this.onUpdateCreateMicrosite.bind(this)}/>
+          <label className="tag-edit__label">create microsite for this tag</label>
+        </div>
+      )
+    }
+  }
+
   renderSectionControls() {
+
     if (this.props.tag.createMicrosite) {
       return (
         <div className="tag-edit__input-group" key="topic-section">
           <label className="tag-edit__input-group__header">Section</label>
-          <input type="checkbox" checked={this.props.tag.createMicrosite} onChange={this.onUpdateCreateMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/>
-          <label className="tag-edit__label">create microsite for this tag</label>
+          {this.renderCreateMicrositeControl()}
         </div>
       )
     } else {
       return (
         <div className="tag-edit__input-group" key="topic-section">
           <label className="tag-edit__input-group__header">Section</label>
-          <input type="checkbox" checked={this.props.tag.createMicrosite} onChange={this.onUpdateCreateMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/>
-          <label className="tag-edit__label">create microsite for this tag</label>
+          {this.renderCreateMicrositeControl()}
           <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/>
           <label className="tag-edit__label">is Microsite</label>
           <SectionSelect
