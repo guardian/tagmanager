@@ -20,6 +20,13 @@ dependencies are changed you should should re run the setup script.
 The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. after running this the tag manager
 will be available on [https://tagmanager.local.dev-gutools.co.uk](https://tagmanager.local.dev-gutools.co.uk)
 
+To read the database and interact with the AWS infrastructure you will need AWS credentials that allow you access to the
+Composer account available to the default credentials provider chain. The easiest way to configure this is to obtain the
+credentials via [janus](https://janus.gutools.co.uk/) and export the credentials to your shell using the handy script provided by janus.
+
+If you are working on the commercial tag functionality and need to be able to upload logos you will also need AWS credentials for 
+the frontend aws account available as an AWS profile named "frontend". This can also be obtained via janus.
+
 The tag manager is a standard play app, fire up sbt and run.
 
 By default if you change any frontend code, you will need to recompile the assets using `./scripts/setup.sh` but there

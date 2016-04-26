@@ -2,6 +2,7 @@ package services
 
 import java.nio.ByteBuffer
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.regions.{Regions, Region}
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
@@ -26,7 +27,7 @@ object AWS {
 
   private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map(new STSAssumeRoleSessionCredentialsProvider(_, "tagManager"))
 
-  lazy val frontendStaticFilesS3Client = region.createClient(classOf[AmazonS3Client], frontendCredentialsProvider.getOrElse(null), null)
+  lazy val frontendStaticFilesS3Client = region.createClient(classOf[AmazonS3Client], frontendCredentialsProvider.getOrElse(new ProfileCredentialsProvider("frontend")), null)
 }
 
 trait AwsInstanceTags {
