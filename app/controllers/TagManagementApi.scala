@@ -238,10 +238,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def clashingSponsorships(id: Option[Long], tagIds: List[Long], sectionId: Option[Long], validFrom: Option[Long], validTo: Option[Long], editions: Option[String]) = APIAuthAction { req =>
+  def clashingSponsorships(id: Option[Long], tagIds: Option[String], sectionId: Option[Long], validFrom: Option[Long], validTo: Option[Long], editions: Option[String]) = APIAuthAction { req =>
     val editionSearch = editions.map(_.split(",").toList)
+    val tagSearch: Option[List[Long]] = tagIds.map(_.split(",").toList.map(_.toLong))
     try {
-      new ClashingSponsorshipsFetch(id, tagIds, sectionId, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
+      new ClashingSponsorshipsFetch(id, tagSearch, sectionId, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
         .process.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
     } catch {
       commandErrorAsResult

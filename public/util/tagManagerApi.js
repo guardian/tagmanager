@@ -178,7 +178,7 @@ export default {
     if(sponsorship.id) {command.id = sponsorship.id;}
     if(sponsorship.validFrom) {command.validFrom = sponsorship.validFrom;}
     if(sponsorship.validTo) {command.validTo = sponsorship.validTo;}
-    if(sponsorship.tags) {command.tags = R.map(t => t.id, sponsorship.tags);}
+    if(sponsorship.tags) {command.tagIds = R.map(t => t.id, sponsorship.tags).toString();}
     if(sponsorship.section) {command.sectionId = sponsorship.section.id;}
     if(sponsorship.targeting && sponsorship.targeting.validEditions) {command.editions = sponsorship.targeting.validEditions.toString();}
 
