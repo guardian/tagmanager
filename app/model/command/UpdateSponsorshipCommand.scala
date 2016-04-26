@@ -2,6 +2,7 @@ package model.command
 
 import model._
 import model.command.logic.SponsorshipStatusCalculator
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -16,6 +17,7 @@ case class UpdateSponsorshipCommand(
   sponsorName: String,
   sponsorLogo: Image,
   sponsorLink: String,
+  aboutLink: Option[String],
   tag: Option[Long],
   section: Option[Long],
   targeting: Option[SponsorshipTargeting]
@@ -36,6 +38,7 @@ case class UpdateSponsorshipCommand(
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
+      aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
       tag = tag,
       section = section,
       targeting = targeting
@@ -98,6 +101,7 @@ object UpdateSponsorshipCommand{
       (JsPath \ "sponsorName").format[String] and
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
+      (JsPath \ "aboutLink").formatNullable[String] and
       (JsPath \ "tag").formatNullable[Long] and
       (JsPath \ "section").formatNullable[Long] and
       (JsPath \ "targeting").formatNullable[SponsorshipTargeting]

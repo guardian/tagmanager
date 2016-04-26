@@ -3,6 +3,7 @@ package model.command
 import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
 import model.command.logic.{SponsorshipStatusCalculator, TagPathCalculator}
 import model._
+import org.apache.commons.lang3.StringUtils
 import org.cvogt.play.json.Jsonx
 import org.cvogt.play.json.implicits.optionWithNull
 import org.joda.time.{DateTime, DateTimeZone}
@@ -17,7 +18,8 @@ case class InlinePaidContentSponsorshipCommand(
                          validTo: Option[DateTime],
                          sponsorName: String,
                          sponsorLogo: Image,
-                         sponsorLink: String
+                         sponsorLink: String,
+                         aboutLink: Option[String] = None
                                     ) {
 
   def createSponsorship(tagId: Long) = {
@@ -32,6 +34,7 @@ case class InlinePaidContentSponsorshipCommand(
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
+      aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
       tag = Some(tagId),
       section = None,
       targeting = None
