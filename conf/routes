@@ -104,5 +104,7 @@ POST       /support/uploadLogo/:filename  controllers.Support.uploadLogo(filenam
 GET        /support/previewCapi/*path     controllers.Support.previewCapiProxy(path: String)
 GET        /support/flexMigrationData     controllers.Support.flexMigrationSpecificData
 POST       /support/unexpireSectionContent    controllers.Support.unexpireSectionContent
+POST       /support/expireSectionContent    controllers.Support.expireSectionContent
+
 GET        /support/fixDanglingParents     controllers.Support.fixDanglingParents
 

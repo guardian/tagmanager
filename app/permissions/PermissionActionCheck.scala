@@ -56,7 +56,7 @@ object JobRollbackPermissionsCheck extends PermissionActionFilter {
   val restrictedAction = "job rollback"
 }
 
-object TriggerSectionUnexpiryPermissionsCheck extends PermissionActionFilter {
+object ModifySectionExpiryPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "trigger unexpiry of section content"
 }
