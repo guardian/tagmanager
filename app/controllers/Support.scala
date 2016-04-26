@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.model._
 import model.{DenormalisedTag, Image, ImageAsset}
 import org.joda.time.DateTime
 import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
-import model.command.{UnexpireSectionContentCommand, UpdateTagCommand}
+import model.command.{UnexpireSectionContentCommand, ExpireSectionContentCommand, UpdateTagCommand}
 import model.command.CommandError._
 import play.api.Logger
 import play.api.libs.json.{JsString, Json}
@@ -16,7 +16,7 @@ import repositories.TagLookupCache
 import services.{Config, ImageMetadataService}
 import java.util.concurrent.TimeUnit
 
-import permissions.TriggerSectionUnexpiryPermissionsCheck
+import permissions.ModifySectionExpiryPermissionsCheck
 
 
 object Support extends Controller with PanDomainAuthActions {
@@ -97,7 +97,7 @@ object Support extends Controller with PanDomainAuthActions {
     )
   }
 
-  def unexpireSectionContent = (APIAuthAction andThen TriggerSectionUnexpiryPermissionsCheck) { req =>
+  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck) { req =>
 
     implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
     req.body.asJson.map { json =>
@@ -105,6 +105,23 @@ object Support extends Controller with PanDomainAuthActions {
 
       try {
         UnexpireSectionContentCommand(sectionId).process.map(t => Ok("Unexpiry Completed Successfully")) getOrElse BadRequest("Failed to trigger unexpiry")
+
+      } catch {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      BadRequest("Expecting sectionId in JSON")
+    }
+  }
+
+  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck) { req =>
+
+    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    req.body.asJson.map { json =>
+      val sectionId = (json \ "sectionId").as[Long]
+
+      try {
+        ExpireSectionContentCommand(sectionId).process.map(t => Ok("Expiry Completed Successfully")) getOrElse BadRequest("Failed to trigger expiry")
 
       } catch {
         commandErrorAsResult

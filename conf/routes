@@ -106,5 +106,7 @@ GET        /support/flexPathMigrationData     controllers.Support.flexPathMigrat
 GET        /support/flexSlugMigrationData     controllers.Support.flexSlugMigrationSpecificData
 
 POST       /support/unexpireSectionContent    controllers.Support.unexpireSectionContent
+POST       /support/expireSectionContent    controllers.Support.expireSectionContent
+
 GET        /support/fixDanglingParents     controllers.Support.fixDanglingParents
 

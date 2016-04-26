@@ -7,7 +7,6 @@
 }
 
 .capi-stats__header {
-  @extend %f-heading;
   @extend %fs-data-4;
 
   font-weight: bold;
@@ -28,17 +27,14 @@
 }
 
 .capi-stats__stat__header {
-  @extend %f-heading;
   @extend %fs-data-3;
 }
 
 .capi-stats__stat__value {
-  @extend %f-heading;
   @extend %fs-data-6;
 }
 
 .capi-stats__stat__prev {
-  @extend %f-heading;
   @extend %fs-data-1;
 }
 

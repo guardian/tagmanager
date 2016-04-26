@@ -343,5 +343,15 @@ export default {
       contentType: 'application/json',
       data: JSON.stringify({sectionId: sectionId})
     });
+  },
+
+  expireContentForSection: (sectionId) => {
+    return PandaReqwest({
+      url: '/support/expireSectionContent',
+      method: 'post',
+      contentType: 'application/json',
+      data: JSON.stringify({sectionId: sectionId})
+    });
   }
- };
+
+};
