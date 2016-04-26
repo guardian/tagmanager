@@ -85,9 +85,15 @@ object Support extends Controller with PanDomainAuthActions {
     }
   }
 
-  def flexMigrationSpecificData = Action {
+  def flexPathMigrationSpecificData = Action {
     Ok(
       Json.toJson(TagLookupCache.allTags.get.map(tag => tag.id.toString -> JsString(tag.path)).toMap)
+    )
+  }
+
+  def flexSlugMigrationSpecificData = Action {
+    Ok(
+      Json.toJson(TagLookupCache.allTags.get.map(tag => tag.id.toString -> JsString(tag.slug)).toMap)
     )
   }
 
