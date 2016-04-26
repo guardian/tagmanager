@@ -51,6 +51,10 @@ $tag-edit-padding: $standard-padding/2;
   margin: $standard-padding/2 0;
 }
 
+.tag-edit__field-logo {
+  min-height: 100px;
+}
+
 .tag-edit__field__image {
   display: inline-block;
   width: 100px;

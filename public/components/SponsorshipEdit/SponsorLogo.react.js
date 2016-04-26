@@ -60,7 +60,7 @@ export default class SponsorEdit extends React.Component {
     const imageAsset = this.props.logo.assets[0];
 
     return (
-      <div className="tag-edit__field">
+      <div className="tag-edit__field tag-edit__field-logo">
         <img src={imageAsset.imageUrl} className="tag-edit__field__image"/>
         <div className="tag-edit__image__info">
           <div>Width: {imageAsset.width}px</div>
