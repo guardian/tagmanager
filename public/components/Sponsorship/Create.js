@@ -31,7 +31,7 @@ class SponsorshipCreate extends React.Component {
         this.props.sponsorship.sponsorName &&
         this.props.sponsorship.sponsorLink &&
         this.props.sponsorship.sponsorLogo &&
-        (this.props.sponsorship.tag || this.props.sponsorship.section) &&
+        (this.props.sponsorship.tags || this.props.sponsorship.section) &&
         (this.props.clashingSponsorships && this.props.clashingSponsorships.length == 0)
     }
 
@@ -45,7 +45,7 @@ class SponsorshipCreate extends React.Component {
 
     updateSponsorshipAndCheckClashes(sponsorship) {
       this.props.sponsorshipActions.updateSponsorship(sponsorship);
-      if(sponsorship.tag || sponsorship.section) {
+      if(sponsorship.tags || sponsorship.section) {
         this.props.sponsorshipActions.getClashingSponsorships(sponsorship);
       }
     }

@@ -59,7 +59,12 @@ class SponsorshipLauncher extends AbstractScheduledService {
         val activated = s.copy(status = "active")
         SponsorshipRepository.updateSponsorship(activated)
 
-        s.tag foreach { tagId => addSponsorshipToTag(s.id, tagId) }
+        for(
+          tags <- s.tags;
+          tagId <- tags
+        ) {
+          addSponsorshipToTag(s.id, tagId)
+        }
         s.section foreach { sectionId => addSponsorshipToSection(s.id, sectionId) }
       } catch {
         case NonFatal(e) => Logger.error("failed to activate sponsorship", e)
@@ -100,15 +105,24 @@ class SponsorshipExpirer extends AbstractScheduledService {
   private def expirePaidContent(s: Sponsorship): Unit = {
     val expired = s.copy(status = "expired")
     SponsorshipRepository.updateSponsorship(expired)
-
-    s.tag foreach {tagId => expirePaidContentTag(tagId)}
+    for(
+      tags <- s.tags;
+      tagId <- tags
+    ) {
+      expirePaidContentTag(tagId)
+    }
   }
 
   private def expireSponsorship(s: Sponsorship): Unit = {
     val expired = s.copy(status = "expired")
     SponsorshipRepository.updateSponsorship(expired)
+    for(
+      tags <- s.tags;
+      tagId <- tags
+    ) {
+      removeSponsorshipFromTag(s.id, tagId)
+    }
 
-    s.tag foreach {tagId => removeSponsorshipFromTag(s.id, tagId)}
     s.section foreach {sectionId => removeSponsorshipFromSection(s.id, sectionId)}
   }
 

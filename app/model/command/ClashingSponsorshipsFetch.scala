@@ -5,12 +5,12 @@ import org.joda.time.{Interval, DateTime}
 import repositories.{SponsorshipSearchCriteria, SponsorshipRepository}
 
 
-class ClashingSponsorshipsFetch(id: Option[Long], tagId: Option[Long], sectionId: Option[Long], validFrom: Option[DateTime], validTo: Option[DateTime], editions: Option[List[String]]) extends Command {
+class ClashingSponsorshipsFetch(id: Option[Long], tagIds: List[Long], sectionId: Option[Long], validFrom: Option[DateTime], validTo: Option[DateTime], editions: Option[List[String]]) extends Command {
 
   type T = List[Sponsorship]
 
   override def process()(implicit username: Option[String] = None): Option[List[Sponsorship]] = {
-    val targetedSponsorships = SponsorshipRepository.searchSponsorships(new SponsorshipSearchCriteria(tagId = tagId, sectionId = sectionId))
+    val targetedSponsorships = SponsorshipRepository.searchSponsorships(new SponsorshipSearchCriteria(tagIds = tagIds, sectionId = sectionId))
 
     val checkInterval = new Interval(validFrom.getOrElse(new DateTime().minusYears(500)), validTo.getOrElse(new DateTime().plusYears(500)))
 

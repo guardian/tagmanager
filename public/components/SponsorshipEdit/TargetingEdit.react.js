@@ -16,8 +16,19 @@ export default class TargetingEdit extends React.Component {
   }
 
   onTagSelected(tag) {
+    var tags = this.props.sponsorship.tags || [];
+    if(!this.hasTag(tag)) {
+      tags.push(tag);
+      this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
+        tags: tags
+      }));
+    }
+  }
+
+  onTagRemoved(tag) {
+    var tags = this.props.sponsorship.tags || [];
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      tag: tag
+      tags: R.filter(t => tag.id !== t.id, tags)
     }));
   }
 
@@ -35,26 +46,32 @@ export default class TargetingEdit extends React.Component {
     }));
   }
 
-  renderTag(tag, setTagFn) {
+  renderTags(tags) {
     if(!!this.props.sponsorship.section) {
       return (<div>Remove the targeted section to target by tag.</div>);
     }
-
-    if (!tag) {
-      return <TagSelect onTagClick={setTagFn} />;
-    }
+    tags = tags || [];
+    var selectTagFn = this.onTagSelected.bind(this);
+    var removeTagFn = this.onTagRemoved.bind(this);
 
     return (
-      <div className="merge__tag">
-        {tag.internalName}
-        <i className="i-cross" onClick={setTagFn.bind(this, undefined)} />
-      </div>
+        <div>
+          {tags.map(function (tag) {
+            return (
+              <div className="merge__tag" key={tag.id}>
+                {tag.internalName}
+                <i className="i-cross" onClick={removeTagFn.bind(null, tag)}/>
+              </div>
+            )
+          })}
+          <TagSelect onTagClick={selectTagFn}/>
+        </div>
     );
   }
 
   renderSection() {
-    if(!!this.props.sponsorship.tag) {
-      return (<div>Remove the targeted tag to target by section.</div>);
+    if(this.hasTag()) {
+      return (<div>Remove the targeted tags to target by section.</div>);
     }
 
     if(!this.sectionId()) {
@@ -64,7 +81,6 @@ export default class TargetingEdit extends React.Component {
           sections={this.props.sections}
           isMicrosite={false}
           onChange={this.onUpdateSection.bind(this)}
-          disabled={this.hasTag()}
           />
       );
     }
@@ -85,8 +101,12 @@ export default class TargetingEdit extends React.Component {
     }
   }
 
-  hasTag() {
-    return this.props.sponsorship.tag && this.props.sponsorship.tag.id;
+  hasTag(tag) {
+    var tags = this.props.sponsorship.tags;
+      if(!tags || !tags.length) {
+      return false;
+    }
+    return tag ? !!R.find(t => t.id === tag.id, tags) : true;
   }
 
   isTargettingAllEditions() {
@@ -188,8 +208,8 @@ export default class TargetingEdit extends React.Component {
         <label className="tag-edit__input-group__header">Targeting</label>
 
         <div className="tag-edit__field" >
-          <label className="tag-edit__input-group__header">Tag</label>
-          {this.renderTag(this.props.sponsorship.tag, this.onTagSelected.bind(this))}
+          <label className="tag-edit__input-group__header">Tags</label>
+          {this.renderTags(this.props.sponsorship.tags)}
         </div>
 
         <div className="tag-edit__field" >

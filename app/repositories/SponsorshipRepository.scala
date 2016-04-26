@@ -65,7 +65,7 @@ case class SponsorshipSearchCriteria(
   q: Option[String] = None,
   status: Option[String] = None,
   `type`: Option[String] = None,
-  tagId: Option[Long] = None,
+  tagIds: List[Long] = Nil,
   sectionId: Option[Long] = None
 ) {
 
@@ -83,7 +83,7 @@ case class SponsorshipSearchCriteria(
       sectionFilter
   }
 
-  private def tagFilter: Option[ScanFilter] = tagId map (new ScanFilter("tag").eq(_))
+  private def tagFilter: List[ScanFilter] = tagIds map (new ScanFilter("tags").contains(_))
 
   private def sectionFilter: Option[ScanFilter] = sectionId map (new ScanFilter("section").eq(_))
 

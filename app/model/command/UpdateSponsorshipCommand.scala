@@ -16,7 +16,7 @@ case class UpdateSponsorshipCommand(
   sponsorName: String,
   sponsorLogo: Image,
   sponsorLink: String,
-  tag: Option[Long],
+  tags: Option[List[Long]],
   section: Option[Long],
   targeting: Option[SponsorshipTargeting]
 ) extends Command {
@@ -36,7 +36,7 @@ case class UpdateSponsorshipCommand(
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
-      tag = tag,
+      tags = tags,
       section = section,
       targeting = targeting
     )
@@ -48,13 +48,14 @@ case class UpdateSponsorshipCommand(
     ) yield {
 
       (getActiveTag(existingSponsorship), getActiveTag(updatedSponsorship)) match {
-        case(None, Some(newTagId)) => addSponsorshipToTag(updatedSponsorship.id, newTagId)
-        case(Some(oldTagId), None) => removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
-        case(Some(oldTagId), Some(newTagId)) if oldTagId != newTagId => {
+          // TODO work through this - needs rethink!
+        case(Nil, List(newTagId)) => addSponsorshipToTag(updatedSponsorship.id, newTagId)
+        case(List(oldTagId), Nil) => removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
+        case(List(oldTagId), List(newTagId)) if oldTagId != newTagId => {
           removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
           addSponsorshipToTag(updatedSponsorship.id, newTagId)
         }
-        case (Some(oldTagId), Some(newTagId)) if oldTagId == newTagId => reindexTag(newTagId)
+        case (List(oldTagId), List(newTagId)) if oldTagId == newTagId => reindexTag(newTagId)
         case _ => // no change
       }
 
@@ -73,10 +74,10 @@ case class UpdateSponsorshipCommand(
     }
   }
 
-  private def getActiveTag(s: Sponsorship): Option[Long] = {
+  private def getActiveTag(s: Sponsorship): List[Long] = {
     s.status match {
-      case "active" => s.tag
-      case _ => None
+      case "active" => s.tags.getOrElse(Nil)
+      case _ => Nil
     }
   }
 
@@ -98,7 +99,7 @@ object UpdateSponsorshipCommand{
       (JsPath \ "sponsorName").format[String] and
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
-      (JsPath \ "tag").formatNullable[Long] and
+      (JsPath \ "tags").formatNullable[List[Long]] and
       (JsPath \ "section").formatNullable[Long] and
       (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
 
