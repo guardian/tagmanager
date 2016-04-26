@@ -42,7 +42,6 @@
 
 .batch-tag__error {
 
-  @extend %f-heading;
   @extend %fs-data-3;
 
   background-color: $c-red;
@@ -54,7 +53,6 @@
 
 .batch-tag__info {
 
-  @extend %f-heading;
   @extend %fs-data-3;
 
   background-color: $c-blue;
@@ -69,7 +67,6 @@
   display: inline-block;
 
   label {
-    @extend %f-heading;
     @extend %fs-data-2;
 
     font-weight: bold;
