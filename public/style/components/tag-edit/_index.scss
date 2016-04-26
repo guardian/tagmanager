@@ -46,13 +46,18 @@ $tag-edit-padding: $standard-padding/2;
   -moz-columns: 2;
 }
 
-.tag-edit__field {
+%tag-edit__field {
   position: relative;
   margin: $standard-padding/2 0;
 }
 
-.tag-edit__field-logo {
-  min-height: 100px;
+.tag-edit__field {
+  @extend %tag-edit__field;
+}
+
+.tag-edit__field--logo {
+  @extend %tag-edit__field;
+  min-height: 60px;
 }
 
 .tag-edit__field__image {
