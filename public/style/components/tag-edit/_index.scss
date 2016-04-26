@@ -119,7 +119,6 @@ $tag-edit-padding: $standard-padding/2;
   }
 
   label {
-    @extend %f-heading;
     @extend %fs-data-3;
 
     font-weight: bold;
