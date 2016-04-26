@@ -102,7 +102,11 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 GET        /support/image-metadata        controllers.Support.imageMetadata(imageUrl: String)
 POST       /support/uploadLogo/:filename  controllers.Support.uploadLogo(filename: String)
 GET        /support/previewCapi/*path     controllers.Support.previewCapiProxy(path: String)
-GET        /support/flexMigrationData     controllers.Support.flexMigrationSpecificData
+GET        /support/flexPathMigrationData     controllers.Support.flexPathMigrationSpecificData
+GET        /support/flexSlugMigrationData     controllers.Support.flexSlugMigrationSpecificData
+
 POST       /support/unexpireSectionContent    controllers.Support.unexpireSectionContent
+POST       /support/expireSectionContent    controllers.Support.expireSectionContent
+
 GET        /support/fixDanglingParents     controllers.Support.fixDanglingParents
 

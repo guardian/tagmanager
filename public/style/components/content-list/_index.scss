@@ -2,17 +2,8 @@ $taglist-border-color: $c-grey-300;
 
 .contentlist {
 
-  @extend %f-header;
   @extend %fs-data-3;
 
   width: 100%;
 
-}
-
-.contentlist__header {
-  @extend %table-head;
-}
-
-.contentlist__results-item {
-  @extend %table-body;
 }

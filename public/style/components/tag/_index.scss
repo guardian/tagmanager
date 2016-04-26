@@ -43,7 +43,6 @@
   padding: $standard-padding * 1.5;
 
   .tag-validation__header {
-    @extend %f-header;
     @extend %fs-data-4;
 
     font-weight: bold;
@@ -53,7 +52,6 @@
 
   .tag-validation__result {
 
-    @extend %f-header;
     @extend %fs-data-3;
 
     color: $c-red;
@@ -83,7 +81,6 @@
 .tag__delete,
 .tag__delete--disabled {
 
-  @extend %f-header;
   @extend %fs-data-4;
 
   background-color: white;

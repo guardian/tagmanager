@@ -3,6 +3,7 @@ import SectionEdit from '../SectionEdit/SectionEdit.react';
 import SectionEdition from '../SectionEdit/SectionEditions.react';
 import SaveButton from '../utils/SaveButton.react';
 import UnexpireMicrosite from './UnexpireMicrosite.react';
+import ExpireMicrosite from './ExpireMicrosite.react';
 
 class SectionDisplay extends React.Component {
 
@@ -49,7 +50,8 @@ class SectionDisplay extends React.Component {
           <div className="section-edit__column--sidebar">
             <SectionEdit section={this.props.section} updateSection={this.props.sectionActions.updateSection} pathLocked={true} />
             <UnexpireMicrosite section={this.props.section} showError={this.props.uiActions.showError}/>
-          </div>
+            <ExpireMicrosite section={this.props.section} showError={this.props.uiActions.showError}/>
+        </div>
           <div className="section-edit__column">
             <SectionEdition section={this.props.section} updateEditions={this.updateEditions.bind(this)} saveState={this.props.saveState} refreshSection={this.resetSection.bind(this)}/>
           </div>

@@ -4,7 +4,6 @@
 .job__rollback,
 .job__button--disabled {
 
-  @extend %f-header;
   @extend %fs-data-2;
 
   background-color: white;
@@ -49,4 +48,16 @@
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+.job__toggle-simple-view {
+
+  @extend %f-data;
+  @extend %fs-data-1;
+
+  color: $c-white;
+  background-color: $c-grey-650;
+
+  padding: 2px 10px;
+  border-radius: 5px;
 }

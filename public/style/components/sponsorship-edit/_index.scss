@@ -32,7 +32,6 @@
 }
 
 .sponsorship-edit__input-group__header {
-  @extend %f-header;
   @extend %fs-data-4;
 
   font-weight: bold;
@@ -51,7 +50,6 @@
 }
 
 .sponsorship-edit__header {
-  @extend %f-header;
   @extend %fs-data-4;
 
   font-weight: bold;

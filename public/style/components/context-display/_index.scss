@@ -2,7 +2,6 @@
 }
 
 .tag-context__header {
-  @extend %f-header;
   @extend %fs-data-4;
 
   font-weight: bold;
@@ -73,14 +72,6 @@
   @extend %context__add;
   width: 300px;
   margin-left: $standard-padding;
-}
-
-.tag-references__header {
-  @extend %table-head;
-}
-
-.tag-references__references {
-  @extend %table-body;
 }
 
 .tag-references__addrow {

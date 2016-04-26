@@ -44,7 +44,6 @@
 
 .top-toolbar__item--highlight {
 
-  @extend %f-header;
   @extend %fs-data-2;
 
   &:hover {

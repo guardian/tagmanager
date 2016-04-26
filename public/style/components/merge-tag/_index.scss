@@ -3,7 +3,6 @@
   margin: 0 auto;
   padding: $standard-padding;
 
-  @extend %f-header;
   @extend %fs-data-3;
 
 
@@ -23,7 +22,6 @@
 }
 
 .merge__select__header {
-  @extend %f-header;
   @extend %fs-data-4;
 
   font-weight: bold;

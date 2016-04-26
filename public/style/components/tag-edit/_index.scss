@@ -19,7 +19,6 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 .tag-edit__input-group__header {
-  @extend %f-header;
   @extend %fs-data-4;
 
   font-weight: bold;
@@ -58,7 +57,6 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 .tag-edit__image__info {
-  @extend %f-header;
   @extend %fs-data-3;
 
 
@@ -77,7 +75,6 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 %tag-edit__image__add {
-  @extend %f-header;
   @extend %fs-data-3;
 
   text-align: right;
@@ -102,7 +99,6 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 .tag-edit__label {
-  @extend %f-header;
   @extend %fs-data-4;
 
   margin-right: 10px;
@@ -119,7 +115,6 @@ $tag-edit-padding: $standard-padding/2;
   }
 
   label {
-    @extend %f-header;
     @extend %fs-data-3;
 
     font-weight: bold;
@@ -200,7 +195,6 @@ $tag-edit-padding: $standard-padding/2;
   }
 
   span {
-    @extend %f-header;
     @extend %fs-data-3;
 
     display: inline-block;
@@ -217,7 +211,6 @@ $tag-edit-padding: $standard-padding/2;
 
 .tag-edit__richtext {
 
-  @extend %f-header;
   @extend %fs-data-3;
 
   margin-top: $standard-padding/2;
