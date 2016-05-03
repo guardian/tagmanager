@@ -1,4 +1,4 @@
 export const paidContentTagTypes = [
-  {name: 'Topic', value: 'topic'},
-  {name: 'Series', value: 'series'}
+  {name: 'Topic', value: 'Topic'},
+  {name: 'Series', value: 'Series'}
 ];
