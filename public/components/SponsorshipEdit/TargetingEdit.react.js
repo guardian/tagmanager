@@ -32,24 +32,26 @@ export default class TargetingEdit extends React.Component {
     }));
   }
 
-  onUpdateSection(e) {
+  onSectionSelected(e) {
     const sectionId = parseInt(e.target.value, 10);
     const section = R.find(R.propEq('id', sectionId))(this.props.sections);
-    this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      section: section
-    }));
+    var sections = this.props.sponsorship.sections || [];
+    if(!this.hasSection(section)) {
+      sections.push(section);
+      this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
+        sections: sections
+      }));
+    }
   }
 
-  clearSection() {
+  onSectionRemoved(section) {
+    var sections = this.props.sponsorship.sections || [];
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      section: undefined
+      sections: R.filter(s => section.id !== s.id, sections)
     }));
   }
 
   renderTags(tags) {
-    if(!!this.props.sponsorship.section) {
-      return (<div>Remove the targeted section to target by tag.</div>);
-    }
     tags = tags || [];
     var selectTagFn = this.onTagSelected.bind(this);
     var removeTagFn = this.onTagRemoved.bind(this);
@@ -69,36 +71,36 @@ export default class TargetingEdit extends React.Component {
     );
   }
 
-  renderSection() {
-    if(this.hasTag()) {
-      return (<div>Remove the targeted tags to target by section.</div>);
-    }
-
-    if(!this.sectionId()) {
-      return (
-        <SectionSelect
-          selectedId={this.sectionId()}
-          sections={this.props.sections}
-          isMicrosite={false}
-          onChange={this.onUpdateSection.bind(this)}
-          />
-      );
-    }
-
+  renderSections(sections) {
+    sections = sections || [];
+    var selectSectionFn = this.onSectionSelected.bind(this);
+    var removeSectionFn = this.onSectionRemoved.bind(this);
     return (
-      <div className="merge__tag">
-        {this.props.sponsorship.section.name}
-        <i className="i-cross" onClick={this.clearSection.bind(this)} />
-      </div>
+        <div>
+          {sections.map(function (section) {
+            return (
+                <div className="merge__tag" key={section.id}>
+                  {section.name}
+                  <i className="i-cross" onClick={removeSectionFn.bind(null, section)}/>
+                </div>
+            );
+          })}
+          <SectionSelect
+              selectedId=""
+              sections={this.props.sections}
+              isMicrosite={false}
+              onChange={selectSectionFn}
+          />
+        </div>
     );
   }
 
-  sectionId() {
-    if(this.props.sponsorship.section) {
-      return this.props.sponsorship.section.id;
-    } else {
-      return undefined;
+  hasSection(section) {
+    var sections = this.props.sponsorship.sections;
+    if(!sections || !sections.length) {
+      return false;
     }
+    return section ? !!R.find(s => s.id === section.id, sections) : true;
   }
 
   hasTag(tag) {
@@ -213,8 +215,8 @@ export default class TargetingEdit extends React.Component {
         </div>
 
         <div className="tag-edit__field" >
-          <label className="tag-edit__input-group__header">Section</label>
-          {this.renderSection()}
+          <label className="tag-edit__input-group__header">Sections</label>
+          {this.renderSections(this.props.sponsorship.sections)}
         </div>
 
         <div className="tag-edit__field" >

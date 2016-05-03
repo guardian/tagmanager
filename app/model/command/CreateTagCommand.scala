@@ -33,7 +33,7 @@ case class InlinePaidContentSponsorshipCommand(
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
       tags = Some(List(tagId)),
-      section = None,
+      sections = None,
       targeting = None
     )
 

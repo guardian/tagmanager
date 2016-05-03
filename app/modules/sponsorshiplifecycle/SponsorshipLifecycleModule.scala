@@ -65,7 +65,12 @@ class SponsorshipLauncher extends AbstractScheduledService {
         ) {
           addSponsorshipToTag(s.id, tagId)
         }
-        s.section foreach { sectionId => addSponsorshipToSection(s.id, sectionId) }
+        for(
+          sections <- s.sections;
+          sectionId <- sections
+        ) {
+          addSponsorshipToSection(s.id, sectionId)
+        }
       } catch {
         case NonFatal(e) => Logger.error("failed to activate sponsorship", e)
       }
@@ -122,8 +127,12 @@ class SponsorshipExpirer extends AbstractScheduledService {
     ) {
       removeSponsorshipFromTag(s.id, tagId)
     }
-
-    s.section foreach {sectionId => removeSponsorshipFromSection(s.id, sectionId)}
+    for(
+      sections <- s.sections;
+      sectionId <- sections
+    ) {
+      removeSponsorshipFromSection(s.id, sectionId)
+    }
   }
 
   override def scheduler(): Scheduler = Scheduler.newFixedDelaySchedule(0, 1, TimeUnit.MINUTES)

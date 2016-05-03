@@ -34,7 +34,7 @@ case class Sponsorship (
   sponsorLogo: Image,
   sponsorLink: String,
   tags: Option[List[Long]],
-  section: Option[Long],
+  sections: Option[List[Long]],
   targeting: Option[SponsorshipTargeting]) {
 
 
@@ -77,7 +77,7 @@ case class DenormalisedSponsorship (
                          sponsorLogo: Image,
                          sponsorLink: String,
                          tags: Option[List[Tag]],
-                         section: Option[Section],
+                         sections: Option[List[Section]],
                          targeting: Option[SponsorshipTargeting])
 
 object DenormalisedSponsorship {
@@ -95,7 +95,7 @@ object DenormalisedSponsorship {
       sponsorLogo = s.sponsorLogo,
       sponsorLink = s.sponsorLink,
       tags = s.tags.map(_.flatMap(TagLookupCache.getTag(_))),
-      section = s.section.flatMap(SectionRepository.getSection(_)),
+      sections = s.sections.map(_.flatMap(SectionRepository.getSection(_))),
       targeting = s.targeting
     )
   }

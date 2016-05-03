@@ -18,7 +18,7 @@ case class CreateSponsorshipCommand(
   sponsorLogo: Image,
   sponsorLink: String,
   tags: Option[List[Long]],
-  section: Option[Long],
+  sections: Option[List[Long]],
   targeting: Option[SponsorshipTargeting]
 ) extends Command {
 
@@ -38,7 +38,7 @@ case class CreateSponsorshipCommand(
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
       tags = tags,
-      section = section,
+      sections = sections,
       targeting = targeting
     )
 
@@ -51,7 +51,12 @@ case class CreateSponsorshipCommand(
         ) {
           addSponsorshipToTag(createdSponsorship.id, tagId)
         }
-        createdSponsorship.section foreach {sectionId => addSponsorshipToSection(createdSponsorship.id, sectionId)}
+        for(
+          sections <- createdSponsorship.sections;
+          sectionId <- sections
+        ) {
+          addSponsorshipToSection(createdSponsorship.id, sectionId)
+        }
       }
       createdSponsorship
     }
@@ -69,7 +74,7 @@ object CreateSponsorshipCommand{
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
       (JsPath \ "tags").formatNullable[List[Long]] and
-      (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "sections").formatNullable[List[Long]] and
       (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
 
     )(CreateSponsorshipCommand.apply, unlift(CreateSponsorshipCommand.unapply))

@@ -128,7 +128,7 @@ export default {
   saveSponsorship: (id, sponsorship) => {
     const command = Object.assign({}, sponsorship, {
       tags: sponsorship.tags ? R.map(t => t.id, sponsorship.tags) : undefined,
-      section: sponsorship.section ? sponsorship.section.id : undefined
+      sections: sponsorship.sections ? R.map(s => s.id, sponsorship.sections) : undefined
     });
 
     return Reqwest({
@@ -142,7 +142,7 @@ export default {
   createSponsorship: (sponsorship) => {
     const command = Object.assign({}, sponsorship, {
       tags: sponsorship.tags ? R.map(t => t.id, sponsorship.tags) : undefined,
-      section: sponsorship.section ? sponsorship.section.id : undefined
+      sections: sponsorship.sections ? R.map(s => s.id, sponsorship.sections) : undefined
     });
 
     return Reqwest({
@@ -179,7 +179,7 @@ export default {
     if(sponsorship.validFrom) {command.validFrom = sponsorship.validFrom;}
     if(sponsorship.validTo) {command.validTo = sponsorship.validTo;}
     if(sponsorship.tags) {command.tagIds = R.map(t => t.id, sponsorship.tags).toString();}
-    if(sponsorship.section) {command.sectionId = sponsorship.section.id;}
+    if(sponsorship.sections) {command.sectionIds = R.map(s => s.id, sponsorship.sections).toString();}
     if(sponsorship.targeting && sponsorship.targeting.validEditions) {command.editions = sponsorship.targeting.validEditions.toString();}
 
     return Reqwest({

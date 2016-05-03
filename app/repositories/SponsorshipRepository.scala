@@ -85,7 +85,7 @@ case class SponsorshipSearchCriteria(
 
   private def tagFilter: Option[ScanFilter] = tagId map (new ScanFilter("tags").contains(_))
 
-  private def sectionFilter: Option[ScanFilter] = sectionId map (new ScanFilter("section").eq(_))
+  private def sectionFilter: Option[ScanFilter] = sectionId map (new ScanFilter("sections").contains(_))
 
   private def typeFilter: Option[ScanFilter] = {
     `type`.flatMap( _ match {
