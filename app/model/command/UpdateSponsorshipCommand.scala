@@ -47,17 +47,16 @@ case class UpdateSponsorshipCommand(
       updatedSponsorship <- SponsorshipRepository.updateSponsorship(sponsorship)
     ) yield {
 
-      (getActiveTag(existingSponsorship), getActiveTag(updatedSponsorship)) match {
-          // TODO work through this - needs rethink!
-        case(Nil, List(newTagId)) => addSponsorshipToTag(updatedSponsorship.id, newTagId)
-        case(List(oldTagId), Nil) => removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
-        case(List(oldTagId), List(newTagId)) if oldTagId != newTagId => {
-          removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
-          addSponsorshipToTag(updatedSponsorship.id, newTagId)
-        }
-        case (List(oldTagId), List(newTagId)) if oldTagId == newTagId => reindexTag(newTagId)
-        case _ => // no change
-      }
+      val existingTags: List[Long] = getActiveTags(existingSponsorship)
+      val newTags: List[Long] = getActiveTags(updatedSponsorship)
+
+      val toDelete = existingTags diff newTags
+      val toAdd = newTags diff existingTags
+      val toReindex = newTags intersect existingTags
+
+      for (tag <- toDelete) removeSponsorshipFromTag(updatedSponsorship.id, tag)
+      for (tag <- toAdd) addSponsorshipToTag(updatedSponsorship.id, tag)
+      for (tag <- toReindex) reindexTag(tag)
 
       (getActiveSection(existingSponsorship), getActiveSection(updatedSponsorship)) match {
         case(None, Some(newSectionId)) => addSponsorshipToSection(updatedSponsorship.id, newSectionId)
@@ -74,7 +73,7 @@ case class UpdateSponsorshipCommand(
     }
   }
 
-  private def getActiveTag(s: Sponsorship): List[Long] = {
+  private def getActiveTags(s: Sponsorship): List[Long] = {
     s.status match {
       case "active" => s.tags.getOrElse(Nil)
       case _ => Nil
