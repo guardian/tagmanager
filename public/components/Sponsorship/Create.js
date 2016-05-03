@@ -40,6 +40,10 @@ class SponsorshipCreate extends React.Component {
           !!(sponsorship.sections && sponsorship.sections.length)
     }
 
+    hasClashingSponsorships() {
+      return !!(this.props.clashingSponsorships && this.props.clashingSponsorships.length)
+    }
+
     resetSponsorship() {
       this.props.sponsorshipActions.populateEmptySponsorship();
     }
@@ -50,7 +54,7 @@ class SponsorshipCreate extends React.Component {
 
     updateSponsorshipAndCheckClashes(sponsorship) {
       this.props.sponsorshipActions.updateSponsorship(sponsorship);
-      if(this.hasTagOrSection(sponsorship)) {
+      if(this.hasTagOrSection(sponsorship) || this.hasClashingSponsorships()) {
         this.props.sponsorshipActions.getClashingSponsorships(sponsorship);
       }
     }
