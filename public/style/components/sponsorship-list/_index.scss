@@ -10,6 +10,7 @@
 .sponsorshiplist__sponsorto,
 .sponsorshiplist__sponsorstatus {
   @extend %table__cell;
+  white-space: normal;
 
   position: relative;
 
