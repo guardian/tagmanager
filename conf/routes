@@ -1,112 +1,116 @@
 # Handled by client side code
-GET        /                              controllers.App.index(id = "")
-GET        /tag/create                    controllers.App.index(id = "")
-GET        /tag/:id                       controllers.App.index(id)
-GET        /batch                         controllers.App.index(id = "")
-GET        /merge                         controllers.App.index(id = "")
-GET        /audit                         controllers.App.index(id = "")
-GET        /status                        controllers.App.index(id = "")
-GET        /unauthorised                  controllers.App.index(id = "")
-GET        /mapping                       controllers.App.index(id = "")
-GET        /section                       controllers.App.index(id = "")
-GET        /section/:id                   controllers.App.index(id)
-GET        /sponsorship                   controllers.App.index(id = "")
-GET        /sponsorship/create            controllers.App.index(id = "")
-GET        /sponsorship/:id               controllers.App.index(id)
-GET        /microsite                     controllers.App.index(id = "")
-GET        /microsite/:id                 controllers.App.index(id)
+GET            /                                                       controllers.App.index(id = "")
+GET            /tag/create                                             controllers.App.index(id = "")
+GET            /tag/:id                                                controllers.App.index(id)
+GET            /batch                                                  controllers.App.index(id = "")
+GET            /merge                                                  controllers.App.index(id = "")
+GET            /audit                                                  controllers.App.index(id = "")
+GET            /status                                                 controllers.App.index(id = "")
+GET            /unauthorised                                           controllers.App.index(id = "")
+GET            /mapping                                                controllers.App.index(id = "")
+GET            /section                                                controllers.App.index(id = "")
+GET            /section/:id                                            controllers.App.index(id)
+GET            /sponsorship                                            controllers.App.index(id = "")
+GET            /sponsorship/create                                     controllers.App.index(id = "")
+GET            /sponsorship/:id                                        controllers.App.index(id)
+GET            /microsite                                              controllers.App.index(id = "")
+GET            /microsite/:id                                          controllers.App.index(id)
 
 
 
 # API
-GET        /api/tags                      controllers.TagManagementApi.searchTags
-POST       /api/tag                       controllers.TagManagementApi.createTag
+GET            /api/tags                                               controllers.TagManagementApi.searchTags
+POST           /api/tag                                                controllers.TagManagementApi.createTag
 
-GET        /api/tag/:id                   controllers.TagManagementApi.getTag(id: Long)
-PUT        /api/tag/:id                   controllers.TagManagementApi.updateTag(id: Long)
-DELETE     /api/tag/:id                   controllers.TagManagementApi.deleteTag(id: Long)
+GET            /api/tag/:id                                            controllers.TagManagementApi.getTag(id: Long)
+PUT            /api/tag/:id                                            controllers.TagManagementApi.updateTag(id: Long)
+DELETE         /api/tag/:id                                            controllers.TagManagementApi.deleteTag(id: Long)
 
-GET        /api/sections                  controllers.TagManagementApi.listSections
-POST       /api/section                   controllers.TagManagementApi.createSection
-GET        /api/section/:id               controllers.TagManagementApi.getSection(id: Long)
-PUT        /api/section/:id               controllers.TagManagementApi.updateSection(id: Long)
-POST       /api/section/:id/edition       controllers.TagManagementApi.addEditionToSection(id: Long)
-DELETE     /api/section/:id/edition/:editionName       controllers.TagManagementApi.removeEditionFromSection(id: Long, editionName: String)
+GET            /api/sections                                           controllers.TagManagementApi.listSections
+POST           /api/section                                            controllers.TagManagementApi.createSection
+GET            /api/section/:id                                        controllers.TagManagementApi.getSection(id: Long)
+PUT            /api/section/:id                                        controllers.TagManagementApi.updateSection(id: Long)
+POST           /api/section/:id/edition                                controllers.TagManagementApi.addEditionToSection(id: Long)
+DELETE         /api/section/:id/edition/:editionName                   controllers.TagManagementApi.removeEditionFromSection(id: Long, editionName: String)
 
-GET        /api/sponsorships              controllers.TagManagementApi.searchSponsorships
-GET        /api/sponsorship/:id           controllers.TagManagementApi.getSponsorship(id: Long)
-POST       /api/sponsorship               controllers.TagManagementApi.createSponsorship
-PUT        /api/sponsorship/:id           controllers.TagManagementApi.updateSponsorship(id: Long)
-GET        /api/clashingSponsorships      controllers.TagManagementApi.clashingSponsorships(id: Option[Long], tagId: Option[Long], sectionId: Option[Long], validFrom: Option[Long], validTo: Option[Long], editions: Option[String])
-
-
-GET        /api/referenceTypes            controllers.TagManagementApi.listReferenceTypes
-
-GET        /api/checkPathInUse            controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long], trackingTagType: Option[String])
-POST       /api/batchTag                  controllers.TagManagementApi.batchTag
-POST       /api/mergeTag                  controllers.TagManagementApi.mergeTag
+GET            /api/sponsorships                                       controllers.TagManagementApi.searchSponsorships
+GET            /api/sponsorship/:id                                    controllers.TagManagementApi.getSponsorship(id: Long)
+POST           /api/sponsorship                                        controllers.TagManagementApi.createSponsorship
+PUT            /api/sponsorship/:id                                    controllers.TagManagementApi.updateSponsorship(id: Long)
+GET            /api/clashingSponsorships                               controllers.TagManagementApi.clashingSponsorships(id: Option[Long], tagId: Option[Long], sectionId: Option[Long], validFrom: Option[Long], validTo: Option[Long], editions: Option[String])
 
 
-GET        /api/audit/tag/:tagId          controllers.TagManagementApi.getAuditForTag(tagId: Long)
-GET        /api/audit/tag/operation/:op   controllers.TagManagementApi.getAuditForTagOperation(op: String)
+GET            /api/referenceTypes                                     controllers.TagManagementApi.listReferenceTypes
 
-GET        /api/audit/section/:sectionId  controllers.TagManagementApi.getAuditForSection(sectionId: Long)
-GET        /api/audit/section/operation/:op controllers.TagManagementApi.getAuditForSectionOperation(op: String)
-
-GET        /api/jobs                      controllers.TagManagementApi.getJobs(tagId: Option[Long])
-DELETE     /api/jobs/:id                  controllers.TagManagementApi.deleteJob(id: Long)
-PUT        /api/jobs/rollback/:id         controllers.TagManagementApi.rollbackJob(id: Long)
+GET            /api/checkPathInUse                                     controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long], trackingTagType: Option[String])
+POST           /api/batchTag                                           controllers.TagManagementApi.batchTag
+POST           /api/mergeTag                                           controllers.TagManagementApi.mergeTag
 
 
-POST       /reindex/tags                  controllers.Reindex.reindexTags
-GET        /reindex/tags                  controllers.Reindex.getTagReindexProgress
-POST       /reindex/sections              controllers.Reindex.reindexSections
-GET        /reindex/sections              controllers.Reindex.getSectionReindexProgress
+GET            /api/audit/tag/:tagId                                   controllers.TagManagementApi.getAuditForTag(tagId: Long)
+GET            /api/audit/tag/operation/:op                            controllers.TagManagementApi.getAuditForTagOperation(op: String)
+
+GET            /api/audit/section/:sectionId                           controllers.TagManagementApi.getAuditForSection(sectionId: Long)
+GET            /api/audit/section/operation/:op                        controllers.TagManagementApi.getAuditForSectionOperation(op: String)
+
+GET            /api/jobs                                               controllers.TagManagementApi.getJobs(tagId: Option[Long])
+DELETE         /api/jobs/:id                                           controllers.TagManagementApi.deleteJob(id: Long)
+PUT            /api/jobs/rollback/:id                                  controllers.TagManagementApi.rollbackJob(id: Long)
+
+
+POST           /reindex/tags                                           controllers.Reindex.reindexTags
+GET            /reindex/tags                                           controllers.Reindex.getTagReindexProgress
+POST           /reindex/sections                                       controllers.Reindex.reindexSections
+GET            /reindex/sections                                       controllers.Reindex.getSectionReindexProgress
 
 
 # Hypmedia API
-GET        /hyper                         controllers.HyperMediaApi.hyper
-GET        /hyper/tags                    controllers.HyperMediaApi.tags
-GET        /hyper/tags/:id                controllers.HyperMediaApi.tag(id: Long)
-OPTIONS    /*all                          controllers.HyperMediaApi.preflight(all: String)
+GET            /hyper                                                  controllers.HyperMediaApi.hyper
+GET            /hyper/tags                                             controllers.HyperMediaApi.tags
+GET            /hyper/tags/:id                                         controllers.HyperMediaApi.tag(id: Long)
+OPTIONS        /*all                                                   controllers.HyperMediaApi.preflight(all: String)
 
 # Tag export for inCopy
-GET        /tags/export/all               controllers.ReadOnlyApi.getTagsAsXml
-GET        /tags/export/single/:id        controllers.ReadOnlyApi.tagAsXml(id: Long)
-GET        /tags/export/merges/:since     controllers.ReadOnlyApi.mergesAsXml(since: Long)
+GET            /tags/export/all                                        controllers.ReadOnlyApi.getTagsAsXml
+GET            /tags/export/single/:id                                 controllers.ReadOnlyApi.tagAsXml(id: Long)
+GET            /tags/export/merges/:since                              controllers.ReadOnlyApi.mergesAsXml(since: Long)
 
-GET        /sections/export/all           controllers.ReadOnlyApi.getSectionsAsXml
+GET            /sections/export/all                                    controllers.ReadOnlyApi.getSectionsAsXml
 
 
 # More newspaper integration
-GET       /tools/newspaperintegration/tags/modified/:since          controllers.ReadOnlyApi.modifiedAsXml(since: Long)
-GET       /tools/newspaperintegration/tags/merges/:since            controllers.ReadOnlyApi.mergesAsXml(since: Long)
-GET       /tools/newspaperintegration/tags/deleted/:since           controllers.ReadOnlyApi.deletesAsXml(since: Long)
-GET       /tools/newspaperintegration/tags/created/:since           controllers.ReadOnlyApi.createsAsXml(since: Long)
+GET            /tools/newspaperintegration/tags/modified/:since        controllers.ReadOnlyApi.modifiedAsXml(since: Long)
+GET            /tools/newspaperintegration/tags/merges/:since          controllers.ReadOnlyApi.mergesAsXml(since: Long)
+GET            /tools/newspaperintegration/tags/deleted/:since         controllers.ReadOnlyApi.deletesAsXml(since: Long)
+GET            /tools/newspaperintegration/tags/created/:since         controllers.ReadOnlyApi.createsAsXml(since: Long)
 
 
-GET        /hello                         controllers.App.hello
-GET        /testScan                      controllers.App.testScan
+GET            /hello                                                  controllers.App.hello
+GET            /testScan                                               controllers.App.testScan
 
-GET        /oauthCallback                 controllers.Login.oauthCallback
-GET        /logout                        controllers.Login.logout
-GET        /reauth                        controllers.Login.reauth
+GET            /oauthCallback                                          controllers.Login.oauthCallback
+GET            /logout                                                 controllers.Login.logout
+GET            /reauth                                                 controllers.Login.reauth
 
 # Management
-GET        /management/healthcheck        controllers.Management.healthCheck
+GET            /management/healthcheck                                 controllers.Management.healthCheck
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
+GET            /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
 
 # Support routes
-GET        /support/image-metadata        controllers.Support.imageMetadata(imageUrl: String)
-POST       /support/uploadLogo/:filename  controllers.Support.uploadLogo(filename: String)
-GET        /support/previewCapi/*path     controllers.Support.previewCapiProxy(path: String)
-GET        /support/flexPathMigrationData     controllers.Support.flexPathMigrationSpecificData
-GET        /support/flexSlugMigrationData     controllers.Support.flexSlugMigrationSpecificData
+GET            /support/image-metadata                                 controllers.Support.imageMetadata(imageUrl: String)
+POST           /support/uploadLogo/:filename                           controllers.Support.uploadLogo(filename: String)
+GET            /support/previewCapi/*path                              controllers.Support.previewCapiProxy(path: String)
+GET            /support/flexPathMigrationData                          controllers.Support.flexPathMigrationSpecificData
+GET            /support/flexSlugMigrationData                          controllers.Support.flexSlugMigrationSpecificData
 
-POST       /support/unexpireSectionContent    controllers.Support.unexpireSectionContent
-POST       /support/expireSectionContent    controllers.Support.expireSectionContent
+POST           /support/unexpireSectionContent                         controllers.Support.unexpireSectionContent
+POST           /support/expireSectionContent                           controllers.Support.expireSectionContent
 
-GET        /support/fixDanglingParents     controllers.Support.fixDanglingParents
+GET            /support/fixDanglingParents                             controllers.Support.fixDanglingParents
+
+# Migration endpoints
+GET            /migration/paidContent                                  controllers.Migration.showPaidContentUploadForm
+POST           /migration/paidContent                                  controllers.Migration.migratePaidContent
 
