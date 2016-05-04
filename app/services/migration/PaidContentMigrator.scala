@@ -4,7 +4,7 @@ import model.command.FlexTagReindexCommand
 import model.command.logic.SponsorshipStatusCalculator
 import model.{TagAudit, PaidContentInformation, Sponsorship}
 import play.api.Logger
-import repositories.{TagAuditRepository, SponsorshipRepository, TagRepository}
+import repositories.{SectionRepository, TagAuditRepository, SponsorshipRepository, TagRepository}
 
 class AbortItemMigrationException extends RuntimeException
 
@@ -13,30 +13,31 @@ object PaidContentMigrator {
   // NB sponsorships will arrive with ids but the status will not have been set. They are not persisted at this point.
   def migrate(sponsorship: Sponsorship): Unit = {
     implicit val username: Option[String] = Some("PaidContent Migration")
-    val tag = sponsorship.tag flatMap {TagRepository.getTag(_)}
+    val tagId = sponsorship.tag orElse(sponsorship.section.flatMap(SectionRepository.getSection(_).map(_.sectionTagId)))
+    val tag = tagId.flatMap(TagRepository.getTag(_))
 
     tag foreach { t =>
       try {
         Logger.info(s"migrating tag ${t.internalName} to paid content type")
 
-        if (t.`type` == "PaidContent") {
-          Logger.info(s"tag ${t.internalName} is already a paid content type, aborting")
-          throw new AbortItemMigrationException
-        }
-
-        if (sponsorship.sponsorshipType != "PaidContent") {
+        if (sponsorship.sponsorshipType != "paidContent") {
           Logger.info(s"sponsorship provided is not a paid content type, aborting")
           throw new AbortItemMigrationException
         }
 
         val status = SponsorshipStatusCalculator.calculateStatus(sponsorship.validFrom, sponsorship.validTo)
-        val sponsorshipWithStatus = sponsorship.copy(status = status)
+        val sponsorshipWithStatus = sponsorship.copy(
+          status = status,
+          tag = Some(t.id),
+          section = None
+        )
 
         val paidContentTag = t.copy(
           `type` = "PaidContent",
           paidContentInformation = Some(PaidContentInformation(paidContentType = t.`type`)),
           activeSponsorships = if (status == "active") List(sponsorship.id) else Nil,
-          expired = status == "expired"
+          expired = status == "expired",
+          sponsorship = Some(sponsorship.id)
         )
 
         SponsorshipRepository.updateSponsorship(sponsorshipWithStatus)
