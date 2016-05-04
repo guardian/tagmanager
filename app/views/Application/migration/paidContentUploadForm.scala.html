@@ -1,0 +1,21 @@
+@()
+
+<html>
+
+    <head>
+        <title>TagManager</title>
+    </head>
+
+    <body>
+        <h1>Paid content migration</h1>
+        <p>From running the paid content migration you should have a json file with all the paid content sponsorships
+        in it. If you upload that file the tag manager will perform the rest of the migration and send the chnges to
+        CAPI and composer</p>
+
+        <form method="post" enctype="multipart/form-data" >
+            <label>json file: <input type="file" name="migrationFile"/></label><br />
+            <input type="submit" value="Submit" name="submit"/>
+        </form>
+    </body>
+
+</html>
