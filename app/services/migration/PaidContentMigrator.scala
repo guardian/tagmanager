@@ -13,10 +13,10 @@ object PaidContentMigrator {
   // NB sponsorships will arrive with ids but the status will not have been set. They are not persisted at this point.
   def migrate(sponsorship: Sponsorship): Unit = {
     implicit val username: Option[String] = Some("PaidContent Migration")
-    val tagId = sponsorship.tag orElse(sponsorship.section.flatMap(SectionRepository.getSection(_).map(_.sectionTagId)))
-    val tag = tagId.flatMap(TagRepository.getTag(_))
+    val tagIds = sponsorship.tags.getOrElse(Nil) ::: sponsorship.sections.getOrElse(Nil).flatMap(SectionRepository.getSection(_).map(_.sectionTagId))
+    val tags = tagIds.flatMap(TagRepository.getTag(_))
 
-    tag foreach { t =>
+    tags foreach { t =>
       try {
         Logger.info(s"migrating tag ${t.internalName} to paid content type")
 
@@ -28,8 +28,8 @@ object PaidContentMigrator {
         val status = SponsorshipStatusCalculator.calculateStatus(sponsorship.validFrom, sponsorship.validTo)
         val sponsorshipWithStatus = sponsorship.copy(
           status = status,
-          tag = Some(t.id),
-          section = None
+          tags = Some(tagIds),
+          sections = None
         )
 
         val paidContentTag = t.copy(

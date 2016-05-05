@@ -35,8 +35,8 @@ case class InlinePaidContentSponsorshipCommand(
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
       aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
-      tag = Some(tagId),
-      section = None,
+      tags = Some(List(tagId)),
+      sections = None,
       targeting = None
     )
 

@@ -19,8 +19,8 @@ case class CreateSponsorshipCommand(
   sponsorLogo: Image,
   sponsorLink: String,
   aboutLink: Option[String],
-  tag: Option[Long],
-  section: Option[Long],
+  tags: Option[List[Long]],
+  sections: Option[List[Long]],
   targeting: Option[SponsorshipTargeting]
 ) extends Command {
 
@@ -40,16 +40,26 @@ case class CreateSponsorshipCommand(
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
       aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
-      tag = tag,
-      section = section,
+      tags = tags,
+      sections = sections,
       targeting = targeting
     )
 
     SponsorshipRepository.updateSponsorship(sponsorship).map { createdSponsorship =>
 
       if(status == "active") {
-        createdSponsorship.tag foreach {tagId => addSponsorshipToTag(createdSponsorship.id, tagId)}
-        createdSponsorship.section foreach {sectionId => addSponsorshipToSection(createdSponsorship.id, sectionId)}
+        for(
+          tags <- createdSponsorship.tags;
+          tagId <- tags
+        ) {
+          addSponsorshipToTag(createdSponsorship.id, tagId)
+        }
+        for(
+          sections <- createdSponsorship.sections;
+          sectionId <- sections
+        ) {
+          addSponsorshipToSection(createdSponsorship.id, sectionId)
+        }
       }
       createdSponsorship
     }
@@ -67,8 +77,8 @@ object CreateSponsorshipCommand{
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
       (JsPath \ "aboutLink").formatNullable[String] and
-      (JsPath \ "tag").formatNullable[Long] and
-      (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "tags").formatNullable[List[Long]] and
+      (JsPath \ "sections").formatNullable[List[Long]] and
       (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
 
     )(CreateSponsorshipCommand.apply, unlift(CreateSponsorshipCommand.unapply))
