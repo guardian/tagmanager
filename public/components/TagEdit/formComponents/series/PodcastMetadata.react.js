@@ -2,6 +2,7 @@ import React from 'react';
 import R from 'ramda';
 
 import TagImageEdit from '../TagImageEdit.react';
+import PodcastCategorySelect from './PodcastCategorySelect.js';
 
 export default class PodcastMetadata extends React.Component {
 
@@ -74,6 +75,9 @@ export default class PodcastMetadata extends React.Component {
 
     return (
       <div>
+        <PodcastCategorySelect
+          tag={this.props.tag}
+          updateTag={this.props.updateTag}/>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Link URL</label>
           <input type="text"
