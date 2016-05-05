@@ -18,9 +18,8 @@ export default class TargetingEdit extends React.Component {
   onTagSelected(tag) {
     var tags = this.props.sponsorship.tags || [];
     if(!this.hasTag(tag)) {
-      tags.push(tag);
       this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-        tags: tags
+        tags: tags.concat([tag])
       }));
     }
   }
@@ -37,9 +36,8 @@ export default class TargetingEdit extends React.Component {
     const section = R.find(R.propEq('id', sectionId))(this.props.sections);
     var sections = this.props.sponsorship.sections || [];
     if(!this.hasSection(section)) {
-      sections.push(section);
       this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-        sections: sections
+        sections: sections.concat([section])
       }));
     }
   }
@@ -100,15 +98,15 @@ export default class TargetingEdit extends React.Component {
     if(!sections || !sections.length) {
       return false;
     }
-    return section ? !!R.find(s => s.id === section.id, sections) : true;
+    return section ? R.any(s => s.id === section.id, sections) : true;
   }
 
   hasTag(tag) {
     var tags = this.props.sponsorship.tags;
-      if(!tags || !tags.length) {
+    if(!tags || !tags.length) {
       return false;
     }
-    return tag ? !!R.find(t => t.id === tag.id, tags) : true;
+    return tag ? R.any(t => t.id === tag.id, tags) : true;
   }
 
   isTargettingAllEditions() {

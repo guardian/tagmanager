@@ -1,6 +1,5 @@
 
 import Reqwest from 'reqwest';
-import R from 'ramda';
 import Q from 'q';
 import {reEstablishSession} from 'babel?presets[]=es2015!panda-session';
 import {getStore} from './storeAccessor';
@@ -127,8 +126,8 @@ export default {
 
   saveSponsorship: (id, sponsorship) => {
     const command = Object.assign({}, sponsorship, {
-      tags: sponsorship.tags ? R.map(t => t.id, sponsorship.tags) : undefined,
-      sections: sponsorship.sections ? R.map(s => s.id, sponsorship.sections) : undefined
+      tags: sponsorship.tags ? sponsorship.tags.map(t => t.id) : undefined,
+      sections: sponsorship.sections ? sponsorship.sections.map(s => s.id) : undefined
     });
 
     return Reqwest({
@@ -141,8 +140,8 @@ export default {
 
   createSponsorship: (sponsorship) => {
     const command = Object.assign({}, sponsorship, {
-      tags: sponsorship.tags ? R.map(t => t.id, sponsorship.tags) : undefined,
-      sections: sponsorship.sections ? R.map(s => s.id, sponsorship.sections) : undefined
+      tags: sponsorship.tags ? sponsorship.tags.map(t => t.id) : undefined,
+      sections: sponsorship.sections ? sponsorship.sections.map(s => s.id) : undefined
     });
 
     return Reqwest({
@@ -178,8 +177,8 @@ export default {
     if(sponsorship.id) {command.id = sponsorship.id;}
     if(sponsorship.validFrom) {command.validFrom = sponsorship.validFrom;}
     if(sponsorship.validTo) {command.validTo = sponsorship.validTo;}
-    if(sponsorship.tags) {command.tagIds = R.map(t => t.id, sponsorship.tags).toString();}
-    if(sponsorship.sections) {command.sectionIds = R.map(s => s.id, sponsorship.sections).toString();}
+    if(sponsorship.tags) {command.tagIds = sponsorship.tags.map(t => t.id).toString();}
+    if(sponsorship.sections) {command.sectionIds = sponsorship.sections.map(s => s.id).toString();}
     if(sponsorship.targeting && sponsorship.targeting.validEditions) {command.editions = sponsorship.targeting.validEditions.toString();}
 
     return Reqwest({
