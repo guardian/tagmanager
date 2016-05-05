@@ -13,8 +13,6 @@ export default class PodcastCategorySelect extends React.Component {
 
     const newMainCat = e.target.value;
 
-    console.log(R.omit('categories', this.props.tag.podcastMetadata))
-
     if (!newMainCat) {
       this.props.updateTag(R.merge(this.props.tag, {
         podcastMetadata: R.omit(['categories'], this.props.tag.podcastMetadata)
