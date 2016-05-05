@@ -3,7 +3,7 @@ package model
 import play.api.libs.json._
 import org.cvogt.play.json.Jsonx
 import org.cvogt.play.json.implicits.optionWithNull
-import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata}
+import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata, PodcastCategory => ThriftPodcastCategory}
 
 case class PodcastMetadata( linkUrl: String,
                             copyrightText: Option[String] = None,
@@ -12,7 +12,8 @@ case class PodcastMetadata( linkUrl: String,
                             iTunesBlock: Boolean = false,
                             clean: Boolean = false,
                             explicit: Boolean = false,
-                            image: Option[Image] = None
+                            image: Option[Image] = None,
+                            categories: Option[PodcastCategory] = None
 ) {
 
   def asThrift = ThriftPodcastMetadata(
@@ -23,7 +24,8 @@ case class PodcastMetadata( linkUrl: String,
     iTunesBlock =       iTunesBlock,
     clean =             clean,
     explicit =          explicit,
-    image =             image.map(_.asThrift)
+    image =             image.map(_.asThrift),
+    categories =        categories.map((cat) => List(cat.asThrift))
   )
 
   def asExportedXml = {
@@ -35,12 +37,13 @@ case class PodcastMetadata( linkUrl: String,
     <clean>{this.clean}</clean>
     <explicit>{this.explicit}</explicit>
     <image>{this.image.map(x => x.asExportedXml).getOrElse("")}</image>
+    <categories>{this.categories.map(_.asExportedXml).getOrElse("")}</categories>
   }
 }
 
 object PodcastMetadata {
 
-  implicit val podcastMetadataFormat = Jsonx.formatCaseClassUseDefaults[PodcastMetadata]
+  implicit val podcastMetadataFormat: Format[PodcastMetadata] = Jsonx.formatCaseClassUseDefaults[PodcastMetadata]
 
   def apply(thriftPodcastMetadata: ThriftPodcastMetadata): PodcastMetadata =
     PodcastMetadata(
@@ -51,6 +54,32 @@ object PodcastMetadata {
       iTunesBlock =       thriftPodcastMetadata.iTunesBlock,
       clean =             thriftPodcastMetadata.clean,
       explicit =          thriftPodcastMetadata.explicit,
-      image =             thriftPodcastMetadata.image.map(Image(_))
+      image =             thriftPodcastMetadata.image.map(Image(_)),
+      categories =        thriftPodcastMetadata.categories.map(x => PodcastCategory(x.head))
+    )
+}
+
+case class PodcastCategory(
+                            main: String,
+                            sub: Option[String]
+                          ) {
+  def asThrift = ThriftPodcastCategory(
+    main = main,
+    sub = sub
+  )
+
+  def asExportedXml = {
+    <main>{this.main}</main>
+    <sub>{this.sub.getOrElse("")}</sub>
+  }
+}
+
+object PodcastCategory {
+  implicit val podcastCategoryFormat: Format[PodcastCategory] = Jsonx.formatCaseClassUseDefaults[PodcastCategory]
+
+  def apply(thriftPodcastCategory: ThriftPodcastCategory): PodcastCategory =
+    PodcastCategory(
+      main = thriftPodcastCategory.main,
+      sub = thriftPodcastCategory.sub
     )
 }

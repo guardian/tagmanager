@@ -21,7 +21,7 @@ case class SponsorshipTargeting(publishedSince: Option[DateTime], validEditions:
 }
 
 object SponsorshipTargeting {
-  implicit val sponsorshipTargettingFormat = Jsonx.formatCaseClass[SponsorshipTargeting]
+  implicit val sponsorshipTargetingFormat: Format[SponsorshipTargeting]  = Jsonx.formatCaseClass[SponsorshipTargeting]
 }
 
 case class Sponsorship (
@@ -52,7 +52,7 @@ case class Sponsorship (
 
 object Sponsorship {
 
-  implicit val sponsorshipFormat = Jsonx.formatCaseClass[Sponsorship]
+  implicit val sponsorshipFormat: Format[Sponsorship] = Jsonx.formatCaseClass[Sponsorship]
 
   def fromJson(json: JsValue) = json.as[Sponsorship]
 

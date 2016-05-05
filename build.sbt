@@ -6,10 +6,12 @@ name := "tag-manager"
 
 version := "1.0"
 
+resolvers += "Guardian Bintray" at "https://dl.bintray.com/guardian/editorial-tools"
+
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.10.33",
   "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
-  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.8",
+  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.13",
   "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
   "org.cvogt" %% "play-json-extensions" % "0.6.0",
@@ -18,7 +20,7 @@ lazy val dependencies = Seq(
   "com.twitter" %% "scrooge-core" % "4.1.0",
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client" % "7.7",
-  "com.gu" %% "tags-thrift-schema" % "0.6.0",
+  "com.gu" %% "tags-thrift-schema" % "0.6.1",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",

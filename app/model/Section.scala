@@ -58,7 +58,7 @@ case class Section(
 
 object Section {
 
-  implicit val sectionFormat = Jsonx.formatCaseClassUseDefaults[Section]
+  implicit val sectionFormat: Format[Section] = Jsonx.formatCaseClassUseDefaults[Section]
 
   def fromItem(item: Item) = try{
     Json.parse(item.toJSON).as[Section]
