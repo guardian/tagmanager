@@ -10,8 +10,8 @@ export default class SponsorshipList extends React.Component {
     }
 
     generateSponsorshipUrl(sponsorship) {
-      if (sponsorship.sponsorshipType === 'paidContent' && sponsorship.tag) {
-        return '/tag/' + sponsorship.tag.id;
+      if (sponsorship.sponsorshipType === 'paidContent' && sponsorship.tags && sponsorship.tags.length > 0) {
+        return '/tag/' + sponsorship.tags[0].id;
       } else {
         return '/sponsorship/' + sponsorship.id;
       }
