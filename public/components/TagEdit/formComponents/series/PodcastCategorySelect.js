@@ -10,6 +10,19 @@ export default class PodcastCategorySelect extends React.Component {
   }
 
   updateMainPodcastCategory(e) {
+
+    const newMainCat = e.target.value;
+
+    console.log(R.omit('categories', this.props.tag.podcastMetadata))
+
+    if (!newMainCat) {
+      this.props.updateTag(R.merge(this.props.tag, {
+        podcastMetadata: R.omit(['categories'], this.props.tag.podcastMetadata)
+      }));
+
+      return;
+    }
+
     this.props.updateTag(R.merge(this.props.tag, {
       podcastMetadata: R.merge(this.props.tag.podcastMetadata, {
         categories: {
@@ -50,7 +63,7 @@ export default class PodcastCategorySelect extends React.Component {
       <div className="tag-edit__field">
         <label className="tag-edit__label">Sub Category</label>
         <select value={categories.sub} onChange={this.updateSecondaryPodcastCategory.bind(this)}>
-          {!categories.sub ? <option value={false}></option> : false}
+          <option value=""></option>
           {activeCategory.subCategories.map(function(cat) {
             return (
               <option value={cat} key={cat}>{cat}</option>
@@ -74,7 +87,7 @@ export default class PodcastCategorySelect extends React.Component {
         <div className="tag-edit__field">
           <label className="tag-edit__label">Main Category</label>
           <select value={categories.main} onChange={this.updateMainPodcastCategory.bind(this)}>
-            {!categories.main ? <option value={false}></option> : false}
+            <option value=""></option>
             {podcastCategories.map(function(cat) {
               return (
                 <option value={cat.category} key={cat.category}>{cat.category}</option>
