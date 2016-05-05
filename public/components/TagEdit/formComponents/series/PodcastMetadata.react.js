@@ -75,6 +75,9 @@ export default class PodcastMetadata extends React.Component {
 
     return (
       <div>
+        <PodcastCategorySelect
+          tag={this.props.tag}
+          updateTag={this.props.updateTag}/>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Link URL</label>
           <input type="text"
@@ -133,9 +136,6 @@ export default class PodcastMetadata extends React.Component {
           label="Podcast Image"
           onChange={this.updateImage.bind(this)}
           tagEditable={this.props.tagEditable}/>
-        <PodcastCategorySelect
-          tag={this.props.tag}
-          updateTag={this.props.updateTag}/>
       </div>
     );
   }
