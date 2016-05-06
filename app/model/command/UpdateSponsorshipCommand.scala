@@ -2,6 +2,7 @@ package model.command
 
 import model._
 import model.command.logic.SponsorshipStatusCalculator
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -16,8 +17,9 @@ case class UpdateSponsorshipCommand(
   sponsorName: String,
   sponsorLogo: Image,
   sponsorLink: String,
-  tag: Option[Long],
-  section: Option[Long],
+  aboutLink: Option[String],
+  tags: Option[List[Long]],
+  sections: Option[List[Long]],
   targeting: Option[SponsorshipTargeting]
 ) extends Command {
 
@@ -36,8 +38,9 @@ case class UpdateSponsorshipCommand(
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
-      tag = tag,
-      section = section,
+      aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
+      tags = tags,
+      sections = sections,
       targeting = targeting
     )
     val existingSponsorship = SponsorshipRepository.getSponsorship(id)
@@ -47,43 +50,44 @@ case class UpdateSponsorshipCommand(
       updatedSponsorship <- SponsorshipRepository.updateSponsorship(sponsorship)
     ) yield {
 
-      (getActiveTag(existingSponsorship), getActiveTag(updatedSponsorship)) match {
-        case(None, Some(newTagId)) => addSponsorshipToTag(updatedSponsorship.id, newTagId)
-        case(Some(oldTagId), None) => removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
-        case(Some(oldTagId), Some(newTagId)) if oldTagId != newTagId => {
-          removeSponsorshipFromTag(updatedSponsorship.id, oldTagId)
-          addSponsorshipToTag(updatedSponsorship.id, newTagId)
-        }
-        case (Some(oldTagId), Some(newTagId)) if oldTagId == newTagId => reindexTag(newTagId)
-        case _ => // no change
-      }
+      val existingTags: List[Long] = getActiveTags(existingSponsorship)
+      val newTags: List[Long] = getActiveTags(updatedSponsorship)
 
-      (getActiveSection(existingSponsorship), getActiveSection(updatedSponsorship)) match {
-        case(None, Some(newSectionId)) => addSponsorshipToSection(updatedSponsorship.id, newSectionId)
-        case(Some(oldSectionId), None) => removeSponsorshipFromSection(updatedSponsorship.id, oldSectionId)
-        case(Some(oldSectionId), Some(newSectionId)) if oldSectionId != newSectionId => {
-          removeSponsorshipFromSection(updatedSponsorship.id, oldSectionId)
-          addSponsorshipToSection(updatedSponsorship.id, newSectionId)
-        }
-        case(Some(oldSectionId), Some(newSectionId)) if oldSectionId == newSectionId => reindexSection(newSectionId)
-        case _ => // no change
-      }
+      val tagsToDelete = existingTags diff newTags
+      val tagsToAdd = newTags diff existingTags
+      val tagsToReindex = newTags intersect existingTags
+
+      for (tag <- tagsToDelete) removeSponsorshipFromTag(updatedSponsorship.id, tag)
+      for (tag <- tagsToAdd) addSponsorshipToTag(updatedSponsorship.id, tag)
+      for (tag <- tagsToReindex) reindexTag(tag)
+
+
+      val existingSections: List[Long] = getActiveSections(existingSponsorship)
+      val newSections: List[Long] = getActiveSections(updatedSponsorship)
+
+      val sectionsToDelete = existingSections diff newSections
+      val sectionsToAdd = newSections diff existingSections
+      val sectionsToReindex = newSections intersect existingSections
+
+      for (section <- sectionsToDelete) removeSponsorshipFromSection(updatedSponsorship.id, section)
+      for (section <- sectionsToAdd) addSponsorshipToSection(updatedSponsorship.id, section)
+      for (section <- sectionsToReindex) reindexSection(section)
 
       updatedSponsorship
     }
   }
 
-  private def getActiveTag(s: Sponsorship): Option[Long] = {
+  private def getActiveTags(s: Sponsorship): List[Long] = {
     s.status match {
-      case "active" => s.tag
-      case _ => None
+      case "active" => s.tags.getOrElse(Nil)
+      case _ => Nil
     }
   }
 
-  private def getActiveSection(s: Sponsorship): Option[Long] = {
+  private def getActiveSections(s: Sponsorship): List[Long] = {
     s.status match {
-      case "active" => s.section
-      case _ => None
+      case "active" => s.sections.getOrElse(Nil)
+      case _ => Nil
     }
   }
 }
@@ -98,8 +102,9 @@ object UpdateSponsorshipCommand{
       (JsPath \ "sponsorName").format[String] and
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
-      (JsPath \ "tag").formatNullable[Long] and
-      (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "aboutLink").formatNullable[String] and
+      (JsPath \ "tags").formatNullable[List[Long]] and
+      (JsPath \ "sections").formatNullable[List[Long]] and
       (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
 
     )(UpdateSponsorshipCommand.apply, unlift(UpdateSponsorshipCommand.unapply))

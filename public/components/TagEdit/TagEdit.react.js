@@ -108,7 +108,7 @@ export default class TagEdit extends React.Component {
     }
 
     renderPaidContentFields() {
-      return <PaidContentInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable}/>;
+      return <PaidContentInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable} pathLocked={this.props.pathLocked} sections={this.props.sections} />;
     }
 
     renderTrackingFields() {

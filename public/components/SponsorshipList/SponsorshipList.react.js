@@ -10,8 +10,8 @@ export default class SponsorshipList extends React.Component {
     }
 
     generateSponsorshipUrl(sponsorship) {
-      if (sponsorship.sponsorshipType === 'paidContent' && sponsorship.tag) {
-        return '/tag/' + sponsorship.tag.id;
+      if (sponsorship.sponsorshipType === 'paidContent' && sponsorship.tags && sponsorship.tags.length > 0) {
+        return '/tag/' + sponsorship.tags[0].id;
       } else {
         return '/sponsorship/' + sponsorship.id;
       }
@@ -22,13 +22,20 @@ export default class SponsorshipList extends React.Component {
     }
 
     renderTargeting(sponsorship) {
-      if (sponsorship.tag) {
-        return (<span>Tag: {sponsorship.tag.internalName}</span>);
-      } else if (sponsorship.section) {
-        return (<span>Section: {sponsorship.section.name}</span>);
-      } else {
-        return (<span>Untargeted</span>);
-      }
+      const tags = sponsorship.tags && sponsorship.tags.length && (
+              <span>Tags: {sponsorship.tags.map(function(t){return t.internalName}).join(', ')}</span>
+          );
+      const sections = sponsorship.sections && sponsorship.sections.length && (
+              <span>Section: {sponsorship.sections.map(function(s){return s.name}).join(', ')}</span>
+          );
+      const untargeted = !tags && !sections && (<span>Untargeted</span>);
+
+        return (<span>
+            {tags}
+            {!!tags && !!sections && <br/>}
+            {sections}
+            {untargeted}
+        </span>);
     }
 
     renderValidFrom(sponsorship) {

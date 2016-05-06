@@ -38,6 +38,10 @@ class TagDisplay extends React.Component {
       if (props.tag.id !== parseInt(props.routeParams.tagId, 10)) {
         props.tagActions.getTag(parseInt(props.routeParams.tagId, 10));
       }
+
+      if (!props.sections && this.props.sections) {
+        this.props.sectionActions.getSections();
+      }
     }
 
     saveTag() {

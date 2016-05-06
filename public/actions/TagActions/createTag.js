@@ -22,13 +22,15 @@ function requestTagCreate() {
     };
 }
 
-function recieveTagCreate(tag) {
+function recieveTagCreate(tag, refreshSections) {
     history.replaceState(null, '/tag/' + tag.id);
     return {
-        type:       TAG_CREATE_RECEIVE,
-        tag:        tag,
-        receivedAt: Date.now()
+      type: TAG_CREATE_RECEIVE,
+      tag: tag,
+      refreshSections: refreshSections,
+      receivedAt: Date.now()
     };
+
 }
 
 function errorTagCreate(error) {
@@ -44,17 +46,19 @@ export function createTag(tag) {
     return dispatch => {
         dispatch(requestTagCreate());
         return tagManagerApi.createTag(tag)
-            .then(res => dispatch(recieveTagCreate(res)))
+            .then(res => dispatch(recieveTagCreate(res, tag.createMicrosite)))
             .fail(error => dispatch(errorTagCreate(error)));
     };
 }
 
 export function populateEmptyTag(tagType) {
+  const createMicrosite = tagType === 'PaidContent';
   return {
       type:        TAG_POPULATE_BLANK,
       tagEditable: true,
       tag:         Object.assign({}, BLANK_TAG, {
-        type: tagType
+        type: tagType,
+        createMicrosite : createMicrosite
       }),
       receivedAt:  Date.now()
   };

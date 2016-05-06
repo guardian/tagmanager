@@ -25,6 +25,12 @@ export default class SponsorEdit extends React.Component {
     }));
   }
 
+  updateAboutLink(e) {
+    this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
+      aboutLink: e.target.value
+    }));
+  }
+
   render () {
 
     if (!this.props.sponsorship) {
@@ -36,7 +42,7 @@ export default class SponsorEdit extends React.Component {
         <label className="tag-edit__input-group__header">Sponsor</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Name</label>
-          <input type="text" value={this.props.sponsorship.sponsorName} onChange={this.updateName.bind(this)}/>
+          <input type="text" className="tag-edit__input" value={this.props.sponsorship.sponsorName} onChange={this.updateName.bind(this)}/>
         </div>
 
         <div className="tag-edit__field">
@@ -46,7 +52,12 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Link</label>
-          <input type="text" value={this.props.sponsorship.sponsorLink} onChange={this.updateLink.bind(this)}/>
+          <input type="text" className="tag-edit__input" value={this.props.sponsorship.sponsorLink} onChange={this.updateLink.bind(this)}/>
+        </div>
+
+        <div className="tag-edit__field">
+          <label className="tag-edit__label">About this content Link</label>
+          <input type="text" className="tag-edit__input" value={this.props.sponsorship.aboutLink} onChange={this.updateAboutLink.bind(this)}/>
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ package model.command
 import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
 import model._
 import model.command.logic.SponsorshipStatusCalculator
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
@@ -17,8 +18,9 @@ case class CreateSponsorshipCommand(
   sponsorName: String,
   sponsorLogo: Image,
   sponsorLink: String,
-  tag: Option[Long],
-  section: Option[Long],
+  aboutLink: Option[String],
+  tags: Option[List[Long]],
+  sections: Option[List[Long]],
   targeting: Option[SponsorshipTargeting]
 ) extends Command {
 
@@ -37,16 +39,27 @@ case class CreateSponsorshipCommand(
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       sponsorLink = sponsorLink,
-      tag = tag,
-      section = section,
+      aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
+      tags = tags,
+      sections = sections,
       targeting = targeting
     )
 
     SponsorshipRepository.updateSponsorship(sponsorship).map { createdSponsorship =>
 
       if(status == "active") {
-        createdSponsorship.tag foreach {tagId => addSponsorshipToTag(createdSponsorship.id, tagId)}
-        createdSponsorship.section foreach {sectionId => addSponsorshipToSection(createdSponsorship.id, sectionId)}
+        for(
+          tags <- createdSponsorship.tags;
+          tagId <- tags
+        ) {
+          addSponsorshipToTag(createdSponsorship.id, tagId)
+        }
+        for(
+          sections <- createdSponsorship.sections;
+          sectionId <- sections
+        ) {
+          addSponsorshipToSection(createdSponsorship.id, sectionId)
+        }
       }
       createdSponsorship
     }
@@ -63,8 +76,9 @@ object CreateSponsorshipCommand{
       (JsPath \ "sponsorName").format[String] and
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "sponsorLink").format[String] and
-      (JsPath \ "tag").formatNullable[Long] and
-      (JsPath \ "section").formatNullable[Long] and
+      (JsPath \ "aboutLink").formatNullable[String] and
+      (JsPath \ "tags").formatNullable[List[Long]] and
+      (JsPath \ "sections").formatNullable[List[Long]] and
       (JsPath \ "targeting").formatNullable[SponsorshipTargeting]
 
     )(CreateSponsorshipCommand.apply, unlift(CreateSponsorshipCommand.unapply))
