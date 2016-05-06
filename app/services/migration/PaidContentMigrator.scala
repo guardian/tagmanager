@@ -1,10 +1,12 @@
 package services.migration
 
+import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.FlexTagReindexCommand
 import model.command.logic.SponsorshipStatusCalculator
 import model.{TagAudit, PaidContentInformation, Sponsorship}
 import play.api.Logger
 import repositories.{SectionRepository, TagAuditRepository, SponsorshipRepository, TagRepository}
+import services.KinesisStreams
 
 class AbortItemMigrationException extends RuntimeException
 
@@ -42,6 +44,7 @@ object PaidContentMigrator {
 
         SponsorshipRepository.updateSponsorship(sponsorshipWithStatus)
         TagRepository.upsertTag(paidContentTag) foreach { updatedTag =>
+          KinesisStreams.tagUpdateStream.publishUpdate(updatedTag.id.toString, TagEvent(EventType.Update, updatedTag.id, Some(updatedTag.asThrift)))
           TagAuditRepository.upsertTagAudit(TagAudit.updated(updatedTag))
           FlexTagReindexCommand(updatedTag).process()
         }
