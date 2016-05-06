@@ -18,7 +18,7 @@ export default class SponsorshipList extends React.Component {
     }
 
     onSponsorshipClick(sponsorship) {
-      history.replaceState(null, this.generateSponsorshipUrl(sponsorship));
+      history.pushState(null, this.generateSponsorshipUrl(sponsorship));
     }
 
     renderTargeting(sponsorship) {

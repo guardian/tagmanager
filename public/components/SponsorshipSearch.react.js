@@ -74,16 +74,16 @@ export class SponsorshipSearch extends React.Component {
                         <label>Search</label>
                         <input className="tag-search__input" type="text" value={this.state.searchString} onChange={this.handleSearchInputChange.bind(this)} />
                         <span>
-                          Status:
-                          <select onChange={this.handleSearchStatusChange.bind(this)} value={this.state.status}>
+                          Status:&nbsp;
+                          <select className="tag-search__select" onChange={this.handleSearchStatusChange.bind(this)} value={this.state.status}>
                             {Object.keys(sponsorshipSearchStatuses).map((field) => {
                               return (<option key={field} value={sponsorshipSearchStatuses[field]}>{field}</option>);
                             })}
                           </select>
                         </span>
                         <span>
-                          Type:
-                          <select onChange={this.handleSearchTypeChange.bind(this)} value={this.state.type}>
+                          Type:&nbsp;
+                          <select className="tag-search__select" onChange={this.handleSearchTypeChange.bind(this)} value={this.state.type}>
                             {Object.keys(sponsorshipSearchTypes).map((field) => {
                               return (<option key={field} value={sponsorshipSearchTypes[field]}>{field}</option>);
                             })}
