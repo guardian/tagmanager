@@ -80,6 +80,7 @@ export function validateTag(tag) {
   if (tag.type === tagTypes.topic.name) {
     mandatoryFields = mandatoryFields.concat(['section']);
   } else if (tag.type === tagTypes.series.name) {
+    mandatoryFields = mandatoryFields.concat(['section']);
     additionalErrors = additionalErrors.concat(validatePodcast(tag));
   } else if (tag.type === tagTypes.paidContent.name) {
     additionalErrors = additionalErrors.concat(validatePaidContent(tag));

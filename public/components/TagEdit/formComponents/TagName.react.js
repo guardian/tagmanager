@@ -2,7 +2,7 @@ import React from 'react';
 import * as tagTypes from '../../../constants/tagTypes';
 
 function slugify(text) {
-  return text ? text.toLowerCase().replace(/[^a-z0-9-]/g, '-') : '';
+  return text ? text.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-') : '';
 }
 
 function inferLockStateFromProps(props) {
