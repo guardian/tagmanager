@@ -1,11 +1,12 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
+import com.gu.auditing.model.v1.{App, Notification}
 import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Json, JsPath, Format}
+import play.api.libs.json.{Format, JsPath, Json}
 import repositories.SectionRepository
 
 import scala.util.control.NonFatal
@@ -21,6 +22,16 @@ case class TagAudit(
   secondaryTagSummary: Option[TagSummary]
 ) {
   def toItem = Item.fromJSON(Json.toJson(this).toString())
+
+  def asAuditingThrift = Notification(
+    app = App.TagManager,
+    operation = operation,
+    userEmail = s"${user.replace(" ", ".").toLowerCase}@guardian.co.uk",
+    date = date.toString,
+    resourceId = Some(tagId.toString),
+    message = Some(s"${description}. Primary Tag: ${tagSummary.toString}. Secondary Tag: ${secondaryTagSummary.toString}"),
+    shortMessage = Some(s"${description} Tag ID: ${tagId.toString}")
+  )
 }
 
 object TagAudit {

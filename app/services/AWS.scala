@@ -26,8 +26,10 @@ object AWS {
   lazy val S3Client = region.createClient(classOf[AmazonS3Client], null, null)
 
   private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map(new STSAssumeRoleSessionCredentialsProvider(_, "tagManager"))
+  private lazy val auditingCredentialsProvider = Config().auditingKinesisWriteRole.map(new STSAssumeRoleSessionCredentialsProvider(_, "tagManager"))
 
   lazy val frontendStaticFilesS3Client = region.createClient(classOf[AmazonS3Client], frontendCredentialsProvider.getOrElse(new ProfileCredentialsProvider("frontend")), null)
+  lazy val auditingKinesisClient = region.createClient(classOf[AmazonKinesisClient], auditingCredentialsProvider.getOrElse(new ProfileCredentialsProvider("cmsFronts")), null)
 }
 
 trait AwsInstanceTags {
@@ -72,7 +74,7 @@ object SQS {
   lazy val jobQueue = new SQSQueue(Config().jobQueueName)
 }
 
-class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean = false) {
+class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean = false, isAuditing: Boolean = false) {
 
   def publishUpdate(key: String, data: String) {
     publishUpdate(key, ByteBuffer.wrap(data.getBytes("UTF-8")))
@@ -87,15 +89,20 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
   }
 
   def publishUpdate(key: String, dataBuffer: ByteBuffer) {
-    AWS.Kinesis.putRecord(streamName, dataBuffer, key)
+    if (isAuditing) {
+      AWS.auditingKinesisClient.putRecord(streamName, dataBuffer, key)
+    } else {
+      AWS.Kinesis.putRecord(streamName, dataBuffer, key)
+    }
   }
 }
 
 object KinesisStreams {
-  lazy val tagUpdateStream = new KinesisStreamProducer(Config().tagUpdateStreamName, true)
-  lazy val sectionUpdateStream = new KinesisStreamProducer(Config().sectionUpdateStreamName, true)
-  lazy val reindexTagsStream = new KinesisStreamProducer(Config().reindexTagsStreamName, true)
-  lazy val reindexSectionsStream = new KinesisStreamProducer(Config().reindexSectionsStreamName, true)
-  lazy val taggingOperationsStream = new KinesisStreamProducer(Config().taggingOperationsStreamName, false)
-  lazy val commercialExpiryStream = new KinesisStreamProducer(Config().commercialExpiryStreamName, false)
+  lazy val tagUpdateStream = new KinesisStreamProducer(streamName = Config().tagUpdateStreamName, requireCompressionByte = true)
+  lazy val sectionUpdateStream = new KinesisStreamProducer(streamName = Config().sectionUpdateStreamName, requireCompressionByte = true)
+  lazy val reindexTagsStream = new KinesisStreamProducer(streamName = Config().reindexTagsStreamName, requireCompressionByte = true)
+  lazy val reindexSectionsStream = new KinesisStreamProducer(streamName = Config().reindexSectionsStreamName, requireCompressionByte = true)
+  lazy val taggingOperationsStream = new KinesisStreamProducer(streamName = Config().taggingOperationsStreamName)
+  lazy val commercialExpiryStream = new KinesisStreamProducer(streamName = Config().commercialExpiryStreamName)
+  lazy val auditingEventsStream = new KinesisStreamProducer(streamName = Config().auditingStreamName, requireCompressionByte = true, isAuditing = true)
 }
