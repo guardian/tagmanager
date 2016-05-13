@@ -37,12 +37,12 @@ class SponsorshipDisplay extends React.Component {
     }
 
     hasTagOrSection(sponsorship) {
-        return !!(sponsorship.tags && sponsorship.tags.length) ||
-            !!(sponsorship.sections && sponsorship.sections.length)
+      return !!(sponsorship.tags && sponsorship.tags.length) ||
+          !!(sponsorship.sections && sponsorship.sections.length)
     }
 
     hasClashingSponsorships() {
-        return !!(this.props.clashingSponsorships && this.props.clashingSponsorships.length)
+      return !!(this.props.clashingSponsorships && this.props.clashingSponsorships.length)
     }
 
     resetSponsorship() {
