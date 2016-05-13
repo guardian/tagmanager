@@ -29,7 +29,7 @@ case class SectionAudit(
     date = date.toString,
     resourceId = Some(sectionId.toString),
     message = Some(s"${description}. Section: ${sectionSummary.toString}"),
-    shortMessage = Some(s"${description} Section ID: ${sectionId.toString}")
+    shortMessage = Some(description)
   )
 }
 

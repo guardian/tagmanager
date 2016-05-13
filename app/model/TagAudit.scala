@@ -30,7 +30,7 @@ case class TagAudit(
     date = date.toString,
     resourceId = Some(tagId.toString),
     message = Some(s"${description}. Primary Tag: ${tagSummary.toString}. Secondary Tag: ${secondaryTagSummary.toString}"),
-    shortMessage = Some(s"${description} Tag ID: ${tagId.toString}")
+    shortMessage = Some(description)
   )
 }
 
