@@ -25,7 +25,7 @@ case class SectionAudit(
   def asAuditingThrift = Notification(
     app = App.TagManager,
     operation = operation,
-    userEmail = s"${user.replace(" ", ".").toLowerCase}@guardian.co.uk",
+    userEmail = user,
     date = date.toString,
     resourceId = Some(sectionId.toString),
     message = Some(s"${description}. Section: ${sectionSummary.toString}"),

@@ -23,7 +23,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateTag(id: Long) = (APIAuthAction andThen UpdateTagPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
 
     req.body.asJson.map { json =>
       try {
@@ -37,7 +37,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag() = (APIAuthAction andThen CreateTagPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
@@ -83,7 +83,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         json.as[CreateSectionCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -96,7 +96,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         UpdateSectionCommand(json.as[Section]).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -109,7 +109,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def addEditionToSection(id: Long) = (APIAuthAction andThen AddEditionToSectionPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
 
@@ -124,7 +124,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     try {
       RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
     } catch {
@@ -150,7 +150,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def batchTag = APIAuthAction { req =>
 
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
@@ -163,7 +163,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         json.as[MergeTagCommand].process.map{t => NoContent } getOrElse NotFound
@@ -176,7 +176,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def deleteTag(id: Long) = (APIAuthAction andThen DeleteTagPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     try {
       (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
     } catch {
@@ -213,7 +213,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         json.as[CreateSponsorshipCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -226,7 +226,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck) { req =>
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       try {
         json.as[UpdateSponsorshipCommand].process.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound

@@ -26,7 +26,7 @@ case class TagAudit(
   def asAuditingThrift = Notification(
     app = App.TagManager,
     operation = operation,
-    userEmail = s"${user.replace(" ", ".").toLowerCase}@guardian.co.uk",
+    userEmail = user,
     date = date.toString,
     resourceId = Some(tagId.toString),
     message = Some(s"${description}. Primary Tag: ${tagSummary.toString}. Secondary Tag: ${secondaryTagSummary.toString}"),

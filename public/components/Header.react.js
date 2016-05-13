@@ -7,12 +7,6 @@ export default class Header extends React.Component {
         super(props);
     }
 
-    userName () {
-        if (this.props.user) {
-            return this.props.user.firstName + ' ' + this.props.user.lastName;
-        }
-    }
-
     render () {
         return (
             <header className="top-toolbar">
