@@ -101,7 +101,7 @@ object Support extends Controller with PanDomainAuthActions {
 
   def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck) { req =>
 
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
 
@@ -118,7 +118,7 @@ object Support extends Controller with PanDomainAuthActions {
 
   def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck) { req =>
 
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
 
@@ -136,7 +136,7 @@ object Support extends Controller with PanDomainAuthActions {
 
   def fixDanglingParents = APIAuthAction { req =>
 
-    implicit val username = Option(s"${req.user.firstName} ${req.user.lastName}")
+    implicit val username = Option(req.user.email)
 
     val knownTags = TagRepository.loadAllTags
     var danglingParentsCount = 0

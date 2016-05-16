@@ -2,8 +2,8 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.TagAudit
-import org.joda.time.{Duration, ReadableDuration, DateTime}
-import services.Dynamo
+import org.joda.time.{DateTime, Duration, ReadableDuration}
+import services.{Config, Dynamo, KinesisStreams}
 
 import scala.collection.JavaConversions._
 
@@ -11,6 +11,12 @@ import scala.collection.JavaConversions._
 object TagAuditRepository {
 
   def upsertTagAudit(tagAudit: TagAudit) = {
+
+    //Send onto Auditing Stream
+    if (Config().enableAuditStreaming) {
+      KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", tagAudit.asAuditingThrift)
+    }
+
     try {
       Dynamo.tagAuditTable.putItem(tagAudit.toItem)
       Some(tagAudit)

@@ -3,7 +3,7 @@ package repositories
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.SectionAudit
 import org.joda.time.{DateTime, Duration, ReadableDuration}
-import services.Dynamo
+import services.{Config, Dynamo, KinesisStreams}
 
 import scala.collection.JavaConversions._
 
@@ -11,6 +11,12 @@ import scala.collection.JavaConversions._
 object SectionAuditRepository {
 
   def upsertSectionAudit(sectionAudit: SectionAudit) = {
+
+    //Send onto Auditing Stream
+    if (Config().enableAuditStreaming) {
+      KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", sectionAudit.asAuditingThrift)
+    }
+
     try {
       Dynamo.sectionAuditTable.putItem(sectionAudit.toItem)
       Some(sectionAudit)
@@ -29,5 +35,4 @@ object SectionAuditRepository {
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
       .map(SectionAudit.fromItem).toList
   }
-
 }

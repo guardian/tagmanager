@@ -89,6 +89,7 @@ sealed trait Config {
   def taggingOperationsStreamName: String
 
   def commercialExpiryStreamName: String
+  def auditingStreamName: String
 
   def reindexTagsStreamName: String
   def reindexTagsBatchSize: Int
@@ -108,6 +109,8 @@ sealed trait Config {
   def corsableDomains: Seq[String]
 
   def frontendBucketWriteRole: Option[String] = None
+  def auditingKinesisWriteRole: Option[String] = None
+  def enableAuditStreaming: Boolean = true
 }
 
 class DevConfig extends Config {
@@ -127,6 +130,7 @@ class DevConfig extends Config {
   override def sectionUpdateStreamName: String = "section-update-stream-dev"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-DEV-KELVIN"
+  override def auditingStreamName: String = "auditing-CODE"
 
   override def reindexTagsStreamName: String = "tag-reindex-dev"
   override def reindexTagsBatchSize: Int = 500
@@ -144,6 +148,9 @@ class DevConfig extends Config {
 
   override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(composerDomain)
+
+  //Disables submission of audits to the audit Kinesis server, requires frontCms credentials locally to enable
+  override def enableAuditStreaming: Boolean = false
 }
 
 class CodeConfig extends Config {
@@ -163,6 +170,8 @@ class CodeConfig extends Config {
   override def sectionUpdateStreamName: String = "section-update-stream-CODE"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-CODE"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-CODE"
+  override def auditingStreamName: String = "auditing-CODE"
+
 
   override def reindexTagsStreamName: String = "tag-reindex-CODE"
   override def reindexTagsBatchSize: Int = 500
@@ -182,6 +191,7 @@ class CodeConfig extends Config {
   override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer.local.dev-gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
+  override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
 }
 
 class ProdConfig extends Config {
@@ -197,6 +207,7 @@ class ProdConfig extends Config {
   override def tagAuditTableName: String = "tag-manager-tag-audit-PROD"
   override def sectionAuditTableName: String = "tag-manager-section-audit-PROD"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
+  override def auditingStreamName: String = "auditing-PROD"
 
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
   override def sectionUpdateStreamName: String = "section-update-stream-PROD"
@@ -221,4 +232,6 @@ class ProdConfig extends Config {
   override def corsableDomains: Seq[String] = Seq(composerDomain)
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
+  override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
+
 }
