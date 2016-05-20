@@ -42,6 +42,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
     val currentTime = new DateTime(DateTimeZone.UTC).getMillis
     val lockBreakTime = currentTime - JobRunner.lockTimeOutMillis
     JobRepository.loadAllJobs
+      .filter(validJobs)
       .find(job => isPotentialJob(job, currentTime, lockBreakTime)) // Find first potential job
       .flatMap(JobRepository.lock(_, JobRunner.nodeId, currentTime, lockBreakTime)) // Lock it (will return None if lock fails)
       .foreach(job => { // If we got a job, and locked it then process it
@@ -64,11 +65,25 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
     // Either waiting job OR the job is locked but it's lock has timed out
     (job.jobStatus == JobStatus.waiting && job.waitUntil < currentTime) || (job.jobStatus == JobStatus.owned && job.lockedAt < lockBreakTime)
   }
+
+  private def validJobs(job: Job): Boolean = {
+    if (job.jobStatus == JobStatus.complete
+      || job.jobStatus ==  JobStatus.failed
+      || job.jobStatus == JobStatus.rolledback) {
+        if (job.createdAt < new DateTime(DateTimeZone.UTC).getMillis - JobRunner.cleanUpMillis) {
+          Logger.info("Cleaning up old job: " + job.id)
+          JobRepository.deleteIfTerminal(job.id)
+        }
+        return false;
+    }
+  return true;
+  }
 }
 
 object JobRunner {
   val nodeId = InetAddress.getLocalHost().toString() // EC2 machines have a single eth0 so this should work?
   val lockTimeOutMillis = 1000 * 60 * 5
+  val cleanUpMillis = 1000 * 60 * 60 * 24
 }
 
 class JobRunnerScheduler(runner: JobRunner) extends AbstractScheduledService {
