@@ -188,7 +188,7 @@ class CodeConfig extends Config {
   override def pandaAuthCallback: String = "https://tagmanager.code.dev-gutools.co.uk/oauthCallback"
 
   override def composerDomain: String = "https://composer.code.dev-gutools.co.uk"
-  override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer.local.dev-gutools.co.uk")
+  override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer-secondary.code.dev-gutools.co.uk", "https://composer.local.dev-gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
   override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
@@ -229,7 +229,7 @@ class ProdConfig extends Config {
   override def pandaAuthCallback: String = "https://tagmanager.gutools.co.uk/oauthCallback"
 
   override def composerDomain: String = "https://composer.gutools.co.uk"
-  override def corsableDomains: Seq[String] = Seq(composerDomain)
+  override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer-secondary.gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
   override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
