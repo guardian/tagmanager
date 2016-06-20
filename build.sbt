@@ -11,7 +11,7 @@ resolvers += "Guardian Bintray" at "https://dl.bintray.com/guardian/editorial-to
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.10.33",
   "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
-  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.13",
+  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
   "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
   "org.cvogt" %% "play-json-extensions" % "0.6.0",
