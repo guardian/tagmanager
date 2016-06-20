@@ -7,8 +7,6 @@ const modes = {
   remove: 'REMOVE_BATCH_MODE'
 };
 
-const blockedTagTypes = ["Contributor"];
-
 export default class BatchTagStatus extends React.Component {
 
     constructor(props) {
@@ -100,7 +98,7 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__info">
               Add Tag
             </div>
-            <TagSelect blockedTagTypes={blockedTagTypes} onTagClick={this.selectTag.bind(this)} showResultsAbove={true} />
+            <TagSelect onTagClick={this.selectTag.bind(this)} showResultsAbove={true} />
             <i className="i-cross" onClick={this.resetMode}></i>
           </div>
       );
@@ -130,7 +128,7 @@ export default class BatchTagStatus extends React.Component {
             <div className="batch-status__info">
               Remove Tag
             </div>
-            <TagSelect blockedTagTypes={blockedTagTypes} onTagClick={this.selectTag.bind(this)} showResultsAbove={true} />
+            <TagSelect onTagClick={this.selectTag.bind(this)} showResultsAbove={true} />
             <i className="i-cross" onClick={this.resetMode}></i>
 
           </div>

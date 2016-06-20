@@ -6,7 +6,7 @@ import tagManagerApi from '../util/tagManagerApi';
 import history from '../routes/history';
 import showError from '../actions/UIActions/showError';
 
-const blockedTagTypes = ["Publication", "NewspaperBook", "NewspaperBookSection", "ContentType", "Contributor"];
+const blockedTagTypes = ["Publication", "NewspaperBook", "NewspaperBookSection", "ContentType"];
 
 export default class MergeTag extends React.Component {
     constructor(props) {
