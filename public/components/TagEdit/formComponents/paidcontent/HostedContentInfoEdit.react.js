@@ -8,8 +8,15 @@ export default class HostedContentInfoEdit extends React.Component {
   }
 
   updateCampaignColour(e) {
-    this.updatePaidContentInformation(Object.assign({}, this.props.paidContentInformation, {
-      campaignColour: e.target.value
+
+    let newColourValue = e.target.value;
+
+    if (newColourValue && newColourValue[0] !== "#") {
+      newColourValue = '#' + newColourValue;
+    }
+
+    this.props.updatePaidContentInformation(Object.assign({}, this.props.paidContentInformation, {
+      campaignColour: newColourValue
     }));
   }
 
@@ -18,7 +25,6 @@ export default class HostedContentInfoEdit extends React.Component {
     if (!this.props.paidContentInformation || this.props.paidContentInformation.paidContentType !== PAID_HOSTEDCONTENT_TYPE.value) {
       return false;
     }
-
 
     return (
       <div className="tag-edit__input-group">
