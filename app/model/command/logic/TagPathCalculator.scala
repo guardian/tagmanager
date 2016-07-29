@@ -11,16 +11,16 @@ object TagPathCalculator {
     val loadedSection = sectionId.map(SectionRepository.getSection(_).getOrElse(SectionNotFound))
 
     val sectionPathPrefix = loadedSection.map(_.wordsForUrl + "/").getOrElse("")
-    val trackingTagName = tagSubType.getOrElse("")
 
-    tagType.toLowerCase match {
-      case "contenttype" => s"$slug"
-      case "tone" => s"tone/$slug"
-      case "contributor" => s"profile/$slug"
-      case "publication" => s"$slug/all"
-      case "series" => s"${sectionPathPrefix}series/$slug"
-      case "tracking" => s"tracking/${trackingTagName}/$slug"
-      case _ => sectionPathPrefix + slug
+    (tagType.toLowerCase, tagSubType.map(_.toLowerCase)) match {
+      case ("contenttype", _) => s"$slug"
+      case ("tone", _) => s"tone/$slug"
+      case ("contributor", _) => s"profile/$slug"
+      case ("publication", _) => s"$slug/all"
+      case ("series", _) => s"${sectionPathPrefix}series/$slug"
+      case ("tracking", trackingType) => s"tracking/${trackingType.getOrElse("")}/$slug"
+      case ("paidcontent", Some("hostedcontent")) => s"advertiser-content/$slug"
+      case (_, _) => sectionPathPrefix + slug
     }
   }
 

@@ -81,7 +81,12 @@ case class CreateTagCommand(
     val tagId = Sequences.tagId.getNextId
 
     val sectionId: Option[Long] = if(createMicrosite) {
-      val sectionPageId: Long = try { PathManager.registerPathAndGetPageId(slug) } catch { case p: PathRegistrationFailed => PathInUse}
+
+      val path = if(`type` == "PaidContent" && paidContentInformation.isDefined && paidContentInformation.get.paidContentType == "HostedContent") {
+        s"advertiser-content/$slug"
+      } else {slug}
+
+      val sectionPageId: Long = try { PathManager.registerPathAndGetPageId(path) } catch { case p: PathRegistrationFailed => PathInUse}
 
       val nextSectionId = Sequences.sectionId.getNextId
 
@@ -89,8 +94,8 @@ case class CreateTagCommand(
         id = nextSectionId,
         sectionTagId = tagId,
         name = externalName,
-        path = slug,
-        wordsForUrl = slug,
+        path = path,
+        wordsForUrl = path,
         pageId = sectionPageId,
         editions = Map(),
         discriminator = Some("Navigation"),
@@ -112,6 +117,8 @@ case class CreateTagCommand(
     val calculatedPath = preCalculatedPath match {
       case Some(path) => path
       case None => TagPathCalculator.calculatePath(`type`, slug, sectionId, trackingInformation.map(_.trackingType))
+        // Note we don't pass the paid contnet subtype here as the path munging has now been applied to the created microsite
+        // so the standard section / slug logic is the desired logic
     }
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
