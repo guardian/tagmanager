@@ -46,7 +46,8 @@ case class TagSearchCriteria(
   externalName: Option[String] = None,
   referenceType: Option[String] = None,
   referenceToken: Option[String] = None,
-  searchField: Option[String] = None
+  searchField: Option[String] = None,
+  subType: Option[String] = None
 ) {
 
   type TagFilter = (List[Tag]) => List[Tag]
@@ -57,7 +58,8 @@ case class TagSearchCriteria(
     types.map(v => typeFilter(v.map(_.toLowerCase)) _) ++
     q.map(v => queryFilter(v.toLowerCase) _) ++
     referenceType.map(v => referenceTypeFilter(v.toLowerCase) _) ++
-    referenceToken.map(v => referenceTokenFilter(v.toLowerCase) _)
+    referenceToken.map(v => referenceTokenFilter(v.toLowerCase) _) ++
+    subType.map(v => subTypeFilter(v.toLowerCase) _)
 
   def execute(tags: List[Tag]): List[Tag] = {
     filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
@@ -111,6 +113,13 @@ case class TagSearchCriteria(
 
   private def referenceTypeFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalReferences.exists(_.`type`.toLowerCase == n) }
   private def referenceTokenFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalReferences.exists(_.value.toLowerCase == n) }
+
+  private def subTypeFilter(subType: String)(tags: List[Tag]) = tags.filter { t =>
+    (
+      t.trackingInformation.map(_.trackingType.toLowerCase == subType) orElse
+      t.paidContentInformation.map(_.paidContentType.toLowerCase == subType)
+    ).getOrElse(false)
+  }
 
 
   def asFilters = {
