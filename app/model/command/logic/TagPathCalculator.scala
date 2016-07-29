@@ -6,14 +6,14 @@ import repositories.SectionRepository
 
 object TagPathCalculator {
 
-  def calculatePath(`type`: String, slug: String, sectionId: Option[Long], trackingTagType: Option[String]) = {
+  def calculatePath(tagType: String, slug: String, sectionId: Option[Long], tagSubType: Option[String]) = {
 
     val loadedSection = sectionId.map(SectionRepository.getSection(_).getOrElse(SectionNotFound))
 
     val sectionPathPrefix = loadedSection.map(_.wordsForUrl + "/").getOrElse("")
-    val trackingTagName = trackingTagType.getOrElse("")
+    val trackingTagName = tagSubType.getOrElse("")
 
-    `type`.toLowerCase match {
+    tagType.toLowerCase match {
       case "contenttype" => s"$slug"
       case "tone" => s"tone/$slug"
       case "contributor" => s"profile/$slug"

@@ -140,9 +140,9 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(ExternalReferencesTypeRepository.loadAllReferenceTypes))
   }
 
-  def checkPathInUse(`type`: String, slug: String, section: Option[Long], trackingTagType: Option[String]) = APIAuthAction { req =>
+  def checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String]) = APIAuthAction { req =>
     try {
-      new PathUsageCheck(`type`, slug, section, trackingTagType).process.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
+      new PathUsageCheck(tagType, slug, section, tagSubType).process.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
     } catch {
       commandErrorAsResult
     }

@@ -197,15 +197,16 @@ export default {
     });
   },
 
-  checkPathInUse: (type, slug, section, trackingTagType) => {
-      const query = {type: type, slug: slug};
+  checkPathInUse: (tagType, slug, section, tagSubType) => {
+    console.log('in path usage check', tagSubType);
+      const query = {tagType: tagType, slug: slug};
 
       if (section) {
           query.section = section;
       }
 
-      if (trackingTagType) {
-        query.trackingTagType = trackingTagType
+      if (tagSubType) {
+        query.tagSubType = tagSubType
       }
 
       return PandaReqwest({
