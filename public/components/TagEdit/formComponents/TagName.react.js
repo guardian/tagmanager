@@ -118,6 +118,16 @@ export default class TagNameEdit extends React.Component {
       return 'tracking/' + trackingTypeName + '/';
     }
 
+    // Paid content with sub type of hosted exception
+
+    if (this.props.tag.type === tagTypes.paidContent.name
+      && this.props.tag.paidContentInformation
+      && this.props.tag.paidContentInformation.paidContentType
+      && this.props.tag.paidContentInformation.paidContentType === 'HostedContent') {
+
+      return 'advertiser-content/';
+    }
+
     //Infer from Tag Type
 
     const tagTypeKey = Object.keys(tagTypes).filter((tagTypeKey) => {
