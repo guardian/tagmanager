@@ -198,7 +198,6 @@ export default {
   },
 
   checkPathInUse: (tagType, slug, section, tagSubType) => {
-    console.log('in path usage check', tagSubType);
       const query = {tagType: tagType, slug: slug};
 
       if (section) {
