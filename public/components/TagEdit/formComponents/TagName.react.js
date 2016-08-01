@@ -122,7 +122,6 @@ export default class TagNameEdit extends React.Component {
 
     if (this.props.tag.type === tagTypes.paidContent.name
       && this.props.tag.paidContentInformation
-      && this.props.tag.paidContentInformation.paidContentType
       && this.props.tag.paidContentInformation.paidContentType === 'HostedContent') {
 
       return 'advertiser-content/';
