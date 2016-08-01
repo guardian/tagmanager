@@ -36,7 +36,7 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
     Action {
       val res = EmptyResponse()
         .addLink("tag-item", HyperMediaHelpers.fullUri("/hyper/tags/{id}"))
-        .addLink("tags", HyperMediaHelpers.fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken}"))
+        .addLink("tags", HyperMediaHelpers.fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken,subType}"))
       Ok(Json.toJson(res))
     }
   }
@@ -63,7 +63,8 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
         referenceType = req.getQueryString("externalReferenceType"),
         internalName = req.getQueryString("internalName"),
         externalName = req.getQueryString("externalName"),
-        referenceToken = req.getQueryString("externalReferenceToken")
+        referenceToken = req.getQueryString("externalReferenceToken"),
+        subType = req.getQueryString("subType")
       )
 
       val limit = req.getQueryString("limit").getOrElse("25").toInt
