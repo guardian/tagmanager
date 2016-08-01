@@ -41,7 +41,7 @@ GET            /api/clashingSponsorships                               controlle
 
 GET            /api/referenceTypes                                     controllers.TagManagementApi.listReferenceTypes
 
-GET            /api/checkPathInUse                                     controllers.TagManagementApi.checkPathInUse(type: String, slug: String, section: Option[Long], trackingTagType: Option[String])
+GET            /api/checkPathInUse                                     controllers.TagManagementApi.checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String])
 POST           /api/batchTag                                           controllers.TagManagementApi.batchTag
 POST           /api/mergeTag                                           controllers.TagManagementApi.mergeTag
 

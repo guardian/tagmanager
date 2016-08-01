@@ -25,9 +25,22 @@ export default class PaidContentInfoEdit extends React.Component {
   }
 
   updatePaidContentType(e) {
-    this.updatePaidContentInformation(Object.assign({}, this.props.tag.paidContentInformation, {
-        paidContentType: e.target.value
-    }));
+    const subtype = e.target.value;
+    
+    if(subtype === 'HostedContent') {
+      this.props.updateTag(Object.assign({}, this.props.tag, {
+        createMicrosite: true,
+        section: undefined,
+        capiSectionId: undefined,
+        paidContentInformation: Object.assign({}, this.props.tag.paidContentInformation, {
+          paidContentType: subtype
+        })
+      }));
+    } else {
+      this.updatePaidContentInformation(Object.assign({}, this.props.tag.paidContentInformation, {
+        paidContentType: subtype
+      }));
+    }
   }
 
   onUpdateCreateMicrosite(e) {
@@ -64,7 +77,9 @@ export default class PaidContentInfoEdit extends React.Component {
 
     return (
       <div>
-        <input type="checkbox" checked={this.props.tag.createMicrosite} onChange={this.onUpdateCreateMicrosite.bind(this)}/>
+        <input type="checkbox" checked={this.props.tag.createMicrosite}
+               onChange={this.onUpdateCreateMicrosite.bind(this)}
+               disabled={this.props.tag.paidContentInformation && this.props.tag.paidContentInformation.paidContentType === 'HostedContent'}/>
         <label className="tag-edit__label">create microsite for this tag</label>
       </div>
     );
