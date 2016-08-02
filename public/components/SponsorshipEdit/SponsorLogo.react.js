@@ -1,6 +1,5 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
-import TagImageEdit from '../TagEdit/formComponents/TagImageEdit.react';
 
 export default class SponsorEdit extends React.Component {
 
@@ -19,29 +18,39 @@ export default class SponsorEdit extends React.Component {
   fileUploaded(e) {
     const resp = e.target;
     console.log(e);
-    if(resp.status == 200) {
+    if (resp.status === 200) {
       this.props.onImageUpdated(JSON.parse(e.target.response));
     } else {
       this.setState({errorMessage: resp.responseText});
     }
   }
 
+  constructPOSTUrl(filename, width, height) {
+    let url = '/support/uploadLogo/' + filename;
+
+    url = width || height ? url += '?' : url;
+    url = width ? url += 'width=' + width : url;
+    url = width && height ? url += '&' : url;
+    url = height ? url += 'height=' + height : url;
+
+    return url;
+  }
+
   onDrop(files) {
-    console.log('got files', files);
     var file = files[0];
 
     var oReq = new XMLHttpRequest();
-    oReq.addEventListener("load", this.fileUploaded.bind(this));
-    oReq.open("POST", "/support/uploadLogo/" + file.name);
+    oReq.addEventListener('load', this.fileUploaded.bind(this));
+    oReq.open('POST', this.constructPOSTUrl(file.name, this.props.requiredWidth, this.props.requiredHeight));
     oReq.send(file);
   }
 
   errorDiv() {
-    if (this.state.errorMessage) {
-      return (<div>{this.state.errorMessage}</div>);
-    } else {
+    if (!this.state.errorMessage) {
       return false;
     }
+
+    return (<div>{this.state.errorMessage}</div>);
   }
 
   render () {

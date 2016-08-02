@@ -70,7 +70,16 @@ class TagCreate extends React.Component {
     }
 
     checkPathInUse(tag) {
-      tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section, tag.trackingInformation ? tag.trackingInformation : undefined)
+      var subtype;
+      if (tag.trackingInformation && tag.trackingInformation.trackingType) {
+        subtype = tag.trackingInformation.trackingType;
+      }
+
+      if (tag.paidContentInformation && tag.paidContentInformation.paidContentType) {
+        subtype = tag.paidContentInformation.paidContentType;
+      }
+
+      tagManagerApi.checkPathInUse(tag.type, tag.slug, tag.section, subtype)
         .then(res => this.setState({pathInUse: res.inUse}))
         .fail((error) => {
           console.log(error);

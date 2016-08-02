@@ -20,7 +20,7 @@ lazy val dependencies = Seq(
   "com.twitter" %% "scrooge-core" % "4.1.0",
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client" % "7.7",
-  "com.gu" %% "tags-thrift-schema" % "0.6.1",
+  "com.gu" %% "tags-thrift-schema" % "0.6.2",
   "com.gu" %% "auditing-thrift-model" % "0.2",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",

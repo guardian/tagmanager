@@ -4,12 +4,12 @@ import model.command.logic.TagPathCalculator
 import repositories.PathManager
 
 
-class PathUsageCheck(`type`: String, slug: String, sectionId: Option[Long], trackingTagType: Option[String]) extends Command {
+class PathUsageCheck(tagType: String, slug: String, sectionId: Option[Long], tagSubType: Option[String]) extends Command {
 
   type T = Map[String, Boolean]
 
   override def process()(implicit username: Option[String] = None): Option[Map[String, Boolean]] = {
-    val calculatedPath = TagPathCalculator calculatePath(`type`, slug, sectionId, trackingTagType)
+    val calculatedPath = TagPathCalculator calculatePath(tagType, slug, sectionId, tagSubType)
 
     val inUse = PathManager isPathInUse(calculatedPath)
 

@@ -1,11 +1,9 @@
 import React from 'react';
 import R from 'ramda';
-import {Link} from 'react-router';
-
-import TagSelect from '../../../utils/TagSelect.js';
 import SectionSelect from '../../../utils/SectionSelect.react';
 import SponsorEdit from '../../../SponsorshipEdit/SponsorEdit.react';
 import ValidityEdit from '../../../SponsorshipEdit/ValidityEdit.react';
+import HostedContentInfoEdit from './HostedContentInfoEdit.react';
 import {paidContentTagTypes} from '../../../../constants/paidContentTagTypes';
 
 export default class PaidContentInfoEdit extends React.Component {
@@ -20,12 +18,29 @@ export default class PaidContentInfoEdit extends React.Component {
     }));
   }
 
-  updatePaidContentType(e) {
+  updatePaidContentInformation(paidContentInformation) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
-      paidContentInformation: Object.assign({}, this.props.tag.paidContentInformation, {
-        paidContentType: e.target.value
-      })
+      paidContentInformation: paidContentInformation
     }));
+  }
+
+  updatePaidContentType(e) {
+    const subtype = e.target.value;
+    
+    if(subtype === 'HostedContent') {
+      this.props.updateTag(Object.assign({}, this.props.tag, {
+        createMicrosite: true,
+        section: undefined,
+        capiSectionId: undefined,
+        paidContentInformation: Object.assign({}, this.props.tag.paidContentInformation, {
+          paidContentType: subtype
+        })
+      }));
+    } else {
+      this.updatePaidContentInformation(Object.assign({}, this.props.tag.paidContentInformation, {
+        paidContentType: subtype
+      }));
+    }
   }
 
   onUpdateCreateMicrosite(e) {
@@ -56,16 +71,18 @@ export default class PaidContentInfoEdit extends React.Component {
   }
 
   renderCreateMicrositeControl() {
-    if(this.props.pathLocked || !this.props.tagEditable) {
-      return
-    } else {
-      return (
-        <div>
-          <input type="checkbox" checked={this.props.tag.createMicrosite} onChange={this.onUpdateCreateMicrosite.bind(this)}/>
-          <label className="tag-edit__label">create microsite for this tag</label>
-        </div>
-      )
+    if (this.props.pathLocked || !this.props.tagEditable) {
+      return;
     }
+
+    return (
+      <div>
+        <input type="checkbox" checked={this.props.tag.createMicrosite}
+               onChange={this.onUpdateCreateMicrosite.bind(this)}
+               disabled={this.props.tag.paidContentInformation && this.props.tag.paidContentInformation.paidContentType === 'HostedContent'}/>
+        <label className="tag-edit__label">create microsite for this tag</label>
+      </div>
+    );
   }
 
   renderSectionControls() {
@@ -76,24 +93,24 @@ export default class PaidContentInfoEdit extends React.Component {
           <label className="tag-edit__input-group__header">Section</label>
           {this.renderCreateMicrositeControl()}
         </div>
-      )
-    } else {
-      return (
-        <div className="tag-edit__input-group" key="topic-section">
-          <label className="tag-edit__input-group__header">Section</label>
-          {this.renderCreateMicrositeControl()}
-          <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/>
-          <label className="tag-edit__label">is Microsite</label>
-          <SectionSelect
-            selectedId={this.props.tag.section}
-            sections={this.props.sections}
-            isMicrosite={this.props.tag.isMicrosite}
-            onChange={this.onUpdateSection.bind(this)}
-            disabled={this.props.pathLocked || !this.props.tagEditable}
-            />
-        </div>
-      )
+      );
     }
+
+    return (
+      <div className="tag-edit__input-group" key="topic-section">
+        <label className="tag-edit__input-group__header">Section</label>
+        {this.renderCreateMicrositeControl()}
+        <input type="checkbox" checked={this.props.tag.isMicrosite} onChange={this.onUpdateIsMicrosite.bind(this)} disabled={this.props.pathLocked || !this.props.tagEditable}/>
+        <label className="tag-edit__label">is Microsite</label>
+        <SectionSelect
+          selectedId={this.props.tag.section}
+          sections={this.props.sections}
+          isMicrosite={this.props.tag.isMicrosite}
+          onChange={this.onUpdateSection.bind(this)}
+          disabled={this.props.pathLocked || !this.props.tagEditable}
+          />
+      </div>
+    );
   }
 
   render() {
@@ -101,7 +118,7 @@ export default class PaidContentInfoEdit extends React.Component {
     const paidContentSponsorship = this.props.tag.sponsorship || {};
     const selectPaidContentType = this.props.tag.paidContentInformation ? this.props.tag.paidContentInformation.paidContentType : undefined;
 
-    return(
+    return (
     <div>
       {this.renderSectionControls()}
       <div className="tag-edit__input-group">
@@ -117,9 +134,10 @@ export default class PaidContentInfoEdit extends React.Component {
             })}
           </select>
         </div>
-        <SponsorEdit sponsorship={paidContentSponsorship} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
-        <ValidityEdit sponsorship={paidContentSponsorship} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
       </div>
+      <SponsorEdit sponsorship={paidContentSponsorship} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
+      <ValidityEdit sponsorship={paidContentSponsorship} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
+      <HostedContentInfoEdit paidContentInformation={this.props.tag.paidContentInformation} updatePaidContentInformation={this.updatePaidContentInformation.bind(this)} />
     </div>
     );
   }
