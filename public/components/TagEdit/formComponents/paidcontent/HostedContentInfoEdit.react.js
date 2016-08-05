@@ -13,9 +13,9 @@ export default class HostedContentInfoEdit extends React.Component {
     };
   }
 
-  updateCampaignColour(color) {
+  updateCampaignColour(colour) {
     this.props.updatePaidContentInformation(Object.assign({}, this.props.paidContentInformation, {
-      campaignColour: color
+      campaignColour: colour
     }));
   }
 
