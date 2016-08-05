@@ -1,5 +1,4 @@
 import React from 'react';
-import { ChromePicker } from 'react-color';
 import ColourPicker from '../../../utils/ColourPicker';
 
 import {PAID_HOSTEDCONTENT_TYPE} from '../../../../constants/paidContentTagTypes';

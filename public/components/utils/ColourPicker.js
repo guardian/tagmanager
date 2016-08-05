@@ -1,63 +1,37 @@
 import React from 'react';
-import { ChromePicker } from 'react-color';
 
 export default class ColourPicker extends React.Component {
 
-  constructor(props) {
-    super(props);
+  isValidColour(hexColour) {
+    const hexCodeRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
-    this.state = {
-      showColourPicker: false
-    };
+    return hexCodeRegex.test(hexColour);
   }
 
-  showPicker() {
-    this.setState({
-      showColourPicker: true
-    });
-  }
+  onInputChange(e) {
+    let newColourValue = e.target.value;
 
-  closePicker() {
-    this.setState({
-      showColourPicker: false
-    });
-  }
-
-  onColorSelect(colour) {
-    this.props.onChange(colour.hex);
-  }
-
-  renderColourPicker() {
-    if (!this.state.showColourPicker) {
-      return false;
+    if (newColourValue && newColourValue[0] !== "#") {
+      newColourValue = '#' + newColourValue;
     }
 
-    return (
-      <div>
-        <div className="colour-picker__popover" onClick={this.closePicker.bind(this)}></div>
-        <div className="colour-picker__picker">
-          <ChromePicker
-            color={this.props.value}
-            onChange={this.onColorSelect.bind(this)}
-            />
-        </div>
-      </div>
-    );
+    this.props.onChange(newColourValue);
   }
 
   render() {
+
+    const isValidColour = this.isValidColour(this.props.value)
     return (
       <div className="colour-picker" style={{position: "relative"}} >
-        <div onClick={this.showPicker.bind(this)}>
-          <input
-            disabled={true}
-            type="text"
-            className="tag-edit__input"
-            value={this.props.value || "No Colour Selected"}
-          />
-          <div className="colour-picker__swatch" style={{backgroundColor: this.props.value || "#FFF"}}></div>
-        </div>
-        {this.renderColourPicker()}
+        <input
+          type="text"
+          className="tag-edit__input"
+          onChange={this.onInputChange.bind(this)}
+          value={this.props.value || ''}
+        />
+        <div
+          className={isValidColour ? 'colour-picker__swatch' : 'colour-picker__swatch--invalid'}
+          style={{backgroundColor: isValidColour ? this.props.value : "#FFF"}}></div>
       </div>
     );
   }

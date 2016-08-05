@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Tool for managing Guardian tags",
   "scripts": {
-    "build": "webpack ./public/app.js ./public/build/app.js --config ./public/build_config/webpack.prod.conf.js",
+    "build": "webpack -p ./public/app.js ./public/build/app.js --config ./public/build_config/webpack.prod.conf.js",
     "build-dev": "webpack ./public/app.js ./public/build/app.js --config ./public/build_config/webpack.dev.conf.js --watch",
     "build-icons": "svg-sprite -w 16 -h 16 -v true --view-bust false --view-prefix .i-%s --view-dest . --vs ./public/images/icons.svg --vscss true --view-render-scss-template ./public/images/icons/scssTemplate.scss --view-render-scss-dest ./public/style/_icons.scss  ./public/images/icons/*.svg",
     "client-dev": "node ./public/devserver.js"
@@ -26,7 +26,6 @@
     "ramda": "^0.18.0",
     "react": "^15.3.0",
     "react-addons-css-transition-group": "^15.3.0",
-    "react-color": "^2.2.2",
     "react-dom": "^15.3.0",
     "react-dropzone": "^3.0",
     "react-redux": "^4.4.5",

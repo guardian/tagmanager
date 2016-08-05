@@ -13,17 +13,16 @@
   border-radius: 3px;
 }
 
-.colour-picker__popover {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
+.colour-picker__swatch--invalid {
+  @extend .colour-picker__swatch;
 
-.colour-picker__picker {
-  z-index: 2;
-  position: absolute;
-  right: 20px;
-  top: 30px;
+  text-align: center;
+
+  &:before {
+    display: inline-block;
+    content: '?';
+    line-height: 25px;
+    font-size: 14px;
+    font-weight: bold;
+  }
 }
