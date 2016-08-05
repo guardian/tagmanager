@@ -1,6 +1,6 @@
 import React from 'react';
-import history from '../../routes/history';
 import * as tagTypes from '../../constants/tagTypes';
+import { browserHistory } from 'react-router'
 
 export default class TagList extends React.Component {
 
@@ -46,7 +46,7 @@ export default class TagList extends React.Component {
     }
 
     onTagClick(tag) {
-      history.pushState(null, '/tag/' + tag.id);
+      browserHistory.push('/tag/' + tag.id);
     }
 
     render () {

@@ -1,22 +1,22 @@
 import React from 'react';
+import { ChromePicker } from 'react-color';
+import ColourPicker from '../../../utils/ColourPicker';
+
 import {PAID_HOSTEDCONTENT_TYPE} from '../../../../constants/paidContentTagTypes';
 
 export default class HostedContentInfoEdit extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      showColourPicker: false
+    };
   }
 
-  updateCampaignColour(e) {
-
-    let newColourValue = e.target.value;
-
-    if (newColourValue && newColourValue[0] !== "#") {
-      newColourValue = '#' + newColourValue;
-    }
-
+  updateCampaignColour(color) {
     this.props.updatePaidContentInformation(Object.assign({}, this.props.paidContentInformation, {
-      campaignColour: newColourValue
+      campaignColour: color
     }));
   }
 
@@ -30,7 +30,10 @@ export default class HostedContentInfoEdit extends React.Component {
       <div className="tag-edit__input-group">
         <div className="tag-edit__field">
           <label className="tag-edit__label">Hosted Campaign Colour (Hex Code)</label>
-          <input type="text" className="tag-edit__input" value={this.props.paidContentInformation.campaignColour} onChange={this.updateCampaignColour.bind(this)}/>
+          <ColourPicker
+            value={this.props.paidContentInformation.campaignColour}
+            onChange={this.updateCampaignColour.bind(this)}
+          />
         </div>
       </div>
     );

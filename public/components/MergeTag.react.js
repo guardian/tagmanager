@@ -3,8 +3,9 @@ import TagSelect from './utils/TagSelect.js';
 import CapiStats from './CapiStats/CapiStats.react';
 import ConfirmButton from './utils/ConfirmButton.react';
 import tagManagerApi from '../util/tagManagerApi';
-import history from '../routes/history';
 import showError from '../actions/UIActions/showError';
+import { browserHistory } from 'react-router'
+
 
 const blockedTagTypes = ["Publication", "NewspaperBook", "NewspaperBookSection", "ContentType"];
 
@@ -33,7 +34,7 @@ export default class MergeTag extends React.Component {
     performMerge() {
       tagManagerApi.mergeTag(this.state.fromTag.id, this.state.toTag.id)
       .then((res) => {
-        history.pushState(null, '/status');
+        browserHistory.push('/status');
       })
       .fail((error) => {
         showError(error);

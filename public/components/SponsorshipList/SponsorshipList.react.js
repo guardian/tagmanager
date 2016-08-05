@@ -1,7 +1,7 @@
 import React from 'react';
-import history from '../../routes/history';
 import {Link} from 'react-router';
 import moment from 'moment';
+import { browserHistory } from 'react-router'
 
 export default class SponsorshipList extends React.Component {
 
@@ -18,7 +18,7 @@ export default class SponsorshipList extends React.Component {
     }
 
     onSponsorshipClick(sponsorship) {
-      history.pushState(null, this.generateSponsorshipUrl(sponsorship));
+      browserHistory.push(this.generateSponsorshipUrl(sponsorship));
     }
 
     renderTargeting(sponsorship) {
