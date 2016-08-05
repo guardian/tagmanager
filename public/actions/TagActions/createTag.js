@@ -1,5 +1,5 @@
-import history from '../../routes/history';
 import tagManagerApi from '../../util/tagManagerApi';
+import { browserHistory } from 'react-router'
 
 export const TAG_CREATE_REQUEST = 'TAG_CREATE_REQUEST';
 export const TAG_CREATE_RECEIVE = 'TAG_CREATE_RECEIVE';
@@ -23,7 +23,7 @@ function requestTagCreate() {
 }
 
 function recieveTagCreate(tag, refreshSections) {
-    history.replaceState(null, '/tag/' + tag.id);
+    browserHistory.push('/tag/' + tag.id);
     return {
       type: TAG_CREATE_RECEIVE,
       tag: tag,

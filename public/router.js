@@ -1,29 +1,29 @@
-import React        from 'react';
-import { Route, IndexRoute } from 'react-router';
+import React from 'react';
+import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 
-import ReactApp     from '../components/ReactApp.react';
-import BatchTag     from '../components/BatchTag.react';
-import MergeTag     from '../components/MergeTag.react';
-import MappingManager from '../components/MappingManager.react';
-import Status       from '../components/Status.react';
-import Audit        from '../components/Audit.react';
-import Unauthorised from '../components/Unauthorised.react';
+import {getStore} from './util/storeAccessor';
+import {clearError} from './actions/UIActions/clearError';
+import {hasPermission} from './util/verifyPermission';
 
-import TagCreate    from '../components/Tag/Create.react';
-import TagDisplay   from '../components/Tag/Display.react';
-import TagSearch    from '../components/TagSearch.react';
+import ReactApp     from './components/ReactApp.react';
+import BatchTag     from './components/BatchTag.react';
+import MergeTag     from './components/MergeTag.react';
+import MappingManager from './components/MappingManager.react';
+import Status       from './components/Status.react';
+import Audit        from './components/Audit.react';
+import Unauthorised from './components/Unauthorised.react';
 
-import SectionList from '../components/SectionList/SectionList.react';
-import SectionDisplay from '../components/Section/Display';
-import SectionCreate from '../components/Section/Create';
+import TagCreate    from './components/Tag/Create.react';
+import TagDisplay   from './components/Tag/Display.react';
+import TagSearch    from './components/TagSearch.react';
 
-import SponsorshipSearch from '../components/SponsorshipSearch.react';
-import SponsorshipDisplay from '../components/Sponsorship/Display';
-import SponsorshipCreate from '../components/Sponsorship/Create';
+import SectionList from './components/SectionList/SectionList.react';
+import SectionDisplay from './components/Section/Display';
+import SectionCreate from './components/Section/Create';
 
-import {getStore}   from '../util/storeAccessor';
-import {clearError} from '../actions/UIActions/clearError';
-import {hasPermission} from '../util/verifyPermission';
+import SponsorshipSearch from './components/SponsorshipSearch.react';
+import SponsorshipDisplay from './components/Sponsorship/Display';
+import SponsorshipCreate from './components/Sponsorship/Create';
 
 function requirePermission(permissionName, nextState, replaceState) {
   if (!hasPermission(permissionName)) {
@@ -36,7 +36,8 @@ function clearErrorBar() {
     store.dispatch(clearError());
 }
 
-export default [
+export const router = (
+  <Router history={browserHistory}>
     <Route path="/" component={ReactApp}>
       <Route name="tag" path="/tag/create" component={TagCreate} />
       <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
@@ -57,4 +58,5 @@ export default [
       <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
       <IndexRoute component={TagSearch}/>
     </Route>
-];
+  </Router>
+)

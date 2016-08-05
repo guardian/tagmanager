@@ -1,0 +1,28 @@
+.colour-picker {
+
+}
+
+.colour-picker__swatch {
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  width: 35px;
+  height: 25px;
+  background-color: #FFF;
+  border: 1px solid #dcdcdc;
+  border-radius: 3px;
+}
+
+.colour-picker__swatch--invalid {
+  @extend .colour-picker__swatch;
+
+  text-align: center;
+
+  &:before {
+    display: inline-block;
+    content: '?';
+    line-height: 25px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}

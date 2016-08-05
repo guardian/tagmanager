@@ -1,5 +1,6 @@
-import history from '../../routes/history';
 import tagManagerApi from '../../util/tagManagerApi';
+import { browserHistory } from 'react-router'
+
 
 export const SECTION_CREATE_REQUEST = 'SECTION_CREATE_REQUEST';
 export const SECTION_CREATE_RECEIVE = 'SECTION_CREATE_RECEIVE';
@@ -15,7 +16,7 @@ function requestSectionCreate() {
 
 function recieveSectionCreate(section) {
     const redirectPath = section.isMicrosite ? '/microsite/' + section.id : '/section/' + section.id;
-    history.replaceState(null, redirectPath);
+    browserHistory.push(redirectPath);
 
     return {
         type:       SECTION_CREATE_RECEIVE,

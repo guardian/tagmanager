@@ -1,6 +1,7 @@
 import React from 'react';
-import history from '../../routes/history';
 import {Link} from 'react-router';
+import { browserHistory } from 'react-router'
+
 
 class SectionList extends React.Component {
 
@@ -10,7 +11,7 @@ class SectionList extends React.Component {
 
     onSectionClick(section) {
       const path = this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id;
-      history.pushState(null, path);
+      browserHistory.push(path);
     }
 
     componentWillMount() {
