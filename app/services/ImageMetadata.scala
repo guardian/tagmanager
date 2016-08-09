@@ -67,4 +67,14 @@ object ImageMetadataService {
     val image = ImageIO.read(imageFile)
     (image.getWidth, image.getHeight)
   }
+
+  def imageHeight(imageFile: File): Long = {
+    val image = ImageIO.read(imageFile)
+    image.getHeight
+  }
+
+  def imageWidth(imageFile: File): Long = {
+    val image = ImageIO.read(imageFile)
+    image.getWidth
+  }
 }

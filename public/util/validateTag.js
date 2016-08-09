@@ -52,6 +52,20 @@ function validatePaidContent(tag) {
     }];
   }
 
+
+  if (tag.paidContentInformation && tag.paidContentInformation.paidContentType === 'HostedContent') {
+
+    //Hosted Content Validation
+    const hexCodeRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+
+    if (!tag.paidContentInformation.campaignColour || !tag.paidContentInformation.campaignColour.match(hexCodeRegex)) {
+      return [{
+        fieldName: 'campaignColour',
+        message: 'Mandatory campaignColour information is missing or is invalid'
+      }];
+    }
+  }
+
   const mandatoryPaidContentFields = ['sponsorName', 'sponsorLogo', 'sponsorLink'];
 
   return validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship);
@@ -85,7 +99,7 @@ export function validateTag(tag) {
   } else if (tag.type === tagTypes.paidContent.name) {
     additionalErrors = additionalErrors.concat(validatePaidContent(tag));
   } else if (tag.type === tagTypes.tracking.name) {
-    additionalErrors = additionalErrors.concat(validateTrackingTag(tag))
+    additionalErrors = additionalErrors.concat(validateTrackingTag(tag));
   }
 
   return []

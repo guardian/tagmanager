@@ -17,7 +17,8 @@ case class TagEntity(
   section: SectionEntity,
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
   references: List[ReferenceEntity] = Nil,
-  path: String
+  path: String,
+  subType: Option[String]
 )
 
 object TagEntity {
@@ -37,6 +38,8 @@ object TagEntity {
       case None => tag.parents
     }
 
+    val subtype = tag.trackingInformation.map(_.trackingType) orElse( tag.paidContentInformation.map(_.paidContentType))
+
       TagEntity(
         tag.id,
         convertedType,
@@ -46,7 +49,8 @@ object TagEntity {
         getTagSection(tag.section),
         parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
         tag.externalReferences.map(ReferenceEntity(_)),
-        tag.path
+        tag.path,
+        subtype
       )
   }
 
@@ -74,7 +78,7 @@ object TagEntity {
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
       "externalReferences" -> JsArray(te.references.map(Json.toJson(_))),
       "path" -> JsString(te.path)
-    ))
+    ) ++ te.subType.map("subType" -> JsString(_)) )
   }
 
 }

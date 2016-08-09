@@ -1,5 +1,6 @@
-import history from '../../routes/history';
 import tagManagerApi from '../../util/tagManagerApi';
+import { browserHistory } from 'react-router'
+
 
 export const SPONSORSHIP_CREATE_REQUEST = 'SPONSORSHIP_CREATE_REQUEST';
 export const SPONSORSHIP_CREATE_RECEIVE = 'SPONSORSHIP_CREATE_RECEIVE';
@@ -15,7 +16,7 @@ function requestSponsorshipCreate() {
 
 function recieveSponsorshipCreate(sponsorship) {
 
-    history.replaceState(null, '/sponsorship/' + sponsorship.id);
+    browserHistory.push('/sponsorship/' + sponsorship.id);
     return {
         type:           SPONSORSHIP_CREATE_RECEIVE,
         sponsorship:    sponsorship,

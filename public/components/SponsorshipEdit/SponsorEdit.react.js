@@ -47,7 +47,7 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Logo</label>
-          <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)}/>
+          <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)} requiredWidth={140} requiredHeight={90}/>
         </div>
 
         <div className="tag-edit__field">

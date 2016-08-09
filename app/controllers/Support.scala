@@ -1,6 +1,7 @@
 package controllers
 
 import java.util.UUID
+import java.io.{File}
 
 import com.amazonaws.services.s3.model._
 import model.{DenormalisedTag, Image, ImageAsset}
@@ -29,11 +30,22 @@ object Support extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
+  def validateImageDimensions(image: File, requiredWidth: Option[Long], requiredHeight: Option[Long]): Boolean = {
+    (requiredWidth, requiredHeight) match {
+      case (None, None) => true
+      case (Some(width), None) => width == ImageMetadataService.imageWidth(image)
+      case (None, Some(height)) => height == ImageMetadataService.imageHeight(image)
+      case (Some(width), Some(height)) => width == ImageMetadataService.imageWidth(image) && height == ImageMetadataService.imageHeight(image)
+    }
+  }
+
   def uploadLogo(filename: String) = APIAuthAction(parse.temporaryFile) { req =>
     val picture = req.body
+    val requiredWidth = req.getQueryString("width").map(_.toLong)
+    val requiredHeight = req.getQueryString("height").map(_.toLong)
 
-    ImageMetadataService.imageDimensions(picture.file) match {
-      case (w, h) if w <= 140 && h <= 90 => {
+    validateImageDimensions(picture.file, requiredWidth, requiredHeight) match {
+      case true => {
         val dateSlug = new DateTime().toString("dd/MMM/yyyy")
         val logoPath = s"commercial/sponsor/${dateSlug}/${UUID.randomUUID}-${filename}"
         val contentType = req.contentType
@@ -57,9 +69,9 @@ object Support extends Controller with PanDomainAuthActions {
             )
           ))
           Ok(Json.toJson(image))
-        }.getOrElse(BadRequest("failed to upload image"))
+        }.getOrElse(BadRequest("Failed to upload image"))
       }
-      case _ => BadRequest("sponsorship logos must be at most 140 x 90")
+      case false => BadRequest(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")} h:${requiredHeight.getOrElse("Not Specified")}")
     }
   }
 
