@@ -30,7 +30,7 @@ export default class HostedContentInfoEdit extends React.Component {
         <div className="tag-edit__field">
           <label className="tag-edit__label">Hosted Campaign Colour (Hex Code)</label>
           <ColourPicker
-            value={this.props.paidContentInformation.campaignColour}
+            value={this.props.paidContentInformation.campaignColour || ""}
             onChange={this.updateCampaignColour.bind(this)}
           />
         </div>

@@ -25,7 +25,7 @@ export default class TrackingInformation extends React.Component {
         <label className="tag-edit__input-group__header">Tracking Information</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Tracking Type</label>
-          <select value={selectTrackingType} onChange={this.updateTrackingType.bind(this)} disabled={!this.props.tagEditable}>
+          <select value={selectTrackingType || ""} onChange={this.updateTrackingType.bind(this)} disabled={!this.props.tagEditable}>
             {!selectTrackingType ? <option value={false}></option> : false}
             {trackingTagTypes.sort((a, b) => {return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map(function(t) {
               return (

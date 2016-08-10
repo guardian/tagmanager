@@ -29,14 +29,14 @@ export default class TagVisibilityEdit extends React.Component {
         <div className="tag-edit__field">
           <input type="checkbox"
             onChange={this.toggleHidden.bind(this)}
-            checked={this.props.tag.hidden}
+            checked={this.props.tag.hidden || false}
             disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Hidden</label>
         </div>
         <div className="tag-edit__field">
           <input type="checkbox"
             onChange={this.toggleSensitive.bind(this)}
-            checked={this.props.tag.legallySensitive}
+            checked={this.props.tag.legallySensitive || false}
             disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Legally Sensitive</label>
         </div>
