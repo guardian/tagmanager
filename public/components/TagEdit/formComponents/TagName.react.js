@@ -189,14 +189,14 @@ export default class TagNameEdit extends React.Component {
       <div className="tag-edit__input-group">
         <div className="tag-edit__name">
           <label className="tag-edit__input-group__header">External Name</label>
-          <input className="tag-edit__input" type="text" value={this.props.tag.externalName} onChange={this.onUpdateExternalName.bind(this)} disabled={!this.props.tagEditable}/>
+          <input className="tag-edit__input" type="text" value={this.props.tag.externalName || ""} onChange={this.onUpdateExternalName.bind(this)} disabled={!this.props.tagEditable}/>
           <div className="tag-edit__linked-field">
             <div className={classNames.internalName.link}></div>
             <div className={classNames.internalName.lock} onClick={this.toggleInternalNameLock.bind(this)}></div>
             <label>Internal Name</label>
             <div className="tag-edit__linked-field__input-container">
               <input type="text"
-                value={this.props.tag.internalName}
+                value={this.props.tag.internalName || ""}
                 onChange={this.onUpdateInternalName.bind(this)}
                 disabled={!this.props.tagEditable}/>
             </div>
@@ -207,7 +207,7 @@ export default class TagNameEdit extends React.Component {
             <label>Sort by name</label>
             <div className="tag-edit__linked-field__input-container">
               <input type="text"
-                value={this.props.tag.comparableValue}
+                value={this.props.tag.comparableValue || ""}
                 onChange={this.onUpdateComparableValue.bind(this)}
                 disabled={!this.props.tagEditable}/>
             </div>

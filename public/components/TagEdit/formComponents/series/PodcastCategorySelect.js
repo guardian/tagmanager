@@ -60,7 +60,7 @@ export default class PodcastCategorySelect extends React.Component {
     return (
       <div className="tag-edit__field">
         <label className="tag-edit__label">Sub Category</label>
-        <select value={categories.sub} onChange={this.updateSecondaryPodcastCategory.bind(this)}>
+        <select value={categories.sub || ""} onChange={this.updateSecondaryPodcastCategory.bind(this)}>
           <option value=""></option>
           {activeCategory.subCategories.map(function(cat) {
             return (
@@ -84,7 +84,7 @@ export default class PodcastCategorySelect extends React.Component {
       <div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Main Category</label>
-          <select value={categories.main} onChange={this.updateMainPodcastCategory.bind(this)}>
+          <select value={categories.main || ""} onChange={this.updateMainPodcastCategory.bind(this)}>
             <option value=""></option>
             {podcastCategories.map(function(cat) {
               return (
