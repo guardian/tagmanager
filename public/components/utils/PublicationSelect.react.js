@@ -40,7 +40,7 @@ export default class PublicationSelect extends React.Component {
     }
 
     return (
-      <select value={this.props.selectedId} onChange={this.props.onChange} disabled={this.props.disabled}>
+      <select value={this.props.selectedId || false} onChange={this.props.onChange} disabled={this.props.disabled}>
         {!this.props.selectedId || this.props.showBlank ? <option value={false}></option> : false}
         {this.state.publications.sort((a, b) => {return a.internalName > b.internalName ? 1 : -1;}).map(function(s) {
           return (

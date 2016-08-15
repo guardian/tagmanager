@@ -18,7 +18,7 @@ export default class TypeSelect extends React.Component {
     }
 
     return (
-      <select value={this.props.selectedType} onChange={this.props.onChange} disabled={!!this.props.forceDisabled}>
+      <select value={this.props.selectedType || ""} onChange={this.props.onChange} disabled={!!this.props.forceDisabled}>
         {!this.props.selectedType ? <option></option> : false}
         {this.props.types.sort((a, b) => {return a > b ? 1 : -1;}).map(function(type) {
 
