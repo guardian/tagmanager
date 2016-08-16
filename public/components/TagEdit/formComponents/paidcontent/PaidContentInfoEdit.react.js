@@ -135,7 +135,7 @@ export default class PaidContentInfoEdit extends React.Component {
           </select>
         </div>
       </div>
-      <SponsorEdit sponsorship={paidContentSponsorship} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
+      <SponsorEdit sponsorship={paidContentSponsorship} paidContentTagType={selectPaidContentType} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
       <ValidityEdit sponsorship={paidContentSponsorship} updateSponsorship={this.updatePaidContentSponsorship.bind(this)}/>
       <HostedContentInfoEdit paidContentInformation={this.props.tag.paidContentInformation} updatePaidContentInformation={this.updatePaidContentInformation.bind(this)} />
     </div>
