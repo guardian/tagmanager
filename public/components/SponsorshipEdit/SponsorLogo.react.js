@@ -52,6 +52,19 @@ export default class SponsorEdit extends React.Component {
     return (<div>{this.state.errorMessage}</div>);
   }
 
+
+  renderImageError(imageAsset) {
+    if (imageAsset.height < 500 && imageAsset.width < 500 ) {
+      return false;
+    }
+
+    return (
+      <div className="tag-edit__image__error">
+        <i className="i-info-grey" /> The uploaded logo is larger than required.
+      </div>
+    );
+  }
+
   render () {
 
     if (!this.props.logo) {
@@ -76,6 +89,7 @@ export default class SponsorEdit extends React.Component {
           <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
             <i className="i-cross-red" />Remove image
           </div>
+          {this.renderImageError(imageAsset)}
         </div>
       </div>
     );
