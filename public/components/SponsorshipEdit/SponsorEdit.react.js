@@ -1,5 +1,6 @@
 import React from 'react';
 import SponsorLogo from './SponsorLogo.react';
+import {PAID_HOSTEDCONTENT_TYPE} from '../../constants/paidContentTagTypes';
 
 export default class SponsorEdit extends React.Component {
 
@@ -37,6 +38,9 @@ export default class SponsorEdit extends React.Component {
       return false;
     }
 
+    const logoWidth = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 140;
+    const logoHeight = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 90;
+
     return (
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Sponsor</label>
@@ -47,7 +51,7 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Logo</label>
-          <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)} requiredWidth={140} requiredHeight={90}/>
+          <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)} requiredWidth={logoWidth} requiredHeight={logoHeight}/>
         </div>
 
         <div className="tag-edit__field">

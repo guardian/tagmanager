@@ -17,7 +17,6 @@ export default class SponsorEdit extends React.Component {
 
   fileUploaded(e) {
     const resp = e.target;
-    console.log(e);
     if (resp.status === 200) {
       this.props.onImageUpdated(JSON.parse(e.target.response));
     } else {
