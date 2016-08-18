@@ -60,7 +60,7 @@ export default class SponsorEdit extends React.Component {
 
     return (
       <div className="tag-edit__image__error">
-        <i className="i-info-grey" /> The uploaded logo is larger than required.
+        <i className="i-info-grey" /> Note: The uploaded logo is greater than 500px.
       </div>
     );
   }
