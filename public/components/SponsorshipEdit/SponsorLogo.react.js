@@ -17,7 +17,6 @@ export default class SponsorEdit extends React.Component {
 
   fileUploaded(e) {
     const resp = e.target;
-    console.log(e);
     if (resp.status === 200) {
       this.props.onImageUpdated(JSON.parse(e.target.response));
     } else {
@@ -53,6 +52,19 @@ export default class SponsorEdit extends React.Component {
     return (<div>{this.state.errorMessage}</div>);
   }
 
+
+  renderImageError(imageAsset) {
+    if (imageAsset.height < 500 && imageAsset.width < 500 ) {
+      return false;
+    }
+
+    return (
+      <div className="tag-edit__image__error">
+        <i className="i-info-grey" /> Note: The uploaded logo is greater than 500px.
+      </div>
+    );
+  }
+
   render () {
 
     if (!this.props.logo) {
@@ -77,6 +89,7 @@ export default class SponsorEdit extends React.Component {
           <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
             <i className="i-cross-red" />Remove image
           </div>
+          {this.renderImageError(imageAsset)}
         </div>
       </div>
     );
