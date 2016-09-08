@@ -33,9 +33,9 @@ object Support extends Controller with PanDomainAuthActions {
   def validateImageDimensions(image: File, requiredWidth: Option[Long], requiredHeight: Option[Long]): Boolean = {
     (requiredWidth, requiredHeight) match {
       case (None, None) => true
-      case (Some(width), None) => width == ImageMetadataService.imageWidth(image)
-      case (None, Some(height)) => height == ImageMetadataService.imageHeight(image)
-      case (Some(width), Some(height)) => width == ImageMetadataService.imageWidth(image) && height == ImageMetadataService.imageHeight(image)
+      case (Some(width), None) => width >= ImageMetadataService.imageWidth(image)
+      case (None, Some(height)) => height >= ImageMetadataService.imageHeight(image)
+      case (Some(width), Some(height)) => width >= ImageMetadataService.imageWidth(image) && height >= ImageMetadataService.imageHeight(image)
     }
   }
 
