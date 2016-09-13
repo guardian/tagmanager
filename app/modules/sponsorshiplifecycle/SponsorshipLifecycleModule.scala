@@ -116,6 +116,12 @@ class SponsorshipExpirer extends AbstractScheduledService {
     ) {
       expirePaidContentTag(tagId)
     }
+    for(
+      sections <- s.sections;
+      sectionId <- sections
+    ) {
+      removeSponsorshipFromSection(s.id, sectionId)
+    }
   }
 
   private def expireSponsorship(s: Sponsorship): Unit = {
