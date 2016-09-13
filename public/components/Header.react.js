@@ -19,6 +19,7 @@ export default class Header extends React.Component {
                 <div className="header__children">
                     <nav className="links">
                         <HeaderMenuItem to="/audit">Audit Logs</HeaderMenuItem>
+                        <HeaderMenuItem to="/sponsorship">Commercial</HeaderMenuItem>
                         <HeaderMenuItem to="/microsite">Microsite Manager</HeaderMenuItem>
                         <HeaderMenuItem to="/section">Section Editor</HeaderMenuItem>
                         <HeaderMenuItem to="/mapping">Mapping Manager</HeaderMenuItem>
