@@ -112,4 +112,5 @@ GET            /support/fixDanglingParents                             controlle
 # Migration endpoints
 GET            /migration/paidContent                                  controllers.Migration.showPaidContentUploadForm
 POST           /migration/paidContent                                  controllers.Migration.migratePaidContent
+GET           /migration/moveToSections                                  controllers.Migration.movePaidcontentSponsorshipUpToSection
 

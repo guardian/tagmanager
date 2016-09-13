@@ -39,7 +39,7 @@ object SponsorshipOperations {
   def addSponsorshipToSection(sponsorshipId: Long, sectionId: Long)(implicit username: Option[String]): Unit = {
     Logger.info(s"adding sponsorship $sponsorshipId to section $sectionId")
     SectionRepository.getSection(sectionId).foreach { s =>
-      val sponsoredSection = s.copy(activeSponsorships = sponsorshipId :: s.activeSponsorships )
+      val sponsoredSection = s.copy(activeSponsorships = (sponsorshipId :: s.activeSponsorships).distinct )
       val result = SectionRepository.updateSection(sponsoredSection)
 
       KinesisStreams.sectionUpdateStream.publishUpdate(sponsoredSection.id.toString, SectionEvent(EventType.Update, sponsoredSection.id, Some(sponsoredSection.asThrift)))
