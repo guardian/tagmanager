@@ -1,9 +1,10 @@
 package controllers
 
-import model.Sponsorship
+import model.{Sponsorship, Tag}
 import permissions.TriggerMigrationPermissionsCheck
 import play.api.libs.json.Json
 import play.api.mvc.Controller
+import repositories._
 import services.migration.PaidContentMigrator
 
 import scala.io.Source
@@ -28,4 +29,38 @@ object Migration extends Controller with PanDomainAuthActions {
       Ok(s"Migrated ${sponsorships.length} tags to paid content type")
     }.getOrElse(BadRequest("unable to read file"))
   }
+
+  def movePaidcontentSponsorshipUpToSection = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+
+    implicit val username = Some("sponsorship Migration")
+
+    val paidContentTags = TagLookupCache.search(new TagSearchCriteria(types = Some(List("PaidContent"))))
+
+    var count = 0
+
+    paidContentTags foreach{ tag =>
+      val section = tag.section.flatMap{sid => SectionRepository.getSection(sid)}
+      section foreach { s =>
+        if (s.sectionTagId == tag.id) {
+          val sponsorship = tag.sponsorship.flatMap{sid => SponsorshipRepository.getSponsorship(sid)}
+
+          val targetedSponsorship = sponsorship map { spon =>
+            val targetSections = spon.sections.getOrElse(Nil)
+            val updatedSponsorship = spon.copy(sections = Some((s.id :: targetSections).distinct))
+
+            SponsorshipRepository.updateSponsorship(updatedSponsorship)
+
+            if(updatedSponsorship.status == "active"){
+              SponsorshipOperations.addSponsorshipToSection(updatedSponsorship.id, s.id)
+              count = count + 1
+            }
+          }
+
+        }
+      }
+    }
+
+    Ok(s"updated $count sections")
+  }
+
 }
