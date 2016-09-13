@@ -22,7 +22,7 @@ case class InlinePaidContentSponsorshipCommand(
                          aboutLink: Option[String] = None
                                     ) {
 
-  def createSponsorship(tagId: Long) = {
+  def createSponsorship(tagId: Long, createdSectionId: Option[Long]) = {
     val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
     val sponsorship = Sponsorship(
@@ -36,7 +36,7 @@ case class InlinePaidContentSponsorshipCommand(
       sponsorLink = sponsorLink,
       aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
       tags = Some(List(tagId)),
-      sections = None,
+      sections = createdSectionId.map(List(_)),
       targeting = None
     )
 
@@ -114,6 +114,8 @@ case class CreateTagCommand(
       section
     }
 
+    val createdSectionId = if(createMicrosite) { sectionId } else { None }
+
     val calculatedPath = preCalculatedPath match {
       case Some(path) => path
       case None => TagPathCalculator.calculatePath(`type`, slug, sectionId, trackingInformation.map(_.trackingType))
@@ -123,7 +125,7 @@ case class CreateTagCommand(
 
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
-    val createdSponsorship = sponsorship flatMap(_.createSponsorship(tagId))
+    val createdSponsorship = sponsorship flatMap(_.createSponsorship(tagId, createdSectionId))
     val createdSponsorshipActive = createdSponsorship.map(_.status == "active").getOrElse(false)
 
     val tag = Tag(
@@ -161,6 +163,15 @@ case class CreateTagCommand(
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
     TagAuditRepository.upsertTagAudit(TagAudit.created(tag))
+
+    if(createdSponsorshipActive) {
+      for (
+        sectionId <- createdSectionId;
+        sponsorship <- createdSponsorship
+      ) {
+        SponsorshipOperations.addSponsorshipToSection(sponsorship.id, sectionId)
+      }
+    }
 
     result
   }
