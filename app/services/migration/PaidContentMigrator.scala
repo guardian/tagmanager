@@ -22,16 +22,17 @@ object PaidContentMigrator {
       try {
         Logger.info(s"migrating tag ${t.internalName} to paid content type")
 
-        if (sponsorship.sponsorshipType != "paidContent") {
-          Logger.info(s"sponsorship provided is not a paid content type, aborting")
-          throw new AbortItemMigrationException
-        }
+//        if (sponsorship.sponsorshipType != "paidContent") {
+//          Logger.info(s"sponsorship provided is not a paid content type, aborting")
+//          throw new AbortItemMigrationException
+//        }
 
         val status = SponsorshipStatusCalculator.calculateStatus(sponsorship.validFrom, sponsorship.validTo)
         val sponsorshipWithStatus = sponsorship.copy(
           status = status,
           tags = Some(tagIds),
-          sections = None
+          sections = None,
+          sponsorshipType = "paidContent"
         )
 
         val paidContentTag = t.copy(
