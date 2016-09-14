@@ -65,13 +65,12 @@ object Migration extends Controller with PanDomainAuthActions {
 
   def flattenSponsoredMicrosite(sponsorshipId: Long) =  (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
     implicit val username = Some("sponsorship Migration")
-    
+
     val spons = SponsorshipRepository.getSponsorship(sponsorshipId)
 
     var count = 0
     spons.foreach { s =>
       PaidContentMigrator.migrate(s)
-
       for (
         tags <- s.tags;
         tagId <- tags;
@@ -80,9 +79,11 @@ object Migration extends Controller with PanDomainAuthActions {
         val section = tag.section.flatMap { sid => SectionRepository.getSection(sid) }
         section foreach { s =>
           if (s.sectionTagId == tag.id) {
+
             val sponsorship = tag.sponsorship.flatMap { sid => SponsorshipRepository.getSponsorship(sid) }
 
             val targetedSponsorship = sponsorship map { spon =>
+
               val targetSections = spon.sections.getOrElse(Nil)
               val updatedSponsorship = spon.copy(sections = Some((s.id :: targetSections).distinct))
 
