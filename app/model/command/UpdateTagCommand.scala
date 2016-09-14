@@ -1,9 +1,9 @@
 package model.command
 
 import com.gu.tagmanagement._
-import model.{DenormalisedTag, TagAudit, Tag}
+import model.{DenormalisedTag, Tag, TagAudit}
 import play.api.Logger
-import repositories.{SponsorshipRepository, TagAuditRepository, TagRepository}
+import repositories.{SectionRepository, SponsorshipRepository, TagAuditRepository, TagRepository}
 import services.KinesisStreams
 import org.joda.time.{DateTime, DateTimeZone}
 import model.command._
@@ -23,10 +23,21 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
 
     val result = TagRepository.upsertTag(tag)
 
-    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
+    sponsorship.foreach{ spons =>
+      SponsorshipRepository.updateSponsorship(spons)
 
-    sponsorship.foreach( SponsorshipRepository.updateSponsorship )
-    //Need to trigger reindex?
+      // trigger section reindex to get sponsorship changes
+      for(
+        sections <- spons.sections;
+        sectionId <- sections;
+        section <- SectionRepository.getSection(sectionId)
+      ) {
+        KinesisStreams.sectionUpdateStream.publishUpdate(section.id.toString, SectionEvent(EventType.Update, section.id, Some(section.asThrift)))
+      }
+
+    }
+    
+    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
     existingTag foreach {(existing) =>
       if (tag.externalReferences != existing.externalReferences) {
