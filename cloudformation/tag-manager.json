@@ -49,6 +49,10 @@
     "AuditingRoleToAssume": {
       "Description": "Auditing to assume for cross account access to auditing account",
       "Type": "String"
+    },
+    "VulnerabilityScanningSecurityGroup": {
+      "Description": "Security group that grants access to the account's Vulnerability Scanner",
+      "Type": "AWS::EC2::SecurityGroup::Id"
     }
   },
   "Mappings": {
@@ -440,7 +444,8 @@
         "ImageId":{ "Ref":"MachineImagesAMI" },
         "SecurityGroups": [
           { "Ref": "AppServerSecurityGroup" },
-          { "Ref": "SSHSecurityGroup" }
+          { "Ref": "SSHSecurityGroup" },
+          { "Ref": "VulnerabilityScanningSecurityGroup"}
         ],
         "InstanceType":{ "Fn::FindInMap": [ "Config", { "Ref": "Stage" }, "InstanceType" ] },
         "IamInstanceProfile": {"Ref": "TagManagerInstanceProfile"},
