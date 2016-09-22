@@ -13,6 +13,10 @@ export default class TargetingEdit extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      pickMicrosite: false
+    };
   }
 
   onTagSelected(tag) {
@@ -49,6 +53,10 @@ export default class TargetingEdit extends React.Component {
     }));
   }
 
+  togglePickingMicrosites() {
+    this.setState({pickMicrosite: !this.state.pickMicrosite});
+  }
+
   renderTags(tags) {
     tags = tags || [];
     var selectTagFn = this.onTagSelected.bind(this);
@@ -83,10 +91,11 @@ export default class TargetingEdit extends React.Component {
                 </div>
             );
           })}
+          <input type="checkbox" checked={this.state.pickMicrosite} onChange={this.togglePickingMicrosites.bind(this)} /> Show Microsites
           <SectionSelect
               selectedId=""
               sections={this.props.sections}
-              isMicrosite={false}
+              isMicrosite={this.state.pickMicrosite}
               onChange={selectSectionFn}
           />
         </div>
