@@ -71,7 +71,7 @@ class SponsorshipDisplay extends React.Component {
       return (
         <div className="sponsorship-edit">
           <div className="sponsorship-edit__column--sidebar">
-            <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
+            <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.updateSponsorshipAndCheckClashes.bind(this)}/>
           </div>
           <div className="sponsorship-edit__column">
             <div className="tag-edit__input-group">
