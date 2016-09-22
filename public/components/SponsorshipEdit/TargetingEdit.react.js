@@ -64,7 +64,7 @@ export default class TargetingEdit extends React.Component {
               </div>
             )
           })}
-          <TagSelect onTagClick={selectTagFn}/>
+          <TagSelect onTagClick={selectTagFn} tagType="topic,series" />
         </div>
     );
   }
