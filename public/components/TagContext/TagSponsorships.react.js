@@ -68,13 +68,9 @@ export default class TagSponsorships extends React.Component {
   }
 
   renderSponsorships(sponsorships) {
-    console.log('spons list is', sponsorships);
     if(sponsorships.length == 0) {
-      console.log('rendering empty spons', sponsorships.length == 0)
       return (<span>No sponsorships found</span>);
     }
-
-    console.log('rendering spons table')
 
     return(<table className="grid-table tag-references">
         <thead className="tag-references__header">
