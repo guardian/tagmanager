@@ -1,6 +1,7 @@
 import React from 'react';
 import SectionEdit from '../SectionEdit/SectionEdit.react';
 import SectionEdition from '../SectionEdit/SectionEditions.react';
+import SectionSponsorships from '../SectionEdit/SectionSponsorships.react';
 import SaveButton from '../utils/SaveButton.react';
 import UnexpireMicrosite from './UnexpireMicrosite.react';
 import ExpireMicrosite from './ExpireMicrosite.react';
@@ -54,6 +55,7 @@ class SectionDisplay extends React.Component {
         </div>
           <div className="section-edit__column">
             <SectionEdition section={this.props.section} updateEditions={this.updateEditions.bind(this)} saveState={this.props.saveState} refreshSection={this.resetSection.bind(this)}/>
+            <SectionSponsorships section={this.props.section}/>
           </div>
           <div className="section-edit__column"></div>
           <SaveButton isHidden={!this.isSectionDirty()} onSaveClick={this.saveSection.bind(this)} onResetClick={this.resetSection.bind(this)}/>

@@ -39,6 +39,7 @@ POST           /api/sponsorship                                        controlle
 PUT            /api/sponsorship/:id                                    controllers.TagManagementApi.updateSponsorship(id: Long)
 GET            /api/clashingSponsorships                               controllers.TagManagementApi.clashingSponsorships(id: Option[Long], tagIds: Option[String], sectionIds: Option[String], validFrom: Option[Long], validTo: Option[Long], editions: Option[String])
 GET            /api/tag/:id/activeSponsorships                         controllers.TagManagementApi.activeSponsorshipsForTag(id: Long)
+GET            /api/section/:id/activeSponsorships                     controllers.TagManagementApi.activeSponsorshipsForSection(id: Long)
 
 GET            /api/referenceTypes                                     controllers.TagManagementApi.listReferenceTypes
 

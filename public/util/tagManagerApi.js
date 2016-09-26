@@ -179,6 +179,14 @@ export default {
     });
   },
 
+  getActiveSponsorhipsForSection: (sectionId) => {
+    return PandaReqwest({
+      url: '/api/section/' + sectionId + '/activeSponsorships',
+      method: 'get',
+      type: 'json'
+    });
+  },
+
   getClashingSponsorships: (sponsorship) => {
     const command = {};
 
