@@ -1,6 +1,7 @@
 import React from 'react';
 import TagRelationship from './TagRelationship/TagRelationship.react';
 import TagReferences from './TagReferences/TagReferences.react';
+import TagSponsorships from './TagSponsorships.react';
 
 export default class TagContext extends React.Component {
 
@@ -18,6 +19,7 @@ export default class TagContext extends React.Component {
         <div className="tag-context">
           <TagRelationship {...this.props} />
           <TagReferences {...this.props} />
+          <TagSponsorships {...this.props} />
         </div>
       );
     }
