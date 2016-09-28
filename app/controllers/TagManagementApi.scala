@@ -250,6 +250,14 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
+  def activeSponsorshipsForTag(id: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(SponsorshipRepository.searchSponsorships(SponsorshipSearchCriteria(tagId = Some(id), status = Some("active")))))
+  }
+
+  def activeSponsorshipsForSection(id: Long) = APIAuthAction { req =>
+    Ok(Json.toJson(SponsorshipRepository.searchSponsorships(SponsorshipSearchCriteria(sectionId = Some(id), status = Some("active")))))
+  }
+
   def getAuditForTag(tagId: Long) = APIAuthAction { req =>
     Ok(Json.toJson(TagAuditRepository.getAuditTrailForTag(tagId)))
   }
