@@ -47,7 +47,7 @@ case class Sponsorship (
     sponsorshipType = SponsorshipType.valueOf(sponsorshipType).get,
     sponsorName = sponsorName,
     sponsorLogo = sponsorLogo.asThrift,
-  //  highContrastSponsorLogo = highContrastSponsorLogo.map(_.asThrift),
+    highContrastSponsorLogo = highContrastSponsorLogo.map(_.asThrift),
     sponsorLink = sponsorLink,
     aboutLink = aboutLink,
     targeting = targeting.map(_.asThrift)
