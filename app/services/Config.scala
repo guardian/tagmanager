@@ -147,7 +147,11 @@ class DevConfig extends Config {
   override def pandaAuthCallback: String = "https://tagmanager.local.dev-gutools.co.uk/oauthCallback"
 
   override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
-  override def corsableDomains: Seq[String] = Seq(composerDomain, "https://targeting.local.dev-gutools.co.uk")
+  override def corsableDomains: Seq[String] = Seq(
+    composerDomain,
+    "https://targeting.local.dev-gutools.co.uk",
+    "https://campaign-central.local.dev-gutools.co.uk"
+  )
 
   //Disables submission of audits to the audit Kinesis server, requires frontCms credentials locally to enable
   override def enableAuditStreaming: Boolean = false
@@ -193,7 +197,9 @@ class CodeConfig extends Config {
     "https://composer-secondary.code.dev-gutools.co.uk",
     "https://composer.local.dev-gutools.co.uk",
     "https://targeting.code.dev-gutools.co.uk",
-    "https://targeting.local.dev-gutools.co.uk")
+    "https://targeting.local.dev-gutools.co.uk",
+    "https://campaign-central.code.dev-gutools.co.uk",
+    "https://campaign-central.local.dev-gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
   override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
@@ -234,7 +240,11 @@ class ProdConfig extends Config {
   override def pandaAuthCallback: String = "https://tagmanager.gutools.co.uk/oauthCallback"
 
   override def composerDomain: String = "https://composer.gutools.co.uk"
-  override def corsableDomains: Seq[String] = Seq(composerDomain, "https://composer-secondary.gutools.co.uk", "https://targeting.gutools.co.uk")
+  override def corsableDomains: Seq[String] = Seq(
+    composerDomain,
+    "https://composer-secondary.gutools.co.uk",
+    "https://targeting.gutools.co.uk",
+    "https://campaign-central.gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
   override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
