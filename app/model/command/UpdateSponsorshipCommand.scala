@@ -16,6 +16,7 @@ case class UpdateSponsorshipCommand(
   sponsorshipType: String,
   sponsorName: String,
   sponsorLogo: Image,
+  highContrastSponsorLogo: Option[Image],
   sponsorLink: String,
   aboutLink: Option[String],
   tags: Option[List[Long]],
@@ -37,6 +38,7 @@ case class UpdateSponsorshipCommand(
       sponsorshipType = sponsorshipType,
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
+      highContrastSponsorLogo = highContrastSponsorLogo,
       sponsorLink = sponsorLink,
       aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
       tags = tags,
@@ -101,6 +103,7 @@ object UpdateSponsorshipCommand{
       (JsPath \ "sponsorshipType").format[String] and
       (JsPath \ "sponsorName").format[String] and
       (JsPath \ "sponsorLogo").format[Image] and
+      (JsPath \ "highContrastSponsorLogo").formatNullable[Image] and
       (JsPath \ "sponsorLink").format[String] and
       (JsPath \ "aboutLink").formatNullable[String] and
       (JsPath \ "tags").formatNullable[List[Long]] and

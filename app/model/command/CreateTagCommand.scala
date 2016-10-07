@@ -18,6 +18,7 @@ case class InlinePaidContentSponsorshipCommand(
                          validTo: Option[DateTime],
                          sponsorName: String,
                          sponsorLogo: Image,
+                         highContrastSponsorLogo: Option[Image] = None,
                          sponsorLink: String,
                          aboutLink: Option[String] = None
                                     ) {
@@ -33,6 +34,7 @@ case class InlinePaidContentSponsorshipCommand(
       sponsorshipType = "paidContent",
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
+      highContrastSponsorLogo = highContrastSponsorLogo,
       sponsorLink = sponsorLink,
       aboutLink = aboutLink.flatMap{s => if(StringUtils.isNotBlank(s)) Some(s) else None },
       tags = Some(List(tagId)),
