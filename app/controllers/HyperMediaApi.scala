@@ -35,6 +35,8 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def hyper = CORSable(conf.corsableDomains: _*) {
     Action {
       val res = EmptyResponse()
+        .addLink("tag-sponsorships", HyperMediaHelpers.fullUri("/hyper/tags/{id}/sponsorships"))
+        .addLink("sponsorship-item", HyperMediaHelpers.fullUri("/hyper/sponsorships/{id}"))
         .addLink("tag-item", HyperMediaHelpers.fullUri("/hyper/tags/{id}"))
         .addLink("tags", HyperMediaHelpers.fullUri("/hyper/tags{?offset,limit,query,type,internalName,externalName,externalReferenceType,externalReferenceToken,subType}"))
       Ok(Json.toJson(res))
@@ -75,6 +77,29 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
       }
 
       Ok(Json.toJson(CollectionResponse(offset, limit, Some(tags.size), tags)))
+    }
+  }
+
+  def sponsorship(id: Long) = CORSable(conf.corsableDomains: _*) {
+    Action {
+      SponsorshipRepository.getSponsorship(id).map { s =>
+        Ok(Json.toJson(EntityResponse(s)))
+      }.getOrElse(NotFound)
+    }
+  }
+
+  def tagSponsorships(id: Long) = CORSable(conf.corsableDomains: _*) {
+    Action {
+      TagRepository.getTag(id).map { tag =>
+        val sponsorships = tag.activeSponsorships.flatMap{sid => SponsorshipRepository.getSponsorship(sid)}
+
+        Ok(Json.toJson(CollectionResponse(
+          offset = 0,
+          limit = sponsorships.length,
+          total = Some(sponsorships.length),
+          data = sponsorships.map{ s => EmbeddedEntity(HyperMediaHelpers.sponsorshipUri(s.id), Some(s))}
+        )))
+      }.getOrElse(NotFound)
     }
   }
 

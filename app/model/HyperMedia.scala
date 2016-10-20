@@ -63,5 +63,6 @@ object EmptyResponse { implicit val jsonWrites = Json.writes[EmptyResponse] }
 
 object HyperMediaHelpers {
   def tagUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/tags/${id}"
+  def sponsorshipUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/sponsorships/${id}"
   def fullUri(path: String): String = s"https://tagmanager.${conf.pandaDomain}${path}"
 }
