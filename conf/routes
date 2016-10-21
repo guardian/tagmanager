@@ -69,6 +69,8 @@ GET            /reindex/sections                                       controlle
 GET            /hyper                                                  controllers.HyperMediaApi.hyper
 GET            /hyper/tags                                             controllers.HyperMediaApi.tags
 GET            /hyper/tags/:id                                         controllers.HyperMediaApi.tag(id: Long)
+GET            /hyper/tags/:id/sponsorships                            controllers.HyperMediaApi.tagSponsorships(id: Long)
+GET            /hyper/sponsorships/:id                                 controllers.HyperMediaApi.sponsorship(id: Long)
 OPTIONS        /*all                                                   controllers.HyperMediaApi.preflight(all: String)
 
 # Tag export for inCopy
