@@ -67,9 +67,9 @@ object ReadOnlyApi extends Controller {
   }
 
   def deletesAsXml(since: Long) = Action {
-    val deletes = TagAuditRepository.getDeletes.map { audit =>
-      Delete(audit)
-    }.filter(_.date.getMillis > since)
+    val deletes = TagAuditRepository.getAuditsOfTagOperationsSince("deleted", since).map({
+      audit => Delete(audit)
+    }).sortBy(_.date.getMillis)
 
     Ok(
       <deletes>
@@ -79,10 +79,9 @@ object ReadOnlyApi extends Controller {
   }
 
   def createsAsXml(since: Long) = Action {
-    val audits = TagAuditRepository.getCreates.map { audit =>
-      Create(audit.tagId, audit.date)
-    }.filter(_.date.getMillis > since).sortBy(_.date.getMillis)
-
+    val audits = TagAuditRepository.getAuditsOfTagOperationsSince("created", since).map({
+      audit => Create(audit.tagId, audit.date)
+    }).sortBy(_.date.getMillis)
 
     val beginning = audits.headOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
     val end =  audits.lastOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
@@ -106,7 +105,7 @@ object ReadOnlyApi extends Controller {
     import helpers.XmlHelpers._
     import scala.xml.Node
 
-    val audits = TagAuditRepository.lastModifiedTags(since).sortBy(_.date.getMillis)
+    val audits = TagAuditRepository.getAuditsOfTagOperationsSince("updated", since).sortBy(_.date.getMillis)
 
     val beginning = audits.headOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))
     val end =  audits.lastOption.map(_.date.toString("yyyy-MM-dd'T'HH:mm:ss.SSS"))

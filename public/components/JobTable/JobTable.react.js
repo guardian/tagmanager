@@ -6,7 +6,7 @@ import {hasPermission} from '../../util/verifyPermission';
 
 import tagManagerApi from '../../util/tagManagerApi';
 
-export default class JobTable extends React.Component {
+class JobTable extends React.Component {
 
     constructor(props) {
         super(props);
