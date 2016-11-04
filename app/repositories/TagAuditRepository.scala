@@ -7,9 +7,7 @@ import services.{Config, Dynamo, KinesisStreams}
 
 import scala.collection.JavaConversions._
 
-
 object TagAuditRepository {
-
   def upsertTagAudit(tagAudit: TagAudit) = {
 
     //Send onto Auditing Stream
@@ -36,6 +34,12 @@ object TagAuditRepository {
       .map(TagAudit.fromItem).toList
   }
 
+  def getAuditsOfTagOperationsSince(operation: String, since: Long): List[TagAudit] = {
+    Dynamo.tagAuditTable.getIndex("operation-date-index")
+      .query("operation", operation, new RangeKeyCondition("date").ge(since))
+      .map(TagAudit.fromItem).toList
+  }
+
   def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().map(TagAudit.fromItem).toList
   val lastModifiedTags: Long => List[TagAudit] = since => loadAllAudits
     .filter(x => (x.operation == "updated" && x.date.getMillis > since))
@@ -44,6 +48,4 @@ object TagAuditRepository {
   lazy val getMerges: List[TagAudit] = getType("merged")
   lazy val getDeletes: List[TagAudit] = getType("deleted")
   lazy val getCreates: List[TagAudit] = getType("created")
-
-
 }
