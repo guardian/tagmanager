@@ -62,9 +62,7 @@ case class Job(
   }
 
   def failJob(step: Step) = {
-    if (jobStatus != JobStatus.failed) {
-      jobStatus = JobStatus.failed
-    }
+    jobStatus = JobStatus.failed
   }
 
   def checkIfComplete() = {
