@@ -33,6 +33,7 @@ case class Job(
       step.stepStatus match {
         case StepStatus.ready => processStep(step)
         case StepStatus.processed => checkStep(step)
+        case StepStatus.failed => failJob(step)
         case _ => {}
       }
 
@@ -57,6 +58,12 @@ case class Job(
       case NonFatal(e) => {
         jobStatus = JobStatus.failed
       }
+    }
+  }
+
+  def failJob(step: Step) = {
+    if (jobStatus != JobStatus.failed) {
+      jobStatus = JobStatus.failed
     }
   }
 
