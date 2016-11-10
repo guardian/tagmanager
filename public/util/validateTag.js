@@ -85,6 +85,17 @@ function validateTrackingTag(tag) {
 
 }
 
+function validateTagName(tag) {
+  if (tag.externalName && tag.externalName.endsWith(' ')) {
+    return [{
+      fieldName: 'externalName',
+      message: 'External name has a trailing space.'
+    }];
+  }
+
+  return [];
+}
+
 export function validateTag(tag) {
   let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
   let booleanFields = ['hidden', 'legallySensitive'];
@@ -101,6 +112,8 @@ export function validateTag(tag) {
   } else if (tag.type === tagTypes.tracking.name) {
     additionalErrors = additionalErrors.concat(validateTrackingTag(tag));
   }
+
+  additionalErrors = additionalErrors.concat(validateTagName(tag));
 
   return []
     .concat(validateMandatoryFields(mandatoryFields, tag))
