@@ -194,15 +194,6 @@ case class DenormalisedTag (
 
   def normalise(): (Tag, Option[Sponsorship]) = {
 
-    val updatedSponsorship: Option[Sponsorship] = sponsorship.map { s => s.copy(status = SponsorshipStatusCalculator.calculateStatus(s.validFrom, s.validTo)) }
-
-    val updatedActiveSponsorships = if (`type` == "PaidContent") {
-      // only paid content tags control the active sponsorships on update
-      updatedSponsorship.toList.filter(_.status == "active").map(_.id)
-    } else {
-      activeSponsorships
-    }
-
     val tag = Tag(
       id = id,
       path = path,
@@ -226,12 +217,12 @@ case class DenormalisedTag (
       isMicrosite = isMicrosite,
       capiSectionId = capiSectionId,
       trackingInformation = trackingInformation,
-      activeSponsorships = updatedActiveSponsorships,
-      sponsorship = updatedSponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
-      paidContentInformation = paidContentInformation, // for paid content tags, they have an associated sponsorship but it may not be active
-      expired = updatedSponsorship.map(_.status == "expired").getOrElse(false)
+      activeSponsorships = activeSponsorships,
+      sponsorship = sponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
+      paidContentInformation = paidContentInformation,
+      expired = expired
     )
-    (tag, updatedSponsorship)
+    (tag, sponsorship)
   }
 }
 
