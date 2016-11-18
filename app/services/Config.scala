@@ -87,6 +87,7 @@ sealed trait Config {
   def tagUpdateStreamName: String
   def sectionUpdateStreamName: String
   def taggingOperationsStreamName: String
+  def taggingOperationsReIndexStreamName: String
 
   def commercialExpiryStreamName: String
   def auditingStreamName: String
@@ -129,6 +130,7 @@ class DevConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-dev"
   override def sectionUpdateStreamName: String = "section-update-stream-dev"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-dev"
+  override def taggingOperationsReIndexStreamName: String = "tagging-reindex-operations-stream-dev"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-DEV-KELVIN"
   override def auditingStreamName: String = "auditing-CODE"
 
@@ -173,6 +175,7 @@ class CodeConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-CODE"
   override def sectionUpdateStreamName: String = "section-update-stream-CODE"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-CODE"
+  override def taggingOperationsReIndexStreamName: String = "tagging-reindex-operations-stream-CODE"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-CODE"
   override def auditingStreamName: String = "auditing-CODE"
 
@@ -223,6 +226,7 @@ class ProdConfig extends Config {
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
   override def sectionUpdateStreamName: String = "section-update-stream-PROD"
   override def taggingOperationsStreamName: String = "tagging-operations-stream-PROD"
+  override def taggingOperationsReIndexStreamName: String = "tagging-reindex-operations-stream-PROD"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-PROD"
 
   override def reindexTagsStreamName: String = "tag-reindex-PROD"
