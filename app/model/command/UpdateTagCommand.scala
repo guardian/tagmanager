@@ -1,9 +1,9 @@
 package model.command
 
 import com.gu.tagmanagement._
-import model.{DenormalisedTag, Tag, TagAudit}
+import model.{DenormalisedTag, SectionAudit, Tag, TagAudit}
 import play.api.Logger
-import repositories.{SectionRepository, SponsorshipRepository, TagAuditRepository, TagRepository}
+import repositories._
 import services.KinesisStreams
 import org.joda.time.{DateTime, DateTimeZone}
 import model.command._
@@ -23,11 +23,11 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
 
     val result = TagRepository.upsertTag(tag)
 
-    sponsorship.foreach{ spons =>
+    sponsorship.foreach { spons =>
       SponsorshipRepository.updateSponsorship(spons)
 
       // trigger section reindex to get sponsorship changes
-      for(
+      for (
         sections <- spons.sections;
         sectionId <- sections;
         section <- SectionRepository.getSection(sectionId)
@@ -35,6 +35,24 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
         KinesisStreams.sectionUpdateStream.publishUpdate(section.id.toString, SectionEvent(EventType.Update, section.id, Some(section.asThrift)))
       }
 
+    }
+
+    if (tag.`type` == "PaidContent" && tag.externalName != existingTag.map(_.externalName).getOrElse("")) {
+      Logger.debug("paid content tag name changed, checking checking section")
+      for (
+        sectionId <- tag.section;
+        section <- SectionRepository.getSection(sectionId)
+        if(section.sectionTagId == tag.id)
+      ) {
+        Logger.info(s"microsite's primary paidContent tag external name updated, updating section name (tag ${tag.id}, section ${sectionId} name ${tag.externalName})")
+        val renamedSection = section.copy(name = tag.externalName)
+        val updatedSection = SectionRepository.updateSection(renamedSection)
+
+        updatedSection foreach{ s =>
+          KinesisStreams.sectionUpdateStream.publishUpdate(s.id.toString, SectionEvent(EventType.Update, s.id, Some(s.asThrift)))
+          SectionAuditRepository.upsertSectionAudit(SectionAudit.updated(s))
+        }
+      }
     }
     
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
