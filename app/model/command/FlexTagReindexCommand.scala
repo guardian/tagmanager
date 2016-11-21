@@ -24,7 +24,7 @@ case class FlexTagReindexCommand(tag: Tag) extends Command {
           contentPath = contentPath
         )
         Logger.info(s"raising flex reindex for content $contentPath")
-        KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+        KinesisStreams.taggingOperationsReIndexStream.publishUpdate(contentPath.take(200), taggingOperation)
       }
     }
 
