@@ -47,7 +47,19 @@ object SponsorshipRepository {
       new ScanFilter("status").ne("active")
     ).map(Sponsorship.fromItem).toList
 
-    withEnd ::: withoutEnd
+    val withoutStartAndNotEnded = Dynamo.sponsorshipTable.scan(
+      new ScanFilter("validFrom").notExist(),
+      new ScanFilter("validTo").gt(now),
+      new ScanFilter("status").ne("active")
+    ).map(Sponsorship.fromItem).toList
+
+    val alwaysActive = Dynamo.sponsorshipTable.scan(
+      new ScanFilter("validFrom").notExist(),
+      new ScanFilter("validTo").notExist(),
+      new ScanFilter("status").ne("active")
+    ).map(Sponsorship.fromItem).toList
+
+    withEnd ::: withoutEnd ::: withoutStartAndNotEnded ::: alwaysActive
   }
 
   def getSponsorshipsToExpire: List[Sponsorship] = {
