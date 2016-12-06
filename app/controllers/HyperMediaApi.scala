@@ -91,7 +91,10 @@ object HyperMediaApi extends Controller with PanDomainAuthActions {
   def tagSponsorships(id: Long) = CORSable(conf.corsableDomains: _*) {
     Action {
       TagRepository.getTag(id).map { tag =>
-        val sponsorships = tag.activeSponsorships.flatMap{sid => SponsorshipRepository.getSponsorship(sid)}
+        val activeSponsorships = tag.activeSponsorships.flatMap{sid => SponsorshipRepository.getSponsorship(sid)}
+        val paidSponsorship = tag.sponsorship.flatMap(SponsorshipRepository.getSponsorship(_))
+
+        val sponsorships = (activeSponsorships ::: paidSponsorship.toList).distinct
 
         Ok(Json.toJson(CollectionResponse(
           offset = 0,
