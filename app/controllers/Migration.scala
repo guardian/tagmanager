@@ -115,7 +115,7 @@ object Migration extends Controller with PanDomainAuthActions {
 
     val missingSubType = paidContentTags.filter{t =>
       t.paidContentInformation.isEmpty ||
-        t.paidContentInformation.get.paidContentType.trim == null ||
+        t.paidContentInformation.get.paidContentType == null ||
         t.paidContentInformation.get.paidContentType.trim == ""
     }
 
