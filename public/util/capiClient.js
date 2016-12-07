@@ -56,7 +56,7 @@ export function searchPreviewContent (searchString, params) {
     const searchQueryString = searchString || '';
 
     return Reqwest({
-      url: getCapiPreviewUrl() + '&q=' + searchQueryString.replace(' ', ' AND ')  + '&' + query + '&show-fields=isLive,internalComposerCode',
+      url: getCapiPreviewUrl() + '&q=' + searchQueryString.replace(' ', ' AND ')  + '&' + query + '&show-fields=isLive,internalComposerCode&order-by=newest',
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'
