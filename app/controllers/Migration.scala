@@ -1,10 +1,13 @@
 package controllers
 
-import model.{Sponsorship, Tag}
+import com.gu.tagmanagement.{EventType, TagEvent}
+import model.command.FlexTagReindexCommand
+import model.{PaidContentInformation, Sponsorship, Tag, TagAudit}
 import permissions.TriggerMigrationPermissionsCheck
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 import repositories._
+import services.KinesisStreams
 import services.migration.PaidContentMigrator
 
 import scala.io.Source
@@ -101,6 +104,37 @@ object Migration extends Controller with PanDomainAuthActions {
     }
 
     Ok(s"updated $count partner zones")
+  }
+
+  def addMissingPaidContentTypes() = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+    implicit val username = Some("sponsorship Migration")
+
+    val paidContentTags = TagLookupCache.search(
+      TagSearchCriteria(types = Some(List("PaidContent")))
+    )
+
+    val missingSubType = paidContentTags.filter{t =>
+      t.paidContentInformation.isEmpty ||
+        t.paidContentInformation.get.paidContentType == null ||
+        t.paidContentInformation.get.paidContentType.trim == ""
+    }
+
+    missingSubType foreach{ t =>
+      val paidContentInformation = t.paidContentInformation match {
+        case Some(pc) => pc.copy(paidContentType = "Topic")
+        case None => PaidContentInformation(paidContentType = "Topic", campaignColour = None)
+      }
+      val withSubType = t.copy(paidContentInformation = Some(paidContentInformation))
+
+      TagRepository.upsertTag(withSubType) foreach { updatedTag =>
+        KinesisStreams.tagUpdateStream.publishUpdate(updatedTag.id.toString, TagEvent(EventType.Update, updatedTag.id, Some(updatedTag.asThrift)))
+        TagAuditRepository.upsertTagAudit(TagAudit.updated(updatedTag))
+        FlexTagReindexCommand(updatedTag).process()
+      }
+
+    }
+
+    Ok(missingSubType.map{t => t.externalName}.mkString("\n"))
   }
 
 }

@@ -118,5 +118,6 @@ GET            /migration/paidContent                                  controlle
 POST           /migration/paidContent                                  controllers.Migration.migratePaidContent
 GET           /migration/moveToSections                                controllers.Migration.movePaidcontentSponsorshipUpToSection
 GET           /migration/flattenSponsoredMicrosite/:sponsId            controllers.Migration.flattenSponsoredMicrosite(sponsId: Long)
+GET           /migration/addMissingPaidContentTypes                    controllers.Migration.addMissingPaidContentTypes
 
 

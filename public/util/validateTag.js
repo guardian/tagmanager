@@ -45,6 +45,8 @@ function validatePodcast(tag) {
 
 function validatePaidContent(tag) {
 
+  let paidContentErrors = [];
+
   if (!tag.sponsorship) {
     return [{
       fieldName: 'sponsorship',
@@ -52,6 +54,12 @@ function validatePaidContent(tag) {
     }];
   }
 
+  if (!tag.paidContentInformation || !tag.paidContentInformation.paidContentType) {
+    paidContentErrors.push({
+      fieldName: 'paidContentType',
+      message: "Mandatory field 'paid content type' is empty"
+    });
+  }
 
   if (tag.paidContentInformation && tag.paidContentInformation.paidContentType === 'HostedContent') {
 
@@ -59,16 +67,16 @@ function validatePaidContent(tag) {
     const hexCodeRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
     if (!tag.paidContentInformation.campaignColour || !tag.paidContentInformation.campaignColour.match(hexCodeRegex)) {
-      return [{
+      paidContentErrors.push({
         fieldName: 'campaignColour',
         message: 'Mandatory campaignColour information is missing or is invalid'
-      }];
+      });
     }
   }
 
   const mandatoryPaidContentFields = ['sponsorName', 'sponsorLogo', 'sponsorLink'];
 
-  return validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship);
+  return paidContentErrors.concat(validateMandatoryFields(mandatoryPaidContentFields, tag.sponsorship));
 }
 
 function validateTrackingTag(tag) {
