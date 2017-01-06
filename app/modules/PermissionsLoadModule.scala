@@ -18,6 +18,7 @@ import permissions._
 class PermissionsLoader @Inject() (lifecycle: ApplicationLifecycle) {
   load
 
+  // If you're getting an exception here about injection failures, you're probably lacking composer credentials
   def load {
     Permissions.list(PermissionsUser("preload@permissions"))
   }
