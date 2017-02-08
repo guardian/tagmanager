@@ -10,7 +10,7 @@ object SponsorshipOperations {
   def addSponsorshipToTag(sponsorshipId: Long, tagId: Long)(implicit username: Option[String]): Unit = {
     Logger.info(s"adding sponsorship $sponsorshipId to tag $tagId")
     TagRepository.getTag(tagId).foreach { t =>
-      val sponsoredTag = t.copy(activeSponsorships = sponsorshipId :: t.activeSponsorships )
+      val sponsoredTag = t.copy(activeSponsorships = (sponsorshipId :: t.activeSponsorships).distinct )
       val result = TagRepository.upsertTag(sponsoredTag)
 
       KinesisStreams.tagUpdateStream.publishUpdate(sponsoredTag.id.toString, TagEvent(EventType.Update, sponsoredTag.id, Some(sponsoredTag.asThrift)))
