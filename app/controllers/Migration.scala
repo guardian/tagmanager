@@ -137,4 +137,25 @@ object Migration extends Controller with PanDomainAuthActions {
     Ok(missingSubType.map{t => t.externalName}.mkString("\n"))
   }
 
+  def dudupeActiveSponsorships() = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+    implicit val username = Some("sponsorship Migration")
+
+    val allTags = TagLookupCache.allTags.get
+
+    val tagsWithDuplicatSpons = allTags.filter{t =>
+      t.activeSponsorships.length != t.activeSponsorships.distinct.length
+    }
+
+    for (
+      t <- tagsWithDuplicatSpons;
+      spons <- t.activeSponsorships.headOption
+    ){
+      // this is a massive cheat, the add operation not enforces distinctness so adding an already present sponsorship
+      // will cause the list to dedupe and the correct indexing messages to be sent.
+      SponsorshipOperations.addSponsorshipToTag(spons, t.id)
+    }
+
+    Ok(s"removed ${tagsWithDuplicatSpons.length} dupes")
+  }
+
 }
