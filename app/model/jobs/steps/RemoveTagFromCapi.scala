@@ -1,12 +1,15 @@
 package model.jobs.steps
 
-import com.gu.tagmanagement.{TagEvent, EventType}
+import com.gu.tagmanagement.{EventType, TagEvent}
 import model.Tag
 import repositories.ContentAPI
 import services.KinesisStreams
+
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 import play.api.Logger
+
+import scala.language.postfixOps
 
 case class RemoveTagFromCapi(tag: Tag,
   `type`: String = RemoveTagFromCapi.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
@@ -23,12 +26,8 @@ case class RemoveTagFromCapi(tag: Tag,
 
   override def check: Boolean = {
     ContentAPI.getTag(tag.path) match {
-      case Some(tag) => {
-        false
-      }
-      case None => {
-        true
-      }
+      case Some(_) => false
+      case None => true
     }
   }
 

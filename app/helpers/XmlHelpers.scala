@@ -11,11 +11,13 @@ object XmlHelpers {
 
   def addChild(n: Node, newChild: Node): Node = n match {
     case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
-    case _ => error("Can only add children to elements!")
+      val nodes = child ++ newChild
+      Elem.apply(prefix, label, attribs, scope, nodes.isEmpty, nodes : _*)
+    case _ => sys.error("Can only add children to elements!")
   }
 
   def createElem(name: String): Elem = {
-    Elem(null, name, Null, TopScope, Text(""))
+    val text = Text("")
+    Elem.apply(null, name, Null, TopScope, text.isEmpty, text)
   }
 }

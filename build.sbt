@@ -1,10 +1,18 @@
 addCommandAlias("dist", ";riffRaffArtifact")
 
-import play.PlayImport.PlayKeys._
+import play.sbt.PlayImport.PlayKeys._
 
 name := "tag-manager"
 
 version := "1.0"
+
+scalacOptions ++= Seq(
+  "-target:jvm-1.8",
+  "-encoding", "UTF-8",
+  "-unchecked",
+  "-deprecation",
+  "-feature"
+)
 
 resolvers += "Guardian Bintray" at "https://dl.bintray.com/guardian/editorial-tools"
 
@@ -46,8 +54,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
         "packages/cloudformation/tag-manager.json"
     ),
     doc in Compile <<= target.map(_ / "none"),
-    scalaVersion := "2.11.7",
-    scalaVersion in ThisBuild := "2.11.7",
+    scalaVersion := "2.11.8",
+    scalaVersion in ThisBuild := "2.11.8",
     libraryDependencies ++= dependencies
   )
   .settings(TagManager.settings: _*)

@@ -4,14 +4,15 @@ import java.util.concurrent.Executors
 
 import com.gu.contentapi.client.{ContentApiClientLogic, GuardianContentApiError}
 import com.gu.contentapi.client.model._
-import com.squareup.okhttp.{Credentials}
+import com.squareup.okhttp.Credentials
 import dispatch.FunctionHandler
 import play.api.Logger
 import services.Config
 
 import scala.annotation.tailrec
-import scala.concurrent.{Future, Await, ExecutionContext}
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 
 object ContentAPI {
@@ -37,7 +38,7 @@ object ContentAPI {
         pageSize = 0
       }
 
-      if (builder.length > 0) {
+      if (builder.nonEmpty) {
         builder.append(',')
       }
       builder.append(id)
@@ -49,7 +50,7 @@ object ContentAPI {
   }
 
   private def countTags(ids: String, pageSize: Int, apiTagId: String): Int = {
-    val response = previewApiClient.getResponse(new SearchQuery()
+    val response = previewApiClient.getResponse(SearchQuery()
       .ids(ids)
       .pageSize(pageSize)
       .showTags("all")
@@ -63,18 +64,17 @@ object ContentAPI {
   def getTag(apiTagId: String) = {
 
     try {
-      val response = previewApiClient.getResponse(new ItemQuery(apiTagId))
+      val response = previewApiClient.getResponse(ItemQuery(apiTagId))
       Await.result(response.map(_.tag), 5 seconds)
     } catch {
-      case GuardianContentApiError(404, _, _) => {
-        Logger.debug(s"No tag found for id ${apiTagId}")
+      case GuardianContentApiError(404, _, _) =>
+        Logger.debug(s"No tag found for id $apiTagId")
         None
-      }
     }
   }
 
   def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
-    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(1))
+    val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(1))
     val resultPage = Await.result(response, 5 seconds)
 
     resultPage.total
@@ -83,8 +83,8 @@ object ContentAPI {
 
   @tailrec
   def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.debug(s"Loading page ${page} of contentent ids for tag ${apiTagId}")
-    val response = previewApiClient.getResponse(new SearchQuery().tag(apiTagId).pageSize(100).page(page))
+    Logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
+    val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
 
@@ -99,8 +99,8 @@ object ContentAPI {
 
   @tailrec
   def getDraftContentIdsForSection(apiSectionId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.debug(s"Loading page ${page} of contentent ids for section ${apiSectionId}")
-    val response = previewApiClient.getResponse(new SearchQuery().section(apiSectionId).pageSize(100).page(page))
+    Logger.debug(s"Loading page $page of contentent ids for section $apiSectionId")
+    val response = previewApiClient.getResponse(SearchQuery().section(apiSectionId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
 
@@ -114,7 +114,7 @@ object ContentAPI {
   }
 
 
-  def shutdown: Unit = {
+  def shutdown(): Unit = {
     previewApiClient.shutdown()
 
     executorService.shutdown()
