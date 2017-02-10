@@ -1,12 +1,11 @@
 package permissions
 
-import com.gu.pandomainauth.action.UserRequest
 import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation, PermissionDenied, PermissionGranted}
-import play.api.mvc.{ActionFilter, Result, Results}
-import scala.concurrent.{Future}
-import scala.concurrent.ExecutionContext.Implicits.global
+import com.gu.pandomainauth.action.UserRequest
+import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
 
-import play.api.mvc.AnyContent
+import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.Future
 
 object SectionPermissionMap {
   def apply(isMicrosite: Boolean): Option[Permission] = {
@@ -28,17 +27,17 @@ trait SectionSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
         b.asJson.map { json =>
           val isMicrosite = (json \ "isMicrosite").as[Boolean]
 
-          val permission = SectionPermissionMap(isMicrosite).getOrElse { return Future(None) }
+          val permission = SectionPermissionMap(isMicrosite).getOrElse { return Future.successful(None) }
 
           testAccess(permission)(request.user.email).map {
             case PermissionGranted => None
             case PermissionDenied => Some(Results.Unauthorized)
           }
         }.getOrElse {
-          Future(Some(Results.BadRequest("Expecting Json data")))
+          Future.successful(Some(Results.BadRequest("Expecting Json data")))
         }
       }
-      case _ => Future(Some(Results.BadRequest("Expecting body content")))
+      case _ => Future.successful(Some(Results.BadRequest("Expecting body content")))
     }
   }
 }

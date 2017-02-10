@@ -2,57 +2,57 @@ package controllers
 
 import model.command.CommandError._
 import model.command.{ReindexSectionsCommand, ReindexTagsCommand}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import play.api.Logger
 import play.api.mvc.{Action, Controller}
 import repositories.ReindexProgressRepository
 
+import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.Future
+
 object Reindex extends Controller {
-  def reindexTags = Action { req =>
-    try {
-      if (ReindexProgressRepository.isTagReindexInProgress) {
-        Forbidden
+  def reindexTags = Action.async { req =>
+    ReindexProgressRepository.isTagReindexInProgress.flatMap { reindexing =>
+      if (reindexing) {
+        Future.successful(Forbidden)
       } else {
-        ReindexTagsCommand().process.map{ count =>
-          Ok
-        } getOrElse InternalServerError
+        ReindexTagsCommand().process.map { result =>
+          result.map { count => Ok } getOrElse InternalServerError
+        }
       }
-    } catch {
+    } recover {
       commandErrorAsResult
     }
   }
 
-  def reindexSections = Action { req =>
-    try {
-      if (ReindexProgressRepository.isSectionReindexInProgress) {
-        Forbidden
+  def reindexSections = Action.async { req =>
+    ReindexProgressRepository.isSectionReindexInProgress.flatMap { reindexing =>
+      if (reindexing) {
+        Future.successful(Forbidden)
       } else {
-        ReindexSectionsCommand().process.map{ count =>
-          Ok
-        } getOrElse InternalServerError
+        ReindexSectionsCommand().process.map { result =>
+          result.map { count => Ok } getOrElse InternalServerError
+        }
       }
-    } catch {
+    } recover {
       commandErrorAsResult
     }
   }
 
-  def getTagReindexProgress = Action { req =>
-    try {
-      ReindexProgressRepository.getTagReindexProgress.map { progress =>
+  def getTagReindexProgress = Action.async { req =>
+    ReindexProgressRepository.getTagReindexProgress.map{ maybeProgress =>
+      maybeProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
       } getOrElse NotFound
-    } catch {
+    } recover {
       commandErrorAsResult
     }
   }
 
-  def getSectionReindexProgress = Action { req =>
-    try {
-      ReindexProgressRepository.getSectionReindexProgress.map { progress =>
+  def getSectionReindexProgress = Action.async { req =>
+    ReindexProgressRepository.getSectionReindexProgress.map{ maybeProgress =>
+      maybeProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
       } getOrElse NotFound
-    } catch {
+    } recover {
       commandErrorAsResult
     }
   }

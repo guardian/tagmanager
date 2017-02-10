@@ -1,15 +1,12 @@
 package permissions
 
-import com.gu.pandomainauth.action.UserRequest
 import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.pandomainauth.action.UserRequest
 import com.gu.tagmanagement.TagType
-import play.api.mvc.{ActionFilter, Result, Results}
-import play.api.Logger
-import scala.concurrent.{Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.json.JsValue
+import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
 
-import play.api.mvc.AnyContent
+import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.Future
 
 object TagTypePermissionMap {
   def apply(tagType: String): Option[Permission] = {
@@ -38,17 +35,17 @@ trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
         b.asJson.map { json =>
           val tagType: String = (json \ "type").as[String]
 
-          val permission = TagTypePermissionMap(tagType).getOrElse { return Future(None) }
+          val permission = TagTypePermissionMap(tagType).getOrElse { return Future.successful(None) }
 
           testAccess(permission)(request.user.email).map {
             case PermissionGranted => None
             case PermissionDenied => Some(Results.Unauthorized)
           }
           }.getOrElse {
-            Future(Some(Results.BadRequest("Expecting Json data")))
+            Future.successful(Some(Results.BadRequest("Expecting Json data")))
           }
       }
-            case _ => Future(Some(Results.BadRequest("Expecting body content")))
+            case _ => Future.successful(Some(Results.BadRequest("Expecting body content")))
     }
   }
 }

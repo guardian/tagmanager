@@ -1,25 +1,24 @@
 package controllers
 
+import java.io.File
 import java.util.UUID
-import java.io.{File}
+import java.util.concurrent.TimeUnit
 
 import com.amazonaws.services.s3.model._
+import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
+import model.command.CommandError._
+import model.command.{ExpireSectionContentCommand, UnexpireSectionContentCommand, UpdateTagCommand}
 import model.{DenormalisedTag, Image, ImageAsset}
 import org.joda.time.DateTime
-import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
-import model.command.{UnexpireSectionContentCommand, ExpireSectionContentCommand, UpdateTagCommand}
-import model.command.CommandError._
+import permissions.ModifySectionExpiryPermissionsCheck
 import play.api.Logger
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
 import repositories.{TagLookupCache, TagRepository}
 import services.{AWS, Config, ImageMetadataService}
-import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
-import repositories.TagLookupCache
-import services.{Config, ImageMetadataService}
-import java.util.concurrent.TimeUnit
 
-import permissions.ModifySectionExpiryPermissionsCheck
+import scala.concurrent.Future
 
 
 object Support extends Controller with PanDomainAuthActions {
@@ -111,62 +110,63 @@ object Support extends Controller with PanDomainAuthActions {
     )
   }
 
-  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck) { req =>
+  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck).async { req =>
+    implicit val username = Option(req.user.email)
+    req.body.asJson.map { json =>
+      val sectionId = (json \ "sectionId").as[Long]
+
+      UnexpireSectionContentCommand(sectionId).process.map{ result =>
+        result.map(t => Ok("Unexpiry Completed Successfully")) getOrElse BadRequest("Failed to trigger unexpiry")
+
+      } recover {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      Future.successful(BadRequest("Expecting sectionId in JSON"))
+    }
+  }
+
+  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck).async { req =>
 
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
 
-      try {
-        UnexpireSectionContentCommand(sectionId).process.map(t => Ok("Unexpiry Completed Successfully")) getOrElse BadRequest("Failed to trigger unexpiry")
-
-      } catch {
+      ExpireSectionContentCommand(sectionId).process.map { result =>
+        result.map(t => Ok("Expiry Completed Successfully")) getOrElse BadRequest("Failed to trigger expiry")
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting sectionId in JSON")
-    }
-  }
-
-  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck) { req =>
-
-    implicit val username = Option(req.user.email)
-    req.body.asJson.map { json =>
-      val sectionId = (json \ "sectionId").as[Long]
-
-      try {
-        ExpireSectionContentCommand(sectionId).process.map(t => Ok("Expiry Completed Successfully")) getOrElse BadRequest("Failed to trigger expiry")
-
-      } catch {
-        commandErrorAsResult
-      }
-    }.getOrElse {
-      BadRequest("Expecting sectionId in JSON")
+      Future.successful(BadRequest("Expecting sectionId in JSON"))
     }
 
   }
 
-  def fixDanglingParents = APIAuthAction { req =>
+  def fixDanglingParents = APIAuthAction.async { req =>
 
     implicit val username = Option(req.user.email)
 
     val knownTags = TagRepository.loadAllTags
     var danglingParentsCount = 0
 
-    knownTags foreach {tag =>
-      tag.parents.foreach { parentId =>
-        if (knownTags.filter(tag => tag.id == parentId).isEmpty) {
+    val futures = knownTags flatMap {tag =>
+      tag.parents.flatMap { parentId =>
+        if (!knownTags.exists(tag => tag.id == parentId)) {
 
-          Logger.info(s"Tag ID: ${tag.id}, detected dangling parent ${parentId}")
+          Logger.info(s"Tag ID: ${tag.id}, detected dangling parent $parentId")
 
           val updatedTag = tag.copy(parents = tag.parents.filterNot(_.equals(parentId)))
 
-          UpdateTagCommand(DenormalisedTag(updatedTag)).process getOrElse InternalServerError(s"Could not update tag: ${tag.id}")
-          danglingParentsCount += 1
-        }
+          Some(UpdateTagCommand(DenormalisedTag(updatedTag)).process.map {result =>
+            result getOrElse InternalServerError(s"Could not update tag: ${tag.id}")
+            danglingParentsCount += 1
+          })
+        } else None
       }
     }
-
-    Ok(s"Removed $danglingParentsCount Dangling Parents")
+    Future.sequence(futures).map { _ =>
+      Ok(s"Removed $danglingParentsCount Dangling Parents")
+    }
   }
 }

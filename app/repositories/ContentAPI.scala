@@ -7,7 +7,7 @@ import com.gu.contentapi.client.model._
 import com.squareup.okhttp.Credentials
 import dispatch.FunctionHandler
 import play.api.Logger
-import services.Config
+import services.{Config, Contexts}
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -17,8 +17,7 @@ import scala.language.postfixOps
 
 object ContentAPI {
 
-  private val executorService = Executors.newFixedThreadPool(25)
-  private implicit val executionContext = ExecutionContext.fromExecutor(executorService)
+  private implicit val executionContext = Contexts.capiContext
 
   private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewUrl)
 
@@ -116,8 +115,6 @@ object ContentAPI {
 
   def shutdown(): Unit = {
     previewApiClient.shutdown()
-
-    executorService.shutdown()
   }
 
 }

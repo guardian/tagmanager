@@ -1,20 +1,18 @@
 package model.command
 
-import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
-import model.TagAudit
+import model.command.CommandError._
 import model.jobs.JobHelper
-import org.joda.time.DateTime
-import play.api.Logger
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Format, JsPath}
 import repositories._
-import CommandError._
-import services.{SQS, KinesisStreams}
+import services.Contexts
+
+import scala.concurrent.Future
 
 case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: String) extends Command {
   type T = Unit
 
-  override def process()(implicit username: Option[String] = None): Option[Unit] = {
+  override def process()(implicit username: Option[String] = None): Future[Option[Unit]] = Future{
     val tag = TagRepository.getTag(tagId) getOrElse(TagNotFound)
 
     operation match {
@@ -23,7 +21,7 @@ case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: Str
     }
 
     Some(())
-  }
+  }(Contexts.tagOperationContext)
 }
 
 object BatchTagCommand {

@@ -1,15 +1,16 @@
 package model.command
 
-import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
 import model._
 import model.command.logic.SponsorshipStatusCalculator
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Format, JsPath}
 import repositories.SponsorshipOperations._
-import repositories.{SponsorshipRepository, Sequences}
-import services.KinesisStreams
+import repositories.{Sequences, SponsorshipRepository}
+import services.Contexts
+
+import scala.concurrent.Future
 
 case class CreateSponsorshipCommand(
   validFrom: Option[DateTime],
@@ -27,7 +28,7 @@ case class CreateSponsorshipCommand(
 
   override type T = Sponsorship
 
-  override def process()(implicit username: Option[String]): Option[T] = {
+  override def process()(implicit username: Option[String]): Future[Option[T]] = Future{
 
     val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
@@ -66,7 +67,7 @@ case class CreateSponsorshipCommand(
       createdSponsorship
     }
 
-  }
+  }(Contexts.tagOperationContext)
 }
 
 object CreateSponsorshipCommand{

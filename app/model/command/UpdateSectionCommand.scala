@@ -1,18 +1,19 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, SectionEvent}
 import model.{Section, SectionAudit}
 import play.api.Logger
 import repositories.{SectionAuditRepository, SectionRepository}
-import services.KinesisStreams
+import services.{Contexts, KinesisStreams}
+
+import scala.concurrent.Future
 
 
 case class UpdateSectionCommand(section: Section) extends Command {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None): Option[Section] = {
+  override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future{
     Logger.info(s"updating section ${section.id}")
 
     val result = SectionRepository.updateSection(section)
@@ -22,5 +23,5 @@ case class UpdateSectionCommand(section: Section) extends Command {
     SectionAuditRepository.upsertSectionAudit(SectionAudit.updated(section))
 
     result
-  }
+  }(Contexts.tagOperationContext)
 }

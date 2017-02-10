@@ -1,7 +1,10 @@
 package repositories;
 
 import model.ReindexProgress
-import services.Dynamo
+import services.{Contexts, Dynamo}
+
+import scala.concurrent.Future
+import services.Contexts.tagOperationContext
 
 object ReindexProgressRepository {
   // Write
@@ -38,21 +41,29 @@ object ReindexProgressRepository {
   }
 
   // Read
-  def getTagReindexProgress(): Option[ReindexProgress] = {
-    Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.TagTypeName))
-      .map(ReindexProgress.fromItem(_))
+  def getTagReindexProgress: Future[Option[ReindexProgress]] = {
+    Future{
+      Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.TagTypeName))
+        .map(ReindexProgress.fromItem)
+    }
   }
 
-  def getSectionReindexProgress(): Option[ReindexProgress] = {
-    Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.SectionTypeName))
-      .map(ReindexProgress.fromItem(_))
+  def getSectionReindexProgress: Future[Option[ReindexProgress]] = {
+    Future{
+      Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.SectionTypeName))
+        .map(ReindexProgress.fromItem)
+    }
   }
 
-  def isTagReindexInProgress(): Boolean = {
-    getTagReindexProgress.map(_.status == ReindexProgress.InProgress).getOrElse(false)
+  def isTagReindexInProgress: Future[Boolean] = {
+    getTagReindexProgress.map { result =>
+      result.exists(_.status == ReindexProgress.InProgress)
+    }
   }
 
-  def isSectionReindexInProgress(): Boolean = {
-    getSectionReindexProgress.map(_.status == ReindexProgress.InProgress).getOrElse(false)
+  def isSectionReindexInProgress: Future[Boolean] = {
+    getSectionReindexProgress.map { result =>
+      result.exists(_.status == ReindexProgress.InProgress)
+    }
   }
 }

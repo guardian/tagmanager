@@ -3,11 +3,13 @@ package model.command
 import com.gu.tagmanagement.{EventType, SectionEvent}
 import model._
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Format, JsPath}
 import repositories._
 import CommandError._
 import services.KinesisStreams
 
+import scala.concurrent.Future
+import services.Contexts.tagOperationContext
 
 case class CreateSectionCommand(
                                  name: String,
@@ -20,25 +22,31 @@ case class CreateSectionCommand(
 
           type T = Section
 
-          def process()(implicit username: Option[String] = None): Option[Section] = {
+          def process()(implicit username: Option[String] = None): Future[Option[Section]] = {
 
-              val calculatedPath = wordsForUrl
+            val calculatedPath = wordsForUrl
 
-              val pageId: Long = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
+            val pageIdFuture: Future[Long] = Future{try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}}
 
-              val sectionId = Sequences.sectionId.getNextId
+            val sectionIdFuture = Future{Sequences.sectionId.getNextId}
 
-              val sectionTagId = CreateTagCommand(
-                `type` = "Topic",
-                internalName = name,
-                externalName = name,
-                slug = wordsForUrl,
-                comparableValue = name,
-                section = Some(sectionId),
-                isMicrosite = isMicrosite,
-                preCalculatedPath = Some(s"$wordsForUrl/$wordsForUrl")
-              ).process().map(_.id) getOrElse CouldNotCreateSectionTag
+            def sectionTag(sectionId: Long): Future[Option[Tag]] = CreateTagCommand(
+              `type` = "Topic",
+              internalName = name,
+              externalName = name,
+              slug = wordsForUrl,
+              comparableValue = name,
+              section = Some(sectionId),
+              isMicrosite = isMicrosite,
+              preCalculatedPath = Some(s"$wordsForUrl/$wordsForUrl")
+            ).process()
 
+            for {
+              pageId <- pageIdFuture
+              sectionId <- sectionIdFuture
+              sectionTag <- sectionTag(sectionId)
+              sectionTagId = sectionTag.map(_.id).getOrElse(CouldNotCreateSectionTag)
+            } yield {
               val section = Section(
                 id = sectionId,
                 sectionTagId = sectionTagId,
@@ -58,6 +66,7 @@ case class CreateSectionCommand(
               SectionAuditRepository.upsertSectionAudit(SectionAudit.created(section))
 
               result
+            }
           }
         }
 

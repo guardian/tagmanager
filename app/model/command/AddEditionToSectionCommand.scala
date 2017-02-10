@@ -1,21 +1,22 @@
 package model.command
 
-import com.gu.pandomainauth.model.User
 import com.gu.tagmanagement.{EventType, SectionEvent}
 import model.command.CommandError._
 import model.command.logic.SectionEditionPathCalculator
-import model.{Section, SectionAudit, EditionalisedPage}
+import model.{EditionalisedPage, Section, SectionAudit}
 import play.api.Logger
-import repositories.{PathRegistrationFailed, PathManager, SectionAuditRepository, SectionRepository}
-import services.KinesisStreams
+import repositories.{PathManager, PathRegistrationFailed, SectionAuditRepository, SectionRepository}
+import services.{Contexts, KinesisStreams}
+
+import scala.concurrent.Future
 
 
 case class AddEditionToSectionCommand(sectionId: Long, editionName: String) extends Command {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None): Option[Section] = {
-    Logger.info(s"add ${editionName} to section ${sectionId}")
+  override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future{
+    Logger.info(s"add $editionName to section $sectionId")
 
     val section = SectionRepository.getSection(sectionId).getOrElse(SectionNotFound)
 
@@ -40,5 +41,5 @@ case class AddEditionToSectionCommand(sectionId: Long, editionName: String) exte
     SectionAuditRepository.upsertSectionAudit(SectionAudit.addedEdition(updatedSection, editionName))
 
     result
-  }
+  }(Contexts.tagOperationContext)
 }

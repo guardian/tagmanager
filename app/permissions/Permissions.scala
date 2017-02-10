@@ -2,7 +2,8 @@ package permissions
 
 import com.gu.editorial.permissions.client._
 import services.Config
-import scala.concurrent.{Future, ExecutionContext}
+
+import scala.concurrent.Future
 
 object Permissions extends PermissionsProvider {
 
