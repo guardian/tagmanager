@@ -1,17 +1,17 @@
 package controllers
 
+import model._
 import model.command.CommandError._
 import model.command._
-import model.jobs.Job
-import org.joda.time.{DateTime, DateTimeZone}
-import permissions.Permissions
-import play.api.Logger
 import model.jobs.JobRunner
-import model._
-import play.api.libs.json._
-import play.api.mvc.{Action, Controller}
-import repositories._
+import org.joda.time.{DateTime, DateTimeZone}
 import permissions._
+import play.api.libs.json._
+import play.api.mvc.Controller
+import repositories._
+
+import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.Future
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
 
@@ -22,30 +22,30 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def updateTag(id: Long) = (APIAuthAction andThen UpdateTagPermissionsCheck) { req =>
+  def updateTag(id: Long) = (APIAuthAction andThen UpdateTagPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
 
     req.body.asJson.map { json =>
-      try {
-        UpdateTagCommand(json.as[DenormalisedTag]).process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
-      } catch {
+      UpdateTagCommand(json.as[DenormalisedTag]).process.map { result =>
+        result.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def createTag() = (APIAuthAction andThen CreateTagPermissionsCheck) { req =>
+  def createTag() = (APIAuthAction andThen CreateTagPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        json.as[CreateTagCommand].process.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
-      } catch {
+      json.as[CreateTagCommand].process.map { result =>
+        result.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
@@ -82,52 +82,52 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck) { req =>
+  def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        json.as[CreateSectionCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
-      } catch {
+      json.as[CreateSectionCommand].process.map { result =>
+        result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck) { req =>
+  def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        UpdateSectionCommand(json.as[Section]).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
-      } catch {
+      UpdateSectionCommand(json.as[Section]).process.map { result =>
+        result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def addEditionToSection(id: Long) = (APIAuthAction andThen AddEditionToSectionPermissionsCheck) { req =>
+  def addEditionToSection(id: Long) = (APIAuthAction andThen AddEditionToSectionPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
 
-      try {
-        AddEditionToSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
-      } catch {
+      AddEditionToSectionCommand(id, editionName.toUpperCase).process.map { result =>
+        result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck) { req =>
+  def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
-    try {
-      RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
-    } catch {
+    RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map {result =>
+      result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+    } recover {
       commandErrorAsResult
     }
   }
@@ -140,46 +140,46 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(ExternalReferencesTypeRepository.loadAllReferenceTypes))
   }
 
-  def checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String]) = APIAuthAction { req =>
-    try {
-      new PathUsageCheck(tagType, slug, section, tagSubType).process.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
-    } catch {
+  def checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String]) = APIAuthAction.async { req =>
+    new PathUsageCheck(tagType, slug, section, tagSubType).process.map{ result =>
+      result.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
+    } recover {
       commandErrorAsResult
     }
   }
 
-  def batchTag = APIAuthAction { req =>
+  def batchTag = APIAuthAction.async { req =>
 
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        json.as[BatchTagCommand].process.map{t => NoContent } getOrElse NotFound
-      } catch {
+      json.as[BatchTagCommand].process.map{ result =>
+        result.map{t => NoContent } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck) { req =>
+  def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        json.as[MergeTagCommand].process.map{t => NoContent } getOrElse NotFound
-      } catch {
+      json.as[MergeTagCommand].process.map { result =>
+        result.map{t => NoContent } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def deleteTag(id: Long) = (APIAuthAction andThen DeleteTagPermissionsCheck) { req =>
+  def deleteTag(id: Long) = (APIAuthAction andThen DeleteTagPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
-    try {
-      (new DeleteTagCommand(id)).process.map{t => NoContent } getOrElse NotFound
-    } catch {
+    (new DeleteTagCommand(id)).process.map{ result =>
+      result.map{t => NoContent } getOrElse NotFound
+    } recover {
       commandErrorAsResult
     }
   }
@@ -212,40 +212,41 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(SponsorshipRepository.getSponsorship(id).map(DenormalisedSponsorship(_))))
   }
 
-  def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck) { req =>
+  def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        json.as[CreateSponsorshipCommand].process.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
-      } catch {
+      json.as[CreateSponsorshipCommand].process.map { result =>
+        result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck) { req =>
+  def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      try {
-        json.as[UpdateSponsorshipCommand].process.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
-      } catch {
+      json.as[UpdateSponsorshipCommand].process.map { result =>
+        result.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
+      } recover {
         commandErrorAsResult
       }
     }.getOrElse {
-      BadRequest("Expecting Json data")
+      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
-  def clashingSponsorships(id: Option[Long], tagIds: Option[String], sectionIds: Option[String], validFrom: Option[Long], validTo: Option[Long], editions: Option[String]) = APIAuthAction { req =>
+  def clashingSponsorships(id: Option[Long], tagIds: Option[String], sectionIds: Option[String], validFrom: Option[Long],
+                           validTo: Option[Long], editions: Option[String]) = APIAuthAction.async { req =>
     val editionSearch = editions.map(_.split(",").toList)
     val tagSearch: Option[List[Long]] = tagIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
     val sectionSearch: Option[List[Long]] = sectionIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
-    try {
-      new ClashingSponsorshipsFetch(id, tagSearch, sectionSearch, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
-        .process.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
-    } catch {
+    new ClashingSponsorshipsFetch(id, tagSearch, sectionSearch, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
+        .process.map { result =>
+      result.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
+    } recover {
       commandErrorAsResult
     }
   }

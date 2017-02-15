@@ -2,15 +2,17 @@ package modules.sponsorshiplifecycle
 
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
+
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManager}
 import com.google.inject.AbstractModule
 import model.Sponsorship
 import play.api.Logger
 import play.api.inject.ApplicationLifecycle
+import play.api.libs.concurrent.Execution.Implicits._
 import repositories.SponsorshipOperations._
 import repositories.SponsorshipRepository
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 

@@ -5,7 +5,7 @@ import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.{IRecordProces
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.InitialPositionInStream
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.KinesisClientLibConfiguration
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.Worker
-import com.amazonaws.services.kinesis.clientlibrary.types.{ProcessRecordsInput, InitializationInput, ShutdownReason, ShutdownInput}
+import com.amazonaws.services.kinesis.clientlibrary.types.{InitializationInput, ProcessRecordsInput, ShutdownInput, ShutdownReason}
 import com.amazonaws.services.kinesis.metrics.interfaces.MetricsLevel
 import com.amazonaws.services.kinesis.model.Record
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
@@ -16,13 +16,14 @@ import play.api.Logger
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.language.implicitConversions
 
 class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) {
 
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,
       new DefaultAWSCredentialsProviderChain,
-      s"$appName-worker");
+      s"$appName-worker")
 
   kinesisClientLibConfiguration
     .withRegionName(AWS.region.getName)

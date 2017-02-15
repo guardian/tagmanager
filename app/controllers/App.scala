@@ -6,10 +6,10 @@ import play.api.mvc.{Action, Controller}
 import repositories.{TagSearchCriteria, TagRepository}
 import play.api.Logger
 import services.Config
-import com.gu.tagmanagement.{TagType}
+import com.gu.tagmanagement.TagType
 import permissions._
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits._
 import scala.collection.mutable.ListBuffer
 
 object App extends Controller with PanDomainAuthActions {

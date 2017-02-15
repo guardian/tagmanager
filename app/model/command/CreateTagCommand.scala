@@ -1,6 +1,6 @@
 package model.command
 
-import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
+import com.gu.tagmanagement.{EventType, SectionEvent, TagEvent}
 import model.command.logic.{SponsorshipStatusCalculator, TagPathCalculator}
 import model._
 import org.apache.commons.lang3.StringUtils
@@ -8,10 +8,12 @@ import org.cvogt.play.json.Jsonx
 import org.cvogt.play.json.implicits.optionWithNull
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Format, JsPath}
 import repositories._
 import CommandError._
-import services.KinesisStreams
+import services.{Contexts, KinesisStreams}
+
+import scala.concurrent.Future
 
 case class InlinePaidContentSponsorshipCommand(
                          validFrom: Option[DateTime],
@@ -78,7 +80,7 @@ case class CreateTagCommand(
 
   type T = Tag
 
-  def process()(implicit username: Option[String] = None): Option[Tag] = {
+  def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future {
 
     val tagId = Sequences.tagId.getNextId
 
@@ -176,7 +178,7 @@ case class CreateTagCommand(
     }
 
     result
-  }
+  }(Contexts.tagOperationContext)
 }
 
 object CreateTagCommand {

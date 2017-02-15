@@ -1,13 +1,15 @@
 package model.jobs.steps
 
-import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
+import com.gu.tagmanagement.{OperationType, TagWithSection, TaggingOperation}
 import model.{Section, Tag, TagAudit}
+
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 import play.api.Logger
 import services.KinesisStreams
 import repositories._
-import java.lang.UnsupportedOperationException
+
+import scala.language.postfixOps
 
 case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], username: Option[String], var contentCount: Int = -1,
   `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
@@ -38,7 +40,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
     val fromCount = ContentAPI.countContentWithTag(from.path)
     val toCount = ContentAPI.countContentWithTag(to.path)
 
-    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on ${fromCount} pieces of content. To tag: '${to.path}' on to ${toCount} pieces of content, ${contentCount - toCount} left to add.")
+    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on $fromCount pieces of content. To tag: '${to.path}' on to $toCount pieces of content, ${contentCount - toCount} left to add.")
     if (fromCount == 0 && toCount == contentCount) {
       true
     } else {

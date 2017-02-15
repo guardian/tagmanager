@@ -1,13 +1,16 @@
 package model.jobs.steps
 
-import com.gu.tagmanagement.{TagWithSection, OperationType, TaggingOperation}
+import com.gu.tagmanagement.{OperationType, TagWithSection, TaggingOperation}
 import model.{Section, Tag, TagAudit}
 import model.jobs.StepStatus
+
 import scala.concurrent.duration._
 import model.jobs.Step
 import play.api.Logger
 import services.KinesisStreams
 import repositories.{ContentAPI, TagAuditRepository}
+
+import scala.language.postfixOps
 
 case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[String], op: String, `type`: String = AddTagToContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
   override def process = {
@@ -18,7 +21,7 @@ case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
-      Logger.info(s"raising ${op} for ${tag.id} on ${contentPath} operation")
+      Logger.info(s"raising $op for ${tag.id} on $contentPath operation")
     }
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, op, contentIds.length))
   }
@@ -29,7 +32,7 @@ case class AddTagToContent(tag: Tag, section: Option[Section], contentIds: List[
 
   override def check: Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
-    Logger.info(s"Checking batch tag addition. Expected=${contentIds.size} Actual=${count}")
+    Logger.info(s"Checking batch tag addition. Expected=${contentIds.size} Actual=$count")
     if (count == contentIds.size) {
       true
     } else {

@@ -1,14 +1,13 @@
 package controllers
 
-import model.{Tag, EntityResponse, EmptyResponse, CollectionResponse, EmbeddedEntity, TagEntity, HyperMediaHelpers}
+import model._
 import play.api.libs.json._
-import play.api.mvc.Result
 import play.api.mvc.{Action, Controller, Request, Result}
 import repositories._
-import scala.concurrent.Future
 import services.Config.conf
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
 case class CORSable[A](origins: String*)(action: Action[A]) extends Action[A] {
   def apply(request: Request[A]): Future[Result] = {

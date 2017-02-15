@@ -1,23 +1,19 @@
 package model.command
 
-import java.nio.ByteBuffer
-
-import com.gu.tagmanagement._
-import com.squareup.okhttp.{Credentials, Request}
-import model.{Tag, TagAudit, Section}
-import org.joda.time.{DateTime, DateTimeZone}
+import model.Section
 import play.api.Logger
 import repositories._
-import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
-import services.{KinesisStreams, Config}
+import services.{Contexts, KinesisStreams}
+
+import scala.concurrent.Future
 
 
 case class UnexpireSectionContentCommand(sectionId: Long) extends Command {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None): Option[Section] = {
-    Logger.info(s"Unexpiring Content for Section: ${sectionId}")
+  override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future{
+    Logger.info(s"Unexpiring Content for Section: $sectionId")
 
     SectionRepository.getSection(sectionId).map(section => {
 
@@ -31,5 +27,5 @@ case class UnexpireSectionContentCommand(sectionId: Long) extends Command {
 
       section
     })
-  }
+  }(Contexts.tagOperationContext)
 }

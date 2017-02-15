@@ -2,18 +2,19 @@ package model.command
 
 import com.gu.tagmanagement._
 import model.{DenormalisedTag, SectionAudit, Tag, TagAudit}
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import repositories._
-import services.KinesisStreams
-import org.joda.time.{DateTime, DateTimeZone}
-import model.command._
+import services.{Contexts, KinesisStreams}
+
+import scala.concurrent.Future
 
 
 case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
 
   type T = Tag
 
-  override def process()(implicit username: Option[String] = None): Option[Tag] = {
+  override def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future{
     val (tag, sponsorship) = denormalisedTag.normalise()
 
     Logger.info(s"updating tag ${tag.id}")
@@ -67,5 +68,5 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     TagAuditRepository.upsertTagAudit(TagAudit.updated(tag))
 
     result
-  }
+  }(Contexts.tagOperationContext)
 }

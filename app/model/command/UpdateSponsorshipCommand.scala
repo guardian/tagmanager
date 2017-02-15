@@ -5,9 +5,12 @@ import model.command.logic.SponsorshipStatusCalculator
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Format, JsPath}
 import repositories.SponsorshipOperations._
 import repositories.SponsorshipRepository
+import services.Contexts
+
+import scala.concurrent.Future
 
 case class UpdateSponsorshipCommand(
   id: Long,
@@ -26,7 +29,7 @@ case class UpdateSponsorshipCommand(
 
   override type T = Sponsorship
 
-  override def process()(implicit username: Option[String]): Option[T] = {
+  override def process()(implicit username: Option[String]): Future[Option[T]] = Future{
 
     val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
@@ -77,7 +80,7 @@ case class UpdateSponsorshipCommand(
 
       updatedSponsorship
     }
-  }
+  }(Contexts.tagOperationContext)
 
   private def getActiveTags(s: Sponsorship): List[Long] = {
     s.status match {

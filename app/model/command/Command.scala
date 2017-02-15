@@ -1,11 +1,9 @@
 package model.command
 
-import play.api.Logger
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import scala.concurrent.Future
 
 trait Command {
   type T
 
-  def process()(implicit username: Option[String] = None): Option[T]
+  def process()(implicit username: Option[String] = None): Future[Option[T]]
 }

@@ -1,12 +1,12 @@
 package permissions
 
+import com.gu.editorial.permissions.client.{PermissionAuthorisation, PermissionDenied, PermissionGranted}
 import com.gu.pandomainauth.action.UserRequest
-import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation, PermissionDenied, PermissionGranted}
-import com.gu.tagmanagement.TagType
-import play.api.mvc.{ActionFilter, Results}
 import play.api.Logger
-import scala.concurrent.{Future}
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.mvc.{ActionFilter, Results}
+
+import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.Future
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] {
   val testAccess: String => Future[PermissionAuthorisation]

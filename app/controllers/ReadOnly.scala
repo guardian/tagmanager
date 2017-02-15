@@ -1,10 +1,8 @@
 package controllers
 
 import helpers.XmlHelpers._
+import model.{Create, Delete, Merge, Section}
 import play.api.mvc.{Action, Controller}
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import model.{Tag, Section, Delete, Merge, Create}
 import repositories._
 
 import scala.xml.Node
@@ -103,6 +101,7 @@ object ReadOnlyApi extends Controller {
 
   def modifiedAsXml(since: Long) = Action {
     import helpers.XmlHelpers._
+
     import scala.xml.Node
 
     val audits = TagAuditRepository.getAuditsOfTagOperationsSince("updated", since).sortBy(_.date.getMillis)

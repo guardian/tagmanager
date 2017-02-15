@@ -4,17 +4,15 @@ import com.gu.tagmanagement.{OperationType, TaggingOperation}
 import model.Tag
 import play.api.Logger
 import repositories._
-import services.{KinesisStreams}
+import services.{Contexts, KinesisStreams}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 case class FlexTagReindexCommand(tag: Tag) extends Command {
 
   type T = Tag
 
-  override def process()(implicit username: Option[String] = None): Option[T] = {
-
+  override def process()(implicit username: Option[String] = None): Future[Option[T]] = {
     Future {
       val contentIds = ContentAPI.getContentIdsForTag(tag.path)
 
@@ -26,9 +24,7 @@ case class FlexTagReindexCommand(tag: Tag) extends Command {
         Logger.info(s"raising flex reindex for content $contentPath")
         KinesisStreams.taggingOperationsReIndexStream.publishUpdate(contentPath.take(200), taggingOperation)
       }
-    }
-
-    Some(tag)
-
+      Some(tag)
+    }(Contexts.tagOperationContext)
   }
 }
