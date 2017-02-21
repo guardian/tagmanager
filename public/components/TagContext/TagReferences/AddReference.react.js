@@ -1,5 +1,6 @@
 import React from 'react';
 import ReferenceTypeSelect from '../../utils/ReferenceTypeSelect.react';
+import MappingsWarning from '../../utils/MappingsWarning.react';
 
 const BLANK_STATE = {
   expanded: false,
@@ -75,6 +76,7 @@ export default class AddReference extends React.Component {
             <input type="text" placeholder="Value" onChange={this.onValueChange.bind(this)} value={this.state.newValue}/>
             <input type="submit" value="Add" />
           </form>
+          <MappingsWarning capiUsages={this.props.tagUsages}/>
         </div>
       );
     }

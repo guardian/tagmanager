@@ -2,11 +2,25 @@ import React from 'react';
 import AddReference from './AddReference.react';
 import TagReferenceList from '../TagReferenceList.react'
 import R from 'ramda';
+import {getByTag} from '../../../util/capiClient';
 
 export default class TagReferences extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            tagUsages: 0
+        };
+    }
+
+    componentDidMount() {
+      getByTag(this.props.tag, {
+        'page-size': 0
+      }).then(res => {
+        this.setState({
+          tagUsages: res.response.total
+        });
+      });
     }
 
     removeReference(reference) {
@@ -46,7 +60,7 @@ export default class TagReferences extends React.Component {
 
     renderAddReferenceButton() {
       if (this.props.tagEditable) {
-        return <AddReference onAddReference={this.addReference.bind(this)} referenceTypes={this.props.referenceTypes} />
+        return <AddReference onAddReference={this.addReference.bind(this)} referenceTypes={this.props.referenceTypes} tagUsages={this.state.tagUsages}/>
       }
       return false;
     }

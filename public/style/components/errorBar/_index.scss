@@ -20,3 +20,8 @@
 
   right: $standard-padding;
 }
+
+.warning-bar-small {
+  @extend .warning-bar;
+  font-size: 13px;
+}
