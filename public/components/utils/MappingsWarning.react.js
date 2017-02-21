@@ -7,7 +7,7 @@ export default class MappingsWarning extends React.Component {
 
   render() {
     if (this.props.capiUsages == undefined) {
-      console.error("Missing capiUsages props in MappingsWarnign")
+      console.error("Missing capiUsages props in MappingsWarning")
     } else if (this.props.capiUsages > 10000) {
       return (
         <div className="warning-bar-small">
