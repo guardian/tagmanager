@@ -11,7 +11,7 @@ export default class MappingsWarning extends React.Component {
     } else if (this.props.capiUsages > 10000) {
       return (
         <div className="warning-bar-small">
-          This tag has over 10,000 uses, changes to the external references could cause slowness. If you want to add an external reference but are concerned, please contact: <code>digitalcms.dev@theguardian.com</code>
+        This tag has {this.props.capiUsages.toLocaleString()} uses, mapping changes could cause high demand on the tag management infrastructure. If you want to add an external reference but are concerned, please contact: <code>digitalcms.dev@theguardian.com</code>
         </div>);
       }
     return false;
