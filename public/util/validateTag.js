@@ -94,14 +94,22 @@ function validateTrackingTag(tag) {
 }
 
 function validateTagName(tag) {
+  const errors = [];
   if (tag.externalName && tag.externalName.endsWith(' ')) {
-    return [{
+    errors.push({
       fieldName: 'externalName',
       message: 'External name has a trailing space.'
-    }];
+    });
   }
 
-  return [];
+  if (tag.externalName && tag.externalName.startsWith(' ')) {
+    errors.push({
+      fieldName: 'externalName',
+      message: 'External name has a leading space.'
+    });
+  }
+
+  return errors;
 }
 
 export function validateTag(tag) {
