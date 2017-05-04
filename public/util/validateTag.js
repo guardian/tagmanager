@@ -94,7 +94,7 @@ function validateTrackingTag(tag) {
 }
 
 function validateTagName(tag) {
-  let errors = [];
+  const errors = [];
   if (tag.externalName && tag.externalName.endsWith(' ')) {
     errors.push({
       fieldName: 'externalName',
