@@ -1,7 +1,7 @@
-#Microsites
+## Microsites
 
 Are sections and re often used by commercial. Unlike tags there is 
-currently no option to delete a microsite in the Tag tool. 
+currently no option to delete a microsite in Tagmanager. 
 
 Occasionally there is a request to delete a microsite in order for a redirect
 to work. Steps to do this:
