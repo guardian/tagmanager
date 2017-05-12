@@ -41,7 +41,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
   .settings(
     playDefaultPort := 8247,
     packageName in Universal := normalizedName.value,
-    riffRaffPackageType := (packageZipTarball in config("universal")).value,
+    riffRaffPackageType := (packageBin in Debian).value,
     riffRaffPackageName := s"editorial-tools:${name.value}",
     riffRaffManifestProjectName := riffRaffPackageName.value,
     riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV"),
@@ -53,6 +53,12 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
       baseDirectory.value / "cloudformation" / "tag-manager.json" ->
         "packages/cloudformation/tag-manager.json"
     ),
+
+    debianPackageDependencies := Seq("openjdk-8-jre-headless"),
+    maintainer := "digitial tools team <digitalcms.dev@guardian.co.uk>",
+    packageSummary := "tag manager",
+    packageDescription := """manage tags""",
+
     doc in Compile <<= target.map(_ / "none"),
     scalaVersion := "2.11.8",
     scalaVersion in ThisBuild := "2.11.8",
