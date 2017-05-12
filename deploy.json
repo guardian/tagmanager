@@ -31,9 +31,6 @@
     },
     "artifactUploadOnly":{
       "actionsBeforeApp": ["tag-manager.uploadArtifacts"]
-    },
-    "tagManagerrCloudformation": {
-      "actions": ["tag-manager-cloudformation.updateStack"]
     }
   }
 }
