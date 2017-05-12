@@ -24,7 +24,7 @@
   },
   "recipes":{
     "default":{
-      "depends" : ["artifactUploadOnly", "tagManagerrCloudformation", "deployOnly"]
+      "depends" : ["artifactUploadOnly", "deployOnly"]
     },
     "deployOnly":{
       "actionsPerHost": ["tag-manager.deploy"]
