@@ -56,6 +56,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
       baseDirectory.value / "cloudformation" / "tag-manager.json" ->
         "packages/cloudformation/tag-manager.json"
     ),
+    javaOptions in Universal ++= Seq(
+      "-Dpidfile.path=/dev/null"
+    ),
 
     debianPackageDependencies := Seq("openjdk-8-jre-headless"),
     maintainer := "digitial tools team <digitalcms.dev@guardian.co.uk>",
