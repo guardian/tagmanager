@@ -7,13 +7,16 @@ deployments:
     parameters:
       bucket: composer-dist
     dependencies:
-      - tag-manager-ami-update
+      - cloudformation
 
-  tag-manager-ami-update:
-    type: ami-cloudformation-parameter
+  cloudformation:
+    type: cloud-formation
     app: tag-manager
     parameters:
       amiTags:
-        Recipe: editorial-tools-basic
-        AmigoState: PROD
-        BuiltBy: amigo
+        Recipe: editorial-tools-xenial-java8
+        AmigoStage: PROD
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: TagManager
+      cloudFormationStackByTags: false
+      templatePath: tag-manager.yaml
