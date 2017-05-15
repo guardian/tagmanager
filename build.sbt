@@ -43,10 +43,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
-    packageName in Universal := normalizedName.value,
+    name in Universal := normalizedName.value,
     riffRaffPackageType := (packageBin in Debian).value,
-    riffRaffPackageName := s"editorial-tools:${name.value}",
-    riffRaffManifestProjectName := riffRaffPackageName.value,
+    riffRaffPackageName := name.value,
+    riffRaffManifestProjectName := s"editorial-tools:${name.value}",
     riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV"),
     riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
     riffRaffUploadManifestBucket := Option("riffraff-builds"),
