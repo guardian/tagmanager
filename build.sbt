@@ -52,6 +52,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
     riffRaffUploadManifestBucket := Option("riffraff-builds"),
     riffRaffArtifactResources := Seq(
+      baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
       riffRaffPackageType.value -> s"${name.value}/${name.value}.deb",
       baseDirectory.value / "cloudformation" / "tag-manager.yaml" -> "cloudformation/tag-manager.yaml"
     ),
