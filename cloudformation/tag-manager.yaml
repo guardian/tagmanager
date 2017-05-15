@@ -331,5 +331,5 @@ Resources:
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash -ev
-          aws s3 cp s3://composer-dist/flexible/${Stage}/tag-manager/tag-manager_1.0_all.deb /tmp
-          dpkg -i /tmp/tag-manager_1.0_all.deb
+          aws s3 cp s3://composer-dist/flexible/${Stage}/tag-manager/tag-manager.deb /tmp
+          dpkg -i /tmp/tag-manager.deb
