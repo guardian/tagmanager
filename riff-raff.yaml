@@ -1,0 +1,19 @@
+regions: [eu-west-1]
+stacks: [flexible]
+
+deployments:
+  tag-manager:
+    type: autoscaling
+    parameters:
+      bucket: composer-dist
+    dependencies:
+      - tag-manager-ami-update
+
+  tag-manager-ami-update:
+    type: ami-cloudformation-parameter
+    app: tag-manager
+    parameters:
+      amiTags:
+        Recipe: editorial-tools-basic
+        AmigoState: PROD
+        BuiltBy: amigo
