@@ -53,8 +53,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     riffRaffArtifactResources := Seq(
       riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
       baseDirectory.value / "deploy.json" -> "deploy.json",
-      baseDirectory.value / "cloudformation" / "tag-manager.json" ->
-        "packages/cloudformation/tag-manager.json"
+      baseDirectory.value / "cloudformation" / "tag-manager.yaml" ->
+        "packages/cloudformation/tag-manager.yaml"
     ),
     javaOptions in Universal ++= Seq(
       "-Dpidfile.path=/dev/null"
