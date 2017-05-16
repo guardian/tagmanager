@@ -36,23 +36,35 @@ lazy val dependencies = Seq(
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb)
+import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
+serverLoading in Debian := Systemd
+
+lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb, JDebPackaging)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
-    packageName in Universal := normalizedName.value,
-    riffRaffPackageType := (packageZipTarball in config("universal")).value,
-    riffRaffPackageName := s"editorial-tools:${name.value}",
-    riffRaffManifestProjectName := riffRaffPackageName.value,
+    name in Universal := normalizedName.value,
+    topLevelDirectory := Some(normalizedName.value),
+    riffRaffPackageType := (packageBin in Debian).value,
+    riffRaffPackageName := name.value,
+    riffRaffManifestProjectName := s"editorial-tools:${name.value}",
     riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV"),
     riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
     riffRaffUploadManifestBucket := Option("riffraff-builds"),
     riffRaffArtifactResources := Seq(
-      riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
-      baseDirectory.value / "deploy.json" -> "deploy.json",
-      baseDirectory.value / "cloudformation" / "tag-manager.json" ->
-        "packages/cloudformation/tag-manager.json"
+      baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
+      riffRaffPackageType.value -> s"${name.value}/${name.value}.deb",
+      baseDirectory.value / "cloudformation" / "tag-manager.yaml" -> "cloudformation/tag-manager.yaml"
     ),
+    javaOptions in Universal ++= Seq(
+      "-Dpidfile.path=/dev/null"
+    ),
+
+    debianPackageDependencies := Seq("openjdk-8-jre-headless"),
+    maintainer := "digitial tools team <digitalcms.dev@guardian.co.uk>",
+    packageSummary := "tag manager",
+    packageDescription := """manage tags""",
+
     doc in Compile <<= target.map(_ / "none"),
     scalaVersion := "2.11.8",
     scalaVersion in ThisBuild := "2.11.8",

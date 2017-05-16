@@ -1,0 +1,22 @@
+regions: [eu-west-1]
+stacks: [flexible]
+
+deployments:
+  tag-manager:
+    type: autoscaling
+    parameters:
+      bucket: composer-dist
+    dependencies:
+      - cloudformation
+
+  cloudformation:
+    type: cloud-formation
+    app: tag-manager
+    parameters:
+      amiTags:
+        Recipe: editorial-tools-xenial-java8
+        AmigoStage: PROD
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: TagManager
+      cloudFormationStackByTags: false
+      templatePath: tag-manager.yaml
