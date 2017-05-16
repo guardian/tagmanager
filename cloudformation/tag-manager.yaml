@@ -31,10 +31,6 @@ Parameters:
     Description: Ip range for the office
     Type: String
     Default: 77.91.248.0/21
-  GithubTeamName:
-    Description: Github team name, used for giving ssh access to members of the team.
-    Type: String
-    Default: Editorial-Tools-SSHAccess
   CertificateArn:
     Description: ARN of the SSL certificate for this service
     Type: String
@@ -130,23 +126,6 @@ Resources:
         - Effect: Allow
           Action: sts:AssumeRole
           Resource: arn:aws:iam::642631414762:role/composerWriteToStaticBucket
-      Roles:
-      - !Ref 'TagManagerRole'
-  TagManagerGetTeamKeysPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: TagManagerGetTeamKeysPolicy
-      PolicyDocument:
-        Statement:
-        - Effect: Allow
-          Action:
-          - s3:GetObject
-          Resource:
-          - arn:aws:s3:::github-team-keys/*
-        - Effect: Allow
-          Action:
-          - s3:ListBucket
-          Resource: arn:aws:s3:::github-team-keys
       Roles:
       - !Ref 'TagManagerRole'
   TagManagerPermissionsBucketPolicy:
