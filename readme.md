@@ -17,7 +17,7 @@ Before you run for the first time you will need to run `./scripts/setup.sh` this
 dependencies needed for the app (you may need to install npm before you can run this successfully). If any frontend
 dependencies are changed you should should re run the setup script.
 
-The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. after running this the tag manager
+The Nginx setup uses the dev-nginx tool. after running this the tag manager
 will be available on [https://tagmanager.local.dev-gutools.co.uk](https://tagmanager.local.dev-gutools.co.uk)
 
 To read the database and interact with the AWS infrastructure you will need AWS credentials that allow you access to the
