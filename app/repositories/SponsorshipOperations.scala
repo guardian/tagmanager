@@ -78,4 +78,21 @@ object SponsorshipOperations {
       ContentAPI.getContentIdsForTag(t.path) foreach { contentId => KinesisStreams.commercialExpiryStream.publishUpdate(contentId, "true") }
     }
   }
+
+  def unexpirePaidContentTag(tagId: Long)(implicit username: Option[String]): Unit = {
+    println("Unexpiring paid content tag")
+
+    TagRepository.getTag(tagId).foreach { t =>
+      println(s"Found tag ${tagId}")
+
+      val unexpiredTag = t.copy(expired = false)
+      TagRepository.upsertTag(unexpiredTag)
+
+      TagAuditRepository.upsertTagAudit(TagAudit.updated(unexpiredTag))
+      KinesisStreams.tagUpdateStream.publishUpdate(unexpiredTag.id.toString, TagEvent(EventType.Update, unexpiredTag.id, Some(unexpiredTag.asThrift)))
+      ContentAPI.getContentIdsForTag(t.path) foreach { contentId => KinesisStreams.commercialExpiryStream.publishUpdate(contentId, "false") }
+
+      println("Done!")
+    }
+  }
 }

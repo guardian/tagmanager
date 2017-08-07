@@ -19,6 +19,7 @@ import repositories.{TagLookupCache, TagRepository}
 import services.{AWS, Config, ImageMetadataService}
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 
 object Support extends Controller with PanDomainAuthActions {
@@ -141,6 +142,25 @@ object Support extends Controller with PanDomainAuthActions {
       Future.successful(BadRequest("Expecting sectionId in JSON"))
     }
 
+  }
+
+  // TODO delete this!
+  def unexpireTag = APIAuthAction { req =>
+    implicit val username = Option(req.user.email)
+
+    req.body.asJson.map { json =>
+      val tagId = (json \ "tagId").as[Long]
+      import repositories.SponsorshipOperations
+      try {
+        SponsorshipOperations.unexpirePaidContentTag(tagId)
+
+        Ok
+      } catch {
+        case NonFatal(e) => BadRequest(e.toString)
+      }
+    }.getOrElse {
+        BadRequest("Expecting sectionId in JSON")
+    }
   }
 
   def fixDanglingParents = APIAuthAction.async { req =>

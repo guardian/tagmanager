@@ -111,6 +111,9 @@ GET            /support/flexSlugMigrationData                          controlle
 POST           /support/unexpireSectionContent                         controllers.Support.unexpireSectionContent
 POST           /support/expireSectionContent                           controllers.Support.expireSectionContent
 
+# TODO DELETE THIS
+POST           /support/unexpireTag                                    controllers.Support.unexpireTag
+
 GET            /support/fixDanglingParents                             controllers.Support.fixDanglingParents
 
 # Migration endpoints

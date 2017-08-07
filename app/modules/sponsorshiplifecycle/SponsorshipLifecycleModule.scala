@@ -66,6 +66,11 @@ class SponsorshipLauncher extends AbstractScheduledService {
           tagId <- tags
         ) {
           addSponsorshipToTag(s.id, tagId)
+          // If the sponsorship type is paid content then we also need to go and unexpire any associated tags
+          // If it is a sponsorship or foundation type sponsor then the tags won't have been expired in the first place.
+          if (activated.sponsorshipType == "paidContent") {
+            unexpirePaidContentTag(tagId)
+          }
         }
         for(
           sections <- s.sections;
