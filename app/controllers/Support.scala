@@ -159,7 +159,7 @@ object Support extends Controller with PanDomainAuthActions {
         case NonFatal(e) => BadRequest(e.toString)
       }
     }.getOrElse {
-        BadRequest("Expecting sectionId in JSON")
+        BadRequest("Expecting tagId in JSON")
     }
   }
 
