@@ -29,11 +29,14 @@ export class BatchTag extends React.Component {
       }
     }
 
-    searchFieldChange(e) {
-      this.searchContent(e.target.value);
+    searchFieldChange(type, e) {
+
+      const searchTerm = type === 'searchTerm' ? e.target.value : this.props.capiSearch.searchTerm;
+      const byline = type === 'byline' ? e.target.value : this.props.capiSearch.byline;
+      this.searchContent(searchTerm, byline);
     }
 
-    searchContent(searchString, filters, page = 1) {
+    searchContent(searchString, byline, filters, page = 1) {
       this.props.capiActions.clearPages();
       this.state.selectedContent = [];
 
@@ -45,12 +48,12 @@ export class BatchTag extends React.Component {
         'page': page
       });
 
-      this.props.capiActions.searchPreviewCapi(searchString, params);
+      this.props.capiActions.searchPreviewCapi(searchString, byline, params);
     }
 
     applyFilters(filters) {
       this.props.capiActions.updateFilters(filters);
-      this.searchContent(this.props.capiSearch.searchTerm, filters);
+      this.searchContent(this.props.capiSearch.searchTerm, this.props.capiSearch.byline, filters);
     }
 
     toggleFilters() {
@@ -151,7 +154,7 @@ export class BatchTag extends React.Component {
         // If we already have the page just used the cached version
         this.props.capiActions.switchPage(page);
       } else {
-        this.props.capiActions.searchPreviewCapi(this.props.capiSearch.searchTerm, params);
+        this.props.capiActions.searchPreviewCapi(this.props.capiSearch.searchTerm, this.props.capiSearch.byline, params);
       }
     }
 
@@ -188,8 +191,12 @@ export class BatchTag extends React.Component {
             <div className="batch-tag">
                 <div className="batch-tag__filters">
                     <div className="batch-tag__filters__group">
-                        <label>Search by name</label>
-                        <input className="batch-tag__input" type="text" value={this.props.capiSearch.searchTerm || ''} onChange={this.searchFieldChange.bind(this)} />
+                        <label>Search by query</label>
+                        <input className="batch-tag__input" type="text" value={this.props.capiSearch.searchTerm || ''} onChange={this.searchFieldChange.bind(this, 'searchTerm')} />
+                    </div>
+                    <div className="batch-tag__filters__group">
+                        <label>Search by byline</label>
+                        <input className="batch-tag__input" type="text" value={this.props.capiSearch.byline || ''} onChange={this.searchFieldChange.bind(this, 'byline')} />
                     </div>
                     <div className="batch-tag__show-filters" onClick={this.toggleFilters.bind(this)}>
                       { this.state.showFilters ? 'Hide Filters' : 'Show Filters'}
