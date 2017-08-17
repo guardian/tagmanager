@@ -23,10 +23,11 @@ function switchCapiPage(page) {
 
 }
 
-function requestCapiSearch(searchTerm) {
+function requestCapiSearch(searchTerm, byline) {
     return {
         type:               CAPI_SEARCH_REQUEST,
         searchTerm:         searchTerm,
+        byline:             byline,
         receivedAt:         Date.now()
     };
 }
@@ -57,8 +58,8 @@ function _searchFn (dispatch, searchString, params) {
         .fail(error => dispatch(errorCapiSearch(error)));
 }
 
-function _searchPreviewFn (dispatch, searchString, params) {
-    return searchPreviewContent(searchString, params)
+function _searchPreviewFn (dispatch, searchString, byline, params) {
+    return searchPreviewContent(searchString, byline, params)
         .then(res => dispatch(recieveCapiSearch(res, searchString)))
         .fail(error => dispatch(errorCapiSearch(error)));
 }
@@ -85,10 +86,10 @@ export function clearPages() {
     };
 }
 
-export function searchPreviewCapi(searchString, params) {
+export function searchPreviewCapi(searchString, byline, params) {
     return dispatch => {
-        dispatch(requestCapiSearch(searchString));
-        return _debouncedPreviewSearch(dispatch, searchString, params);
+        dispatch(requestCapiSearch(searchString, byline));
+        return _debouncedPreviewSearch(dispatch, searchString, byline, params);
     };
 }
 

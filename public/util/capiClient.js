@@ -91,13 +91,18 @@ export function searchContent (searchString, params) {
     });
 }
 
-export function searchPreviewContent (searchString, params) {
+export function searchPreviewContent (searchString, byline, params) {
     const query = paramsObjectToQuery(params);
 
     const searchQueryString = searchString || '';
+    const bylineQueryString = byline || '';
 
     return Reqwest({
-      url: getCapiPreviewUrl() + '&q=' + buildSearch(searchQueryString) + '&' + query + '&show-fields=isLive,internalComposerCode&order-by=newest',
+      url: getCapiPreviewUrl()
+        + '&q=' + buildSearch(searchQueryString)
+        + ( byline ? '&byline=' + buildSearch(bylineQueryString) : '')
+        + '&' + query
+        + '&show-fields=isLive,internalComposerCode&order-by=newest',
       contentType: 'application/json',
       crossOrigin: true,
       method: 'get'

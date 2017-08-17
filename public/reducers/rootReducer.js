@@ -296,6 +296,7 @@ export default function tag(state = {
     return Object.assign({}, state, {
       capiSearch: Object.assign({}, state.capiSearch, {
         searchTerm: action.searchTerm,
+        byline: action.byline,
         pageRequestCount: state.capiSearch.pageRequestCount + 1
       })
     });
