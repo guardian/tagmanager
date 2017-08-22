@@ -112,6 +112,8 @@ sealed trait Config {
   def frontendBucketWriteRole: Option[String] = None
   def auditingKinesisWriteRole: Option[String] = None
   def enableAuditStreaming: Boolean = true
+
+  def tagSearchPageSize = 25
 }
 
 class DevConfig extends Config {

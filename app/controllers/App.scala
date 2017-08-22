@@ -49,7 +49,8 @@ object App extends Controller with PanDomainAuthActions {
         tagTypes = allTags,
         permittedTagTypes = permittedTags.toList,
         permissions = permissions,
-        reauthUrl = "/reauth"
+        reauthUrl = "/reauth",
+        tagSearchPageSize = Config().tagSearchPageSize
       )
 
       Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))

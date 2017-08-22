@@ -248,6 +248,11 @@ export default {
       query.types = options.tagType;
     }
 
+
+    if (options.page) {
+      query.page = options.page;
+    }
+
     return PandaReqwest({
         url: '/api/tags',
         method: 'get',

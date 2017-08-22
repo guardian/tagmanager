@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
 import TagsList from './TagList/TagList.react';
+import PageNavigator from './utils/PageNavigator.react';
+
 
 const searchFields = {
   'Internal Name': 'internalName',
@@ -10,6 +12,8 @@ const searchFields = {
   'Type': 'type',
   'Path': 'path'
 };
+
+const PAGE_NAV_SPAN = 5;
 
 export class TagSearch extends React.Component {
 
@@ -20,7 +24,9 @@ export class TagSearch extends React.Component {
           searchString: '',
           tags: [],
           sortResultsBy: 'internalName',
-          searchFieldName:'internalName'
+          searchFieldName:'internalName',
+          currentPage: 1,
+          tagCount: 0
         };
 
         this.sortBy = this.sortBy.bind(this);
@@ -35,6 +41,22 @@ export class TagSearch extends React.Component {
       this.searchTags();
     }
 
+    pageSelectCallback(page) {
+      const self = this;
+      this.setState({currentPage: page});
+
+      tagManagerApi.searchTags(this.state.searchString, {
+        searchFieldName: this.state.searchFieldName,
+        orderByField: this.state.sortBy,
+        page: page
+      })
+      .then(function(resp) {
+          self.setState({tags: resp.tags});
+      }).fail(function(err, msg) {
+          console.log('failed', err, msg);
+      });
+    }
+
     searchTags(searchString, searchFieldName, sortBy) {
 
       var self = this;
@@ -42,7 +64,8 @@ export class TagSearch extends React.Component {
       this.setState({
         searchString: searchString !== undefined ? searchString : this.state.searchString,
         sortBy: sortBy !== undefined ? sortBy : this.state.sortBy,
-        searchFieldName: searchFieldName !== undefined ? searchFieldName : this.state.searchFieldName
+        searchFieldName: searchFieldName !== undefined ? searchFieldName : this.state.searchFieldName,
+        currentPage: 1
       });
 
       tagManagerApi.searchTags(searchString, {
@@ -50,7 +73,10 @@ export class TagSearch extends React.Component {
         orderByField: sortBy
       })
       .then(function(resp) {
-          self.setState({tags: resp});
+        self.setState({
+          tags: resp.tags,
+          tagCount: resp.count
+        });
       }).fail(function(err, msg) {
           console.log('failed', err, msg);
       });
@@ -67,6 +93,23 @@ export class TagSearch extends React.Component {
 
     sortBy(fieldName) {
       this.searchTags(this.state.searchString, this.state.searchFieldName, fieldName);
+    }
+
+    renderPageNavigator() {
+
+      const count = this.state.tagCount;
+      if (count > 0 && count > this.props.config.tagSearchPageSize) {
+        return (
+          <PageNavigator
+            pageSelectCallback={this.pageSelectCallback.bind(this)}
+            currentPage={this.state.currentPage}
+            pageSpan={PAGE_NAV_SPAN}
+            lastPage={Math.ceil(count / this.props.config.tagSearchPageSize)}
+          />
+        );
+      }
+
+      return false;
     }
 
     render () {
@@ -86,9 +129,11 @@ export class TagSearch extends React.Component {
                     <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
 
                 </div>
+                {this.renderPageNavigator()}
                 <div className="tag-search__suggestions">
                     <TagsList tags={this.state.tags} sections={this.props.sections} sortBy={this.sortBy} />
                 </div>
+                {this.renderPageNavigator()}
             </div>
         );
     }
@@ -101,7 +146,8 @@ import * as getSections from '../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {
-    sections: state.sections
+    sections: state.sections,
+    config: state.config
   };
 }
 
