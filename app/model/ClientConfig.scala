@@ -12,7 +12,9 @@ case class ClientConfig(username: String,
                         tagTypes: List[String],
                         permittedTagTypes: List[String],
                         permissions: Map[String, Boolean],
-                        reauthUrl: String)
+                        reauthUrl: String,
+                        tagSearchPageSize: Int
+                       )
 
 object ClientConfig {
   implicit val clientConfigFormat = Jsonx.formatCaseClass[ClientConfig]

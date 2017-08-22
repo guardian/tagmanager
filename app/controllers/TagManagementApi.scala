@@ -11,6 +11,7 @@ import play.api.mvc.Controller
 import repositories._
 
 import play.api.libs.concurrent.Execution.Implicits._
+import services.Config
 import scala.concurrent.Future
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
@@ -71,10 +72,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       case(_) => tags.sortBy(_.comparableValue)
     }
 
-    val resultsCount = req.getQueryString("pageSize").getOrElse("25").toInt
     val page = req.getQueryString("page").getOrElse("1").toInt
-    val startIndex = (page - 1) * 25
-    val paginatedTagResults = orderedTags.drop(startIndex).take(resultsCount)
+    val pageSize = Config().tagSearchPageSize
+
+    val startIndex = (page - 1) * pageSize
+    val paginatedTagResults = orderedTags.drop(startIndex).take(pageSize)
     val tagCount = orderedTags.length
 
     Ok(Json.toJson(TagSearchResult(paginatedTagResults, tagCount)))

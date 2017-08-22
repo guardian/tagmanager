@@ -13,7 +13,6 @@ const searchFields = {
   'Path': 'path'
 };
 
-const TAG_PAGE_SIZE = 25;
 const PAGE_NAV_SPAN = 5;
 
 export class TagSearch extends React.Component {
@@ -99,13 +98,13 @@ export class TagSearch extends React.Component {
     renderPageNavigator() {
 
       const count = this.state.tagCount;
-      if (count > 0 && count > TAG_PAGE_SIZE) {
+      if (count > 0 && count > this.props.config.tagSearchPageSize) {
         return (
           <PageNavigator
             pageSelectCallback={this.pageSelectCallback.bind(this)}
             currentPage={this.state.currentPage}
             pageSpan={PAGE_NAV_SPAN}
-            lastPage={Math.ceil(count / TAG_PAGE_SIZE)}
+            lastPage={Math.ceil(count / this.props.config.tagSearchPageSize)}
           />
         );
       }
@@ -147,7 +146,8 @@ import * as getSections from '../actions/SectionsActions/getSections';
 
 function mapStateToProps(state) {
   return {
-    sections: state.sections
+    sections: state.sections,
+    config: state.config
   };
 }
 
