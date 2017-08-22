@@ -50,7 +50,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def searchTags = APIAuthAction { req =>
-
+    
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
       searchField = req.getQueryString("searchField"),
@@ -72,8 +72,12 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
 
     val resultsCount = req.getQueryString("pageSize").getOrElse("25").toInt
+    val page = req.getQueryString("page").getOrElse("1").toInt
+    val startIndex = (page - 1) * 25
+    val paginatedTagResults = orderedTags.drop(startIndex).take(resultsCount)
+    val tagCount = orderedTags.length
 
-    Ok(Json.toJson(orderedTags take resultsCount))
+    Ok(Json.toJson(TagSearchResult(paginatedTagResults, tagCount)))
   }
 
   def getSection(id: Long) = APIAuthAction {
