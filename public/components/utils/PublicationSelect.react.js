@@ -16,9 +16,9 @@ export default class PublicationSelect extends React.Component {
     tagManagerApi.searchTags('', {
       tagType: 'Publication'
     })
-    .then((tags) => {
+    .then((result) => {
       this.setState({
-        publications: tags
+        publications: result.tags
       });
     });
   }

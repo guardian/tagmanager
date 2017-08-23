@@ -41,9 +41,9 @@ export default class TagSelect extends React.Component {
 
     performSearch(searchTerm) {
       tagManagerApi.searchTags(searchTerm || this.state.searchTerm, {tagType: this.props.tagType})
-        .then((tags) => {
+        .then((result) => {
           this.setState({
-            suggestions: tags
+            suggestions: result.tags
           });
         }).fail(error => {
           console.log('Could not get suggestions for: ', searchTerm || this.state.searchTerm, error);
