@@ -13,9 +13,9 @@ object SectionAuditRepository {
   def upsertSectionAudit(sectionAudit: SectionAudit) = {
 
     //Send onto Auditing Stream
-    if (Config().enableAuditStreaming) {
-      KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", sectionAudit.asAuditingThrift)
-    }
+    //if (Config().enableAuditStreaming) {
+    //  KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", sectionAudit.asAuditingThrift)
+    //}
 
     try {
       Dynamo.sectionAuditTable.putItem(sectionAudit.toItem)
