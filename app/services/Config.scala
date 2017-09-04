@@ -207,7 +207,7 @@ class CodeConfig extends Config {
     "https://campaign-central.local.dev-gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
-  override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-CrossAccountKinesisAccess-CC5UXEHZNP5M")
+  override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-kinesis-cross-ac-CrossAccountKinesisAcces-PI8TASUEN2FE")
 }
 
 class ProdConfig extends Config {
