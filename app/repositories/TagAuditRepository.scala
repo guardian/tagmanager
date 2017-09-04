@@ -11,9 +11,9 @@ object TagAuditRepository {
   def upsertTagAudit(tagAudit: TagAudit) = {
 
     //Send onto Auditing Stream
-    if (Config().enableAuditStreaming) {
-      KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", tagAudit.asAuditingThrift)
-    }
+    //if (Config().enableAuditStreaming) {
+    //  KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", tagAudit.asAuditingThrift)
+    //}
 
     try {
       Dynamo.tagAuditTable.putItem(tagAudit.toItem)
