@@ -73,7 +73,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
 
     val page = req.getQueryString("page").getOrElse("1").toInt
-    val pageSize = Config().tagSearchPageSize
+    val pageSize = req.getQueryString("pageSize").map( _.toInt).getOrElse(Config().tagSearchPageSize)
 
     val startIndex = (page - 1) * pageSize
     val paginatedTagResults = orderedTags.drop(startIndex).take(pageSize)
