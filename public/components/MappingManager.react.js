@@ -24,7 +24,7 @@ export class MappingManager extends React.Component {
     fetchReferences(referenceType) {
       tagManagerApi.getTagsByReferenceType(referenceType.typeName || this.state.selectedReferenceType.typeName).then(tags => {
         this.setState({
-          tags: tags
+          tags: tags.tags
         });
       });
     }
