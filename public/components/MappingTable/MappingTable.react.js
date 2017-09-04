@@ -73,7 +73,7 @@ export default class MappingTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {mappings.sort((a, b) => a.tagInternalName > b.tagInternalName ? 1 : -1).map((mapping) => {
+            {mappings.sort((a, b) => a.tag.internalName > b.tag.internalName ? 1 : -1).map((mapping) => {
               return (
                 <MappingTableRow
                   tag={mapping.tag}
