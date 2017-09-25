@@ -50,7 +50,9 @@ case class Sponsorship (
     highContrastSponsorLogo = highContrastSponsorLogo.map(_.asThrift),
     sponsorLink = sponsorLink,
     aboutLink = aboutLink,
-    targeting = targeting.map(_.asThrift)
+    targeting = targeting.map(_.asThrift),
+    validFrom = validFrom.map(_.getMillis),
+    validTo = validTo.map(_.getMillis)
   )
 }
 
@@ -102,8 +104,8 @@ object DenormalisedSponsorship {
       highContrastSponsorLogo = s.highContrastSponsorLogo,
       sponsorLink = s.sponsorLink,
       aboutLink = s.aboutLink,
-      tags = s.tags.map(_.flatMap(TagLookupCache.getTag(_))),
-      sections = s.sections.map(_.flatMap(SectionRepository.getSection(_))),
+      tags = s.tags.map(_.flatMap(TagLookupCache.getTag)),
+      sections = s.sections.map(_.flatMap(SectionRepository.getSection)),
       targeting = s.targeting
     )
   }

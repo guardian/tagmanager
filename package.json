@@ -45,7 +45,8 @@
     "style-loader": "^0.13.0",
     "svg-sprite": "^1.2.12",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.1",
+    "phantomjs-prebuilt": "^2.1.14"
   },
   "devDependencies": {
     "eslint": "^1.10.3",
