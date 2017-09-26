@@ -4,7 +4,7 @@ Tag Manager
 [![Circle CI](https://circleci.com/gh/guardian/tagmanager/tree/master.svg?style=svg)](https://circleci.com/gh/guardian/tagmanager/tree/master)
 
 Tags are great, they are literally the best way we have of indicating what a piece of content is, what it’s about and
-where it came from. We use tags to generate navigation on theguardian.com and provide pages and pages of links to
+where it came from. We use tags to generate navigation on [theguardian.com](https://theguardian.com) and provide pages and pages of links to
 interesting content. Tags can be mapped which allows them to magically show rich contextual information from external
 systems on relevant pages. Everyone loves tags.
 
@@ -13,11 +13,11 @@ The tag manager allows the tags to be ... er ... managed
 Running
 =======
 
-Before you run for the first time you will need to run `./scripts/setup.sh` this will install and compile all the frontend
-dependencies needed for the app (you may need to install npm before you can run this successfully). If any frontend
+Before you run for the first time you will need to run `./scripts/setup.sh`. This action will install and compile all the frontend
+dependencies needed for the app (you may need to install `npm` before you can run this successfully). If any frontend
 dependencies are changed you should should re run the setup script.
 
-The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. after running this the tag manager
+The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. After running this the tag manager
 will be available on [https://tagmanager.local.dev-gutools.co.uk](https://tagmanager.local.dev-gutools.co.uk)
 
 To read the database and interact with the AWS infrastructure you will need AWS credentials that allow you access to the
@@ -25,7 +25,7 @@ Composer account available to the default credentials provider chain. The easies
 credentials via [janus](https://janus.gutools.co.uk/) and export the credentials to your shell using the handy script provided by janus.
 
 If you are working on the commercial tag functionality and need to be able to upload logos you will also need AWS credentials for 
-the frontend aws account available as an AWS profile named "frontend". This can also be obtained via janus.
+the frontend AWS account available as an AWS profile named "frontend". This can also be obtained via janus.
 
 The tag manager is a standard play app, fire up sbt and run.
 
@@ -41,7 +41,7 @@ as mentioned above, or alternatively you can choose to use one of the alternativ
 1. `./scripts/start.sh` This starts a webpack watcher in addition to running the application - The watcher will compile
 unminified code when it detects a change to the javascript. Refresh the webpage to see the new code.
 2. `./scripts/client-dev.sh` This scripts starts a [webpack-dev-server](https://webpack.github.io/docs/webpack-dev-server.html)
-alongside the application which provides Hot Reloading. Changes you make to code should be immedaitely visible in the browser
+alongside the application which provides Hot Reloading. Changes you make to code should be immediately visible in the browser
 
 Developing
 ==========
