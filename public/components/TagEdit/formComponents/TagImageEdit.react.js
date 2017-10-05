@@ -70,7 +70,6 @@ export default class TagImageEdit extends React.Component {
   }
 
   fetchMetadata(imageUrl) {
-
     //Validate before any requests happen
     if (!validateImageUrl(imageUrl)) {
       this.setState({
@@ -111,7 +110,7 @@ export default class TagImageEdit extends React.Component {
     }
 
     if (this.state.metadataFetchStatus === FETCH_STATES.success) {
-      return (<div className="tag-edit__image__add--success" onClick={this.addImage.bind(this)}><i className="i-tick-green" />Add Image</div>);
+      return (<div className="tag-edit__image__add--success" onClick={this.addImage.bind(this)}><i className="i-tick-green" />Click here to add the image</div>);
     }
 
     return false;
@@ -121,33 +120,33 @@ export default class TagImageEdit extends React.Component {
 
     const imageAsset = this.getMainAsset();
 
-    if (!validateImageUrl(imageAsset.imageUrl)) {
+    if (imageAsset.imageUrl) {
+        return (
+          <div className="tag-edit__field">
+            <a href={imageAsset.imageUrl} target="_blank">
+              <img src={imageAsset.imageUrl} className="tag-edit__field__image"/>
+            </a>
+            <div>Width: {imageAsset.width}px</div>
+            <div>Height: {imageAsset.height}px</div>
+            <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
+              <i className="i-delete" />Remove image
+            </div>
+          </div>
+        );
+    } else {
       return (
         <div>
           <input type="text"
             className="tag-edit__input"
             value={this.state.inputUrl}
             onChange={this.updateInputUrl.bind(this)}
-            disabled={!this.props.tagEditable}/>
+            disabled={!this.props.tagEditable}
+            placeholder="Enter image URL..."/>
           {this.renderAddButton()}
         </div>
       );
     }
 
-    return (
-      <div className="tag-edit__field">
-        <a href={imageAsset.imageUrl} target="_blank">
-          <img src={imageAsset.imageUrl} className="tag-edit__field__image"/>
-        </a>
-        <div className="tag-edit__image__info">
-          <div>Width: {imageAsset.width}px</div>
-          <div>Height: {imageAsset.height}px</div>
-          <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
-            <i className="i-delete" />Remove image
-          </div>
-        </div>
-      </div>
-    );
 
   }
 

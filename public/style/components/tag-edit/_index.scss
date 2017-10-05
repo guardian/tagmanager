@@ -74,11 +74,8 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 .tag-edit__image__remove {
-  position: absolute;
   color: $c-red;
-  bottom: 0;
   cursor: pointer;
-
 }
 
 %tag-edit__image__add {
