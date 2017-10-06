@@ -126,8 +126,7 @@ export default class TagImageEdit extends React.Component {
             <a href={imageAsset.imageUrl} target="_blank">
               <img src={imageAsset.imageUrl} className="tag-edit__field__image"/>
             </a>
-            <div>Width: {imageAsset.width}px</div>
-            <div>Height: {imageAsset.height}px</div>
+            <div className="tag-edit__label">{imageAsset.width} &times; {imageAsset.height} px</div>
             <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
               <i className="i-delete" />Remove image
             </div>
