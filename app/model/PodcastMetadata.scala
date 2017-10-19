@@ -13,7 +13,8 @@ case class PodcastMetadata( linkUrl: String,
                             clean: Boolean = false,
                             explicit: Boolean = false,
                             image: Option[Image] = None,
-                            categories: Option[PodcastCategory] = None
+                            categories: Option[PodcastCategory] = None,
+                            podcastType: Option[String] = None
 ) {
 
   def asThrift = ThriftPodcastMetadata(
@@ -25,7 +26,8 @@ case class PodcastMetadata( linkUrl: String,
     clean =             clean,
     explicit =          explicit,
     image =             image.map(_.asThrift),
-    categories =        categories.map((cat) => List(cat.asThrift))
+    categories =        categories.map((cat) => List(cat.asThrift)),
+    podcastType =       podcastType
   )
 
   def asExportedXml = {
@@ -38,6 +40,7 @@ case class PodcastMetadata( linkUrl: String,
     <explicit>{this.explicit}</explicit>
     <image>{this.image.map(x => x.asExportedXml).getOrElse("")}</image>
     <categories>{this.categories.map(_.asExportedXml).getOrElse("")}</categories>
+    <type>{this.podcastType.getOrElse("")}</type>
   }
 }
 
@@ -55,7 +58,8 @@ object PodcastMetadata {
       clean =             thriftPodcastMetadata.clean,
       explicit =          thriftPodcastMetadata.explicit,
       image =             thriftPodcastMetadata.image.map(Image(_)),
-      categories =        thriftPodcastMetadata.categories.map(x => PodcastCategory(x.head))
+      categories =        thriftPodcastMetadata.categories.map(x => PodcastCategory(x.head)),
+      podcastType =       thriftPodcastMetadata.podcastType
     )
 }
 

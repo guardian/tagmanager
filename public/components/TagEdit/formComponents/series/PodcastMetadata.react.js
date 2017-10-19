@@ -68,6 +68,23 @@ export default class PodcastMetadata extends React.Component {
     }));
   }
 
+  updatePodcastType(e) {
+
+      const newType = e.target.value;
+
+      if (!newType) {
+          this.props.updateTag(R.merge(this.props.tag, {
+              podcastMetadata: R.omit(['podcastType'], this.props.tag.podcastMetadata)
+          }));
+
+          return;
+      }
+
+      this.props.updateTag(R.merge(this.props.tag, {
+          podcastMetadata: R.merge(this.props.tag.podcastMetadata, {podcastType: e.target.value})
+          }));
+  }
+
   renderMetadataForm() {
     if (!this.tagHasPodcast()) {
       return false;
@@ -78,6 +95,14 @@ export default class PodcastMetadata extends React.Component {
         <PodcastCategorySelect
           tag={this.props.tag}
           updateTag={this.props.updateTag}/>
+        <div className="tag-edit__field">
+          <label className="tag-edit__label">Podcast Type</label>
+          <select value={this.props.tag.podcastMetadata.podcastType || ""} onChange={this.updatePodcastType.bind(this)} >
+            <option value=""></option>
+            <option value="episodic" key="episodic">Episodic</option>
+            <option value="serial" key="serial">Serial</option>
+          </select>
+        </div>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Link URL</label>
           <input type="text"
