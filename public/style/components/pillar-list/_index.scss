@@ -1,0 +1,34 @@
+.pillarlist {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 80px;
+  padding: $standard-padding;
+
+}
+
+.pillarlist__table__row {
+  @extend %table__row;
+}
+
+.pillarlist__table__pillarName,
+.pillarlist__table__pillarPath {
+  @extend %table__cell;
+
+  &--header {
+    @extend %table__cell;
+
+    background-color: $c-grey-200;
+
+    font-weight: bold;
+  }
+}
+
+.pillarlist__table__pillarName,
+.pillarlist__table__pillarName--header {
+  width: 50%;
+}
+
+.pillarlist__table__pillarPath,
+.pillarlist__table__pillarPath--header {
+  width: 50%;
+}

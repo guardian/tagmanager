@@ -142,6 +142,42 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(SectionRepository.loadAllSections))
   }
 
+  def listPillars() = APIAuthAction {
+    Ok(Json.toJson(PillarRepository.loadAllPillars))
+  }
+
+  def getPillar(id: Long) = APIAuthAction {
+    PillarRepository.getPillar(id).map { pillar =>
+      Ok(Json.toJson(pillar))
+    }.getOrElse(NotFound)
+  }
+
+  def createPillar() = APIAuthAction.async { req =>
+    implicit val username = Option(req.user.email)
+    req.body.asJson.map { json =>
+      json.as[CreatePillarCommand].process.map { result =>
+        result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } recover {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      Future.successful(BadRequest("Expecting Json data"))
+    }
+  }
+
+  def updatePillar(id: Long) = APIAuthAction.async { req =>
+    implicit val username = Option(req.user.email)
+    req.body.asJson.map { json =>
+      UpdatePillarCommand(json.as[Pillar]).process.map { result =>
+        result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
+      } recover {
+        commandErrorAsResult
+      }
+    }.getOrElse {
+      Future.successful(BadRequest("Expecting Json data"))
+    }
+  }
+
   def listReferenceTypes() = APIAuthAction {
     Ok(Json.toJson(ExternalReferencesTypeRepository.loadAllReferenceTypes))
   }

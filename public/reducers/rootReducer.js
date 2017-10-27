@@ -16,6 +16,11 @@ import {TAG_POPULATE_BLANK} from '../actions/TagActions/createTag';
 import {SECTION_POPULATE_BLANK} from '../actions/SectionsActions/createSection';
 import {SPONSORSHIP_POPULATE_BLANK} from '../actions/SponsorshipActions/createSponsorship';
 import {CAPI_CLEAR_PAGES, CAPI_SWITCH_PAGE, CAPI_SEARCH_RECEIVE, CAPI_SEARCH_REQUEST, CAPI_FILTERS_UPDATE} from '../actions/CapiActions/searchCapi';
+import {PILLARS_GET_REQUEST, PILLARS_GET_RECEIVE, PILLARS_GET_ERROR} from '../actions/PillarsActions/getPillars';
+import {PILLAR_GET_REQUEST, PILLAR_GET_RECEIVE, PILLAR_GET_ERROR} from '../actions/PillarsActions/getPillar';
+import {PILLAR_UPDATE} from '../actions/PillarsActions/updatePillar';
+import {PILLAR_SAVE_REQUEST, PILLAR_SAVE_RECEIVE, PILLAR_SAVE_ERROR} from '../actions/PillarsActions/savePillar';
+import {PILLAR_POPULATE_BLANK} from '../actions/PillarsActions/createPillar';
 
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
@@ -200,6 +205,64 @@ export default function tag(state = {
 
 
 
+  // PILLARS GET
+  case PILLARS_GET_REQUEST:
+    return Object.assign({}, state, {
+      pillars: false
+    });
+  case PILLARS_GET_RECEIVE:
+    return Object.assign({}, state, {
+      pillars: action.pillars
+    });
+  case PILLARS_GET_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
+    });
+
+  // PILLAR GET
+  case PILLAR_GET_REQUEST:
+    return Object.assign({}, state, {
+      pillar: false,
+      saveState: undefined
+    });
+  case PILLAR_GET_RECEIVE:
+    return Object.assign({}, state, {
+      pillar: action.pillar,
+      saveState: saveState.clean
+    });
+  case PILLAR_GET_ERROR:
+    return Object.assign({}, state, {
+      error: action.message,
+      saveState: undefined
+    });
+
+  // PILLAR SAVE
+  case PILLAR_SAVE_REQUEST:
+    return Object.assign({}, state, {
+        saveState: saveState.inprogress
+    });
+  case PILLAR_SAVE_RECEIVE:
+    return Object.assign({}, state, {
+        pillar: action.pillar,
+        saveState: saveState.clean
+    });
+  case PILLAR_SAVE_ERROR:
+    return Object.assign({}, state, {
+        error: action.message
+    });
+
+  // PILLAR UPDATE
+  case PILLAR_UPDATE:
+    return Object.assign({}, state, {
+      pillar: action.pillar,
+      saveState: saveState.dirty
+    });
+
+  case PILLAR_POPULATE_BLANK:
+    return Object.assign({}, state, {
+      pillar: action.pillar,
+      saveState: saveState.clean
+    });
 
   // SPONSORSHIP GET
   case SPONSORSHIP_GET_REQUEST:

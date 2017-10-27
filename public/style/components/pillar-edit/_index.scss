@@ -1,0 +1,17 @@
+.pillar-edit {
+  display: flex;
+
+  height: calc(100vh - #{$size-header-height});
+}
+
+.pillar-edit__column {
+  @extend %tag__column;
+}
+
+.pillar-edit__column--sidebar {
+  @extend %tag__column;
+  background-color: $c-grey-200;
+
+  flex: 1 0 370px;
+
+}

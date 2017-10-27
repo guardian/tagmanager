@@ -373,6 +373,39 @@ export default {
       contentType: 'application/json',
       data: JSON.stringify({sectionId: sectionId})
     });
-  }
+  },
 
+  getPillars: () => {
+    return PandaReqwest({
+      url: '/api/pillars',
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  getPillar: (id) => {
+    return PandaReqwest({
+      url: '/api/pillar/' + id,
+      method: 'get',
+      type: 'json'
+    });
+  },
+
+  savePillar: (id, pillar) => {
+    return PandaReqwest({
+      url: '/api/pillar/' + id,
+      data: JSON.stringify(pillar),
+      contentType: 'application/json',
+      method: 'put'
+    });
+  },
+
+  createPillar: (pillar) => {
+    return PandaReqwest({
+      url: '/api/pillar',
+      data: JSON.stringify(pillar),
+      contentType: 'application/json',
+      method: 'post'
+    });
+  }
 };
