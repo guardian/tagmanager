@@ -30,6 +30,15 @@ export default class PillarEdit extends React.Component {
                   <label className="tag-edit__input-group__header">Name</label>
                   <input className="tag-edit__input" type="text" value={this.props.pillar.name} onChange={this.onUpdateName.bind(this)}/>
               </div>
+              { this.props.pillar.path ?
+                  <div className="tag-edit__linked-field">
+                      <div className="tag-edit__linked-field__lock"/>
+                      <label>Path</label>
+                      <div className="tag-edit__linked-field__input-container">
+                          <span>{this.props.pillar.path}</span>
+                      </div>
+                  </div> : null
+              }
           </div>
       );
     }
