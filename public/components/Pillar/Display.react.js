@@ -2,6 +2,7 @@ import React from 'react';
 import PillarEdit from './PillarEdit.react';
 import PillarSections from './PillarSections/PillarSections.react';
 import SaveButton from '../utils/SaveButton.react';
+import ConfirmButton from '../utils/ConfirmButton.react';
 
 class PillarDisplay extends React.Component {
 
@@ -33,6 +34,10 @@ class PillarDisplay extends React.Component {
         this.props.pillarActions.savePillar(this.props.pillar);
     }
 
+    deletePillar() {
+        this.props.pillarActions.deletePillar(this.props.pillar);
+    }
+
     render () {
 
         if (!this.props.pillar || this.props.pillar.id !== parseInt(this.props.routeParams.pillarId, 10)) {
@@ -45,6 +50,9 @@ class PillarDisplay extends React.Component {
             <div className="pillar-edit">
                 <div className="pillar-edit__column--sidebar">
                     <PillarEdit pillar={this.props.pillar} updatePillar={this.props.pillarActions.updatePillar} pathLocked={true} />
+                    <div>
+                        <ConfirmButton className="pillar__delete" onClick={this.deletePillar.bind(this)} buttonText="Delete Pillar" />
+                    </div>
                 </div>
                 <div className="pillar-edit__column">
                     <PillarSections sections={this.props.sections} pillar={this.props.pillar} updatePillar={this.props.pillarActions.updatePillar}/>
@@ -62,6 +70,7 @@ import { bindActionCreators } from 'redux';
 import * as getPillar from '../../actions/PillarsActions/getPillar';
 import * as updatePillar from '../../actions/PillarsActions/updatePillar';
 import * as savePillar from '../../actions/PillarsActions/savePillar';
+import * as deletePillar from '../../actions/PillarsActions/deletePillar';
 import * as showError from '../../actions/UIActions/showError';
 import * as getSections from '../../actions/SectionsActions/getSections';
 
@@ -76,7 +85,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        pillarActions: bindActionCreators(Object.assign({}, getPillar, updatePillar, savePillar), dispatch),
+        pillarActions: bindActionCreators(Object.assign({}, getPillar, updatePillar, savePillar, deletePillar), dispatch),
         sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch),
         uiActions: bindActionCreators(Object.assign({}, showError), dispatch)
     };

@@ -7,11 +7,11 @@ import model.jobs.JobRunner
 import org.joda.time.{DateTime, DateTimeZone}
 import permissions._
 import play.api.libs.json._
-import play.api.mvc.Controller
+import play.api.mvc.{Controller, Result}
 import repositories._
-
 import play.api.libs.concurrent.Execution.Implicits._
 import services.Config
+
 import scala.concurrent.Future
 
 object TagManagementApi extends Controller with PanDomainAuthActions {
@@ -175,6 +175,15 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       }
     }.getOrElse {
       Future.successful(BadRequest("Expecting Json data"))
+    }
+  }
+
+  def deletePillar(id: Long) = APIAuthAction.async { req =>
+    implicit val username = Option(req.user.email)
+    DeletePillarCommand(id).process.map { result =>
+      result.fold[Result](NotFound)(_ => NoContent)
+    } recover {
+      commandErrorAsResult
     }
   }
 

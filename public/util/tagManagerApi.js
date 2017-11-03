@@ -407,5 +407,13 @@ export default {
       contentType: 'application/json',
       method: 'post'
     });
+  },
+
+  deletePillar: (id) => {
+    return PandaReqwest({
+      url: '/api/pillar/' + id,
+      contentType: 'application/json',
+      method: 'delete'
+    });
   }
 };

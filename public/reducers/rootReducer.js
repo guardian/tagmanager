@@ -21,6 +21,7 @@ import {PILLAR_GET_REQUEST, PILLAR_GET_RECEIVE, PILLAR_GET_ERROR} from '../actio
 import {PILLAR_UPDATE} from '../actions/PillarsActions/updatePillar';
 import {PILLAR_SAVE_REQUEST, PILLAR_SAVE_RECEIVE, PILLAR_SAVE_ERROR} from '../actions/PillarsActions/savePillar';
 import {PILLAR_POPULATE_BLANK} from '../actions/PillarsActions/createPillar';
+import {PILLAR_DELETE_REQUEST, PILLAR_DELETE_RECEIVE, PILLAR_DELETE_ERROR} from '../actions/PillarsActions/deletePillar';
 
 import {CLEAR_ERROR} from '../actions/UIActions/clearError';
 import {SHOW_ERROR} from '../actions/UIActions/showError';
@@ -262,6 +263,21 @@ export default function tag(state = {
     return Object.assign({}, state, {
       pillar: action.pillar,
       saveState: saveState.clean
+    });
+
+  // PILLAR DELETE
+  case PILLAR_DELETE_REQUEST:
+    return Object.assign({}, state, {
+      saveState: saveState.clean
+    });
+  case PILLAR_DELETE_RECEIVE:
+    return Object.assign({}, state, {
+      saveState: saveState.clean,
+      error: action.message
+    });
+  case PILLAR_DELETE_ERROR:
+    return Object.assign({}, state, {
+      error: action.message
     });
 
   // SPONSORSHIP GET

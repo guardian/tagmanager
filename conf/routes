@@ -39,6 +39,7 @@ GET            /api/pillars                                            controlle
 POST           /api/pillar                                             controllers.TagManagementApi.createPillar
 GET            /api/pillar/:id                                         controllers.TagManagementApi.getPillar(id: Long)
 PUT            /api/pillar/:id                                         controllers.TagManagementApi.updatePillar(id: Long)
+DELETE         /api/pillar/:id                                         controllers.TagManagementApi.deletePillar(id: Long)
 
 GET            /api/sponsorships                                       controllers.TagManagementApi.searchSponsorships
 GET            /api/sponsorship/:id                                    controllers.TagManagementApi.getSponsorship(id: Long)

@@ -5,6 +5,7 @@ import play.api.Logger
 import services.Dynamo
 
 import scala.collection.JavaConversions._
+import scala.util.{Failure, Success, Try}
 
 
 object PillarRepository {
@@ -19,6 +20,15 @@ object PillarRepository {
     } catch {
       case e: Error =>
         Logger.warn(s"Error updating pillar ${pillar.id}: ${e.getMessage}", e)
+        None
+    }
+  }
+
+  def deletePillar(id: Long): Option[Long] = {
+    Try(Dynamo.pillarTable.deleteItem("id", id)) match {
+      case Success(_) => Some(id)
+      case Failure(e) =>
+        Logger.warn(s"Error deleting pillar $id: ${e.getMessage}", e)
         None
     }
   }
