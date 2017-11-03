@@ -152,7 +152,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def createPillar() = APIAuthAction.async { req =>
+  def createPillar() = (APIAuthAction andThen PillarPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreatePillarCommand].process.map { result =>
@@ -165,7 +165,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def updatePillar(id: Long) = APIAuthAction.async { req =>
+  def updatePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       UpdatePillarCommand(json.as[Pillar]).process.map { result =>
@@ -178,7 +178,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def deletePillar(id: Long) = APIAuthAction.async { req =>
+  def deletePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
     DeletePillarCommand(id).process.map { result =>
       result.fold[Result](NotFound)(_ => NoContent)

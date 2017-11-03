@@ -70,3 +70,8 @@ object TriggerMigrationPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "manage sponsorships"
 }
+
+object PillarPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
+  val restrictedAction = "manage pillars"
+}
