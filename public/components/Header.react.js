@@ -22,7 +22,7 @@ export default class Header extends React.Component {
                         <HeaderMenuItem to="/sponsorship">Commercial</HeaderMenuItem>
                         <HeaderMenuItem to="/microsite">Microsite Manager</HeaderMenuItem>
                         <HeaderMenuItem to="/section">Section Editor</HeaderMenuItem>
-                        <HeaderMenuItem to="/pillar">Pillar Editor</HeaderMenuItem>
+                        { /* <HeaderMenuItem to="/pillar">Pillar Editor</HeaderMenuItem> */ }
                         <HeaderMenuItem to="/mapping">Mapping Manager</HeaderMenuItem>
                         <HeaderMenuItem to="/batch">Batch tag</HeaderMenuItem>
                         <HeaderMenuItem to="/merge">Merge tag</HeaderMenuItem>
