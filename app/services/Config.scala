@@ -81,6 +81,8 @@ sealed trait Config {
   def tagAuditTableName: String
   def sectionAuditTableName: String
   def clusterStatusTableName: String
+  def pillarsTableName: String
+  def pillarsAuditTableName: String
 
   def referencesTypeTableName: String
 
@@ -88,6 +90,7 @@ sealed trait Config {
   def sectionUpdateStreamName: String
   def taggingOperationsStreamName: String
   def taggingOperationsReIndexStreamName: String
+  def pillarUpdateStreamName: String
 
   def commercialExpiryStreamName: String
   def auditingStreamName: String
@@ -123,6 +126,8 @@ class DevConfig extends Config {
   override def sponsorshipTableName: String = "tag-manager-sponsorships-dev"
   override def sequenceTableName: String = "tag-manager-sequences-dev"
   override def referencesTypeTableName: String = "tag-manager-reference-type-dev"
+  override def pillarsTableName: String = "tag-manager-pillars-DEV"
+  override def pillarsAuditTableName: String = "tag-manager-pillars-audit-DEV"
 
   override def jobTableName: String = "tag-manager-background-jobs-dev"
   override def tagAuditTableName: String = "tag-manager-tag-audit-dev"
@@ -135,6 +140,7 @@ class DevConfig extends Config {
   override def taggingOperationsReIndexStreamName: String = "tagging-reindex-operations-stream-dev"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-DEV-KELVIN"
   override def auditingStreamName: String = "auditing-CODE"
+  override def pillarUpdateStreamName: String = "pillar-update-stream-CODE"
 
   override def reindexTagsStreamName: String = "tag-reindex-dev"
   override def reindexTagsBatchSize: Int = 500
@@ -168,6 +174,8 @@ class CodeConfig extends Config {
   override def sponsorshipTableName: String = "tag-manager-sponsorships-CODE"
   override def sequenceTableName: String = "tag-manager-sequences-CODE"
   override def referencesTypeTableName: String = "tag-manager-reference-type-CODE"
+  override def pillarsTableName: String = "tag-manager-pillars-CODE"
+  override def pillarsAuditTableName: String = "tag-manager-pillars-audit-CODE"
 
   override def jobTableName: String = "tag-manager-background-jobs-CODE"
   override def tagAuditTableName: String = "tag-manager-tag-audit-CODE"
@@ -180,6 +188,7 @@ class CodeConfig extends Config {
   override def taggingOperationsReIndexStreamName: String = "tagging-reindex-operations-stream-CODE"
   override def commercialExpiryStreamName: String = "commercial-expiry-stream-CODE"
   override def auditingStreamName: String = "auditing-CODE"
+  override def pillarUpdateStreamName: String = "pillar-update-stream-CODE"
 
 
   override def reindexTagsStreamName: String = "tag-reindex-CODE"
@@ -218,12 +227,15 @@ class ProdConfig extends Config {
   override def sponsorshipTableName: String = "tag-manager-sponsorships-PROD"
   override def sequenceTableName: String = "tag-manager-sequences-PROD"
   override def referencesTypeTableName: String = "tag-manager-reference-type-PROD"
+  override def pillarsTableName: String = "tag-manager-pillars-PROD"
+  override def pillarsAuditTableName: String = "tag-manager-pillars-audit-CODE"
 
   override def jobTableName: String = "tag-manager-background-jobs-PROD"
   override def tagAuditTableName: String = "tag-manager-tag-audit-PROD"
   override def sectionAuditTableName: String = "tag-manager-section-audit-PROD"
   override def clusterStatusTableName: String = "tag-manager-cluster-status-PROD"
   override def auditingStreamName: String = "auditing-PROD"
+  override def pillarUpdateStreamName: String = "pillar-update-stream-PROD"
 
   override def tagUpdateStreamName: String = "tag-update-stream-PROD"
   override def sectionUpdateStreamName: String = "section-update-stream-PROD"

@@ -61,6 +61,8 @@ object Dynamo {
   lazy val tagAuditTable = dynamoDb.getTable(Config().tagAuditTableName)
   lazy val sectionAuditTable = dynamoDb.getTable(Config().sectionAuditTableName)
   lazy val appAuditTable = dynamoDb.getTable(Config().appAuditTableName)
+  lazy val pillarTable = dynamoDb.getTable(Config().pillarsTableName)
+  lazy val pillarAuditTable = dynamoDb.getTable(Config().pillarsAuditTableName)
 
   lazy val reindexProgressTable = dynamoDb.getTable(Config().reindexProgressTableName)
 
@@ -106,4 +108,5 @@ object KinesisStreams {
   lazy val taggingOperationsReIndexStream = new KinesisStreamProducer(streamName = Config().taggingOperationsReIndexStreamName)
   lazy val commercialExpiryStream = new KinesisStreamProducer(streamName = Config().commercialExpiryStreamName)
   lazy val auditingEventsStream = new KinesisStreamProducer(streamName = Config().auditingStreamName, requireCompressionByte = true, isAuditing = true)
+  lazy val pillarUpdateStream = new KinesisStreamProducer(streamName = Config().pillarUpdateStreamName, requireCompressionByte = true)
 }

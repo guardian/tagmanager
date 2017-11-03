@@ -21,6 +21,10 @@ import SectionList from './components/SectionList/SectionList.react';
 import SectionDisplay from './components/Section/Display';
 import SectionCreate from './components/Section/Create';
 
+import PillarList from './components/Pillar/PillarList.react';
+import PillarDisplay from './components/Pillar/Display.react';
+import PillarCreate from './components/Pillar/Create.react';
+
 import SponsorshipSearch from './components/SponsorshipSearch.react';
 import SponsorshipDisplay from './components/Sponsorship/Display';
 import SponsorshipCreate from './components/Sponsorship/Create';
@@ -52,6 +56,9 @@ export const router = (
       <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'commercial_tags')} />
       <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'commercial_tags')} />
       <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'commercial_tags')}/>
+      <Route name="pillarList" path="/pillar" component={PillarList} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="pillarCreate" path="/pillar/create" component={PillarCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
+      <Route name="pillarEdit" path="/pillar/:pillarId" component={PillarDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
       <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
       <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />

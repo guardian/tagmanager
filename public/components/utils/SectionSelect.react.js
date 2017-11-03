@@ -21,9 +21,10 @@ export default class SectionSelect extends React.Component {
     return (
       <select value={this.props.selectedId || false} onChange={this.props.onChange} disabled={this.props.disabled}>
         {!this.props.selectedId || this.props.showBlank ? <option value={false}></option> : false}
-        {sections.sort((a, b) => {return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map(function(s) {
+        {sections.sort((a, b) => {return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map((s) => {
+          const value = this.props.usePath ? s.path : s.id;
           return (
-            <option value={s.id} key={s.id} >{s.name}</option>
+            <option value={value} key={value} >{s.name}</option>
           );
         })}
       </select>

@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: DynamoDB table for Pillars
+Parameters:
+  Stage:
+    Description: Stage
+    Type: String
+Resources:
+  atomTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub tag-manager-pillars-${Stage}
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: '1'
+        WriteCapacityUnits: '1'

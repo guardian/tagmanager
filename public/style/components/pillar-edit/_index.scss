@@ -1,0 +1,34 @@
+.pillar-edit {
+  display: flex;
+
+  height: calc(100vh - #{$size-header-height});
+}
+
+.pillar-edit__column {
+  @extend %tag__column;
+}
+
+.pillar-edit__column--sidebar {
+  @extend %tag__column;
+  background-color: $c-grey-200;
+
+  flex: 1 0 370px;
+
+}
+
+.pillar__delete{
+
+  @extend %fs-data-4;
+
+  background-color: white;
+  border: 1px solid $c-red;
+  color: $c-red;
+
+  padding: $standard-padding/2 $standard-padding;
+
+  font-weight: bold;
+
+  outline: none;
+
+  margin: $standard-padding;
+}

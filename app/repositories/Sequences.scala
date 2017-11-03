@@ -12,6 +12,7 @@ object Sequences {
   val sectionId = new DynamoSequence(Dynamo.sequenceTable, "sectionId")
   val sponsorshipId = new DynamoSequence(Dynamo.sequenceTable, "sponsorshipId")
   val jobId = new DynamoSequence(Dynamo.sequenceTable, "jobId")
+  val pillarId = new DynamoSequence(Dynamo.sequenceTable, "pillarId")
 
 }
 

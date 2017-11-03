@@ -10,6 +10,8 @@ GET            /unauthorised                                           controlle
 GET            /mapping                                                controllers.App.index(id = "")
 GET            /section                                                controllers.App.index(id = "")
 GET            /section/:id                                            controllers.App.index(id)
+GET            /pillar                                                 controllers.App.index(id = "")
+GET            /pillar/:id                                             controllers.App.index(id)
 GET            /sponsorship                                            controllers.App.index(id = "")
 GET            /sponsorship/create                                     controllers.App.index(id = "")
 GET            /sponsorship/:id                                        controllers.App.index(id)
@@ -32,6 +34,12 @@ GET            /api/section/:id                                        controlle
 PUT            /api/section/:id                                        controllers.TagManagementApi.updateSection(id: Long)
 POST           /api/section/:id/edition                                controllers.TagManagementApi.addEditionToSection(id: Long)
 DELETE         /api/section/:id/edition/:editionName                   controllers.TagManagementApi.removeEditionFromSection(id: Long, editionName: String)
+
+GET            /api/pillars                                            controllers.TagManagementApi.listPillars
+POST           /api/pillar                                             controllers.TagManagementApi.createPillar
+GET            /api/pillar/:id                                         controllers.TagManagementApi.getPillar(id: Long)
+PUT            /api/pillar/:id                                         controllers.TagManagementApi.updatePillar(id: Long)
+DELETE         /api/pillar/:id                                         controllers.TagManagementApi.deletePillar(id: Long)
 
 GET            /api/sponsorships                                       controllers.TagManagementApi.searchSponsorships
 GET            /api/sponsorship/:id                                    controllers.TagManagementApi.getSponsorship(id: Long)
