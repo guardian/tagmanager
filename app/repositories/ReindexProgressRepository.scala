@@ -16,12 +16,20 @@ object ReindexProgressRepository {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.resetSection(expectedDocs).toItem)
   }
 
+  def resetPillarReindexProgress(expectedDocs: Int) = {
+    Dynamo.reindexProgressTable.putItem(ReindexProgress.resetPillar(expectedDocs).toItem)
+  }
+
   def updateTagReindexProgress(docsSent: Int, docsTotal: Int) = {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.progressTag(docsSent, docsTotal).toItem)
   }
 
   def updateSectionReindexProgress(docsSent: Int, docsTotal: Int) = {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.progressSection(docsSent, docsTotal).toItem)
+  }
+  
+  def updatePillarReindexProgress(docsSent: Int, docsTotal: Int) = {
+    Dynamo.reindexProgressTable.putItem(ReindexProgress.progressPillar(docsSent, docsTotal).toItem)
   }
 
   def completeTagReindex(docsSent: Int, docsTotal: Int) = {
@@ -31,6 +39,10 @@ object ReindexProgressRepository {
   def completeSectionReindex(docsSent: Int, docsTotal: Int) = {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.completeSection(docsSent, docsTotal).toItem)
   }
+  
+  def completePillarReindex(docsSent: Int, docsTotal: Int) = {
+    Dynamo.reindexProgressTable.putItem(ReindexProgress.completePillar(docsSent, docsTotal).toItem)
+  }
 
   def failTagReindex(docsSent: Int, docsTotal: Int) = {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.failTag(docsSent, docsTotal).toItem)
@@ -38,6 +50,10 @@ object ReindexProgressRepository {
 
   def failSectionReindex(docsSent: Int, docsTotal: Int) = {
     Dynamo.reindexProgressTable.putItem(ReindexProgress.failSection(docsSent, docsTotal).toItem)
+  }
+  
+  def failPillarReindex(docsSent: Int, docsTotal: Int) = {
+    Dynamo.reindexProgressTable.putItem(ReindexProgress.failPillar(docsSent, docsTotal).toItem)
   }
 
   // Read
@@ -55,6 +71,13 @@ object ReindexProgressRepository {
     }
   }
 
+  def getPillarReindexProgress: Future[Option[ReindexProgress]] = {
+    Future{
+      Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.PillarTypeName))
+        .map(ReindexProgress.fromItem)
+    }
+  }
+
   def isTagReindexInProgress: Future[Boolean] = {
     getTagReindexProgress.map { result =>
       result.exists(_.status == ReindexProgress.InProgress)
@@ -63,6 +86,12 @@ object ReindexProgressRepository {
 
   def isSectionReindexInProgress: Future[Boolean] = {
     getSectionReindexProgress.map { result =>
+      result.exists(_.status == ReindexProgress.InProgress)
+    }
+  }
+
+  def isPillarReindexInProgress: Future[Boolean] = {
+    getPillarReindexProgress.map { result =>
       result.exists(_.status == ReindexProgress.InProgress)
     }
   }

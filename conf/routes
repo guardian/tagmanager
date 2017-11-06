@@ -71,6 +71,8 @@ POST           /reindex/tags                                           controlle
 GET            /reindex/tags                                           controllers.Reindex.getTagReindexProgress
 POST           /reindex/sections                                       controllers.Reindex.reindexSections
 GET            /reindex/sections                                       controllers.Reindex.getSectionReindexProgress
+POST           /reindex/pillars                                        controllers.Reindex.reindexPillars
+GET            /reindex/pillars                                        controllers.Reindex.getPillarReindexProgress
 
 
 # Hypmedia API

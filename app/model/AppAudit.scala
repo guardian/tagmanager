@@ -35,4 +35,8 @@ object AppAudit {
   def reindexSections()(implicit username: Option[String] = None): AppAudit = {
     AppAudit("reindexSections", new DateTime(), username.getOrElse("default user"), "section reindex started");
   }
+  
+  def reindexPillars()(implicit username: Option[String] = None): AppAudit = {
+    AppAudit("reindexPillars", new DateTime(), username.getOrElse("default user"), "pillar reindex started");
+  }
 }

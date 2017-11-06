@@ -14,6 +14,7 @@ case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsEx
 object ReindexProgress {
   val TagTypeName = "tag"
   val SectionTypeName = "section"
+  val PillarTypeName = "pillar"
 
   val InProgress = "in progress"
   val Failed = "failed"
@@ -40,12 +41,20 @@ object ReindexProgress {
     ReindexProgress(SectionTypeName, InProgress, 0, docsExpected)
   }
 
+  def resetPillar(docsExpected: Int) = {
+    ReindexProgress(PillarTypeName, InProgress, 0, docsExpected)
+  }
+
   def progressTag(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(TagTypeName, InProgress, docsSent, docsExpected)
   }
 
   def progressSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, InProgress, docsSent, docsExpected)
+  }
+  
+  def progressPillar(docsSent: Int, docsExpected: Int) = {
+    ReindexProgress(PillarTypeName, InProgress, docsSent, docsExpected)
   }
 
   def completeTag(docsSent: Int, docsExpected: Int) = {
@@ -55,6 +64,10 @@ object ReindexProgress {
   def completeSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Completed, docsSent, docsExpected)
   }
+  
+  def completePillar(docsSent: Int, docsExpected: Int) = {
+    ReindexProgress(PillarTypeName, Completed, docsSent, docsExpected)
+  }
 
   def failTag(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(TagTypeName, Failed, docsSent, docsExpected)
@@ -62,6 +75,10 @@ object ReindexProgress {
 
   def failSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Failed, docsSent, docsExpected)
+  }
+  
+  def failPillar(docsSent: Int, docsExpected: Int) = {
+    ReindexProgress(PillarTypeName, Failed, docsSent, docsExpected)
   }
 }
 
