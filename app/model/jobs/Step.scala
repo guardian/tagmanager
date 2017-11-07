@@ -128,6 +128,7 @@ object Step {
   val mergeTagForContentFormat   = Jsonx.formatCaseClassUseDefaults[MergeTagForContent]
   val reindexSectionsFormat      = Jsonx.formatCaseClassUseDefaults[ReindexSections]
   val reindexTagsFormat          = Jsonx.formatCaseClassUseDefaults[ReindexTags]
+  val reindexPillarsFormat       = Jsonx.formatCaseClassUseDefaults[ReindexPillars]
   val removeTagFormat            = Jsonx.formatCaseClassUseDefaults[RemoveTag]
   val removeTagFromCapiFormat    = Jsonx.formatCaseClassUseDefaults[RemoveTagFromCapi]
   val removeTagFromContentFormat = Jsonx.formatCaseClassUseDefaults[RemoveTagFromContent]
@@ -140,6 +141,7 @@ object Step {
         case s: MergeTagForContent   => mergeTagForContentFormat.writes(s)
         case s: ReindexSections      => reindexSectionsFormat.writes(s)
         case s: ReindexTags          => reindexTagsFormat.writes(s)
+        case s: ReindexPillars       => reindexPillarsFormat.writes(s)
         case s: RemoveTag            => removeTagFormat.writes(s)
         case s: RemoveTagFromCapi    => removeTagFromCapiFormat.writes(s)
         case s: RemoveTagFromContent => removeTagFromContentFormat.writes(s)
@@ -159,6 +161,7 @@ object Step {
         case JsString(MergeTagForContent.`type`)   => mergeTagForContentFormat.reads(json)
         case JsString(ReindexSections.`type`)      => reindexSectionsFormat.reads(json)
         case JsString(ReindexTags.`type`)          => reindexTagsFormat.reads(json)
+        case JsString(ReindexPillars.`type`)       => reindexPillarsFormat.reads(json)
         case JsString(RemoveTag.`type`)            => removeTagFormat.reads(json)
         case JsString(RemoveTagFromCapi.`type`)    => removeTagFromCapiFormat.reads(json)
         case JsString(RemoveTagFromContent.`type`) => removeTagFromContentFormat.reads(json)

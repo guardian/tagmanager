@@ -1,11 +1,11 @@
 package controllers
 
 import model.command.CommandError._
-import model.command.{ReindexSectionsCommand, ReindexTagsCommand}
+import model.command.{ReindexPillarsCommand, ReindexSectionsCommand, ReindexTagsCommand}
 import play.api.mvc.{Action, Controller}
 import repositories.ReindexProgressRepository
-
 import play.api.libs.concurrent.Execution.Implicits._
+
 import scala.concurrent.Future
 
 object Reindex extends Controller {
@@ -32,6 +32,30 @@ object Reindex extends Controller {
           result.map { count => Ok } getOrElse InternalServerError
         }
       }
+    } recover {
+      commandErrorAsResult
+    }
+  }
+
+  def reindexPillars = Action.async { req =>
+    ReindexProgressRepository.isPillarReindexInProgress.flatMap { reindexing =>
+      if (reindexing) {
+        Future.successful(Forbidden)
+      } else {
+        ReindexPillarsCommand().process.map { result =>
+          result.map { count => Ok } getOrElse InternalServerError
+        }
+      }
+    } recover {
+      commandErrorAsResult
+    }
+  }
+
+  def getPillarReindexProgress = Action.async { req =>
+    ReindexProgressRepository.getPillarReindexProgress.map { maybeProgress =>
+      maybeProgress.map { progress =>
+        Ok(progress.toCapiForm().toJson)
+      } getOrElse NotFound
     } recover {
       commandErrorAsResult
     }

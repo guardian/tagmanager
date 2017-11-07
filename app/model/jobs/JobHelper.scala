@@ -52,7 +52,7 @@ object JobHelper {
         steps = List(ReindexTags())
         )
       )
-    AppAuditRepository.upsertAppAudit(AppAudit.reindexTags);
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexTags)
   }
 
   def beginSectionReindex()(implicit username: Option[String]) = {
@@ -66,7 +66,21 @@ object JobHelper {
         steps = List(ReindexSections())
         )
       )
-    AppAuditRepository.upsertAppAudit(AppAudit.reindexSections);
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexSections)
+  }
+
+  def beginPillarReindex()(implicit username: Option[String]) = {
+    ReindexProgressRepository.resetPillarReindexProgress(PillarRepository.count)
+
+    JobRepository.addJob(
+      Job(
+        id = Sequences.jobId.getNextId,
+        title = "Pillar reindex",
+        createdBy = username,
+        steps = List(ReindexPillars())
+      )
+    )
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexPillars)
   }
 
   def beginMergeTag(from: Tag, to: Tag)(implicit username: Option[String]) = {

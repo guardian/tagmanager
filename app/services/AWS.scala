@@ -109,4 +109,5 @@ object KinesisStreams {
   lazy val commercialExpiryStream = new KinesisStreamProducer(streamName = Config().commercialExpiryStreamName)
   lazy val auditingEventsStream = new KinesisStreamProducer(streamName = Config().auditingStreamName, requireCompressionByte = true, isAuditing = true)
   lazy val pillarUpdateStream = new KinesisStreamProducer(streamName = Config().pillarUpdateStreamName, requireCompressionByte = true)
+  lazy val reindexPillarsStream = new KinesisStreamProducer(streamName = Config().reindexPillarsStreamName, requireCompressionByte = true)
 }

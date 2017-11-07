@@ -34,4 +34,6 @@ object PillarRepository {
   }
 
   def loadAllPillars: Iterable[Pillar] = Dynamo.pillarTable.scan().map(Pillar.fromItem)
+
+  def count = Dynamo.pillarTable.scan().count(_ => true)
 }

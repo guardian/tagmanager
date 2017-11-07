@@ -98,6 +98,7 @@ sealed trait Config {
   def reindexTagsStreamName: String
   def reindexTagsBatchSize: Int
   def reindexSectionsStreamName: String
+  def reindexPillarsStreamName: String
 
   def reindexProgressTableName: String
 
@@ -145,6 +146,7 @@ class DevConfig extends Config {
   override def reindexTagsStreamName: String = "tag-reindex-dev"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-dev"
+  override def reindexPillarsStreamName: String = "pillar-reindex-CODE"
 
   override def reindexProgressTableName: String = "tag-manager-reindex-progress-DEV"
 
@@ -194,6 +196,7 @@ class CodeConfig extends Config {
   override def reindexTagsStreamName: String = "tag-reindex-CODE"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-CODE"
+  override def reindexPillarsStreamName: String = "pillar-reindex-CODE"
 
   override def reindexProgressTableName: String = "tag-manager-reindex-progress-CODE"
 
@@ -246,6 +249,7 @@ class ProdConfig extends Config {
   override def reindexTagsStreamName: String = "tag-reindex-PROD"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-PROD"
+  override def reindexPillarsStreamName: String = "pillar-reindex-PROD"
 
   override def reindexProgressTableName: String = "tag-manager-reindex-progress-PROD"
 
