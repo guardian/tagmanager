@@ -47,7 +47,8 @@ case class TagSearchCriteria(
   referenceType: Option[String] = None,
   referenceToken: Option[String] = None,
   searchField: Option[String] = None,
-  subType: Option[String] = None
+  subType: Option[String] = None,
+  hasFields: Option[List[String]] = None
 ) {
 
   type TagFilter = (List[Tag]) => List[Tag]
@@ -59,7 +60,8 @@ case class TagSearchCriteria(
     q.map(v => queryFilter(v.toLowerCase) _) ++
     referenceType.map(v => referenceTypeFilter(v.toLowerCase) _) ++
     referenceToken.map(v => referenceTokenFilter(v.toLowerCase) _) ++
-    subType.map(v => subTypeFilter(v.toLowerCase) _)
+    subType.map(v => subTypeFilter(v.toLowerCase) _) ++
+    hasFields.map(v => hasFieldsFilter(v.map(_.toLowerCase)) _)
 
   def execute(tags: List[Tag]): List[Tag] = {
     filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
@@ -107,6 +109,17 @@ case class TagSearchCriteria(
   }
 
   private def typeFilter(types: List[String])(tags: List[Tag]) = tags.filter { t => types.contains(t.`type`.toLowerCase) }
+
+  private def hasFieldsFilter(fields: List[String])(tags: List[Tag]) = tags.filter { t =>
+    fields.forall {
+        case "contributorinformation.bylineimage" => t.contributorInformation.flatMap(_.bylineImage).isDefined
+        case "contributorinformation.largebylineimage" => t.contributorInformation.flatMap(_.largeBylineImage).isDefined
+        case unsupported => {
+          Logger.warn(s"Attempted to check if tag has field '$unsupported' which is not supported by the hasFieldsFilter")
+          false
+        }
+    }
+  }
 
   private def internalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.internalName.toLowerCase == n }
   private def externalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalName.toLowerCase == n }
