@@ -33,7 +33,8 @@ lazy val dependencies = Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
-  "org.slf4j" % "jcl-over-slf4j" % "1.7.12"
+  "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
+  "com.gu"  %% "panda-hmac" % "1.2.0"
 )
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd

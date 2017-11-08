@@ -30,6 +30,7 @@ sealed trait Config {
   def capiPreviewUrl: String = getRequiredStringProperty("capi.preview.url")
   def capiPreviewUser: String = getRequiredStringProperty("capi.preview.username")
   def capiPreviewPassword: String = getRequiredStringProperty("capi.preview.password")
+  def hmacSecret: String = getRequiredStringProperty("hmac.secret")
 
   def pathManagerUrl: String = getRequiredStringProperty("pathmanager.url")
 
@@ -157,6 +158,7 @@ class DevConfig extends Config {
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
   override def pandaDomain: String = "local.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.local.dev-gutools.co.uk/oauthCallback"
+  override def hmacSecret: String = "devhmacsecret"
 
   override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(
@@ -170,7 +172,6 @@ class DevConfig extends Config {
 }
 
 class CodeConfig extends Config {
-
   override def tagsTableName: String = "tag-manager-tags-CODE"
   override def sectionsTableName: String = "tag-manager-sections-CODE"
   override def sponsorshipTableName: String = "tag-manager-sponsorships-CODE"
@@ -223,8 +224,6 @@ class CodeConfig extends Config {
 }
 
 class ProdConfig extends Config {
-
-
   override def tagsTableName: String = "tag-manager-tags-PROD"
   override def sectionsTableName: String = "tag-manager-sections-PROD"
   override def sponsorshipTableName: String = "tag-manager-sponsorships-PROD"
