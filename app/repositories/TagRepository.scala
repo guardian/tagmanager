@@ -116,7 +116,7 @@ case class TagSearchCriteria(
         case "contributorinformation.largebylineimage" => t.contributorInformation.flatMap(_.largeBylineImage).isDefined
         case unsupported => {
           Logger.warn(s"Attempted to check if tag has field '$unsupported' which is not supported by the hasFieldsFilter")
-          false
+          true
         }
     }
   }
