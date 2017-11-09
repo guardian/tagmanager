@@ -158,7 +158,6 @@ class DevConfig extends Config {
   override def logShippingStreamName = Some("elk-CODE-KinesisStream-M03ERGK5PVD9")
   override def pandaDomain: String = "local.dev-gutools.co.uk"
   override def pandaAuthCallback: String = "https://tagmanager.local.dev-gutools.co.uk/oauthCallback"
-  override def hmacSecret: String = "devhmacsecret"
 
   override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(
