@@ -51,12 +51,13 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def searchTags = APIAuthAction { req =>
-    
+
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
       searchField = req.getQueryString("searchField"),
-      types = req.getQueryString("types").map(_.split(",").toList),
-      referenceType = req.getQueryString("referenceType")
+      types = req.getQueryString("types").map(_.split(",").toList.map(_.trim())),
+      referenceType = req.getQueryString("referenceType"),
+      hasFields = req.getQueryString("hasFields").map(_.split(",").toList.map(_.trim()))
     )
 
     val orderBy = req.getQueryString("orderBy").getOrElse("internalName")
