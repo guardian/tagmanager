@@ -50,7 +50,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def searchTags = APIAuthAction { req =>
+  def searchTags = APIHMACAuthAction { req =>
 
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
