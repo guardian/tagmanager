@@ -3,7 +3,7 @@ machine:
   java:
     version: oraclejdk8
   node:
-    version: 5.2.0
+    version: 6.9.0
   environment:
     NODE_ENV: production
 
@@ -23,6 +23,7 @@ dependencies:
     - "node_modules"
   # Compile all sources
   override:
+    - npm config set registry https://registry.npmjs.org
     - npm install
     - npm run build
     - npm run build-icons

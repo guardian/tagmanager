@@ -112,6 +112,11 @@ function validateTagName(tag) {
   return errors;
 }
 
+function validateContributorInformation(tag) {
+  const mandatoryContributorFields = ['lastName'];
+  return validateMandatoryFields(mandatoryContributorFields, tag.contributorInformation || { lastName: null });
+}
+
 export function validateTag(tag) {
   let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
   let booleanFields = ['hidden', 'legallySensitive'];
@@ -127,6 +132,8 @@ export function validateTag(tag) {
     additionalErrors = additionalErrors.concat(validatePaidContent(tag));
   } else if (tag.type === tagTypes.tracking.name) {
     additionalErrors = additionalErrors.concat(validateTrackingTag(tag));
+  } else if (tag.type === tagTypes.contributor.name) {
+    additionalErrors = additionalErrors.concat(validateContributorInformation(tag));
   }
 
   additionalErrors = additionalErrors.concat(validateTagName(tag));

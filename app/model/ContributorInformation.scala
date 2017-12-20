@@ -10,7 +10,9 @@ case class ContributorInformation(
                                    bylineImage: Option[Image],
                                    largeBylineImage: Option[Image],
                                    twitterHandle: Option[String],
-                                   contactEmail: Option[String]
+                                   contactEmail: Option[String],
+                                   firstName: Option[String],
+                                   lastName: Option[String]
 ) {
 
   def asThrift = ThriftContributorInformation(
@@ -18,7 +20,9 @@ case class ContributorInformation(
     bylineImage =       bylineImage.map(_.asThrift),
     largeBylineImage =  largeBylineImage.map(_.asThrift),
     twitterHandle =     twitterHandle,
-    contactEmail =      contactEmail
+    contactEmail =      contactEmail,
+    firstName =         firstName,
+    lastName =          lastName
   )
   def asExportedXml = {
     <rcsId>{this.rcsId.getOrElse("")}</rcsId>
@@ -39,6 +43,8 @@ object ContributorInformation {
       bylineImage =       thriftContributorInformation.bylineImage.map(Image(_)),
       largeBylineImage =  thriftContributorInformation.largeBylineImage.map(Image(_)),
       twitterHandle =     thriftContributorInformation.twitterHandle,
-      contactEmail =      thriftContributorInformation.contactEmail
+      contactEmail =      thriftContributorInformation.contactEmail,
+      firstName =         thriftContributorInformation.firstName,
+      lastName =          thriftContributorInformation.lastName
     )
 }
