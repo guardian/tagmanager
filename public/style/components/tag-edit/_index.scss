@@ -28,12 +28,15 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 .tag-edit__input {
-  width: 100%;
-  display: block;
   background-color: $c-white;
   padding: $standard-padding;
   border: 1px solid $c-grey-300;
+  width: 100%;
+  display: block;
+}
 
+.tag-edit__input-block {
+  width: calc(50% - 5px);
 }
 
 .tag-edit__visibility {
@@ -49,6 +52,12 @@ $tag-edit-padding: $standard-padding/2;
 
 .tag-edit__field {
   @extend %tag-edit__field;
+}
+
+.tag-edit__fields {
+  @extend %tag-edit__field;
+  display: flex;
+  justify-content: space-between;
 }
 
 .tag-edit__field--logo {
@@ -106,10 +115,14 @@ $tag-edit-padding: $standard-padding/2;
   margin-top: 5px;
 }
 
-.tag-edit__label {
+.tag-edit__label, .tag-edit__label-inline {
   @extend %fs-data-4;
 
   margin-right: 10px;
+}
+
+.tag-edit__label-inline {
+  display: block;
 }
 
 .tag-edit__linked-field {

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import R from 'ramda';
+import ReactTooltip from 'react-tooltip'
 
 import TagImageEdit from '../TagImageEdit.react';
 
@@ -13,6 +14,18 @@ export default class ContributorInfoEdit extends React.Component {
   updateRcsId(e) {
     this.props.updateTag(R.merge(this.props.tag, {
       contributorInformation: R.merge(this.props.tag.contributorInformation, {rcsId: e.target.value})
+    }));
+  }
+
+  updateFirstName(e) {
+    this.props.updateTag(R.merge(this.props.tag, {
+      contributorInformation: R.merge(this.props.tag.contributorInformation, { firstName: e.target.value })
+    }));
+  }
+
+  updateLastName(e) {
+    this.props.updateTag(R.merge(this.props.tag, {
+      contributorInformation: R.merge(this.props.tag.contributorInformation, { lastName: e.target.value })
     }));
   }
 
@@ -52,6 +65,28 @@ export default class ContributorInfoEdit extends React.Component {
     return (
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Contributor Information</label>
+        <span className="tag-edit__fields">
+          <div className="tag-edit__input-block">
+            <label className="tag-edit__label-inline">First name</label>
+            <input type="text"
+              className="tag-edit__input"
+              value={contributorInfomation.firstName || ''}
+              onChange={this.updateFirstName.bind(this)}
+              disabled={!this.props.tagEditable} />
+          </div>
+          <div className="tag-edit__input-block">
+            <label className="tag-edit__label-inline">Last name
+             <i className="i-info-grey"
+                data-tip="Although the only mandatory field is 'Last name',<br/> always fill both fields when possible.<br/> If a single name/organisation/identifier is provided,<br/> only fill 'Last name'">
+             </i>
+            </label>
+            <input type="text"
+              className="tag-edit__input"
+              value={contributorInfomation.lastName || ''}
+              onChange={this.updateLastName.bind(this)}
+              disabled={!this.props.tagEditable} />
+          </div>
+        </span>
         <div className="tag-edit__field">
           <label className="tag-edit__label">RCS ID</label>
           <input type="text"
@@ -86,6 +121,7 @@ export default class ContributorInfoEdit extends React.Component {
           label="Large Byline Image"
           onChange={this.updateLargeBylineImage.bind(this)}
           tagEditable={this.props.tagEditable}/>
+        <ReactTooltip multiline={true} />
       </div>
     );
   }
