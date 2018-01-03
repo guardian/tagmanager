@@ -82,6 +82,8 @@ case class Tag(
 
     val oldType = this.`type` match {
       case "Topic" => "Keyword"
+      case "NewspaperBook" => "Newspaper Book"
+      case "NewspaperBookSection" => "Newspaper Book Section"
       case t => t
     }
 
