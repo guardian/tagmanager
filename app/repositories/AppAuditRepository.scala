@@ -8,13 +8,8 @@ import services.Dynamo
 import scala.collection.JavaConversions._
 
 object AppAuditRepository {
-  def upsertAppAudit(appAudit: AppAudit) = {
-    try {
-      Dynamo.appAuditTable.putItem(appAudit.toItem)
-      Some(appAudit)
-    } catch {
-      case e: Error => None
-    }
+  def upsertAppAudit(appAudit: AppAudit): Unit = {
+    Dynamo.appAuditTable.putItem(appAudit.toItem)
   }
 
   def getRecentAuditOfOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[AppAudit] = {
