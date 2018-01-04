@@ -11,15 +11,8 @@ import scala.collection.JavaConversions._
 
 object PillarAuditRepository {
 
-  def upsertPillarAudit(pillarAudit: PillarAudit) = {
-    try {
-      Dynamo.pillarAuditTable.putItem(pillarAudit.toItem)
-      Some(pillarAudit)
-    } catch {
-      case e: Error =>
-        Logger.warn(s"Error updating pillar ${pillarAudit.pillarId}: ${e.getMessage}", e)
-        None
-    }
+  def upsertPillarAudit(pillarAudit: PillarAudit): Unit = {
+    Dynamo.pillarAuditTable.putItem(pillarAudit.toItem)
   }
 
   def getAuditTrailForPillar(pillarId: Long): List[PillarAudit] = {
