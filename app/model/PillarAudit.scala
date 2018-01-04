@@ -17,7 +17,9 @@ case class PillarAudit(
                         user: String,
                         description: String,
                         pillar: Pillar
-                       ) {
+                       ) extends Audit {
+  override def auditType = "pillar"
+
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 

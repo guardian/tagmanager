@@ -3,7 +3,6 @@ package repositories
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.PillarAudit
 import org.joda.time.{DateTime, Duration, ReadableDuration}
-import play.api.Logger
 import services.Dynamo
 
 import scala.collection.JavaConversions._
@@ -12,6 +11,7 @@ import scala.collection.JavaConversions._
 object PillarAuditRepository {
 
   def upsertPillarAudit(pillarAudit: PillarAudit): Unit = {
+    pillarAudit.logAudit
     Dynamo.pillarAuditTable.putItem(pillarAudit.toItem)
   }
 

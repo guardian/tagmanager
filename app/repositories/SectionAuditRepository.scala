@@ -12,7 +12,7 @@ import scala.collection.JavaConversions._
 object SectionAuditRepository {
 
   def upsertSectionAudit(sectionAudit: SectionAudit): Unit = {
-    Logger.info(s"User '${sectionAudit.user}' performed a '${sectionAudit.operation}' section operation: '${sectionAudit.description}'")
+    sectionAudit.logAudit
     Dynamo.sectionAuditTable.putItem(sectionAudit.toItem)
   }
 

@@ -19,7 +19,9 @@ case class SectionAudit(
                      user: String,
                      description: String,
                      sectionSummary: SectionSummary
-                   ) {
+                   ) extends Audit {
+  override def auditType: String = "section"
+
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 

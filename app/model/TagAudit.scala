@@ -20,7 +20,9 @@ case class TagAudit(
   description: String,
   tagSummary: TagSummary,
   secondaryTagSummary: Option[TagSummary]
-) {
+) extends Audit {
+  override def auditType: String = "tag"
+
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 

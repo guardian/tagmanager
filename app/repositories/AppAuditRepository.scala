@@ -9,6 +9,7 @@ import scala.collection.JavaConversions._
 
 object AppAuditRepository {
   def upsertAppAudit(appAudit: AppAudit): Unit = {
+    appAudit.logAudit
     Dynamo.appAuditTable.putItem(appAudit.toItem)
   }
 

@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 
 object TagAuditRepository {
   def upsertTagAudit(tagAudit: TagAudit): Unit = {
-    Logger.info(s"User '${tagAudit.user}' performed a '${tagAudit.operation}' tag operation: '${tagAudit.description}'")
+    tagAudit.logAudit
     Dynamo.tagAuditTable.putItem(tagAudit.toItem)
   }
 
