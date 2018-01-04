@@ -22,16 +22,6 @@ case class TagAudit(
   secondaryTagSummary: Option[TagSummary]
 ) {
   def toItem = Item.fromJSON(Json.toJson(this).toString())
-
-  def asAuditingThrift = Notification(
-    app = App.TagManager,
-    operation = operation,
-    userEmail = user,
-    date = date.toString,
-    resourceId = Some(tagId.toString),
-    message = Some(s"${description}. Primary Tag: ${tagSummary.toString}. Secondary Tag: ${secondaryTagSummary.toString}"),
-    shortMessage = Some(description)
-  )
 }
 
 object TagAudit {

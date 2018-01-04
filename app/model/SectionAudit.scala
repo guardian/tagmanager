@@ -21,16 +21,6 @@ case class SectionAudit(
                      sectionSummary: SectionSummary
                    ) {
   def toItem = Item.fromJSON(Json.toJson(this).toString())
-
-  def asAuditingThrift = Notification(
-    app = App.TagManager,
-    operation = operation,
-    userEmail = user,
-    date = date.toString,
-    resourceId = Some(sectionId.toString),
-    message = Some(s"${description}. Section: ${sectionSummary.toString}"),
-    shortMessage = Some(description)
-  )
 }
 
 object SectionAudit {
@@ -68,7 +58,6 @@ object SectionAudit {
   def removedEdition(section: Section, editionName: String)(implicit user: Option[String] = None): SectionAudit = {
     SectionAudit(section.id, "removed edition", new DateTime(), user.getOrElse("default user"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
   }
-
 }
 
 case class SectionSummary(

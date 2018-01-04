@@ -3,24 +3,15 @@ package repositories
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.TagAudit
 import org.joda.time.{DateTime, Duration, ReadableDuration}
-import services.{Config, Dynamo, KinesisStreams}
+import play.api.Logger
+import services.Dynamo
 
 import scala.collection.JavaConversions._
 
 object TagAuditRepository {
-  def upsertTagAudit(tagAudit: TagAudit) = {
-
-    //Send onto Auditing Stream
-    if (Config().enableAuditStreaming) {
-      KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", tagAudit.asAuditingThrift)
-    }
-
-    try {
-      Dynamo.tagAuditTable.putItem(tagAudit.toItem)
-      Some(tagAudit)
-    } catch {
-      case e: Error => None
-    }
+  def upsertTagAudit(tagAudit: TagAudit): Unit = {
+    Logger.info(s"User '${tagAudit.user}' performed a '${tagAudit.operation}' tag operation: '${tagAudit.description}'")
+    Dynamo.tagAuditTable.putItem(tagAudit.toItem)
   }
 
   def getAuditTrailForTag(tagId: Long): List[TagAudit] = {
@@ -41,8 +32,9 @@ object TagAuditRepository {
   }
 
   def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().map(TagAudit.fromItem).toList
+
   val lastModifiedTags: Long => List[TagAudit] = since => loadAllAudits
-    .filter(x => (x.operation == "updated" && x.date.getMillis > since))
+    .filter(x => x.operation == "updated" && x.date.getMillis > since)
 
   private val getType: String => List[TagAudit] = operation => loadAllAudits.filter(_.operation == operation)
   lazy val getMerges: List[TagAudit] = getType("merged")
