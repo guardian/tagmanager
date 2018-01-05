@@ -1,13 +1,10 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import com.gu.auditing.model.v1.{App, Notification}
-import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
-import repositories.SectionRepository
 
 import scala.util.control.NonFatal
 
@@ -20,7 +17,9 @@ case class SectionAudit(
                      description: String,
                      sectionSummary: SectionSummary
                    ) extends Audit {
-  override def auditType: String = "section"
+  override def auditType = "section"
+  override def resourceId = Some(sectionId.toString)
+  override def message = None
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }

@@ -1,7 +1,6 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import com.gu.auditing.model.v1.{App, Notification}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
@@ -19,6 +18,8 @@ case class PillarAudit(
                         pillar: Pillar
                        ) extends Audit {
   override def auditType = "pillar"
+  override def resourceId = Some(pillarId.toString)
+  override def message = None
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }

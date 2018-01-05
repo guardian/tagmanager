@@ -1,12 +1,35 @@
 package model
 
+import net.logstash.logback.marker.Markers
+import org.joda.time.DateTime
 import play.api.Logger
 
-trait Audit {
- def user: String
- def operation: String
- def description: String
- def auditType: String
+import scala.collection.JavaConverters._
 
- def logAudit = Logger.info(s"User '$user' performed a '$operation' $auditType operation: '$description'")
+trait Audit {
+  def user: String
+  def operation: String
+  def description: String
+  def date: DateTime
+
+  def auditType: String
+
+  def resourceId: Option[String]
+  def message: Option[String]
+
+  def logAudit = Logger.logger.info(createMarkers(), "Tag Manager Audit")
+
+  private def createMarkers() =
+    Markers.appendEntries((
+        Map(
+          "type" -> auditType,
+          "operation" -> operation,
+          "userEmail" -> user,
+          "date" -> date.toString,
+          "shortMessage" -> description
+        )
+          ++ message.map("message" -> _)
+          ++ resourceId.map("resourceId" -> _)
+      ).asJava
+    )
 }
