@@ -7,7 +7,12 @@ import play.api.libs.json.{Json, JsPath, Format}
 import play.api.Logger
 import scala.util.control.NonFatal
 
-case class AppAudit(action: String, date: DateTime, user: String, description: String) {
+case class AppAudit(action: String, date: DateTime, user: String, description: String) extends Audit {
+  override def operation: String = action
+  override def auditType = "application"
+  override def resourceId = None
+  override def message = None
+
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 

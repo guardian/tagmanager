@@ -3,26 +3,17 @@ package repositories
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.SectionAudit
 import org.joda.time.{DateTime, Duration, ReadableDuration}
-import services.{Config, Dynamo, KinesisStreams}
+import play.api.Logger
+import services.Dynamo
 
 import scala.collection.JavaConversions._
 
 
 object SectionAuditRepository {
 
-  def upsertSectionAudit(sectionAudit: SectionAudit) = {
-
-    //Send onto Auditing Stream
-    if (Config().enableAuditStreaming) {
-      KinesisStreams.auditingEventsStream.publishUpdate("tag-manager-updates", sectionAudit.asAuditingThrift)
-    }
-
-    try {
-      Dynamo.sectionAuditTable.putItem(sectionAudit.toItem)
-      Some(sectionAudit)
-    } catch {
-      case e: Error => None
-    }
+  def upsertSectionAudit(sectionAudit: SectionAudit): Unit = {
+    sectionAudit.logAudit
+    Dynamo.sectionAuditTable.putItem(sectionAudit.toItem)
   }
 
   def getAuditTrailForSection(sectionId: Long): List[SectionAudit] = {

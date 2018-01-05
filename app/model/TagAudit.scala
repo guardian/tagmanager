@@ -1,7 +1,6 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import com.gu.auditing.model.v1.{App, Notification}
 import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
 import play.api.Logger
@@ -20,18 +19,12 @@ case class TagAudit(
   description: String,
   tagSummary: TagSummary,
   secondaryTagSummary: Option[TagSummary]
-) {
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+) extends Audit {
+  override def auditType = "tag"
+  override def resourceId = Some(tagId.toString)
+  override def message = Some(s"$description - Tag 1: ${tagSummary.toString} Tag 2: ${secondaryTagSummary.toString}")
 
-  def asAuditingThrift = Notification(
-    app = App.TagManager,
-    operation = operation,
-    userEmail = user,
-    date = date.toString,
-    resourceId = Some(tagId.toString),
-    message = Some(s"${description}. Primary Tag: ${tagSummary.toString}. Secondary Tag: ${secondaryTagSummary.toString}"),
-    shortMessage = Some(description)
-  )
+  def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
 object TagAudit {

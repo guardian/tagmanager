@@ -115,9 +115,6 @@ sealed trait Config {
   def corsableDomains: Seq[String]
 
   def frontendBucketWriteRole: Option[String] = None
-  def auditingKinesisWriteRole: Option[String] = None
-  def enableAuditStreaming: Boolean = true
-
   def tagSearchPageSize = 25
 }
 
@@ -165,9 +162,6 @@ class DevConfig extends Config {
     "https://targeting.local.dev-gutools.co.uk",
     "https://campaign-central.local.dev-gutools.co.uk"
   )
-
-  //Disables submission of audits to the audit Kinesis server, requires frontCms credentials locally to enable
-  override def enableAuditStreaming: Boolean = false
 }
 
 class CodeConfig extends Config {
@@ -219,7 +213,6 @@ class CodeConfig extends Config {
     "https://campaign-central.local.dev-gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
-  override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-kinesis-cross-ac-CrossAccountKinesisAcces-PI8TASUEN2FE")
 }
 
 class ProdConfig extends Config {
@@ -267,6 +260,4 @@ class ProdConfig extends Config {
     "https://campaign-central.gutools.co.uk")
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
-  override def auditingKinesisWriteRole: Option[String] = Some("arn:aws:iam::163592447864:role/auditing-kinesis-cross-ac-CrossAccountKinesisAcces-PI8TASUEN2FE")
-
 }

@@ -1,13 +1,10 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import com.gu.auditing.model.v1.{App, Notification}
-import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
-import repositories.SectionRepository
 
 import scala.util.control.NonFatal
 
@@ -19,18 +16,12 @@ case class SectionAudit(
                      user: String,
                      description: String,
                      sectionSummary: SectionSummary
-                   ) {
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+                   ) extends Audit {
+  override def auditType = "section"
+  override def resourceId = Some(sectionId.toString)
+  override def message = None
 
-  def asAuditingThrift = Notification(
-    app = App.TagManager,
-    operation = operation,
-    userEmail = user,
-    date = date.toString,
-    resourceId = Some(sectionId.toString),
-    message = Some(s"${description}. Section: ${sectionSummary.toString}"),
-    shortMessage = Some(description)
-  )
+  def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
 object SectionAudit {
@@ -68,7 +59,6 @@ object SectionAudit {
   def removedEdition(section: Section, editionName: String)(implicit user: Option[String] = None): SectionAudit = {
     SectionAudit(section.id, "removed edition", new DateTime(), user.getOrElse("default user"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
   }
-
 }
 
 case class SectionSummary(

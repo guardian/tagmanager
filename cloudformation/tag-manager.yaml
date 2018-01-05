@@ -34,9 +34,6 @@ Parameters:
   CertificateArn:
     Description: ARN of the SSL certificate for this service
     Type: String
-  AuditingRoleToAssume:
-    Description: Auditing to assume for cross account access to auditing account
-    Type: String
   VulnerabilityScanningSecurityGroup:
     Description: Security group that grants access to the account's Vulnerability
       Scanner
@@ -187,18 +184,6 @@ Resources:
           Action:
           - sqs:*
           Resource: '*'
-      Roles:
-      - !Ref 'TagManagerRole'
-  TagManagerCrossAccountPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: TagManagerCrossAccountPolicy
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action: sts:AssumeRole
-          Resource: !Ref 'AuditingRoleToAssume'
       Roles:
       - !Ref 'TagManagerRole'
   TagManagerInstanceProfile:
