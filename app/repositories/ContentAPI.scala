@@ -2,9 +2,10 @@ package repositories
 
 import java.util.concurrent.Executors
 
-import com.gu.contentapi.client.{ContentApiClientLogic, GuardianContentApiError}
+import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.gu.contentapi.client.{ContentApiClientLogic, GuardianContentApiError, IAMSigner}
 import com.gu.contentapi.client.model._
-import com.squareup.okhttp.Credentials
 import dispatch.FunctionHandler
 import play.api.Logger
 import services.{Config, Contexts}
@@ -19,7 +20,19 @@ object ContentAPI {
 
   private implicit val executionContext = Contexts.capiContext
 
-  private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewUrl)
+  private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewIAMUrl)
+
+  val capiPreviewCredentials: AWSCredentialsProvider = {
+    new AWSCredentialsProviderChain(
+      new ProfileCredentialsProvider("capi"),
+      new STSAssumeRoleSessionCredentialsProvider.Builder(Config().capiPreviewRole, "capi").build()
+    )
+  }
+
+  val signer = new IAMSigner(
+    credentialsProvider = capiPreviewCredentials,
+    awsRegion = Config().aws.region
+  )
 
   def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String): Int = {
     val builder = StringBuilder.newBuilder
@@ -125,7 +138,7 @@ class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends 
   override protected def get(url: String, headers: Map[String, String])
                             (implicit context: ExecutionContext): Future[HttpResponse] = {
 
-    val headersWithAuth = headers ++ Map("Authorization" -> Credentials.basic(Config().capiPreviewUser, Config().capiPreviewPassword))
+    val headersWithAuth = ContentAPI.signer.addIAMHeaders(headers, url)
 
     val req = headersWithAuth.foldLeft(dispatch.url(url)) {
       case (r, (name, value)) => r.setHeader(name, value)

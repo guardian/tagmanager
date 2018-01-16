@@ -4,8 +4,11 @@ import java.io.File
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
+import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.services.s3.model._
-import com.squareup.okhttp.{Credentials, OkHttpClient, Request}
+import com.gu.contentapi.client.IAMSigner
+import com.squareup.okhttp.{Headers, OkHttpClient, Request}
 import model.command.CommandError._
 import model.command.{ExpireSectionContentCommand, UnexpireSectionContentCommand, UpdateTagCommand}
 import model.{DenormalisedTag, Image, ImageAsset}
@@ -15,11 +18,12 @@ import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
-import repositories.{TagLookupCache, TagRepository}
+import repositories.{ContentAPI, TagLookupCache, TagRepository}
 import services.{AWS, Config, ImageMetadataService}
 
 import scala.concurrent.Future
 import scala.util.control.NonFatal
+import collection.JavaConverters._
 
 
 object Support extends Controller with PanDomainAuthActions {
@@ -78,12 +82,12 @@ object Support extends Controller with PanDomainAuthActions {
   def previewCapiProxy(path: String) = APIAuthAction { request =>
     val httpClient = new OkHttpClient()
 
-    val url = s"${Config().capiPreviewUrl}/${path}?${request.rawQueryString}"
-    Logger.info(s"Requesting CAPI preview -> ${url}")
+    val url = s"${Config().capiPreviewIAMUrl}/$path?${request.rawQueryString}"
+    Logger.info(s"Requesting CAPI preview -> $url")
 
     val req = new Request.Builder()
       .url(url)
-      .header("Authorization", Credentials.basic(Config().capiPreviewUser, Config().capiPreviewPassword))
+      .headers(Headers.of(ContentAPI.signer.addIAMHeaders(Map.empty, url).asJava))
       .build
 
     httpClient.setConnectTimeout(5, TimeUnit.SECONDS)

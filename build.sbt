@@ -17,8 +17,8 @@ scalacOptions ++= Seq(
 resolvers += "Guardian Bintray" at "https://dl.bintray.com/guardian/editorial-tools"
 
 lazy val dependencies = Seq(
-  "com.amazonaws" % "aws-java-sdk" % "1.10.33",
-  "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
+  "com.amazonaws" % "aws-java-sdk" % "1.11.259",
+  "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
   "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
   "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
@@ -33,7 +33,8 @@ lazy val dependencies = Seq(
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac" % "1.2.0"
+  "com.gu"  %% "panda-hmac" % "1.2.0",
+  "com.gu" %% "content-api-client-aws" % "0.2"
 )
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
