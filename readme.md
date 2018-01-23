@@ -24,6 +24,8 @@ To read the database and interact with the AWS infrastructure you will need AWS 
 Composer account available to the default credentials provider chain. The easiest way to configure this is to obtain the
 credentials via [janus](https://janus.gutools.co.uk/) and export the credentials to your shell using the handy script provided by janus.
 
+Tag Manager also makes requests to CAPI preview. This means you will also need CAPI credentials from janus (with 'API Gateway invocation' permission).
+
 If you are working on the commercial tag functionality and need to be able to upload logos you will also need AWS credentials for 
 the frontend aws account available as an AWS profile named "frontend". This can also be obtained via janus.
 

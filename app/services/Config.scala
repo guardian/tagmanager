@@ -27,9 +27,9 @@ sealed trait Config {
 
   def capiUrl: String = getRequiredStringProperty("capi.url")
   def capiKey: String = getRequiredStringProperty("capi.key")
-  def capiPreviewUrl: String = getRequiredStringProperty("capi.preview.url")
-  def capiPreviewUser: String = getRequiredStringProperty("capi.preview.username")
-  def capiPreviewPassword: String = getRequiredStringProperty("capi.preview.password")
+  def capiPreviewIAMUrl: String = getRequiredStringProperty("capi.preview.iamUrl")
+  def capiPreviewRole: String = getRequiredStringProperty("capi.preview.role")
+
   def hmacSecret: String = getRequiredStringProperty("hmac.secret")
 
   def pathManagerUrl: String = getRequiredStringProperty("pathmanager.url")
@@ -44,6 +44,7 @@ sealed trait Config {
     lazy val stack = readTag("Stack") getOrElse "flexible"
     lazy val stage = readTag("Stage") getOrElse "DEV"
     lazy val app = readTag("App") getOrElse "tag-manager"
+    lazy val region = remoteConfiguration.getOrDefault("aws.region", "eu-west-1")
   }
 
   private def loadConfiguration = {

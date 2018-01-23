@@ -38,6 +38,9 @@ Parameters:
     Description: Security group that grants access to the account's Vulnerability
       Scanner
     Type: AWS::EC2::SecurityGroup::Id
+  CapiPreviewRole:
+    Type: String
+    Description: ARN of the CAPI preview role
 Mappings:
   Config:
     CODE:
@@ -297,3 +300,16 @@ Resources:
           #!/bin/bash -ev
           aws s3 cp s3://composer-dist/flexible/${Stage}/tag-manager/tag-manager.deb /tmp
           dpkg -i /tmp/tag-manager.deb
+
+  AssumeCapiPreviewRolePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: assume-capi-preview-role
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: sts:AssumeRole
+          Resource:
+            Ref: CapiPreviewRole
+      Roles:
+      - Ref: TagManagerRole
