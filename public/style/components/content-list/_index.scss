@@ -7,3 +7,10 @@ $taglist-border-color: $c-grey-300;
   width: 100%;
 
 }
+
+.contentlist__link {
+    color: $c-blue;
+}
+.contentlist__link:hover {
+    cursor: pointer;
+}

@@ -58,6 +58,11 @@ export default class ContentListItem extends React.Component {
       }
     }
 
+    openLink(e) {
+        e.stopPropagation();
+        window.open(this.props.content.webUrl, "_blank");
+    }
+
     render() {
       const rowClass = this.props.content.fields.internalComposerCode ? "taglist__results-item" : "taglist__result-item--disabled";
 
@@ -75,7 +80,7 @@ export default class ContentListItem extends React.Component {
               {
                 this.props.content.fields && this.props.content.fields.isLive === "true"
                 ?
-                  <a href={this.props.content.webUrl} target="_blank">{this.props.content.id}</a>
+                  <span className="contentlist__link" onClick={this.openLink.bind(this)} target="_blank">{this.props.content.id}</span>
                 :
                   <span>{this.props.content.id}</span>
               }
