@@ -71,7 +71,15 @@ export default class ContentListItem extends React.Component {
             <td>
               {this.props.content.fields && this.props.content.fields.isLive === "false" ? "Not Published" : moment(this.props.content.webPublicationDate).format('DD/MM/YYYY')}
             </td>
-            <td>{this.props.content.id}</td>
+            <td>
+              {
+                this.props.content.fields && this.props.content.fields.isLive === "true"
+                ?
+                  <a href={this.props.content.webUrl} target="_blank">{this.props.content.id}</a>
+                :
+                  <span>{this.props.content.id}</span>
+              }
+          </td>
             <td>
               {this.renderTags(this.props.content)}
               {!this.state.showAllTags && this.props.content.tags.length > TAG_LIMIT ? this.renderShowMoreTags() : false}
