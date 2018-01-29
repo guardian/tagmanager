@@ -4,15 +4,12 @@ import java.io.{File, ByteArrayInputStream}
 import javax.imageio.ImageIO
 
 import java.security.MessageDigest
-import javax.imageio.stream.ImageInputStream
 import play.api.Logger
 
-import com.squareup.okhttp.Request.Builder
-import com.squareup.okhttp.{OkHttpClient, Request}
+import okhttp3.Request.Builder
+import okhttp3.OkHttpClient
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
-
-import scala.util.control.NonFatal
 
 case class ImageMetadataFetchFail(m: String) extends RuntimeException(m)
 

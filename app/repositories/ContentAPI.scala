@@ -1,12 +1,11 @@
 package repositories
 
-import java.util.concurrent.Executors
+import java.net.URI
 
 import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.gu.contentapi.client.{ContentApiClientLogic, GuardianContentApiError, IAMSigner}
 import com.gu.contentapi.client.model._
-import dispatch.FunctionHandler
 import play.api.Logger
 import services.{Config, Contexts}
 
@@ -14,6 +13,7 @@ import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{Failure, Success, Try}
 
 
 object ContentAPI {
@@ -100,7 +100,7 @@ object ContentAPI {
 
     val resultPage = Await.result(response, 5 seconds)
 
-    val allIds = ids ::: resultPage.results.map(_.id)
+    val allIds = ids ::: resultPage.results.map(_.id).toList
 
     if (page >= resultPage.pages) {
       allIds
@@ -116,7 +116,7 @@ object ContentAPI {
 
     val resultPage = Await.result(response, 5 seconds)
 
-    val allIds = ids ::: resultPage.results.map(_.id)
+    val allIds = ids ::: resultPage.results.map(_.id).toList
 
     if (page >= resultPage.pages) {
       allIds
@@ -135,16 +135,9 @@ object ContentAPI {
 class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends ContentApiClientLogic() {
   override val targetUrl = apiUrl
 
-  override protected def get(url: String, headers: Map[String, String])
-                            (implicit context: ExecutionContext): Future[HttpResponse] = {
-
-    val headersWithAuth = ContentAPI.signer.addIAMHeaders(headers, url)
-
-    val req = headersWithAuth.foldLeft(dispatch.url(url)) {
-      case (r, (name, value)) => r.setHeader(name, value)
-    }
-
-    def handler = new FunctionHandler(r => HttpResponse(r.getResponseBody("utf-8"), r.getStatusCode, r.getStatusText))
-    http(req.toRequest, handler)
+  override protected def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
+    println(s"DraftContentApiClass: url: $url")
+    val headersWithAuth = ContentAPI.signer.addIAMHeaders(headers, URI.create(url))
+    super.get(url, headersWithAuth)
   }
 }

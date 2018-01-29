@@ -1,6 +1,6 @@
 package repositories
 
-import com.squareup.okhttp.{FormEncodingBuilder, OkHttpClient, Request}
+import okhttp3.{FormBody, OkHttpClient, Request}
 import play.api.Logger
 import play.api.libs.json.Json
 import services.Config
@@ -12,13 +12,13 @@ case class PathRemoveFailed(m: String) extends RuntimeException(m)
 
 object PathManager {
 
-  val httpClient = new OkHttpClient()
+  val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
 
   def registerPathAndGetPageId(path: String): Long = {
     Logger.info(s"registering path $path")
 
-    val formBody = new FormEncodingBuilder()
+    val formBody = new FormBody.Builder()
       .add("path", path)
       .add("system", "tagmanager")
       .build()
@@ -27,7 +27,6 @@ object PathManager {
       .post(formBody)
       .build
 
-    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
     val resp = httpClient.newCall(req).execute
 
     resp.code match {
@@ -49,7 +48,6 @@ object PathManager {
   def removePathForId(id: Long) = {
     Logger.info(s"removing path entries for $id")
 
-    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths/$id").delete().build
     val resp = httpClient.newCall(req).execute
 
@@ -63,8 +61,6 @@ object PathManager {
   }
 
   def isPathInUse(path: String): Boolean = {
-
-    httpClient.setConnectTimeout(2, TimeUnit.SECONDS)
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths?path=$path").build
     val resp = httpClient.newCall(req).execute
 
