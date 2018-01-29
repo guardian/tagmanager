@@ -39,8 +39,9 @@ object PathManager {
         pathId
       }
       case c => {
-        Logger.warn(s"failed to register $path. response code $c, message ${resp.body}")
-        throw PathRegistrationFailed(s"failed to register $path. response code $c, message ${resp.body}")
+        val body = resp.body
+        Logger.warn(s"failed to register $path. response code $c, message $body")
+        throw PathRegistrationFailed(s"failed to register $path. response code $c, message $body")
       }
     }
   }
@@ -54,8 +55,9 @@ object PathManager {
     resp.code match {
       case 204 => Logger.info(s"path entries for $id removed")
       case c => {
-        Logger.warn(s"failed to remove paths for $id. response code $c, message ${resp.body}")
-        throw new PathRemoveFailed(s"failed to remove paths for $id. response code $c, message ${resp.body}")
+        val body = resp.body
+        Logger.warn(s"failed to remove paths for $id. response code $c, message $body")
+        throw new PathRemoveFailed(s"failed to remove paths for $id. response code $c, message $body")
       }
     }
   }
@@ -68,8 +70,9 @@ object PathManager {
       case 404 => false // not found = not in use
       case 200 => true
       case c => {
-        Logger.warn(s"failed to check path $path in use. response code $c, message ${resp.body}")
-        throw new RuntimeException(s"failed to check path $path in use. response code $c, message ${resp.body}")
+        val body = resp.body
+        Logger.warn(s"failed to check path $path in use. response code $c, message $body")
+        throw new RuntimeException(s"failed to check path $path in use. response code $c, message $body")
       }
     }
   }

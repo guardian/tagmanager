@@ -54,8 +54,9 @@ object ImageMetadataService {
         Some(ImageMetadata(image.getWidth, image.getHeight, bytes.size, mediaId, mimeType))
       }
       case c => {
-        Logger.warn(s"failed to get image metadata for $uri. response code $c, message ${response.body}")
-        throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message ${response.body}")
+        val body = response.body
+        Logger.warn(s"failed to get image metadata for $uri. response code $c, message $body")
+        throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message $body")
       }
     }
   }

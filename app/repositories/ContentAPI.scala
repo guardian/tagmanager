@@ -95,10 +95,12 @@ object ContentAPI {
 
   @tailrec
   def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
+    Logger.info(s"getContentIdsForTag: $apiTagId")
     Logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
     val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
+    Logger.info(s"getContentIdsForTag result: $resultPage")
 
     val allIds = ids ::: resultPage.results.map(_.id).toList
 
@@ -136,7 +138,7 @@ class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends 
   override val targetUrl = apiUrl
 
   override protected def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
-    println(s"DraftContentApiClass: url: $url")
+    Logger.info(s"DraftContentApiClass url: $url")
     val headersWithAuth = ContentAPI.signer.addIAMHeaders(headers, URI.create(url))
     super.get(url, headersWithAuth)
   }
