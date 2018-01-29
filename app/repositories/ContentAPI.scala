@@ -35,30 +35,32 @@ object ContentAPI {
   )
 
   def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String): Int = {
-    val builder = StringBuilder.newBuilder
-    var pageSize = 0
+    if (contentIds.nonEmpty) {
+      val builder = StringBuilder.newBuilder
+      var pageSize = 0
 
-    var total = 0
+      var total = 0
 
-    for (id <- contentIds) {
-      // ~2048 chars is the max sensible amount for a URL.
-      // Rather than faff about subtracting our URL + query string junk from 2048 we'll just stay well below the max (1500)
-      // Also, CAPI maxes out at 50 items per query
-      if (pageSize >= 50 || builder.length + id.length > 1500) {
-        total += countTags(builder.toString, pageSize, apiTagId)
-        builder.setLength(0)
-        pageSize = 0
+      for (id <- contentIds) {
+        // ~2048 chars is the max sensible amount for a URL.
+        // Rather than faff about subtracting our URL + query string junk from 2048 we'll just stay well below the max (1500)
+        // Also, CAPI maxes out at 50 items per query
+        if (pageSize >= 50 || builder.length + id.length > 1500) {
+          total += countTags(builder.toString, pageSize, apiTagId)
+          builder.setLength(0)
+          pageSize = 0
+        }
+
+        if (builder.nonEmpty) {
+          builder.append(',')
+        }
+        builder.append(id)
+        pageSize += 1
       }
+      total += countTags(builder.toString, pageSize, apiTagId)
 
-      if (builder.nonEmpty) {
-        builder.append(',')
-      }
-      builder.append(id)
-      pageSize += 1
-    }
-    total += countTags(builder.toString, pageSize, apiTagId)
-
-    total
+      total
+    } else 0
   }
 
   private def countTags(ids: String, pageSize: Int, apiTagId: String): Int = {
@@ -95,12 +97,10 @@ object ContentAPI {
 
   @tailrec
   def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.info(s"getContentIdsForTag: $apiTagId")
     Logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
     val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
-    Logger.info(s"getContentIdsForTag result: $resultPage")
 
     val allIds = ids ::: resultPage.results.map(_.id).toList
 
@@ -138,7 +138,6 @@ class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends 
   override val targetUrl = apiUrl
 
   override protected def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
-    Logger.info(s"DraftContentApiClass url: $url")
     val headersWithAuth = ContentAPI.signer.addIAMHeaders(headers, URI.create(url))
     super.get(url, headersWithAuth)
   }
