@@ -1,17 +1,15 @@
 package controllers
 
 import java.io.File
+import java.net.URI
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.services.s3.model._
-import com.gu.contentapi.client.IAMSigner
-import com.squareup.okhttp.{Headers, OkHttpClient, Request}
 import model.command.CommandError._
 import model.command.{ExpireSectionContentCommand, UnexpireSectionContentCommand, UpdateTagCommand}
 import model.{DenormalisedTag, Image, ImageAsset}
+import okhttp3.{Headers, OkHttpClient, Request}
 import org.joda.time.DateTime
 import permissions.ModifySectionExpiryPermissionsCheck
 import play.api.Logger
@@ -27,6 +25,8 @@ import collection.JavaConverters._
 
 
 object Support extends Controller with PanDomainAuthActions {
+
+  private val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
   def imageMetadata(imageUrl: String = "") = APIAuthAction {
     ImageMetadataService.fetch(imageUrl).map { imageMetadata =>
@@ -80,17 +80,14 @@ object Support extends Controller with PanDomainAuthActions {
   }
 
   def previewCapiProxy(path: String) = APIAuthAction { request =>
-    val httpClient = new OkHttpClient()
-
     val url = s"${Config().capiPreviewIAMUrl}/$path?${request.rawQueryString}"
     Logger.info(s"Requesting CAPI preview -> $url")
 
     val req = new Request.Builder()
       .url(url)
-      .headers(Headers.of(ContentAPI.signer.addIAMHeaders(Map.empty, url).asJava))
+      .headers(Headers.of(ContentAPI.signer.addIAMHeaders(Map.empty, URI.create(url)).asJava))
       .build
 
-    httpClient.setConnectTimeout(5, TimeUnit.SECONDS)
     val resp = httpClient.newCall(req).execute
 
     resp.code match {

@@ -4,15 +4,12 @@ import java.io.{File, ByteArrayInputStream}
 import javax.imageio.ImageIO
 
 import java.security.MessageDigest
-import javax.imageio.stream.ImageInputStream
 import play.api.Logger
 
-import com.squareup.okhttp.Request.Builder
-import com.squareup.okhttp.{OkHttpClient, Request}
+import okhttp3.Request.Builder
+import okhttp3.OkHttpClient
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Format}
-
-import scala.util.control.NonFatal
 
 case class ImageMetadataFetchFail(m: String) extends RuntimeException(m)
 
@@ -57,8 +54,9 @@ object ImageMetadataService {
         Some(ImageMetadata(image.getWidth, image.getHeight, bytes.size, mediaId, mimeType))
       }
       case c => {
-        Logger.warn(s"failed to get image metadata for $uri. response code $c, message ${response.body}")
-        throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message ${response.body}")
+        val body = response.body
+        Logger.warn(s"failed to get image metadata for $uri. response code $c, message $body")
+        throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message $body")
       }
     }
   }

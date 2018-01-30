@@ -23,18 +23,18 @@ lazy val dependencies = Seq(
   "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
   "org.cvogt" %% "play-json-extensions" % "0.6.0",
-  "com.squareup.okhttp" % "okhttp" % "2.4.0",
+  "com.squareup.okhttp3" % "okhttp" % "3.9.0",
   "org.apache.thrift" % "libthrift" % "0.8.0",
   "com.twitter" %% "scrooge-core" % "4.12.0",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client" % "7.7",
+  "com.gu" %% "content-api-client" % "11.51",
   "com.gu" %% "tags-thrift-schema" % "2.1.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac" % "1.2.0",
-  "com.gu" %% "content-api-client-aws" % "0.2"
+  "com.gu" %% "content-api-client-aws" % "0.3"
 )
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
