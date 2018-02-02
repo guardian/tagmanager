@@ -99,7 +99,7 @@ export function searchPreviewContent (searchString, byline, params) {
 
     return Reqwest({
       url: getCapiPreviewUrl()
-        + '&q=' + buildSearch(searchQueryString)
+        + ( searchQueryString ? '&q=' + buildSearch(searchQueryString) : '')
         + ( byline ? '&byline=' + buildSearch(bylineQueryString) : '')
         + '&' + query
         + '&show-fields=isLive,internalComposerCode&order-by=newest',
