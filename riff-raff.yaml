@@ -14,8 +14,10 @@ deployments:
     app: tag-manager
     parameters:
       amiTags:
+        BuiltBy: amigo
         Recipe: editorial-tools-xenial-java8
         AmigoStage: PROD
+      amiEncrypted: true
       prependStackToCloudFormationStackName: false
       cloudFormationStackName: TagManager
       cloudFormationStackByTags: false
