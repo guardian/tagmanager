@@ -22,6 +22,7 @@ case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: Stri
 
         progress += tags.size
         ReindexProgressRepository.updateTagReindexProgress(progress, total)
+        Thread.sleep(500)
       }
       ReindexProgressRepository.completeTagReindex(progress, total)
     } catch {
