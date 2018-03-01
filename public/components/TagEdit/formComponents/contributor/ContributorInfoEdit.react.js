@@ -117,6 +117,7 @@ export default class ContributorInfoEdit extends React.Component {
           onChange={this.updateBylineImage.bind(this)}
           tagEditable={this.props.tagEditable}/>
         <TagImageEdit
+          pngOnly={true}
           tagImage={contributorInfomation.largeBylineImage}
           label="Large Byline Image"
           onChange={this.updateLargeBylineImage.bind(this)}
