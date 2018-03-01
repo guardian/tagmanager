@@ -215,7 +215,7 @@ export default class TagNameEdit extends React.Component {
           <div className="tag-edit__linked-field">
             <div className={classNames.slug.link}></div>
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
-            <label>Slug</label>
+            <label>Path</label>
             <div className="tag-edit__linked-field__input-container">
               <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : this.props.tag.path}</span>
               {!this.props.pathLocked ? <input type="text"
