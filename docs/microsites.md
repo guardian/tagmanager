@@ -8,6 +8,8 @@ to work. Steps to do this:
 
 * Check the microsite has no content (including expired) associated to it in the
  Content API (ask the content-platform team to check Elasticsearch).
+* Check that other pieces of content don't refer directly to the microsite page. For example, articles containing links.
+* Check our github repo for references to the microsite. We occasionally find hardcoded references to tag pages.
 * Providing that is okay delete the microsite directly in Dynamo. 
 * The microsite will also need to be deleted in Elasticsearch of CAPI.
 * The redirect will need to put in place (Dotcom does this).
