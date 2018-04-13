@@ -60,3 +60,9 @@ export const tracking = {
   displayName: 'Tracking',
   pathPrefix: 'tracking'
 };
+
+export const campaign = {
+    name: 'Campaign',
+    displayName: 'Campaign',
+    pathPrefix: 'campaign'
+};

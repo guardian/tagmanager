@@ -36,7 +36,7 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
 }
 
 object MergeTagCommand {
-  val blockedTagTypes = List("Publication", "NewspaperBook", "NewspaperBookSection", "Tracking", "ContentType")
+  val blockedTagTypes = List("Publication", "NewspaperBook", "NewspaperBookSection", "Tracking", "ContentType", "Campaign")
 
   implicit val mergeTagCommandFormat: Format[MergeTagCommand] = (
     (JsPath \ "removingTagId").format[Long] and

@@ -36,6 +36,7 @@ case class Tag(
   isMicrosite: Boolean,
   capiSectionId: Option[String] = None,
   trackingInformation: Option[TrackingInformation],
+  campaignInformation: Option[CampaignInformation],
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
   paidContentInformation: Option[PaidContentInformation] = None,
@@ -157,6 +158,7 @@ object Tag {
       isMicrosite       = thriftTag.isMicrosite,
       capiSectionId     = thriftTag.capiSectionId,
       trackingInformation = thriftTag.trackingInformation.map(TrackingInformation(_)),
+      campaignInformation = thriftTag.campaignInformation.map(CampaignInformation(_)),
       updatedAt = thriftTag.updatedAt.getOrElse(0L),
       activeSponsorships = thriftTag.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil),
       sponsorship = thriftTag.sponsorshipId,
@@ -188,6 +190,7 @@ case class DenormalisedTag (
   isMicrosite: Boolean,
   capiSectionId: Option[String] = None,
   trackingInformation: Option[TrackingInformation],
+  campaignInformation: Option[CampaignInformation],
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Sponsorship] = None, // for paid content tags, they have an associated sponsorship but it may not be active
   paidContentInformation: Option[PaidContentInformation] = None,
@@ -219,6 +222,7 @@ case class DenormalisedTag (
       isMicrosite = isMicrosite,
       capiSectionId = capiSectionId,
       trackingInformation = trackingInformation,
+      campaignInformation = campaignInformation,
       activeSponsorships = activeSponsorships,
       sponsorship = sponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
       paidContentInformation = paidContentInformation,
@@ -255,6 +259,7 @@ object DenormalisedTag{
     isMicrosite = t.isMicrosite,
     capiSectionId = t.capiSectionId,
     trackingInformation = t.trackingInformation,
+    campaignInformation = t.campaignInformation,
     activeSponsorships = t.activeSponsorships,
     sponsorship = t.sponsorship.flatMap(SponsorshipRepository.getSponsorship), // for paid content tags, they have an associated sponsorship but it may not be active
     paidContentInformation = t.paidContentInformation,
