@@ -19,6 +19,7 @@ object TagPathCalculator {
       case ("publication", _) => s"$slug/all"
       case ("series", _) => s"${sectionPathPrefix}series/$slug"
       case ("tracking", trackingType) => s"tracking/${trackingType.getOrElse("")}/$slug"
+      case ("campaign", campaignType) => s"campaign/${campaignType.getOrElse("")}/$slug"
       case ("paidcontent", Some("hostedcontent")) => s"advertiser-content/$slug"
       case (_, _) => sectionPathPrefix + slug
     }

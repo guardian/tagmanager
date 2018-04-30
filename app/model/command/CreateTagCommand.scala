@@ -72,6 +72,7 @@ case class CreateTagCommand(
                       isMicrosite: Boolean,
                       capiSectionId: Option[String] = None,
                       trackingInformation: Option[TrackingInformation] = None,
+                      campaignInformation: Option[CampaignInformation] = None,
                       preCalculatedPath: Option[String] = None, //This is used so path isn't calculated
                       sponsorship: Option[InlinePaidContentSponsorshipCommand] = None,
                       paidContentInformation: Option[PaidContentInformation] = None,
@@ -120,9 +121,14 @@ case class CreateTagCommand(
 
     val createdSectionId = if(createMicrosite) { sectionId } else { None }
 
+    val tagSubType: Option[String] =  `type` match {
+      case "Tracking" => trackingInformation.map(_.trackingType)
+      case "Campaign" => campaignInformation.map(_.campaignType)
+    }
+
     val calculatedPath = preCalculatedPath match {
       case Some(path) => path
-      case None => TagPathCalculator.calculatePath(`type`, slug, sectionId, trackingInformation.map(_.trackingType))
+      case None => TagPathCalculator.calculatePath(`type`, slug, sectionId, tagSubType)
         // Note we don't pass the paid contnet subtype here as the path munging has now been applied to the created microsite
         // so the standard section / slug logic is the desired logic
     }
@@ -155,6 +161,7 @@ case class CreateTagCommand(
       isMicrosite = isMicrosite || createMicrosite,
       capiSectionId = capiSectionId,
       trackingInformation = trackingInformation,
+      campaignInformation = campaignInformation,
       activeSponsorships = if(createdSponsorshipActive) List(createdSponsorship.map(_.id).get) else Nil,
       sponsorship = createdSponsorship.map(_.id),
       paidContentInformation = paidContentInformation,

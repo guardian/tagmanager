@@ -118,6 +118,12 @@ export default class TagNameEdit extends React.Component {
       return 'tracking/' + trackingTypeName + '/';
     }
 
+    //Campaigns Type Exception
+    if (this.props.tag.type === tagTypes.campaign.name) {
+      const campaignTypeName = this.props.tag.campaignInformation && this.props.tag.campaignInformation.campaignType ? this.props.tag.campaignInformation.campaignType.toLowerCase() : '...';
+      return 'campaign/' + campaignTypeName + '/';
+    }
+
     // Paid content with sub type of hosted exception
 
     if (this.props.tag.type === tagTypes.paidContent.name
