@@ -124,6 +124,7 @@ case class CreateTagCommand(
     val tagSubType: Option[String] =  `type` match {
       case "Tracking" => trackingInformation.map(_.trackingType)
       case "Campaign" => campaignInformation.map(_.campaignType)
+      case _ => None
     }
 
     val calculatedPath = preCalculatedPath match {
