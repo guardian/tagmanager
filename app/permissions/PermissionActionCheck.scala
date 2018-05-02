@@ -13,12 +13,15 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
   val restrictedAction: String
 
   override def filter[A](request: UserRequest[A]) =
-    testAccess(request.user.email).map {
-      case PermissionGranted => None
-      case PermissionDenied =>
-        Logger.info(s"user not authorized to $restrictedAction")
-        println("FAILED")
-        Some(Results.Unauthorized)}
+    if(request.user.email == "hmac-authed-service") {
+      Future.successful(None)
+    } else {
+      testAccess(request.user.email).map {
+        case PermissionGranted => None
+        case PermissionDenied =>
+          Logger.info(s"user not authorized to $restrictedAction")
+          Some(Results.Unauthorized)}
+    }
 }
 
 object AddEditionToSectionPermissionsCheck extends PermissionActionFilter {

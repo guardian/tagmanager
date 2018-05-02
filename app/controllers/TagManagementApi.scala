@@ -11,6 +11,8 @@ import play.api.mvc.{Controller, Result}
 import repositories._
 import play.api.libs.concurrent.Execution.Implicits._
 import services.Config
+import helpers.CORSable
+import services.Config.conf
 
 import scala.concurrent.Future
 
@@ -37,21 +39,22 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def createTag() = (APIAuthAction andThen CreateTagPermissionsCheck).async { req =>
-    implicit val username = Option(req.user.email)
-    req.body.asJson.map { json =>
-      json.as[CreateTagCommand].process.map { result =>
-        result.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
-      } recover {
-        commandErrorAsResult
+  def createTag = CORSable(conf.corsablePostDomains: _*) {
+    (APIAuthAction andThen CreateTagPermissionsCheck).async { req =>
+      implicit val username = Option(req.user.email)
+      req.body.asJson.map { json =>
+        json.as[CreateTagCommand].process.map { result =>
+          result.map { t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
+        } recover {
+          commandErrorAsResult
+        }
+      }.getOrElse {
+        Future.successful(BadRequest("Expecting Json data"))
       }
-    }.getOrElse {
-      Future.successful(BadRequest("Expecting Json data"))
     }
   }
 
   def searchTags = APIHMACAuthAction { req =>
-
     val criteria = TagSearchCriteria(
       q = req.getQueryString("q"),
       searchField = req.getQueryString("searchField"),
@@ -65,16 +68,16 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     val tags = TagLookupCache.search(criteria)
 
     val orderedTags: List[Tag] = orderBy match {
-      case("internalName") => tags.sortBy(_.internalName)
-      case("externalName") => tags.sortBy(_.externalName)
-      case("path") => tags.sortBy(_.path)
-      case("id") => tags.sortBy(_.id)
-      case("type") => tags.sortBy(_.`type`)
-      case(_) => tags.sortBy(_.comparableValue)
+      case ("internalName") => tags.sortBy(_.internalName)
+      case ("externalName") => tags.sortBy(_.externalName)
+      case ("path") => tags.sortBy(_.path)
+      case ("id") => tags.sortBy(_.id)
+      case ("type") => tags.sortBy(_.`type`)
+      case (_) => tags.sortBy(_.comparableValue)
     }
 
     val page = req.getQueryString("page").getOrElse("1").toInt
-    val pageSize = req.getQueryString("pageSize").map( _.toInt).getOrElse(Config().tagSearchPageSize)
+    val pageSize = req.getQueryString("pageSize").map(_.toInt).getOrElse(Config().tagSearchPageSize)
 
     val startIndex = (page - 1) * pageSize
     val paginatedTagResults = orderedTags.drop(startIndex).take(pageSize)
@@ -227,10 +230,10 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def deleteTag(id: Long) = (APIAuthAction andThen DeleteTagPermissionsCheck).async { req =>
+  def deleteTag(id: Long) = (APIHMACAuthAction andThen DeleteTagPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
-    (new DeleteTagCommand(id)).process.map{ result =>
-      result.map{t => NoContent } getOrElse NotFound
+    (DeleteTagCommand(id)).process.map { result =>
+      result.map { t => NoContent } getOrElse NotFound
     } recover {
       commandErrorAsResult
     }
