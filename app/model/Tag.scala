@@ -74,7 +74,8 @@ case class Tag(
     }),
     sponsorshipId = sponsorship,
     paidContentInformation = paidContentInformation.map(_.asThrift),
-    expired = expired
+    expired = expired,
+    campaignInformation = campaignInformation.map(_.asThrift)
   )
 
   // in this limited format for inCopy to consume
