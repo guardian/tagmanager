@@ -95,7 +95,16 @@ export default class TagImageEdit extends React.Component {
     });
   }
 
-  renderAddButton() {
+  renderAddButton(imageUrl) {
+    if (this.props.pngOnly && !(imageUrl.endsWith("png") || imageUrl.endsWith("PNG"))) {
+      return (
+        <div className="tag-edit__image__add--error">
+          <i className="i-cross-red" />
+          Image must be a PNG.
+        </div>
+      );
+    }
+
     if (this.state.metadataFetchStatus === FETCH_STATES.fetching) {
       return (<div className="tag-edit__image__add">Checking Url...</div>);
     }
@@ -141,7 +150,7 @@ export default class TagImageEdit extends React.Component {
             onChange={this.updateInputUrl.bind(this)}
             disabled={!this.props.tagEditable}
             placeholder="Enter image URL..."/>
-          {this.renderAddButton()}
+          {this.renderAddButton(this.state.inputUrl)}
         </div>
       );
     }
