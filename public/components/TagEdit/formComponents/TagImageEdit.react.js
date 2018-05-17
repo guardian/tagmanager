@@ -96,7 +96,7 @@ export default class TagImageEdit extends React.Component {
   }
 
   renderAddButton(imageUrl) {
-    if (this.props.pngOnly && !(imageUrl.endsWith("png") || imageUrl.endsWith("PNG"))) {
+    if (this.props.pngOnly && imageUrl && !(imageUrl.endsWith("png") || imageUrl.endsWith("PNG"))) {
       return (
         <div className="tag-edit__image__add--error">
           <i className="i-cross-red" />
