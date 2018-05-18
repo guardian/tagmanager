@@ -33,7 +33,7 @@ lazy val dependencies = Seq(
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac" % "1.2.0",
+  "com.gu"  %% "panda-hmac" % "1.3.0",
   "com.gu" %% "content-api-client-aws" % "0.5"
 )
 
