@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: DynamoDB table for Pillar audits
+Parameters:
+  Stage:
+    Description: Stage
+    Type: String
+Resources:
+  atomTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub tag-manager-pillars-audit-${Stage}
+      AttributeDefinitions:
+        - AttributeName: pillarId
+          AttributeType: N
+        - AttributeName: date
+          AttributeType: N
+      KeySchema:
+        - AttributeName: pillarId
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: '1'
+        WriteCapacityUnits: '1'
