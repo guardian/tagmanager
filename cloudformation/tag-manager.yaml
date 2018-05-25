@@ -57,6 +57,8 @@ Resources:
   TagManagerRole:
     Type: AWS::IAM::Role
     Properties:
+      ManagedPolicyArns:
+        - Fn::ImportValue: !Sub "guardian-ec2-for-ssm-GuardianEC2ForSSMPolicy"
       AssumeRolePolicyDocument:
         Statement:
         - Effect: Allow
