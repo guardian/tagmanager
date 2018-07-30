@@ -1,9 +1,12 @@
 import React from 'react';
 import TagSelect from '../utils/TagSelect';
+import MappingsWarning from '../utils/MappingsWarning.react';
+import {getByTag} from '../../util/capiClient';
 
 const BLANK_STATE = {
   referenceValue: '',
-  selectedTag: undefined
+  selectedTag: undefined,
+  tagCapiUsages: 0
 };
 
 export default class AddTagMapping extends React.Component {
@@ -18,6 +21,20 @@ export default class AddTagMapping extends React.Component {
       this.setState({
         selectedTag: tag
       });
+
+      if (tag) {
+        getByTag(tag, {
+          'page-size': 0
+        }).then(res => {
+          this.setState({
+            tagCapiUsages: res.response.total
+          });
+        });
+      } else {
+        this.setState({
+            tagCapiUsages: 0
+        });
+      }
     }
 
     updateReferenceValue(e) {
@@ -81,6 +98,7 @@ export default class AddTagMapping extends React.Component {
             <input value={this.state.referenceValue} onChange={this.updateReferenceValue.bind(this)}/>
           </div>
           <input type="submit" onClick={this.addReferenceValue.bind(this)}/>
+          <MappingsWarning capiUsages={this.state.tagCapiUsages}/>
         </div>
       );
     }
