@@ -1,8 +1,6 @@
 Tag Manager
 ===========
 
-[![Circle CI](https://circleci.com/gh/guardian/tagmanager/tree/master.svg?style=svg)](https://circleci.com/gh/guardian/tagmanager/tree/master)
-
 Tags are great, they are literally the best way we have of indicating what a piece of content is, what it’s about and
 where it came from. We use tags to generate navigation on theguardian.com and provide pages and pages of links to
 interesting content. Tags can be mapped which allows them to magically show rich contextual information from external
