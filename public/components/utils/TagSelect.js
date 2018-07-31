@@ -2,6 +2,7 @@ import React from 'react';
 import tagManagerApi from '../../util/tagManagerApi';
 import debounce from 'lodash.debounce';
 import * as tagTypes from '../../constants/tagTypes';
+import R from 'ramda';
 
 const BLANK_STATE = {
   selectedTag: undefined,
@@ -62,10 +63,12 @@ export default class TagSelect extends React.Component {
         return false;
       }
 
+      const suggestions = this.props.showResultsAbove ? R.reverse(this.state.suggestions) : this.state.suggestions;
+
       return (
         <div className="tag-select__suggestions">
           <ul>
-            {this.state.suggestions.filter(tag => this.isAllowedTagType(tag.type)).map(tag => {
+            {suggestions.filter(tag => this.isAllowedTagType(tag.type)).map(tag => {
               const tagTypeKey = Object.keys(tagTypes).filter((tagTypeKey) => {
                 return tagTypes[tagTypeKey].name === tag.type;
               })[0];
