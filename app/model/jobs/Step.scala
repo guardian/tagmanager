@@ -118,10 +118,7 @@ trait Step {
 
 object Step {
 
-  // If a step doesn't complete after ~1 hour consider the job failed
-  // This is a bit of a hack since it's hard to differentiate between a job that's hanging
-  // because of a failure and a job that's just taking a long time.
-  private val retryLimit = 400
+  private val retryLimit = 10000
 
   // Keep all the serialization stuff in here just so it's in one place
   val addTagToContentFormat      = Jsonx.formatCaseClassUseDefaults[AddTagToContent]
