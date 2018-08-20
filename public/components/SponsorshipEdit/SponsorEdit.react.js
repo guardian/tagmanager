@@ -28,13 +28,13 @@ export default class SponsorEdit extends React.Component {
 
   updateLink(e) {
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      sponsorLink: e.target.value
+      sponsorLink: e.target.value.trim()
     }));
   }
 
   updateAboutLink(e) {
     this.props.updateSponsorship(Object.assign({}, this.props.sponsorship, {
-      aboutLink: e.target.value
+      aboutLink: e.target.value.trim()
     }));
   }
 
