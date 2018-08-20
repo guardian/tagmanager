@@ -50,6 +50,12 @@ export default class PodcastMetadata extends React.Component {
     }));
   }
 
+  updateSpotifyUrl(e) {
+    this.props.updateTag(R.merge(this.props.tag, {
+      podcastMetadata: R.merge(this.props.tag.podcastMetadata, {spotifyUrl: e.target.value})
+    }));
+  }
+
   updateiTunesBlock(e) {
     this.props.updateTag(R.merge(this.props.tag, {
       podcastMetadata: R.merge(this.props.tag.podcastMetadata, {iTunesBlock: e.target.checked})
@@ -154,6 +160,14 @@ export default class PodcastMetadata extends React.Component {
                  className="tag-edit__input"
                  value={this.props.tag.podcastMetadata.googlePodcastsUrl || ''}
                  onChange={this.updateGooglePodcastsUrl.bind(this)}
+                 disabled={!this.props.tagEditable}/>
+        </div>
+        <div className="tag-edit__field">
+          <label className="tag-edit__label">Spotify Url</label>
+          <input type="text"
+                 className="tag-edit__input"
+                 value={this.props.tag.podcastMetadata.spotifyUrl || ''}
+                 onChange={this.updateSpotifyUrl.bind(this)}
                  disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
