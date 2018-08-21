@@ -44,6 +44,18 @@ export default class PodcastMetadata extends React.Component {
     }));
   }
 
+  updateGooglePodcastsUrl(e) {
+    this.props.updateTag(R.merge(this.props.tag, {
+      podcastMetadata: R.merge(this.props.tag.podcastMetadata, {googlePodcastsUrl: e.target.value})
+    }));
+  }
+
+  updateSpotifyUrl(e) {
+    this.props.updateTag(R.merge(this.props.tag, {
+      podcastMetadata: R.merge(this.props.tag.podcastMetadata, {spotifyUrl: e.target.value})
+    }));
+  }
+
   updateiTunesBlock(e) {
     this.props.updateTag(R.merge(this.props.tag, {
       podcastMetadata: R.merge(this.props.tag.podcastMetadata, {iTunesBlock: e.target.checked})
@@ -141,6 +153,22 @@ export default class PodcastMetadata extends React.Component {
             checked={this.props.tag.podcastMetadata.iTunesBlock || false}
             disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Block from iTunes</label>
+        </div>
+        <div className="tag-edit__field">
+          <label className="tag-edit__label">Google Podcasts Url</label>
+          <input type="text"
+                 className="tag-edit__input"
+                 value={this.props.tag.podcastMetadata.googlePodcastsUrl || ''}
+                 onChange={this.updateGooglePodcastsUrl.bind(this)}
+                 disabled={!this.props.tagEditable}/>
+        </div>
+        <div className="tag-edit__field">
+          <label className="tag-edit__label">Spotify Url</label>
+          <input type="text"
+                 className="tag-edit__input"
+                 value={this.props.tag.podcastMetadata.spotifyUrl || ''}
+                 onChange={this.updateSpotifyUrl.bind(this)}
+                 disabled={!this.props.tagEditable}/>
         </div>
         <div className="tag-edit__field">
           <input type="checkbox"
