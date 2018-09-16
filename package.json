@@ -30,7 +30,7 @@
     "react-dropzone": "^3.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.1",
-    "react-tooltip": "^1.1.2",
+    "react-tooltip": "^3.8.1",
     "react-widgets": "^3.1.0",
     "redux": "^3.5.2",
     "redux-logger": "^2.0.4",
