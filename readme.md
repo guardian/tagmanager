@@ -13,9 +13,9 @@ Running
 
 Before you run for the first time you will need to run `./scripts/setup.sh` this will install and compile all the frontend
 dependencies needed for the app (you may need to install npm before you can run this successfully). If any frontend
-dependencies are changed you should should re run the setup script.
+dependencies are changed you should re run the setup script.
 
-The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. after running this the tag manager
+The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. After running this the tag manager
 will be available on [https://tagmanager.local.dev-gutools.co.uk](https://tagmanager.local.dev-gutools.co.uk)
 
 To read the database and interact with the AWS infrastructure you will need AWS credentials that allow you access to the
@@ -41,7 +41,7 @@ as mentioned above, or alternatively you can choose to use one of the alternativ
 1. `./scripts/start.sh` This starts a webpack watcher in addition to running the application - The watcher will compile
 unminified code when it detects a change to the javascript. Refresh the webpage to see the new code.
 2. `./scripts/client-dev.sh` This scripts starts a [webpack-dev-server](https://webpack.github.io/docs/webpack-dev-server.html)
-alongside the application which provides Hot Reloading. Changes you make to code should be immedaitely visible in the browser
+alongside the application which provides Hot Reloading. Changes you make to code should be immediately visible in the browser
 
 Developing
 ==========
