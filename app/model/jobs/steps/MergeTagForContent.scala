@@ -42,8 +42,6 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
 
     // We're basically assuming here that if there's no 'from's left that everything has successfully merged.
     // The way flexible-feeds currently works means this is true.
-
-    // Also: Returning a boolean expression like this makes me uncomfortable
     fromCount == 0
   }
 
