@@ -20,10 +20,9 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
         contentPath = contentPath,
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
-      KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
+      KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(128), taggingOperation)
       Logger.info(s"raising ${OperationType.Remove} for ${tag.id} on $contentPath operation")
     }
-
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, "remove", contentIds.length))
   }
 

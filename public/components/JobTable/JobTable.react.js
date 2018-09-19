@@ -30,10 +30,10 @@ class JobTable extends React.Component {
       });
     }
 
-    renderJobStep(step, job) {
+    renderJobStep(step, job, i) {
       return (
-        <tr className={stepRowClass[step.stepStatus] ? stepRowClass[step.stepStatus] : ''} key={job.id + step.type}>
-          <td>{prettyStepType[step.type] ? prettyStepType[step.type] : step.type }</td>
+        <tr className={stepRowClass[step.stepStatus] ? stepRowClass[step.stepStatus] : ''} key={i}>
+          <td style={{'whiteSpace': 'pre-wrap'}}>{prettyStepType[step.type] ? prettyStepType[step.type] : step.type }</td>
           <td>{step.stepMessage}</td>
           <td>{prettyStepStatus[step.stepStatus] ? prettyStepStatus[step.stepStatus] : step.stepStatus }</td>
         </tr>);
@@ -51,7 +51,7 @@ class JobTable extends React.Component {
               </tr>
             </thead>
             <tbody>
-            {job.steps.map(this.renderJobStep, this, job)}
+            {job.steps.map((step, i) => this.renderJobStep(step, job, i))}
             </tbody>
           </table>
         </td>

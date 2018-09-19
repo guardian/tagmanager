@@ -1,3 +1,7 @@
 .jobtable {
   margin: $standard-padding / 2;
 }
+
+.jobtable__results {
+  white-space: pre-wrap;
+}

@@ -39,12 +39,52 @@ $batch-status-height: 30px;
   margin-bottom: 0;
 }
 
+.batch-status__button--disabled {
+  @extend %button--disabled;
+
+  margin-top: 0;
+  margin-bottom: 0;
+  cursor: default;
+}
+
 .batch-status__button--remove {
   @extend %button--red;
 
   margin-top: 0;
   margin-bottom: 0;
 
+}
+
+.batch-status__basket {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  min-width: 300px;
+  padding: 6px;
+  background-color: $c-grey-200;
+
+  border-top: 1px solid $c-grey-300;
+  border-left: 1px solid $c-grey-300;
+}
+
+.batch-status__submit {
+  margin-top: 6px;
+}
+
+.batch-status__basket-title {
+  margin-left: 6px;
+  margin-bottom: 6px;
+}
+
+.batch-status__basket-category {
+
+  & li {
+    margin-left: 10px;
+  }
+}
+
+.batch-status__small-path {
+  font-size: 0.75em;
 }
 
 .batch-status-transition-enter.batch-status__container {

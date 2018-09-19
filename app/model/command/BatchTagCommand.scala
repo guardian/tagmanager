@@ -2,32 +2,38 @@ package model.command
 
 import model.command.CommandError._
 import model.jobs.JobHelper
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import org.cvogt.play.json.Jsonx
 import repositories._
 import services.Contexts
 
 import scala.concurrent.Future
 
-case class BatchTagCommand(contentIds: List[String], tagId: Long, operation: String) extends Command {
+case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], toAddToBottom: List[Long], toRemove: List[Long]) extends Command {
   type T = Unit
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Unit]] = Future{
-    val tag = TagRepository.getTag(tagId) getOrElse(TagNotFound)
+  override def process()(implicit username: Option[String] = None): Future[Option[Unit]] = Future {
+    val toTopList = toAddToTop.toList
 
-    operation match {
-      case "remove" => { JobHelper.beginBatchTagDeletion(tag, operation, contentIds) }
-      case _ => { JobHelper.beginBatchTagAddition(tag, operation, contentIds) }
+    // We'd prefer if people didn't add and remove
+    val hasIntersections =
+      toTopList.intersect(toRemove).nonEmpty ||
+      toTopList.intersect(toAddToBottom).nonEmpty ||
+      toAddToBottom.intersect(toRemove).nonEmpty
+
+    if (hasIntersections) {
+      IntersectingBatchTags
     }
+
+    val tops = toAddToTop.map(TagRepository.getTag(_).getOrElse(TagNotFound))
+    val bottoms = toAddToBottom.map(TagRepository.getTag(_).getOrElse(TagNotFound))
+    val removals = toRemove.map(TagRepository.getTag(_).getOrElse(TagNotFound))
+
+    JobHelper.buildBatchTagJob(contentIds, tops, bottoms, removals)
 
     Some(())
   }(Contexts.tagOperationContext)
 }
 
 object BatchTagCommand {
-  implicit val batchTagCommandFormat: Format[BatchTagCommand] = (
-      (JsPath \ "contentIds").formatNullable[List[String]].inmap[List[String]](_.getOrElse(Nil), Some(_)) and
-      (JsPath \ "tagId").format[Long] and
-      (JsPath \ "operation").format[String]
-    )(BatchTagCommand.apply, unlift(BatchTagCommand.unapply))
+  implicit val batchTagCommandFormat = Jsonx.formatCaseClassUseDefaults[BatchTagCommand]
 }
