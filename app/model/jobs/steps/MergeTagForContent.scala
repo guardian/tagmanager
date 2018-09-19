@@ -11,12 +11,11 @@ import repositories._
 
 import scala.language.postfixOps
 
-case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], username: Option[String], var contentCount: Int = -1,
+case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], username: Option[String],
   `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
 
   override def process = {
     val contentIds = ContentAPI.getContentIdsForTag(from.path)
-    contentCount = contentIds.size + ContentAPI.countContentWithTag(to.path)
 
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
@@ -38,14 +37,12 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
 
   override def check: Boolean = {
     val fromCount = ContentAPI.countContentWithTag(from.path)
-    val toCount = ContentAPI.countContentWithTag(to.path)
 
-    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on $fromCount pieces of content. To tag: '${to.path}' on to $toCount pieces of content, ${contentCount - toCount} left to add.")
-    if (fromCount == 0 && toCount == contentCount) {
-      true
-    } else {
-      false
-    }
+    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on $fromCount pieces of content.")
+
+    // We're basically assuming here that if there's no 'from's left that everything has successfully merged.
+    // The way flexible-feeds currently works means this is true.
+    fromCount == 0
   }
 
   override def rollback = {
