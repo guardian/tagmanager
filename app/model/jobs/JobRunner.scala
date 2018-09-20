@@ -1,20 +1,24 @@
 package model.jobs
 
 import scala.collection.convert.wrapAll._
-import com.google.common.util.concurrent.{ServiceManager, AbstractScheduledService}
+import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManager}
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import play.api.inject.ApplicationLifecycle
 
 import scala.concurrent.Future
 import javax.inject._
 import org.joda.time.{DateTime, DateTimeZone}
+
 import scala.concurrent.duration._
 import play.api.Logger
 import repositories._
 import services.Dynamo
+
 import scala.util.control.NonFatal
 import java.net.InetAddress
 import java.util.concurrent.TimeUnit
+
+import scala.util.Random
 
 @Singleton
 class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
@@ -41,7 +45,12 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
   def run() = {
     val currentTime = new DateTime(DateTimeZone.UTC).getMillis
     val lockBreakTime = currentTime - JobRunner.lockTimeOutMillis
-    JobRepository.loadAllJobs
+
+    // Shuffling the jobs reduces the chance of each Tag Manager instance picking up the same job if it is long-running or stalled
+    val allJobs = JobRepository.loadAllJobs
+    val jobs = Random.shuffle(allJobs)
+
+    jobs
       .filter(validJobs)
       .find(job => isPotentialJob(job, currentTime, lockBreakTime)) // Find first potential job
       .flatMap(JobRepository.lock(_, JobRunner.nodeId, currentTime, lockBreakTime)) // Lock it (will return None if lock fails)
