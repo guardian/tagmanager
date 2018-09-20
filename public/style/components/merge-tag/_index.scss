@@ -36,3 +36,8 @@
 .merge__warning {
     color: $c-orange;
 }
+
+.merge__select__details {
+  list-style-type: initial;
+  margin-left: $standard-padding * 1.5;
+}
