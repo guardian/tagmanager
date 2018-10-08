@@ -24,9 +24,11 @@ case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], t
       IntersectingBatchTags
     }
 
-    val tops = toAddToTop.map(TagRepository.getTag(_).getOrElse(TagNotFound))
-    val bottoms = toAddToBottom.map(TagRepository.getTag(_).getOrElse(TagNotFound))
-    val removals = toRemove.map(TagRepository.getTag(_).getOrElse(TagNotFound))
+    def toTag(id: Long) = TagRepository.getTag(id).getOrElse(TagNotFound)
+
+    val tops = toAddToTop.map(toTag)
+    val bottoms = toAddToBottom.map(toTag)
+    val removals = toRemove.map(toTag)
 
     JobHelper.buildBatchTagJob(contentIds, tops, bottoms, removals)
 
