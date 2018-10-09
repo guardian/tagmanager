@@ -270,8 +270,8 @@ export default {
     });
   },
 
-  batchTag: (contentIds, tagId, operation) => {
-    const batchTagCommand = {contentIds: contentIds, tagId: tagId, operation: operation};
+  batchTag: (contentIds, toAddToTop, toAddToBottom, toRemove) => {
+    const batchTagCommand = {contentIds, toAddToTop, toAddToBottom, toRemove};
 
     return PandaReqwest({
       url: '/api/batchTag',

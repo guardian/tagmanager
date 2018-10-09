@@ -121,7 +121,7 @@ object Step {
   private val retryLimit = 10000
 
   // Keep all the serialization stuff in here just so it's in one place
-  val addTagToContentFormat      = Jsonx.formatCaseClassUseDefaults[AddTagToContent]
+  val addTagToContentFormat      = Jsonx.formatCaseClassUseDefaults[ModifyContentTags]
   val mergeTagForContentFormat   = Jsonx.formatCaseClassUseDefaults[MergeTagForContent]
   val reindexSectionsFormat      = Jsonx.formatCaseClassUseDefaults[ReindexSections]
   val reindexTagsFormat          = Jsonx.formatCaseClassUseDefaults[ReindexTags]
@@ -134,7 +134,7 @@ object Step {
   val stepWrites = new Writes[Step] {
     override def writes(step: Step): JsValue = {
       step match {
-        case s: AddTagToContent      => addTagToContentFormat.writes(s)
+        case s: ModifyContentTags      => addTagToContentFormat.writes(s)
         case s: MergeTagForContent   => mergeTagForContentFormat.writes(s)
         case s: ReindexSections      => reindexSectionsFormat.writes(s)
         case s: ReindexTags          => reindexTagsFormat.writes(s)
@@ -154,7 +154,7 @@ object Step {
   val stepReads = new Reads[Step] {
     override def reads(json: JsValue): JsResult[Step] = {
       (json \ "type").get match {
-        case JsString(AddTagToContent.`type`)      => addTagToContentFormat.reads(json)
+        case JsString(ModifyContentTags.`type`)      => addTagToContentFormat.reads(json)
         case JsString(MergeTagForContent.`type`)   => mergeTagForContentFormat.reads(json)
         case JsString(ReindexSections.`type`)      => reindexSectionsFormat.reads(json)
         case JsString(ReindexTags.`type`)          => reindexTagsFormat.reads(json)

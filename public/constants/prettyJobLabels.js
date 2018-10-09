@@ -17,7 +17,8 @@ export const prettyStepType = {
   'add-tag-to-content': 'Add tag to content',
   'merge-tag-for-content': 'Merging tag in content',
   'reindex-tags': 'Reindexing tags',
-  'reindex-sections': 'Reindexing sections'
+  'reindex-sections': 'Reindexing sections',
+  'modify-content-tags': 'Modify content tags'
 };
 
 

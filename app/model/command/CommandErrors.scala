@@ -19,6 +19,8 @@ object CommandError extends Results {
 
   def InvalidSectionEditionRegion = throw new CommandError("Invalid region supplied", 400)
 
+  def IntersectingBatchTags = throw new CommandError("attempted to batch tag the same tag multiple times", 400)
+
   def commandErrorAsResult: PartialFunction[Throwable, Result] = {
     case CommandError(msg, 400) => BadRequest(msg)
     case CommandError(msg, 404) => NotFound

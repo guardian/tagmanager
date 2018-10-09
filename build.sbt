@@ -34,7 +34,9 @@ lazy val dependencies = Seq(
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac" % "1.3.0",
-  "com.gu" %% "content-api-client-aws" % "0.5"
+  "com.gu" %% "content-api-client-aws" % "0.5",
+  "com.beachape" %% "enumeratum" % "1.5.13",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd

@@ -60,7 +60,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
         } catch {
           case NonFatal(e) => {
             // This catch exists to prevent an unexpected failure knocking over the entire job runner
-            Logger.error(s"Background job failed on ${JobRunner.nodeId}.")
+            Logger.error(s"Background job failed on ${JobRunner.nodeId}. $e")
           }
         } finally {
           job.checkIfComplete

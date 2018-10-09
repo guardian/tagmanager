@@ -1,43 +1,45 @@
 package model.jobs
 
-import com.gu.tagmanagement.OperationType
-import model.{AppAudit, Tag, TagAudit}
+import model.{AppAudit, BatchTagOperation, Tag, TagAudit}
 import model.jobs.steps._
 import repositories._
 
 /** Utilities for starting jobs */
 object JobHelper {
-  def beginBatchTagAddition(tag: Tag, operation: String, contentIds: List[String])(implicit username: Option[String]) {
-    val section = tag.section.flatMap( SectionRepository.getSection(_) )
+  def buildBatchTagJob(contentIds: List[String], toAddToTop: Option[Tag], toAddToBottom: List[Tag], toRemove: List[Tag])(implicit username: Option[String]): Unit = {
+    def getSection(tag: Tag) = tag.section.flatMap(SectionRepository.getSection)
+
+    val steps: List[ModifyContentTags] =
+      Nil ++
+      toAddToTop.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.AddToTop.entryName)) ++
+      toAddToBottom.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.AddToBottom.entryName)) ++
+      toRemove.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.Remove.entryName))
+
+    var title = "Batch tag: \n"
+    if (toAddToTop.isDefined) {
+      title += s"    Adding '${toAddToTop.get.path}' to top. \n"
+    }
+
+    if (toAddToBottom.nonEmpty) {
+      title += s"    Adding ${toAddToBottom.map(t => "'" + t.path + "'").mkString(", ")} to bottom. \n"
+    }
+
+    if (toRemove.nonEmpty) {
+      title += s"    Removing ${toAddToBottom.map(t => "'" + t.path + "'").mkString(", ")}."
+    }
 
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,
-        title = s"Batch tag: adding '${tag.path}' to ${contentIds.size} pieces of content",
+        title = title,
         createdBy = username,
-        steps = List(AddTagToContent(tag, section, contentIds, operation)),
-        rollbackEnabled = true
-        )
+        steps = steps
       )
+    )
 
-    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
-  }
-
-  def beginBatchTagDeletion(tag: Tag, operation: String, contentIds: List[String])(implicit username: Option[String]) {
-    val section = tag.section.flatMap( SectionRepository.getSection(_) )
-
-    JobRepository.addJob(
-      Job(
-        id = Sequences.jobId.getNextId,
-        title = s"Batch tag: removing '${tag.path}' from ${contentIds.size} pieces of content",
-        createdBy = username,
-        steps = List(RemoveTagFromContent(tag, section, contentIds)),
-        tagIds = List(tag.id),
-        rollbackEnabled = true
-        )
-      )
-
-    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, operation, contentIds.length))
+    steps.foreach { step =>
+      TagAuditRepository.upsertTagAudit(TagAudit.batchTag(step.tag, step.op, contentIds.length))
+    }
   }
 
   def beginTagReindex()(implicit username: Option[String]) = {
