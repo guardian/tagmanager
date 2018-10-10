@@ -4,9 +4,11 @@ import java.util.concurrent.atomic.AtomicReference
 
 import com.amazonaws.services.dynamodbv2.document.{Item, ScanFilter}
 import model.Tag
+import org.apache.commons.lang3.StringUtils
 import play.api.Logger
 import play.api.libs.json.JsValue
 import services.Dynamo
+
 import scala.collection.JavaConversions._
 
 
@@ -67,6 +69,19 @@ case class TagSearchCriteria(
     filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
   }
 
+  // Get the field and fold certain special characters into something more likely to occur on a keyboard
+  private def normalize(t: String) = StringUtils.stripAccents(
+    t
+      .toLowerCase
+      .replace("–", "-")
+      .replace("—", "-")
+      .replace("−", "-")
+      .replace("“", "\"")
+      .replace("”", "\"")
+      .replace("‘", "'")
+      .replace("’", "'")
+      .replace("…", "...")
+  )
 
   private def getSearchField(t: Tag ) = {
     val field = searchField.getOrElse("internalName") match {
@@ -77,17 +92,16 @@ case class TagSearchCriteria(
       case _ => t.internalName
     }
 
-    // Get the field and fold certain special characters into something more likely to occur on a keyboard
-    field
-      .toLowerCase
-      .replace("’", "'")
+    normalize(field)
   }
 
   private def queryFilter(q: String)(tags: List[Tag]) = {
-    if (q.contains("*")) {
-      wildcardSearch(q)(tags)
+    val query = normalize(q)
+
+    if (query.contains("*")) {
+      wildcardSearch(query)(tags)
     } else {
-      prefixSearch(q)(tags)
+      prefixSearch(query)(tags)
     }
   }
 
