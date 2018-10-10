@@ -67,14 +67,20 @@ case class TagSearchCriteria(
     filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
   }
 
+
   private def getSearchField(t: Tag ) = {
-    searchField.getOrElse("internalName") match {
-      case "externalName" => t.externalName.toLowerCase
+    val field = searchField.getOrElse("internalName") match {
+      case "externalName" => t.externalName
       case "id" => t.id.toString
-      case "type" => t.`type`.toLowerCase
-      case "path" => t.path.toLowerCase
-      case _ => t.internalName.toLowerCase
+      case "type" => t.`type`
+      case "path" => t.path
+      case _ => t.internalName
     }
+
+    // Get the field and fold certain special characters into something more likely to occur on a keyboard
+    field
+      .toLowerCase
+      .replace("’", "'")
   }
 
   private def queryFilter(q: String)(tags: List[Tag]) = {
