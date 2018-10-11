@@ -11,10 +11,10 @@ $batch-status-height: 30px;
   background-color: $c-grey-200;
   border-top: 1px solid $c-grey-300;
   width: 100%;
+  height: 50px;
 
   text-align: left;
   padding: 10px;
-
 }
 
 .batch-status {
@@ -103,4 +103,8 @@ $batch-status-height: 30px;
 .batch-status-transition-leave-active.batch-status__container {
   transform: translateY($batch-status-height);
   transition: transform 500ms ease-out;
+}
+
+.batch-status__cancel {
+    cursor: pointer;
 }

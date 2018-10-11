@@ -64,6 +64,12 @@ export default class BatchTagControls extends React.Component {
         }
     }
 
+    resetMode() {
+        this.setState({
+            mode: ''
+        });
+    }
+
     performBatchTag(tag, operation) {
       const {toAddToTop, toAddToBottom, toRemove} = this.state;
       const toId = (tag) => tag.id;
@@ -105,7 +111,7 @@ export default class BatchTagControls extends React.Component {
               {text}
             </div>
             <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} />
-            <i className="i-cross" onClick={this.resetMode}></i>
+            <i className="i-cross batch-status__cancel" onClick={this.resetMode.bind(this)}></i>
           </div>
       );
     }
