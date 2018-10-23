@@ -43,7 +43,7 @@ function clearErrorBar() {
 export const router = (
   <Router history={browserHistory}>
     <Route path="/" component={ReactApp}>
-      <Route name="tag" path="/tag/create" component={TagCreate} />
+      <Route name="tag" path="/tag/create" component={TagCreate} onEnter={requirePermission.bind(this, 'tag_edit')}/>
       <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
       <Route name="batch" path="/batch" component={BatchTag}/>
       <Route name="mapping" path="/mapping" component={MappingManager} />

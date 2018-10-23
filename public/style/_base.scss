@@ -34,3 +34,11 @@ input {
   @extend %f-data;
   @extend %fs-data-3;
 }
+
+a[disabled] {
+  pointer-events: none;
+  border-color: $c-grey-600;
+  color: $c-grey-600;
+  background-color: $c-grey-200;
+  user-select: none;
+}

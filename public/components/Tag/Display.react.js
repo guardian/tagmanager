@@ -93,7 +93,7 @@ class TagDisplay extends React.Component {
       if (!this.props.tagEditable) {
           return (
             <div className="warning-bar">
-              You do not have permission to edit this tag type
+              You do not have permission to edit this tag
             </div>
           );
       }

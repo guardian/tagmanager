@@ -7,6 +7,7 @@ import scala.concurrent.Future
 
 object Permissions extends PermissionsProvider {
 
+  lazy val TagEdit = Permission("tag_edit", "tag-manager", PermissionDenied)
   lazy val TagAdmin = Permission("tag_admin", "tag-manager", PermissionDenied)
   lazy val CommercialTags = Permission("commercial_tags", "tag-manager", PermissionDenied)
   lazy val TagUnaccessible = Permission("tag_no_one", "tag-manager", PermissionDenied)

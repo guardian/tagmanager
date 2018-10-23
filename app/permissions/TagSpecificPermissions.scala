@@ -26,7 +26,7 @@ object TagTypePermissionMap {
 
 trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
 
-  val testAccess: (Permission => (String => Future[PermissionAuthorisation]))
+  val testAccess: Permission => (String => Future[PermissionAuthorisation])
   val restrictedAction: String
 
   override def filter[A](request: UserRequest[A]): Future[Option[Result]] = {
@@ -50,12 +50,12 @@ trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
   }
 }
 
-object UpdateTagPermissionsCheck extends TagSpecificPermissionActionFilter {
-  val testAccess: (Permission => (String => Future[PermissionAuthorisation])) = Permissions.testUser
+object UpdateTagSpecificPermissionsCheck extends TagSpecificPermissionActionFilter {
+  val testAccess: Permission => (String => Future[PermissionAuthorisation]) = Permissions.testUser
   val restrictedAction = "update tag"
 }
 
-object CreateTagPermissionsCheck extends TagSpecificPermissionActionFilter {
-  val testAccess: (Permission => (String => Future[PermissionAuthorisation])) = Permissions.testUser
+object CreateTagSpecificPermissionsCheck extends TagSpecificPermissionActionFilter {
+  val testAccess: Permission => (String => Future[PermissionAuthorisation]) = Permissions.testUser
   val restrictedAction = "create tag"
 }

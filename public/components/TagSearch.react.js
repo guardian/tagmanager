@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
 import TagsList from './TagList/TagList.react';
 import PageNavigator from './utils/PageNavigator.react';
+import {hasPermission} from '../util/verifyPermission'
 
 
 const searchFields = {
@@ -126,7 +127,7 @@ export class TagSearch extends React.Component {
                         </select>
                     </div>
 
-                    <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
+                    <Link className="tag-search__create" to="/tag/create" disabled={!hasPermission("tag_edit")}>Create a new tag</Link>
 
                 </div>
                 {this.renderPageNavigator()}
