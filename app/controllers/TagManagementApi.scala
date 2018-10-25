@@ -25,7 +25,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def updateTag(id: Long) = (APIAuthAction andThen UpdateTagPermissionsCheck).async { req =>
+  def updateTag(id: Long) =
+    (APIAuthAction andThen UpdateTagPermissionsCheck andThen UpdateTagSpecificPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
 
     req.body.asJson.map { json =>
@@ -40,7 +41,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag = CORSable(conf.corsablePostDomains: _*) {
-    (APIAuthAction andThen CreateTagPermissionsCheck).async { req =>
+    (APIAuthAction andThen CreateTagPermissionsCheck andThen CreateTagSpecificPermissionsCheck).async { req =>
       implicit val username = Option(req.user.email)
       req.body.asJson.map { json =>
         json.as[CreateTagCommand].process.map { result =>

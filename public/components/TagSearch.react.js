@@ -3,7 +3,8 @@ import { Link } from 'react-router';
 import tagManagerApi from '../util/tagManagerApi';
 import TagsList from './TagList/TagList.react';
 import PageNavigator from './utils/PageNavigator.react';
-
+import {hasPermission} from '../util/verifyPermission'
+import ReactTooltip from 'react-tooltip'
 
 const searchFields = {
   'Internal Name': 'internalName',
@@ -113,8 +114,11 @@ export class TagSearch extends React.Component {
     }
 
     render () {
+        const canCreateTags = hasPermission("tag_edit");
+
         return (
             <div className="tag-search">
+                <ReactTooltip multiline={true} />
                 <div className="tag-search__filters">
                     <div className="tag-search__filters__group">
                         <label>Search</label>
@@ -125,9 +129,18 @@ export class TagSearch extends React.Component {
                           })}
                         </select>
                     </div>
-
-                    <Link className="tag-search__create" to="/tag/create">Create a new tag</Link>
-
+                    <div className="tag-search__create">
+                        <Link className="tag-search__create-button" to="/tag/create" disabled={!canCreateTags}>Create a new tag</Link>
+                        {
+                            canCreateTags
+                                ?
+                                false
+                                :
+                                <i className="i-info-grey"
+                                   data-tip='You do not have permission to create tags.<br/>If you think this is a mistake please contact central production'>
+                                </i>
+                        }
+                    </div>
                 </div>
                 {this.renderPageNavigator()}
                 <div className="tag-search__suggestions">

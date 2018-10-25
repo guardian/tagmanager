@@ -1,6 +1,6 @@
 import tagManagerApi from '../../util/tagManagerApi';
 import {getStore} from '../../util/storeAccessor';
-
+import {hasPermission} from '../../util/verifyPermission';
 
 export const TAG_GET_REQUEST = 'TAG_GET_REQUEST';
 export const TAG_GET_RECEIVE = 'TAG_GET_RECEIVE';
@@ -41,7 +41,7 @@ export function getTag(id) {
               var permitted = store.getState().config.permittedTagTypes;
               var tagType = res.type;
 
-              if (!permitted.some((e, i, a) => e == tagType)) {
+              if (!permitted.some((e, i, a) => e == tagType) || !hasPermission('tag_edit')) {
                 dispatch(recieveTagGet(res, false));
               } else {
                 dispatch(recieveTagGet(res, true));

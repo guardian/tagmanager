@@ -24,6 +24,18 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
     }
 }
 
+// Tag Edit
+object CreateTagPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagEdit)
+  val restrictedAction = "create tag"
+}
+
+object UpdateTagPermissionsCheck extends PermissionActionFilter {
+  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagEdit)
+  val restrictedAction = "update tag"
+}
+
+// Tag Admin
 object AddEditionToSectionPermissionsCheck extends PermissionActionFilter {
   val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
   val restrictedAction = "add edition to section"
