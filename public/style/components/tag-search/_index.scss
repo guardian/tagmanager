@@ -19,12 +19,15 @@
 }
 
 .tag-search__create {
-
-  @extend %button--green;
-
   position: absolute;
   right: 0;
   top: 0;
+  padding-right: 10px;
+
+}
+
+.tag-search__create-button {
+  @extend %button--green;
 }
 
 
