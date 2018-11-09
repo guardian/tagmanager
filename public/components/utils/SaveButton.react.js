@@ -32,7 +32,7 @@ export default class SaveButton extends React.Component {
             <i className="i-tick-green"/>Save
           </div>
           <div className="save__button--reset" onClick={this.props.onResetClick}>
-            <i className="i-cross-red"/>Reset
+            <i className="i-cross-red"/>Cancel
           </div>
           {this.renderSaveStateIndicator()}
         </div>
