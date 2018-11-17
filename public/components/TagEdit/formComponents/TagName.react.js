@@ -223,7 +223,7 @@ export default class TagNameEdit extends React.Component {
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
             <label>Path</label>
             <div className="tag-edit__linked-field__input-container">
-              <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : this.props.tag.path}</span>
+              <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : <a href={`https:\/\/theguardian.com/${this.props.tag.path}`}>{this.props.tag.path}</a>}</span>
               {!this.props.pathLocked ? <input type="text"
                                           value={this.props.tag.slug}
                                           onChange={this.onUpdateSlug.bind(this)}
