@@ -59,12 +59,13 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
     existingTag foreach { existing =>
+      val oldRefs = existing.externalReferences
+      val newRefs = tag.externalReferences
 
-      val capiReferenceHasChanged = tag.externalReferences.exists { reference =>
-        val isACapiExternalReference = ExternalReferencesTypeRepository.getReferenceType(reference.`type`).exists(_.capiType.isDefined)
-        val newOrUpdated = !existing.externalReferences.contains(reference)
+      val symmetricDifference = newRefs.diff(oldRefs) ++ oldRefs.diff(newRefs)
 
-        isACapiExternalReference && newOrUpdated
+      val capiReferenceHasChanged = symmetricDifference.exists { reference =>
+        ExternalReferencesTypeRepository.getReferenceType(reference.`type`).exists(_.capiType.isDefined)
       }
 
       if (capiReferenceHasChanged) {
