@@ -58,8 +58,16 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
-    existingTag foreach {(existing) =>
-      if (tag.externalReferences != existing.externalReferences) {
+    existingTag foreach { existing =>
+
+      val referenceHasChanged = tag.externalReferences.exists { reference =>
+        val isACapiExternalReference = ExternalReferencesTypeRepository.getReferenceType(reference.`type`).exists(_.capiType.isDefined)
+        val newOrUpdated = !existing.externalReferences.contains(reference)
+
+        isACapiExternalReference && newOrUpdated
+      }
+
+      if (referenceHasChanged) {
         Logger.info("Detected references change, triggering reindex")
         FlexTagReindexCommand(tag).process
       }
