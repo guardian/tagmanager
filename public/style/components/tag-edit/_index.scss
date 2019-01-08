@@ -276,5 +276,10 @@ $tag-edit-padding: $standard-padding/2;
   &:focus {
     outline: none;
   }
+}
 
+.tag-edit__profile-guidelines {
+  font-size: 0.75rem;
+  margin-top: 6px;
+  margin-left: 3px;
 }

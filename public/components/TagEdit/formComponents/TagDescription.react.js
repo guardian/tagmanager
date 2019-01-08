@@ -32,6 +32,16 @@ export default class TagDescription extends React.Component {
             disabled={!this.props.tagEditable}
           />
         </div>
+        <div className="tag-edit__profile-guidelines">
+          <a
+              href="https://docs.google.com/document/d/1iqgHNoGnglFjvL94meG4broH9xSiGyR87i_-fQpDrwA"
+              target="_blank"
+              rel="noopener noreferrer"
+          >
+              Writing a contributor profile? Please read the
+              guidelines (here)!
+          </a>
+        </div>
       </div>
     );
   }
