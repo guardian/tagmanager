@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
 import { validateImageUrl } from '../../../util/validateImage';
 import { getImageMetadata } from '../../../util/supportApi.js';
 
@@ -126,8 +126,18 @@ export default class TagImageEdit extends React.Component {
     }
 
     if (this.state.metadataFetchStatus === FETCH_STATES.error) {
-      return renderButtonError(`Server has failed to read image metadata. If this problem persists,
-        contact Central Production.`);
+      const message = (<span>
+          Server has failed to read image metadata.
+          <div className="tag-edit__image-guidelines">
+            <a href="https://docs.google.com/document/d/1XgjxraonT-6bd5Rxzrv3tkty30dQuXWpb8HcdsPo3e4" target="_blank" rel="noopener noreferrer">
+              Please read about common issues <strong>here</strong>.
+            </a>
+            <span>
+              {" "}If this problem persists, please contact Central Production.
+            </span>
+          </div>
+        </span>);
+      return renderButtonError(message);
     }
 
     if (this.state.metadataFetchStatus === FETCH_STATES.badURL) {
