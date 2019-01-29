@@ -15,6 +15,8 @@ Before you run for the first time you will need to run `./scripts/setup.sh` this
 dependencies needed for the app (you may need to install npm before you can run this successfully). If any frontend
 dependencies are changed you should re run the setup script.
 
+**N.B.** If you encounter errors during setup when installing npm packages (particularly `node-sass`), use [nvm](https://github.com/creationix/nvm) to install and use `node v6.14.3`
+
 The Nginx setup uses the [dev-nginx](https://github.com/guardian/dev-nginx) tool. After running this the tag manager
 will be available on [https://tagmanager.local.dev-gutools.co.uk](https://tagmanager.local.dev-gutools.co.uk)
 
