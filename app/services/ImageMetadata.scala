@@ -1,15 +1,17 @@
 package services
 
-import java.io.{File, ByteArrayInputStream}
+import java.io.{ByteArrayInputStream, File}
+
 import javax.imageio.ImageIO
-
 import java.security.MessageDigest
-import play.api.Logger
 
+import play.api.Logger
 import okhttp3.Request.Builder
 import okhttp3.OkHttpClient
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Format}
+import play.api.libs.json.{Format, JsPath}
+
+import scala.util.control.NonFatal
 
 case class ImageMetadataFetchFail(m: String) extends RuntimeException(m)
 
@@ -25,6 +27,9 @@ object ImageMetadata {
     )(ImageMetadata.apply, unlift(ImageMetadata.unapply))
 }
 
+sealed trait MetadataError
+case class FetchError(errMsg: String) extends MetadataError
+case class InvalidImage(errMsg: String) extends MetadataError
 
 object ImageMetadataService {
 
@@ -38,25 +43,29 @@ object ImageMetadataService {
   }
 
 
-  def fetch(uri: String): Option[ImageMetadata] = {
+  def fetch(uri: String): Either[MetadataError, ImageMetadata] = {
 
     val imageRequest = new Builder().url(uri).build()
     val response = httpClient.newCall(imageRequest).execute()
 
     response.code match {
       case 200 => {
+        try {
+          val mimeType = response.header("content-type")
+          val bytes = response.body().bytes()
+          val mediaId = calculateMediaId(bytes)
+          val image = ImageIO.read(new ByteArrayInputStream(bytes))
 
-        val mimeType = response.header("content-type")
-        val bytes = response.body().bytes()
-        val mediaId = calculateMediaId(bytes)
-        val image = ImageIO.read(new ByteArrayInputStream(bytes))
+          Right(ImageMetadata(image.getWidth, image.getHeight, bytes.size, mediaId, mimeType))
+        } catch {
+          case NonFatal(ex) => Left(InvalidImage(ex.getMessage))
+        }
 
-        Some(ImageMetadata(image.getWidth, image.getHeight, bytes.size, mediaId, mimeType))
       }
       case c => {
         val body = response.body
         Logger.warn(s"failed to get image metadata for $uri. response code $c, message $body")
-        throw ImageMetadataFetchFail(s"failed to get image metadata for $uri. response code $c, message $body")
+        Left(FetchError(s"failed to get image for $uri. response code $c, message $body"))
       }
     }
   }

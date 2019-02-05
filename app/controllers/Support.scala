@@ -17,21 +17,22 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, Controller}
 import repositories.{ContentAPI, TagLookupCache, TagRepository}
-import services.{AWS, Config, ImageMetadataService}
+import services.{AWS, Config, FetchError, InvalidImage, ImageMetadataService}
 
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 import collection.JavaConverters._
-
 
 object Support extends Controller with PanDomainAuthActions {
 
   private val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
   def imageMetadata(imageUrl: String = "") = APIAuthAction {
-    ImageMetadataService.fetch(imageUrl).map { imageMetadata =>
-      Ok(Json.toJson(imageMetadata))
-    }.getOrElse(NotFound)
+     ImageMetadataService.fetch(imageUrl) match {
+       case Right(imageMetadata) =>  Ok(Json.toJson(imageMetadata))
+       case Left(err: FetchError) => NotFound(err.errMsg)
+       case Left(err: InvalidImage) => UnprocessableEntity(err.errMsg)
+     }
   }
 
   def validateImageDimensions(image: File, requiredWidth: Option[Long], requiredHeight: Option[Long]): Boolean = {
@@ -63,8 +64,9 @@ object Support extends Controller with PanDomainAuthActions {
 
         val uploadedImageUrl = s"https://static.theguardian.com/${logoPath}"
 
-        ImageMetadataService.fetch(uploadedImageUrl).map { imageMetadata =>
-          val image = Image(imageMetadata.mediaId, List(
+        ImageMetadataService.fetch(uploadedImageUrl) match {
+          case Right(imageMetadata) =>
+            val image = Image(imageMetadata.mediaId, List(
             ImageAsset(
               imageUrl = uploadedImageUrl,
               width = imageMetadata.width,
@@ -72,8 +74,10 @@ object Support extends Controller with PanDomainAuthActions {
               mimeType = imageMetadata.mimeType
             )
           ))
-          Ok(Json.toJson(image))
-        }.getOrElse(BadRequest("Failed to upload image"))
+            Ok(Json.toJson(image))
+          case Left(err: FetchError) => InternalServerError(err.errMsg)
+          case Left(err: InvalidImage) => UnprocessableEntity(err.errMsg)
+        }
       }
       case false => BadRequest(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")} h:${requiredHeight.getOrElse("Not Specified")}")
     }
