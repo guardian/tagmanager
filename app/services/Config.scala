@@ -11,9 +11,11 @@ import scala.collection.JavaConversions._
 object Config extends AwsInstanceTags {
 
   lazy val conf = readTag("Stage") match {
-    case Some("PROD") =>    new ProdConfig
-    case Some("CODE") =>    new CodeConfig
-    case _ =>               new DevConfig
+    case Some("PROD") => new ProdConfig
+    case Some("CODE") => new CodeConfig
+    // If in AWS and we don't know our stage, fail fast to avoid ending up running an instance with dev config in PROD!
+    case other if instanceId.nonEmpty => throw new IllegalStateException(s"Unable to read Stage tag: $other")
+    case _ => new DevConfig
   }
 
   def apply() = {
