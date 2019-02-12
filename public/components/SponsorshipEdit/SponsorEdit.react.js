@@ -44,8 +44,8 @@ export default class SponsorEdit extends React.Component {
       return false;
     }
 
-    const logoWidth = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 140;
-    const logoHeight = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 90;
+    const logoWidth = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 280;
+    const logoHeight = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 180;
 
     return (
       <div className="tag-edit__input-group">
