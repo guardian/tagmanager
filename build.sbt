@@ -69,7 +69,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     packageDescription := """manage tags""",
 
     doc in Compile <<= target.map(_ / "none"),
-    scalaVersion := "2.11.8",
+    scalaVersion := "2.11.12",
     scalaVersion in ThisBuild := "2.11.8",
     libraryDependencies ++= dependencies
   )
