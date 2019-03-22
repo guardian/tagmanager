@@ -28,6 +28,24 @@ export class BatchTag extends React.Component {
       }
     }
 
+    componentWillUpdate(newProps, newState) {
+      const prevCount = this.state.selectedContent.length;
+      const newCount = newState.selectedContent.length;
+      if (prevCount === 0 && newCount > 0) {
+        window.onbeforeunload = function() {
+          return 'Unsaved batch tag changes, are you sure you want to leave?';
+        };
+      } 
+
+      if (prevCount > 0 && newCount === 0) {
+        window.onbeforeunload = null;
+      }
+    }
+
+    componentWillUnmount() {
+      window.onbeforeunload = null;
+    }
+
     searchFieldChange(type, e) {
 
       const searchTerm = type === 'searchTerm' ? e.target.value : this.props.capiSearch.searchTerm;
