@@ -18,7 +18,8 @@ case class TagEntity(
   parents: Set[EmbeddedEntity[TagEntity]] = Set(),
   references: List[ReferenceEntity] = Nil,
   path: String,
-  subType: Option[String]
+  subType: Option[String],
+  adBlocking: Option[AdBlockingLevel]
 )
 
 object TagEntity {
@@ -50,7 +51,8 @@ object TagEntity {
         parents.map(x => EmbeddedEntity[TagEntity](HyperMediaHelpers.tagUri(x))),
         tag.externalReferences.map(ReferenceEntity(_)),
         tag.path,
-        subtype
+        subtype,
+        tag.adBlockingLevel
       )
   }
 

@@ -76,7 +76,8 @@ case class CreateTagCommand(
                       preCalculatedPath: Option[String] = None, //This is used so path isn't calculated
                       sponsorship: Option[InlinePaidContentSponsorshipCommand] = None,
                       paidContentInformation: Option[PaidContentInformation] = None,
-                      createMicrosite: Boolean = false
+                      createMicrosite: Boolean = false,
+                      adBlockingLevel: Option[AdBlockingLevel] = None
                            ) extends Command {
 
   type T = Tag
@@ -167,7 +168,8 @@ case class CreateTagCommand(
       sponsorship = createdSponsorship.map(_.id),
       paidContentInformation = paidContentInformation,
       expired = createdSponsorship.map(_.status == "expired").getOrElse(false),
-      updatedAt = new DateTime(DateTimeZone.UTC).getMillis
+      updatedAt = new DateTime(DateTimeZone.UTC).getMillis,
+      adBlockingLevel = adBlockingLevel
     )
 
     val result = TagRepository.upsertTag(tag)

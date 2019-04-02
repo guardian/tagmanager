@@ -7,7 +7,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import org.cvogt.play.json.Jsonx
 import org.cvogt.play.json.implicits.optionWithNull
-import com.gu.tagmanagement.{Tag => ThriftTag, TagType, TagReindexBatch}
+import com.gu.tagmanagement.{AdBlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag, TagType, TagReindexBatch}
 import helpers.XmlHelpers._
 import repositories.{SponsorshipRepository, SectionRepository}
 import scala.util.control.NonFatal
@@ -41,6 +41,7 @@ case class Tag(
   sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
   paidContentInformation: Option[PaidContentInformation] = None,
   expired: Boolean = false,
+  adBlockingLevel: Option[AdBlockingLevel],
   var updatedAt: Long = 0L
 ) {
 
@@ -75,7 +76,8 @@ case class Tag(
     sponsorshipId = sponsorship,
     paidContentInformation = paidContentInformation.map(_.asThrift),
     expired = expired,
-    campaignInformation = campaignInformation.map(_.asThrift)
+    campaignInformation = campaignInformation.map(_.asThrift),
+    adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName))
   )
 
   // in this limited format for inCopy to consume
@@ -164,7 +166,8 @@ object Tag {
       activeSponsorships = thriftTag.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil),
       sponsorship = thriftTag.sponsorshipId,
       paidContentInformation = thriftTag.paidContentInformation.map(PaidContentInformation(_)),
-      expired = thriftTag.expired
+      expired = thriftTag.expired,
+      adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => AdBlockingLevel.withName(tLevel.name))
     )
 }
 
@@ -195,7 +198,8 @@ case class DenormalisedTag (
   activeSponsorships: List[Long] = Nil,
   sponsorship: Option[Sponsorship] = None, // for paid content tags, they have an associated sponsorship but it may not be active
   paidContentInformation: Option[PaidContentInformation] = None,
-  expired: Boolean = false
+  expired: Boolean = false,
+  adBlockingLevel: Option[AdBlockingLevel]
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
@@ -227,7 +231,8 @@ case class DenormalisedTag (
       activeSponsorships = activeSponsorships,
       sponsorship = sponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
       paidContentInformation = paidContentInformation,
-      expired = expired
+      expired = expired,
+      adBlockingLevel = adBlockingLevel
     )
     (tag, sponsorship)
   }
@@ -264,6 +269,7 @@ object DenormalisedTag{
     activeSponsorships = t.activeSponsorships,
     sponsorship = t.sponsorship.flatMap(SponsorshipRepository.getSponsorship), // for paid content tags, they have an associated sponsorship but it may not be active
     paidContentInformation = t.paidContentInformation,
-    expired = t.expired
+    expired = t.expired,
+    adBlockingLevel = t.adBlockingLevel
   )
 }
