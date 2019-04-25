@@ -4,7 +4,7 @@ import java.net.URI
 
 import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.gu.contentapi.client.{ContentApiClientLogic, GuardianContentApiError, IAMSigner}
+import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.contentapi.client.model._
 import play.api.Logger
 import services.{Config, Contexts}
@@ -81,7 +81,7 @@ object ContentAPI {
       val response = previewApiClient.getResponse(ItemQuery(apiTagId))
       Await.result(response.map(_.tag), 5 seconds)
     } catch {
-      case GuardianContentApiError(404, _, _) =>
+      case ContentApiError(404, _, _) =>
         Logger.debug(s"No tag found for id $apiTagId")
         None
     }
@@ -134,10 +134,10 @@ object ContentAPI {
 
 }
 
-class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends ContentApiClientLogic() {
+class DraftContentApiClass(override val apiKey: String, apiUrl: String) extends GuardianContentClient(apiKey) {
   override val targetUrl = apiUrl
 
-  override protected def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
+  override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
     val headersWithAuth = ContentAPI.signer.addIAMHeaders(headers, URI.create(url))
     super.get(url, headersWithAuth)
   }
