@@ -19,7 +19,7 @@ case class TagEntity(
   references: List[ReferenceEntity] = Nil,
   path: String,
   subType: Option[String],
-  adBlocking: Option[AdBlockingLevel]
+  adBlocking: Option[BlockingLevel]
 )
 
 object TagEntity {

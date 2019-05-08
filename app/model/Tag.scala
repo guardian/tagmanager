@@ -1,48 +1,46 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import model.command.logic.SponsorshipStatusCalculator
 import play.api.Logger
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import org.cvogt.play.json.Jsonx
-import org.cvogt.play.json.implicits.optionWithNull
-import com.gu.tagmanagement.{AdBlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag, TagType, TagReindexBatch}
+import com.gu.tagmanagement.{BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag, TagType, TagReindexBatch}
 import helpers.XmlHelpers._
 import repositories.{SponsorshipRepository, SectionRepository}
 import scala.util.control.NonFatal
 import scala.xml.Node
 
 case class Tag(
-  id: Long,
-  path: String,
-  pageId: Long,
-  `type`: String,
-  internalName: String,
-  externalName: String,
-  slug: String,
-  hidden: Boolean = false,
-  legallySensitive: Boolean = false,
-  comparableValue: String,
-  categories: Set[String] = Set(),
-  section: Option[Long],
-  publication: Option[Long],
-  description: Option[String] = None,
-  parents: Set[Long] = Set(),
-  externalReferences: List[Reference] = Nil,
-  podcastMetadata: Option[PodcastMetadata] = None,
-  contributorInformation: Option[ContributorInformation] = None,
-  publicationInformation: Option[PublicationInformation] = None,
-  isMicrosite: Boolean,
-  capiSectionId: Option[String] = None,
-  trackingInformation: Option[TrackingInformation],
-  campaignInformation: Option[CampaignInformation],
-  activeSponsorships: List[Long] = Nil,
-  sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
-  paidContentInformation: Option[PaidContentInformation] = None,
-  expired: Boolean = false,
-  adBlockingLevel: Option[AdBlockingLevel],
-  var updatedAt: Long = 0L
+                id: Long,
+                path: String,
+                pageId: Long,
+                `type`: String,
+                internalName: String,
+                externalName: String,
+                slug: String,
+                hidden: Boolean = false,
+                legallySensitive: Boolean = false,
+                comparableValue: String,
+                categories: Set[String] = Set(),
+                section: Option[Long],
+                publication: Option[Long],
+                description: Option[String] = None,
+                parents: Set[Long] = Set(),
+                externalReferences: List[Reference] = Nil,
+                podcastMetadata: Option[PodcastMetadata] = None,
+                contributorInformation: Option[ContributorInformation] = None,
+                publicationInformation: Option[PublicationInformation] = None,
+                isMicrosite: Boolean,
+                capiSectionId: Option[String] = None,
+                trackingInformation: Option[TrackingInformation],
+                campaignInformation: Option[CampaignInformation],
+                activeSponsorships: List[Long] = Nil,
+                sponsorship: Option[Long] = None, // for paid content tags, they have an associated sponsorship but it may not be active
+                paidContentInformation: Option[PaidContentInformation] = None,
+                expired: Boolean = false,
+                adBlockingLevel: Option[BlockingLevel],
+                contributionBlockingLevel: Option[BlockingLevel],
+                var updatedAt: Long = 0L
 ) {
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
@@ -167,10 +165,13 @@ object Tag {
       sponsorship = thriftTag.sponsorshipId,
       paidContentInformation = thriftTag.paidContentInformation.map(PaidContentInformation(_)),
       expired = thriftTag.expired,
-      adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => AdBlockingLevel.withName(tLevel.name))
+      adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
+      contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name))
     )
 }
 
+// The difference between a denormalised tag and a regular tag is the sponsorship object is copied in for the
+// denormalised version and the "normalised" version has it stored as a Long id
 case class DenormalisedTag (
   id: Long,
   path: String,
@@ -199,7 +200,8 @@ case class DenormalisedTag (
   sponsorship: Option[Sponsorship] = None, // for paid content tags, they have an associated sponsorship but it may not be active
   paidContentInformation: Option[PaidContentInformation] = None,
   expired: Boolean = false,
-  adBlockingLevel: Option[AdBlockingLevel]
+  adBlockingLevel: Option[BlockingLevel],
+  contributionBlockingLevel: Option[BlockingLevel]
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
@@ -232,7 +234,8 @@ case class DenormalisedTag (
       sponsorship = sponsorship.map(_.id), // for paid content tags, they have an associated sponsorship but it may not be active
       paidContentInformation = paidContentInformation,
       expired = expired,
-      adBlockingLevel = adBlockingLevel
+      adBlockingLevel = adBlockingLevel,
+      contributionBlockingLevel = contributionBlockingLevel
     )
     (tag, sponsorship)
   }
@@ -270,6 +273,7 @@ object DenormalisedTag{
     sponsorship = t.sponsorship.flatMap(SponsorshipRepository.getSponsorship), // for paid content tags, they have an associated sponsorship but it may not be active
     paidContentInformation = t.paidContentInformation,
     expired = t.expired,
-    adBlockingLevel = t.adBlockingLevel
+    adBlockingLevel = t.adBlockingLevel,
+    contributionBlockingLevel = t.contributionBlockingLevel
   )
 }

@@ -77,7 +77,8 @@ case class CreateTagCommand(
                       sponsorship: Option[InlinePaidContentSponsorshipCommand] = None,
                       paidContentInformation: Option[PaidContentInformation] = None,
                       createMicrosite: Boolean = false,
-                      adBlockingLevel: Option[AdBlockingLevel] = None
+                      adBlockingLevel: Option[BlockingLevel] = None,
+                      contributionBlockingLevel: Option[BlockingLevel] = None
                            ) extends Command {
 
   type T = Tag
@@ -169,7 +170,8 @@ case class CreateTagCommand(
       paidContentInformation = paidContentInformation,
       expired = createdSponsorship.map(_.status == "expired").getOrElse(false),
       updatedAt = new DateTime(DateTimeZone.UTC).getMillis,
-      adBlockingLevel = adBlockingLevel
+      adBlockingLevel = adBlockingLevel,
+      contributionBlockingLevel = contributionBlockingLevel
     )
 
     val result = TagRepository.upsertTag(tag)
