@@ -19,7 +19,8 @@ case class TagEntity(
   references: List[ReferenceEntity] = Nil,
   path: String,
   subType: Option[String],
-  adBlocking: Option[BlockingLevel]
+  adBlockingLevel: Option[BlockingLevel],
+  contributionBlockingLevel: Option[BlockingLevel]
 )
 
 object TagEntity {
@@ -52,7 +53,8 @@ object TagEntity {
         tag.externalReferences.map(ReferenceEntity(_)),
         tag.path,
         subtype,
-        tag.adBlockingLevel
+        tag.adBlockingLevel,
+        tag.contributionBlockingLevel
       )
   }
 
