@@ -82,7 +82,10 @@ object TagEntity {
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
       "externalReferences" -> JsArray(te.references.map(Json.toJson(_))),
       "path" -> JsString(te.path)
-    ) ++ te.subType.map("subType" -> JsString(_)) )
+    ) ++ te.subType.map("subType" -> JsString(_))
+      ++ te.adBlockingLevel.map(level => "adBlockingLevel" -> JsString(level.entryName))
+      ++ te.contributionBlockingLevel.map(level => "contributionBlockingLevel" -> JsString(level.entryName))
+    )
   }
 
 }
