@@ -47,12 +47,12 @@ Mappings:
       MinSize: 1
       MaxSize: 2
       DesiredCapacity: 1
-      InstanceType: t2.medium
+      InstanceType: t3.medium
     PROD:
       MinSize: 3
       MaxSize: 6
       DesiredCapacity: 3
-      InstanceType: t2.medium
+      InstanceType: t3.medium
 Resources:
   TagManagerRole:
     Type: AWS::IAM::Role
