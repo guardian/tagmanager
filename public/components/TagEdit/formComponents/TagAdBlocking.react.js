@@ -39,7 +39,7 @@ export default class TagAdBlocking extends React.Component {
 
     return (
       <div className="tag-edit__input-group">
-        <label className="tag-edit__input-group__header">Ad Blocking</label>
+        <label className="tag-edit__input-group__header">Block Ads</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Block Ads</label>
           {renderBlockingLevels(
