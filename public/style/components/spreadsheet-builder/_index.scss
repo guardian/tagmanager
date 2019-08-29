@@ -9,6 +9,10 @@
   margin: 12px 0;
 }
 
+.spreadsheet-builder__table a {
+  color: cornflowerblue;
+}
+
 .spreadsheet-builder__filter {
   margin: 6px 0;
 }
@@ -18,8 +22,16 @@
 }
 
 .spreadsheet-builder__table > table {
-  width: 100%;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   border: 1px solid black;
+}
+
+.spreadsheet-builder__table th {
+  border: 1px solid black;
+  background-color: $c-grey-200;
+  vertical-align: top;
 }
 
 .spreadsheet-builder__table td {
@@ -27,10 +39,25 @@
   padding: 5px;
 }
 
-.spreadsheet-builder__table th {
-  background-color: $c-grey-200;
-  border: 1px solid black;
+.spreadsheet-builder__table-header {
   padding: 5px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+
+.spreadsheet-builder__table-header-picker {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+
+  & div {
+    margin-left: 12px;
+  }
 }
 
 .spreadsheet-builder__table-new-column {

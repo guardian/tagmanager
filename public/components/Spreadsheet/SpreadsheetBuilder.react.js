@@ -30,16 +30,18 @@ export default class SpreadsheetBuilder extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      columns: [DEFAULT_COLUMN],
+      columns: ["internalName", "hyperlink"],
       filters: [Object.assign({}, DEFAULT_FILTER)],
       previewRows: []
     };
-    this.addFilter = this.addFilter.bind(this);
     this.addColumn = this.addColumn.bind(this);
+    this.updateColumnType = this.updateColumnType.bind(this);
+    this.deleteColumn = this.deleteColumn.bind(this);
+    this.moveColumn = this.moveColumn.bind(this);
 
+    this.addFilter = this.addFilter.bind(this);
     this.updateFilterType = this.updateFilterType.bind(this);
     this.updateFilterValue = this.updateFilterValue.bind(this);
-    this.updateColumnType = this.updateColumnType.bind(this);
 
     this.fetchRows = this.fetchRows.bind(this);
     this.debounceFetchRows = debounce(this.fetchRows, 500);
@@ -53,10 +55,7 @@ export default class SpreadsheetBuilder extends React.Component {
     this.fetchRows();
   }
   componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.columns.length !== this.state.columns.length ||
-      !R.equals(prevState.filets, this.state.filters)
-    ) {
+    if (this.state.filters !== prevState.filters) {
       this.debounceFetchRows();
     }
   }
@@ -96,9 +95,26 @@ export default class SpreadsheetBuilder extends React.Component {
     });
   }
 
+  deleteColumn(index) {
+    const { columns } = this.state;
+    this.setState({
+      columns: [...columns.slice(0, index), ...columns.slice(index + 1)]
+    });
+  }
+
   updateColumnType(index, column) {
     const clone = [...this.state.columns];
     clone[index] = column;
+    this.setState({
+      columns: clone
+    });
+  }
+
+  moveColumn(index, offset) {
+    const clone = [...this.state.columns];
+    const tmp = clone[index + offset];
+    clone[index + offset] = clone[index];
+    clone[index] = tmp;
     this.setState({
       columns: clone
     });
@@ -127,12 +143,22 @@ export default class SpreadsheetBuilder extends React.Component {
     let rows = this.state.previewRows.map(tag => {
       return this.state.columns
         .reduce((acc, column) => {
-          return [...acc, tag[column]];
+          if (column === "hyperlink") {
+            return [
+              ...acc,
+              `=HYPERLINK("https://${window.location.host}/tag/${tag.id}", "Open In Tag Manager")`
+            ];
+          } else {
+            return [...acc, tag[column]];
+          }
         }, [])
         .join("\t");
     });
 
-    const entireSheet = this.state.columns.join("\t") + "\n" + rows.join("\n");
+    const entireSheet =
+      this.state.columns.map(s => _startCase(s)).join("\t") +
+      "\n" +
+      rows.join("\n");
 
     this.copyStringToClipboard(entireSheet);
     alert("Copied to clipboard...");
@@ -163,33 +189,51 @@ export default class SpreadsheetBuilder extends React.Component {
   renderColumnHeader(column, index) {
     return (
       <th key={column + index}>
-        <select
-          onChange={e => this.updateColumnType(index, e.target.value)}
-          value={column}
-        >
-          {AVAILABLE_COLUMNS.map(c => (
-            <option key={c} value={c}>
-              {_startCase(c)}
-            </option>
-          ))}
-        </select>
+        <div className="spreadsheet-builder__table-header">
+          {index > 0 ? (
+            <div onClick={() => this.moveColumn(index, -1)}>⬅️</div>
+          ) : (
+            <div />
+          )}
+          <div className="spreadsheet-builder__table-header-picker">
+            <select
+              onChange={e => this.updateColumnType(index, e.target.value)}
+              value={column}
+            >
+              {AVAILABLE_COLUMNS.map(c => (
+                <option key={c} value={c}>
+                  {_startCase(c)}
+                </option>
+              ))}
+            </select>
+            <div onClick={() => this.deleteColumn(index)}>🗑️</div>
+          </div>
+          {index < this.state.columns.length - 1 ? (
+            <div onClick={() => this.moveColumn(index, 1)}>➡️️</div>
+          ) : (
+            <div />
+          )}
+        </div>
       </th>
     );
   }
 
   render() {
     return (
-      <div className="spreadsheet-builder__panel">
-        <div>
-          <h1>Filters</h1>
-          {this.state.filters.map(this.renderFilter)}
-          <button onClick={() => this.addFilter()}>New Filter</button>
-          <button onClick={() => this.copySpreadSheet()}>
-            Copy sheet to clipboard
-          </button>
-        </div>
-        <div className="spreadsheet-builder__table">
+      <div>
+        <div className="spreadsheet-builder__panel">
+          <div>
+            <h1>Filters</h1>
+            {this.state.filters.map(this.renderFilter)}
+            <button onClick={() => this.addFilter()}>New Filter</button>
+            <button onClick={() => this.copySpreadSheet()}>
+              Copy sheet to clipboard
+            </button>
+          </div>
           <h1>Table Preview</h1>
+        </div>
+
+        <div className="spreadsheet-builder__table">
           <table>
             <thead>
               <tr>
@@ -205,9 +249,19 @@ export default class SpreadsheetBuilder extends React.Component {
                     <tr>
                       {this.state.columns.map(column => (
                         <td>
-                          {row[column]
-                            ? row[column]
-                            : "Unknown field: " + column}
+                          {column === "hyperlink" ? (
+                            <a
+                              href={`/tag/${row.id}`}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              Open in Tag Manager
+                            </a>
+                          ) : row[column] ? (
+                            row[column]
+                          ) : (
+                            "Unknown field: " + column
+                          )}
                         </td>
                       ))}
                       <td className="spreadsheet-builder__table-new-column-button">
