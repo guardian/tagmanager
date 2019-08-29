@@ -5,6 +5,18 @@
   margin-right: auto;
 }
 
+.spreadsheet-builder__panel h1 {
+  margin: 12px 0;
+}
+
+.spreadsheet-builder__filter {
+  margin: 6px 0;
+}
+
+.spreadsheet-builder__filter > select {
+  margin-right: 12px;
+}
+
 .spreadsheet-builder__table > table {
   width: 100%;
   border: 1px solid black;
@@ -18,11 +30,18 @@
 .spreadsheet-builder__table th {
   background-color: $c-grey-200;
   border: 1px solid black;
+  padding: 5px;
+}
+
+.spreadsheet-builder__table-new-column {
+  width: 80px;
+  background-color: white !important;
+  border: 1px solid white !important;
 }
 
 .spreadsheet-builder__table-new-column-button {
   position: relative;
-  border-bottom: 1px solid white !important;
+  border: 1px solid white !important;
 }
 
 .spreadsheet-builder__table-new-column-button > button {
@@ -33,6 +52,9 @@
   width: 50px;
 }
 
-.spreadsheet-builder__table-new-column {
-  width: 80px;
+.spreadsheet-builder__table-hidden-fields {
+  border: 1px solid white !important;
+  border-top: 1px solid black !important;
+  text-align: center;
+  padding: 12px 0 !important;
 }

@@ -11,7 +11,7 @@ const DEFAULT_FILTER = {
 
 const FILTER_TYPES = ["internalName", "externalName", "path", "type"];
 
-const DEFAULT_COLUMN = "id";
+const DEFAULT_COLUMN = "internalName";
 const AVAILABLE_COLUMNS = [
   "id",
   "internalName",
@@ -24,12 +24,14 @@ const AVAILABLE_COLUMNS = [
   "hyperlink"
 ];
 
+const MAX_PREVIEW_ROWS = 20;
+
 export default class SpreadsheetBuilder extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      columns: ["id"],
-      filters: [DEFAULT_FILTER],
+      columns: [DEFAULT_COLUMN],
+      filters: [Object.assign({}, DEFAULT_FILTER)],
       previewRows: []
     };
     this.addFilter = this.addFilter.bind(this);
@@ -47,6 +49,9 @@ export default class SpreadsheetBuilder extends React.Component {
     this.renderColumnHeader = this.renderColumnHeader.bind(this);
   }
 
+  componentDidMount() {
+    this.fetchRows();
+  }
   componentDidUpdate(prevProps, prevState) {
     if (
       prevState.columns.length !== this.state.columns.length ||
@@ -81,6 +86,13 @@ export default class SpreadsheetBuilder extends React.Component {
     clone[index].value = value;
     this.setState({
       filters: clone
+    });
+  }
+
+  deleteFilter(index) {
+    const { filters } = this.state;
+    this.setState({
+      filters: [...filters.slice(0, index), ...filters.slice(index + 1)]
     });
   }
 
@@ -128,7 +140,7 @@ export default class SpreadsheetBuilder extends React.Component {
 
   renderFilter(filter, index) {
     return (
-      <div key={filter.type + index}>
+      <div key={filter.type + index} className="spreadsheet-builder__filter">
         <select
           value={filter.type}
           onChange={e => this.updateFilterType(index, e.target.value)}
@@ -143,6 +155,7 @@ export default class SpreadsheetBuilder extends React.Component {
           value={filter.value}
           onChange={e => this.updateFilterValue(index, e.target.value)}
         />
+        <i className="i-delete" onClick={() => this.deleteFilter(index)} />
       </div>
     );
   }
@@ -156,7 +169,7 @@ export default class SpreadsheetBuilder extends React.Component {
         >
           {AVAILABLE_COLUMNS.map(c => (
             <option key={c} value={c}>
-              {c}
+              {_startCase(c)}
             </option>
           ))}
         </select>
@@ -181,31 +194,36 @@ export default class SpreadsheetBuilder extends React.Component {
             <thead>
               <tr>
                 {this.state.columns.map(this.renderColumnHeader)}
-                <th className="spreadsheet-builder__table-new-column">
-                  Add New Column
-                </th>
+                <th className="spreadsheet-builder__table-new-column"></th>
               </tr>
             </thead>
             <tbody>
-              {this.state.previewRows.slice(0, 10).map((row, i, previews) => {
-                return (
-                  <tr>
-                    {this.state.columns.map(column => (
-                      <td>
-                        {row[column] ? row[column] : "Unknown field: " + column}
+              {this.state.previewRows
+                .slice(0, MAX_PREVIEW_ROWS)
+                .map((row, i, previews) => {
+                  return (
+                    <tr>
+                      {this.state.columns.map(column => (
+                        <td>
+                          {row[column]
+                            ? row[column]
+                            : "Unknown field: " + column}
+                        </td>
+                      ))}
+                      <td className="spreadsheet-builder__table-new-column-button">
+                        {Math.ceil(previews.length / 2) === i ? (
+                          <button onClick={this.addColumn}>Add Column</button>
+                        ) : null}
                       </td>
-                    ))}
-                    <td className="spreadsheet-builder__table-new-column-button">
-                      {Math.floor(previews.length / 2) === i ? (
-                        <button onClick={this.addColumn}>Add Column</button>
-                      ) : null}
-                    </td>
-                  </tr>
-                );
-              })}
-              {this.state.previewRows.length > 10 ? (
+                    </tr>
+                  );
+                })}
+              {this.state.previewRows.length > MAX_PREVIEW_ROWS ? (
                 <tr>
-                  <td colSpan={this.state.columns.length + 1}>
+                  <td
+                    className="spreadsheet-builder__table-hidden-fields"
+                    colSpan={this.state.columns.length}
+                  >
                     More rows hidden...
                   </td>
                 </tr>
