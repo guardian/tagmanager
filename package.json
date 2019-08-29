@@ -19,9 +19,11 @@
     "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "^0.8.5",
     "lodash.debounce": "^3.1.1",
+    "lodash.startcase": "^4.4.0",
     "moment": "^2.10.6",
     "node-sass": "^3.3.3",
     "panda-session": "0.1.6",
+    "phantomjs-prebuilt": "^2.1.14",
     "q": "1.4.1",
     "ramda": "^0.18.0",
     "react": "^15.3.0",
@@ -45,8 +47,7 @@
     "style-loader": "^0.13.0",
     "svg-sprite": "^1.2.12",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.1",
-    "phantomjs-prebuilt": "^2.1.14"
+    "webpack": "^1.13.1"
   },
   "devDependencies": {
     "eslint": "^1.10.3",
@@ -56,6 +57,6 @@
   },
   "repository": {
     "type": "git",
-    "url" : "https://github.com/guardian/tagmanager"
+    "url": "https://github.com/guardian/tagmanager"
   }
 }

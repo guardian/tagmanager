@@ -4,7 +4,7 @@ import Q from 'q';
 import {reEstablishSession} from 'babel?presets[]=es2015!panda-session';
 import {getStore} from './storeAccessor';
 
-function PandaReqwest(reqwestBody) {
+export function PandaReqwest(reqwestBody) {
   return Q.Promise(function(resolve, reject) {
     Reqwest(reqwestBody)
       .then(res => {

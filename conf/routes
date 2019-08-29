@@ -17,6 +17,7 @@ GET            /sponsorship/create                                     controlle
 GET            /sponsorship/:id                                        controllers.App.index(id)
 GET            /microsite                                              controllers.App.index(id = "")
 GET            /microsite/:id                                          controllers.App.index(id)
+GET            /spreadsheets                                           controllers.App.index(id = "")
 
 
 
@@ -66,6 +67,7 @@ GET            /api/jobs                                               controlle
 DELETE         /api/jobs/:id                                           controllers.TagManagementApi.deleteJob(id: Long)
 PUT            /api/jobs/rollback/:id                                  controllers.TagManagementApi.rollbackJob(id: Long)
 
+POST           /api/spreadsheet                                        controllers.TagManagementApi.spreadsheet
 
 POST           /reindex/tags                                           controllers.Reindex.reindexTags
 GET            /reindex/tags                                           controllers.Reindex.getTagReindexProgress
