@@ -28,6 +28,7 @@ import PillarCreate from './components/Pillar/Create.react';
 import SponsorshipSearch from './components/SponsorshipSearch.react';
 import SponsorshipDisplay from './components/Sponsorship/Display';
 import SponsorshipCreate from './components/Sponsorship/Create';
+import SpreadsheetBuilder from './components/Spreadsheet/SpreadsheetBuilder.react';
 
 function requirePermission(permissionName, nextState, replaceState) {
   if (!hasPermission(permissionName)) {
@@ -62,6 +63,7 @@ export const router = (
       <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
       <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
       <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />
+      <Route name="spreadsheetBuilder" path="/spreadsheets" component={SpreadsheetBuilder}  />
       <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
       <IndexRoute component={TagSearch}/>
     </Route>
