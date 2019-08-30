@@ -95,10 +95,9 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
         q = Some(f.value),
         searchField = Some(f.`type`.entryName)
       )
-    }.foldLeft(TagLookupCache.allTags.get) { case (acc, criteria) =>
+    }.foldLeft(TagLookupCache.allTags.get) { (acc, criteria) =>
       criteria.execute(acc)
     }
-
 
     Ok(Json.toJson(TagSearchResult(tags, tags.length)))
   }
