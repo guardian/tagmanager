@@ -3,6 +3,7 @@ import TagNameEdit from './formComponents/TagName.react';
 import TagDescriptionEdit from './formComponents/TagDescription.react';
 
 import TagVisibility from './formComponents/TagVisibility.react';
+import TagAdBlocking from './formComponents/TagAdBlocking.react';
 import SectionSelect from '../utils/SectionSelect.react';
 
 import TopicCategories from './formComponents/topic/TopicCategories.js';
@@ -177,6 +178,7 @@ export default class TagEdit extends React.Component {
 
             {this.renderTagTypeSpecificFields()}
 
+            <TagAdBlocking {...this.props}/>
             <TagVisibility {...this.props}/>
 
           </div>

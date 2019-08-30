@@ -12,7 +12,9 @@ const BLANK_TAG = {
   hidden: false,
   legallySensitive: false,
   parents: [],
-  isMicrosite: false
+  isMicrosite: false,
+  adBlockingLevel: 'NONE',
+  contributionBlockingLevel: 'NONE'
 };
 
 function requestTagCreate() {
