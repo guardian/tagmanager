@@ -17,17 +17,17 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 @Singleton
-class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
+class ClusterSynchronisation @Inject()(lifecycle: ApplicationLifecycle) {
 
   val serviceManager = new ServiceManager(List(new NodeStatusHeartbeater(this)))
 
   val reservation: AtomicReference[Option[NodeStatus]] = new AtomicReference[Option[NodeStatus]](None)
   val tagCacheSynchroniser: AtomicReference[Option[KinesisConsumer]] = new AtomicReference[Option[KinesisConsumer]](None)
   val sectionCacheSynchroniser: AtomicReference[Option[KinesisConsumer]] = new
-    AtomicReference[Option[KinesisConsumer]](None)
+      AtomicReference[Option[KinesisConsumer]](None)
 
 
-  lifecycle.addStopHook{ () => Future.successful(stop) }
+  lifecycle.addStopHook { () => Future.successful(stop) }
   serviceManager.startAsync()
 
   initialise
@@ -39,7 +39,10 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
       reservation.set(Some(ns))
 
       Logger.info("loading tag cache")
+      val start = System.currentTimeMillis
       TagLookupCache.refresh
+      val end = System.currentTimeMillis
+      Logger.info(s"All cache loaded after ${end - start} milliseconds")
 
       val appName = s"tag-cache-syncroniser-${Config().aws.stage}-${ns.nodeId}"
       Logger.info(s"Starting tag sync kinesis consumer with appName: $appName")
@@ -58,13 +61,13 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
 
   def pause {
     Logger.warn("pausing cluster synchronisation")
-    tagCacheSynchroniser.get.foreach{consumer =>
+    tagCacheSynchroniser.get.foreach { consumer =>
       Logger.warn("stopping consumer")
       consumer.stop()
       tagCacheSynchroniser.set(None)
     }
 
-    reservation.get.foreach{ns =>
+    reservation.get.foreach { ns =>
       Logger.warn("deregistering node")
       NodeStatusRepository.deregister(ns)
       reservation.set(None)
