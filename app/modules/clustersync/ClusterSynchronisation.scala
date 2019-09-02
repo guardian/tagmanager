@@ -45,7 +45,6 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
       Logger.info(s"Starting tag sync kinesis consumer with appName: $appName")
 
       val tagUpdateConsumer = new KinesisConsumer(Config().tagUpdateStreamName, appName, TagSyncUpdateProcessor)
-      Logger.info("starting tag sync consumer")
       tagUpdateConsumer.start()
       tagCacheSynchroniser.set(Some(tagUpdateConsumer))
     } catch {

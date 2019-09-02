@@ -33,8 +33,14 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
     .config(kinesisClientLibConfiguration)
     .build()
 
-  def start() { Future{ worker.run() } }
-  def stop() { worker.shutdown() }
+  def start() {
+    Logger.info(s"starting Kinesis consumer for (stream: $streamName, appName: $appName)")
+    Future{ worker.run() }
+  }
+  def stop() {
+    Logger.info(s"stopping Kinesis consumer for (stream: $streamName, appName: $appName)")
+    worker.shutdown()
+  }
 
 }
 
