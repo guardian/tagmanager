@@ -1,19 +1,19 @@
 package controllers
 
-import com.amazonaws.services.pricing.model.FilterType
+import helpers.CORSable
 import model._
 import model.command.CommandError._
 import model.command._
+import model.forms.GetSpreadSheet
 import model.jobs.JobRunner
 import org.joda.time.{DateTime, DateTimeZone}
 import permissions._
+import play.api.Logger
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.mvc.{Controller, Result}
 import repositories._
-import play.api.libs.concurrent.Execution.Implicits._
 import services.Config
-import helpers.CORSable
-import model.forms.GetSpreadSheet
 import services.Config.conf
 
 import scala.concurrent.Future
@@ -22,25 +22,25 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def getTag(id: Long) = APIAuthAction {
 
-    TagRepository.getTag(id).map{ tag =>
+    TagRepository.getTag(id).map { tag =>
       Ok(Json.toJson(DenormalisedTag(tag)))
     }.getOrElse(NotFound)
   }
 
   def updateTag(id: Long) =
     (APIAuthAction andThen UpdateTagPermissionsCheck andThen UpdateTagSpecificPermissionsCheck).async { req =>
-    implicit val username = Option(req.user.email)
+      implicit val username = Option(req.user.email)
 
-    req.body.asJson.map { json =>
-      UpdateTagCommand(json.as[DenormalisedTag]).process.map { result =>
-        result.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
-      } recover {
-        commandErrorAsResult
+      req.body.asJson.map { json =>
+        UpdateTagCommand(json.as[DenormalisedTag]).process.map { result =>
+          result.map { t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
+        } recover {
+          commandErrorAsResult
+        }
+      }.getOrElse {
+        Future.successful(BadRequest("Expecting Json data"))
       }
-    }.getOrElse {
-      Future.successful(BadRequest("Expecting Json data"))
     }
-  }
 
   def createTag = CORSable(conf.corsablePostDomains: _*) {
     (APIAuthAction andThen CreateTagPermissionsCheck andThen CreateTagSpecificPermissionsCheck).async { req =>
@@ -68,7 +68,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
     val orderBy = req.getQueryString("orderBy").getOrElse("internalName")
 
+    val start = System.currentTimeMillis
     val tags = TagLookupCache.search(criteria)
+    val end = System.currentTimeMillis
+    Logger.debug(s"found tags: [${tags.map(_.internalName).mkString(", ")}] in TagLookupCache within ${end - start} milliseconds" +
+      s"\n with criteria: $criteria")
 
     val orderedTags: List[Tag] = orderBy match {
       case ("internalName") => tags.sortBy(_.internalName)
@@ -103,7 +107,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def getSection(id: Long) = APIAuthAction {
-    SectionRepository.getSection(id).map{ section =>
+    SectionRepository.getSection(id).map { section =>
       Ok(Json.toJson(section))
     }.getOrElse(NotFound)
   }
@@ -112,7 +116,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreateSectionCommand].process.map { result =>
-        result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -125,7 +129,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       UpdateSectionCommand(json.as[Section]).process.map { result =>
-        result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+        result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -140,7 +144,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
       val editionName = (json \ "editionName").as[String]
 
       AddEditionToSectionCommand(id, editionName.toUpperCase).process.map { result =>
-        result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+        result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -151,8 +155,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck).async { req =>
     implicit val username = Option(req.user.email)
-    RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map {result =>
-      result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
+    RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map { result =>
+      result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
     } recover {
       commandErrorAsResult
     }
@@ -176,7 +180,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreatePillarCommand].process.map { result =>
-        result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -212,8 +216,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String]) = APIAuthAction.async { req =>
-    new PathUsageCheck(tagType, slug, section, tagSubType).process.map{ result =>
-      result.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
+    new PathUsageCheck(tagType, slug, section, tagSubType).process.map { result =>
+      result.map { t => Ok(Json.toJson(t)) } getOrElse BadRequest
     } recover {
       commandErrorAsResult
     }
@@ -223,8 +227,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[BatchTagCommand].process.map{ result =>
-        result.map{t => NoContent } getOrElse NotFound
+      json.as[BatchTagCommand].process.map { result =>
+        result.map { t => NoContent } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -237,7 +241,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[MergeTagCommand].process.map { result =>
-        result.map{t => NoContent } getOrElse NotFound
+        result.map { t => NoContent } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -267,11 +271,11 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     val sponsorships = SponsorshipRepository.searchSponsorships(criteria)
 
     val orderedSponsorships: List[Sponsorship] = orderBy match {
-      case("sponsor") => sponsorships.sortBy(_.sponsorName)
-      case("from") => sponsorships.sortBy(_.validFrom.map(_.getMillis).getOrElse(0l))
-      case("to") => sponsorships.sortBy(_.validTo.map(_.getMillis).getOrElse(Long.MaxValue))
-      case("status") => sponsorships.sortBy(_.status)
-      case(_) => sponsorships.sortBy(_.sponsorName)
+      case ("sponsor") => sponsorships.sortBy(_.sponsorName)
+      case ("from") => sponsorships.sortBy(_.validFrom.map(_.getMillis).getOrElse(0l))
+      case ("to") => sponsorships.sortBy(_.validTo.map(_.getMillis).getOrElse(Long.MaxValue))
+      case ("status") => sponsorships.sortBy(_.status)
+      case (_) => sponsorships.sortBy(_.sponsorName)
     }
 
     val resultsCount = req.getQueryString("pageSize").getOrElse("25").toInt
@@ -287,7 +291,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreateSponsorshipCommand].process.map { result =>
-        result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
+        result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -300,7 +304,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[UpdateSponsorshipCommand].process.map { result =>
-        result.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
+        result.map { s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
       } recover {
         commandErrorAsResult
       }
@@ -315,8 +319,8 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     val tagSearch: Option[List[Long]] = tagIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
     val sectionSearch: Option[List[Long]] = sectionIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
     new ClashingSponsorshipsFetch(id, tagSearch, sectionSearch, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
-        .process.map { result =>
-      result.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
+      .process.map { result =>
+      result.map { ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
     } recover {
       commandErrorAsResult
     }
