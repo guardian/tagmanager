@@ -172,15 +172,16 @@ object TagLookupCache {
     while (true) {
       val currentTags = allTags.get()
 
-      val current = currentTags.find(_.id == tag.id).foreach(currentTag => {
+      currentTags.find(_.id == tag.id).foreach(currentTag => {
         if (tag.updatedAt < currentTag.updatedAt) {
-          return;
+          return
         }
       })
 
       val newTags = (tag :: currentTags.filterNot(_.id == tag.id)).sortBy(_.internalName)
 
       if (allTags.compareAndSet(currentTags, newTags)) {
+        Logger.info(s"updated TagLookupCache with new tag: {internalName: ${tag.internalName}, id: ${tag.id}")
         return
       }
     }
