@@ -16,7 +16,7 @@ object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor {
 
     tagEvent.eventType match {
       case EventType.Update => {
-        Logger.info(s"insertion fof updated tag ${tagEvent.tagId} into lookup cache started")
+        Logger.info(s"insertion of updated tag ${tagEvent.tagId} into lookup cache started")
 
         tagEvent.tag match {
           case Some(t) => TagLookupCache.insertTag(Tag(t))
