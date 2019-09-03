@@ -65,7 +65,6 @@ class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordPr
       processor.process(record)
     }
 
-    //processRecordsInput.getCheckpointer checkpoint
   }
 }
 
@@ -81,8 +80,6 @@ object KinesisRecordPayloadConversions {
   implicit def kinesisRecordAsThriftCompactProtocol(rec: Record): TProtocol = {
 
     val data = rec.getData
-
-    val settings = data.get() //compression bit
 
     val bbis = new ByteBufferBackedInputStream(data)
     val transport = new TIOStreamTransport(bbis)
