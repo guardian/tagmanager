@@ -2,8 +2,9 @@ package modules.clustersync
 
 import com.amazonaws.services.kinesis.model.Record
 import com.gu.tagmanagement.{EventType, TagEvent}
+import model.Tag
 import play.api.Logger
-import repositories.{TagLookupCache, TagRepository}
+import repositories.TagLookupCache
 import services.KinesisStreamRecordProcessor
 
 import scala.util.{Failure, Success, Try}
@@ -49,10 +50,11 @@ object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor {
         Logger.info(s"inserting updated tag ${tagEvent.tagId} into lookup cache")
 
         tagEvent.tag match {
-          case Some(t) =>
-            TagRepository
-              .getTag(t.id)
-              .foreach(tagFromDB => TagLookupCache.insertTag(tagFromDB))
+          case Some(thriftTag) =>
+            TagLookupCache.insertTag(Tag(thriftTag))
+//            TagRepository
+          //              .getTag(t.id)
+          //              .foreach(tagFromDB => TagLookupCache.insertTag(tagFromDB))
           case None =>
             Logger.warn(s"TagEvent for ${tagEvent.tagId} did not contain any tag object")
         }
