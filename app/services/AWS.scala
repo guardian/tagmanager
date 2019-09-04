@@ -1,19 +1,23 @@
 package services
 
 import java.nio.ByteBuffer
+
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.regions.{Regions, Region}
+import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.amazonaws.services.ec2.AmazonEC2Client
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.ec2.model.{Filter, DescribeTagsRequest}
+import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
 import com.amazonaws.services.kinesis.AmazonKinesisClient
 import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.util.EC2MetadataUtils
+import com.gu.tagmanagement.TagEvent
 import com.twitter.scrooge.ThriftStruct
+import play.api.Logger
+
 import scala.collection.JavaConverters._
 
 object AWS {
@@ -85,7 +89,9 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
   }
 
   def publishUpdate(key: String, struct: ThriftStruct) {
-    publishUpdate(key, ByteBuffer.wrap(ThriftSerializer.serializeToBytes(struct, requireCompressionByte)))
+    Logger.info(s"Creating Kinesis Producer for streamName: $streamName")
+    val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(struct, requireCompressionByte)
+    publishUpdate(key, ByteBuffer.wrap(thriftKinesisEvent))
   }
 
   def publishUpdate(key: String, dataBuffer: ByteBuffer) {

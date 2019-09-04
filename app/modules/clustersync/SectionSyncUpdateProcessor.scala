@@ -7,25 +7,40 @@ import play.api.Logger
 import repositories.SectionLookupCache
 import services.KinesisStreamRecordProcessor
 
-object SectionSyncUpdateProcessor extends KinesisStreamRecordProcessor {
+import scala.util.{Failure, Success, Try}
+
+object SectionEventDeserialiser {
 
   import services.KinesisRecordPayloadConversions._
 
-  override def process(record: Record) {
-    val sectionEvent = SectionEvent.decode(record)
+  def deserialise(record: Record): Try[SectionEvent] = {
+    val tProto = kinesisRecordAsThriftCompactProtocol(record, stripCompressionByte = true)
+    Try(SectionEvent.decode(tProto))
+  }
 
+}
+
+object SectionSyncUpdateProcessor extends KinesisStreamRecordProcessor {
+
+  override def process(record: Record): Unit = {
+    SectionEventDeserialiser.deserialise(record) match {
+      case Success(sectionEvent) => updateSectionLookupCache(sectionEvent)
+      case Failure(exp) =>
+        Logger.error(s"issue while SectionEvent decode:\n ${exp.getMessage}")
+    }
+
+  }
+
+  private def updateSectionLookupCache(sectionEvent: SectionEvent) {
     sectionEvent.eventType match {
-      case EventType.Update => {
+      case EventType.Update =>
         Logger.info(s"inserting updated section ${sectionEvent.sectionId} into lookup cache")
         sectionEvent.section.foreach { s => SectionLookupCache.insertSection(Section(s)) }
-      }
-      case EventType.Delete => {
+      case EventType.Delete =>
         Logger.info(s"removing section ${sectionEvent.sectionId} from lookup cache")
         SectionLookupCache.removeSection(sectionEvent.sectionId)
-      }
-      case et => {
+      case et =>
         Logger.warn(s"unrecognised event type ${et.name}")
-      }
     }
   }
 }
