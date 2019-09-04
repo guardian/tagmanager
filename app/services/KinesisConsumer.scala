@@ -37,8 +37,15 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
     .config(kinesisClientLibConfiguration)
     .build()
 
-  def start() { Future{ worker.run() } }
-  def stop() { worker.shutdown() }
+  def start() {
+    Future {
+      worker.run()
+    }
+  }
+
+  def stop() {
+    worker.shutdown()
+  }
 }
 
 class KinesisProcessorConsumerFactory(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessorFactory {
@@ -72,9 +79,7 @@ class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordPr
 }
 
 trait KinesisStreamRecordProcessor {
-
   def process(record: Record): Unit
-
 }
 
 object KinesisRecordPayloadConversions {
