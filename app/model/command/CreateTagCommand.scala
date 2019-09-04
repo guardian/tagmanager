@@ -88,7 +88,7 @@ case class CreateTagCommand(
 
     val tagId = Sequences.tagId.getNextId
 
-    Logger.info(s"Create Tag command started for tagid: $tagId")
+    Logger.info(s"Create Tag command process started for tagid: $tagId")
 
     val sectionId: Option[Long] = if(createMicrosite) {
 
