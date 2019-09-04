@@ -23,9 +23,9 @@ class TagSyncUpdateProcessorTest extends FlatSpec with Matchers {
     val tagUpdateEvent = TagEvent(EventType.Update, 1L, Some(testTag.asThrift))
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(tagUpdateEvent, true)
 
-    val r = new Record().withData(ByteBuffer.wrap(thriftKinesisEvent))
+    val kinesisRecord = new Record().withData(ByteBuffer.wrap(thriftKinesisEvent))
 
-    TagSyncUpdateProcessor.process(r)
+    TagSyncUpdateProcessor.process(kinesisRecord)
 
     TagLookupCache.getTag(testTag.id) shouldEqual Some(testTag)
 
