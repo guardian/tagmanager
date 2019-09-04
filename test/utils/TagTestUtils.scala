@@ -8,7 +8,7 @@ object TagTestUtils {
                      tInternalName: String, tid: Long,
                      tUpdatedAt: Long,
                      tAdBlockingLevel: Option[BlockingLevel] = None,
-                     tContributionBlockingLevel: Option[BlockingLevel] = None) = {
+                     tContributionBlockingLevel: Option[BlockingLevel] = None): model.Tag = {
 
     val stubPodcastMetadata = PodcastMetadata("url")
     val stubContributorInformation = ContributorInformation(None, None, None, None, None, None, None)

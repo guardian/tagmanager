@@ -15,20 +15,34 @@ class TagSyncUpdateProcessorTest extends FlatSpec with Matchers {
   behavior of "TagSyncUpdateProcessor.process()"
 
   it should "process consumption of Kinesis Event that Tag was Updated" +
-    "and be able to serialise correctly all tag enum fields" in {
+    "and be able to serialise correctly all BlockingLevel enum fields" in {
 
-    val testTag = createTestTag("test", 1, 0,
-      tAdBlockingLevel = Some(BlockingLevel.SUGGEST),
-      tContributionBlockingLevel = Some(BlockingLevel.SUGGEST))
-    val thriftTag = testTag.asThrift
+    List(
+      createTestTag("test1", 1, 0,
+        tAdBlockingLevel = Some(BlockingLevel.SUGGEST),
+        tContributionBlockingLevel = Some(BlockingLevel.SUGGEST)),
+      createTestTag("test2", 2, 0,
+        tAdBlockingLevel = Some(BlockingLevel.NONE),
+        tContributionBlockingLevel = Some(BlockingLevel.NONE)),
+      createTestTag("test3", 3, 0,
+        tAdBlockingLevel = Some(BlockingLevel.FORCE),
+        tContributionBlockingLevel = Some(BlockingLevel.FORCE))
+    ).foreach(testTag => {
+      val kinesisRecord = createKinesisTagUpdateEventRecord(testTag)
+
+      TagSyncUpdateProcessor.process(kinesisRecord)
+
+      TagLookupCache.getTag(testTag.id) shouldEqual Some(testTag)
+    })
+  }
+
+  private def createKinesisTagUpdateEventRecord(tag: model.Tag) = {
+    val thriftTag = tag.asThrift
     val tagUpdateEvent = TagEvent(EventType.Update, 1L, Some(thriftTag))
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(tagUpdateEvent, true)
-    val kinesisRecord = new Record()
+    new Record()
       .withData(ByteBuffer.wrap(thriftKinesisEvent))
 
-    TagSyncUpdateProcessor.process(kinesisRecord)
-
-    TagLookupCache.getTag(testTag.id) shouldEqual Some(testTag)
   }
 
 }

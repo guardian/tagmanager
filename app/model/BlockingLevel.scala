@@ -4,10 +4,12 @@ import enumeratum.EnumEntry.Uppercase
 import enumeratum._
 import play.api.libs.json._
 
+import scala.collection.immutable.IndexedSeq
+
 sealed trait BlockingLevel extends EnumEntry with Uppercase
 
 object BlockingLevel extends Enum[BlockingLevel] {
-  override val values = findValues
+  override val values: IndexedSeq[BlockingLevel] = findValues
 
   case object NONE extends BlockingLevel
 
