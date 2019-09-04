@@ -11,6 +11,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories._
 import CommandError._
+import play.api.Logger
 import services.{Contexts, KinesisStreams}
 
 import scala.concurrent.Future
@@ -86,6 +87,8 @@ case class CreateTagCommand(
   def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future {
 
     val tagId = Sequences.tagId.getNextId
+
+    Logger.info(s"Create Tag command process started for tagid: $tagId")
 
     val sectionId: Option[Long] = if(createMicrosite) {
 
@@ -176,7 +179,13 @@ case class CreateTagCommand(
 
     val result = TagRepository.upsertTag(tag)
 
-    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
+    val thriftTag = tag.asThrift
+
+    val tagUpdateEvent = TagEvent(EventType.Update, tag.id, Some(thriftTag))
+
+    Logger.info(s"Kiniesis producer publish tag-update event, tagEvent type: ${tagUpdateEvent.eventType}")
+
+    KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, tagUpdateEvent)
 
     TagAuditRepository.upsertTagAudit(TagAudit.created(tag))
 

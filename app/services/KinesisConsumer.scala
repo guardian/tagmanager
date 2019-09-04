@@ -1,5 +1,7 @@
 package services
 
+import java.nio.ByteBuffer
+
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.{IRecordProcessor, IRecordProcessorFactory}
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{InitialPositionInStream, KinesisClientLibConfiguration, ShutdownReason, Worker}
@@ -18,6 +20,8 @@ import scala.language.implicitConversions
 
 class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) {
 
+  Logger.info(s"Creating Kinesis Consumer for (streamName: $streamName, appName: $appName)")
+
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,
       new DefaultAWSCredentialsProviderChain,
@@ -35,7 +39,6 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
 
   def start() { Future{ worker.run() } }
   def stop() { worker.shutdown() }
-
 }
 
 class KinesisProcessorConsumerFactory(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessorFactory {
@@ -65,11 +68,10 @@ class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordPr
       processor.process(record)
     }
 
-    //processRecordsInput.getCheckpointer checkpoint
   }
 }
 
-trait KinesisStreamRecordProcessor{
+trait KinesisStreamRecordProcessor {
 
   def payload(record: Record) = new String(record.getData.array(), "UTF-8")
 
@@ -78,13 +80,13 @@ trait KinesisStreamRecordProcessor{
 }
 
 object KinesisRecordPayloadConversions {
-  implicit def kinesisRecordAsThriftCompactProtocol(rec: Record): TProtocol = {
 
-    val data = rec.getData
+  def kinesisRecordAsThriftCompactProtocol(rec: Record, stripCompressionByte: Boolean = false): TProtocol = {
 
-    val settings = data.get() //compression bit
+    val data: ByteBuffer = rec.getData
+    val bytes = if (stripCompressionByte) ByteBuffer.wrap(data.array().tail) else data
 
-    val bbis = new ByteBufferBackedInputStream(data)
+    val bbis = new ByteBufferBackedInputStream(bytes)
     val transport = new TIOStreamTransport(bbis)
     new TCompactProtocol(transport)
   }
