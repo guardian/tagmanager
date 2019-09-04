@@ -9,12 +9,11 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.amazonaws.services.ec2.AmazonEC2Client
-import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
 import com.amazonaws.services.kinesis.AmazonKinesisClient
+import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.util.EC2MetadataUtils
-import com.gu.tagmanagement.TagEvent
 import com.twitter.scrooge.ThriftStruct
 import play.api.Logger
 
@@ -89,7 +88,7 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
   }
 
   def publishUpdate(key: String, struct: ThriftStruct) {
-    Logger.info(s"Creating Kinesis Producer for streamName: $streamName")
+    Logger.info(s"Kinesis Producer publishUpdate for streamName: $streamName")
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(struct, requireCompressionByte)
     publishUpdate(key, ByteBuffer.wrap(thriftKinesisEvent))
   }
