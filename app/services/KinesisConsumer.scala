@@ -72,11 +72,7 @@ class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordPr
 }
 
 trait KinesisStreamRecordProcessor {
-
-  def payload(record: Record) = new String(record.getData.array(), "UTF-8")
-
   def process(record: Record): Unit
-
 }
 
 object KinesisRecordPayloadConversions {

@@ -1,26 +1,37 @@
 package model
 
+import enumeratum.EnumEntry.Uppercase
 import enumeratum._
-import enumeratum.EnumEntry.UpperSnakecase
 import play.api.libs.json._
 
-sealed trait BlockingLevel extends EnumEntry with UpperSnakecase
+import scala.collection.immutable.IndexedSeq
+
+sealed trait BlockingLevel extends EnumEntry with Uppercase
 
 object BlockingLevel extends Enum[BlockingLevel] {
-  override val values = findValues
+  override val values: IndexedSeq[BlockingLevel] = findValues
 
-  case object None extends BlockingLevel
-  case object Suggest extends BlockingLevel
-  case object Force extends BlockingLevel
+  case object NONE extends BlockingLevel
+
+  case object SUGGEST extends BlockingLevel
+
+  case object FORCE extends BlockingLevel
+
+  override def withName(name: String): BlockingLevel = {
+    super.withName(name.toUpperCase)
+  }
 
   implicit val format: Format[BlockingLevel] = new Format[BlockingLevel] {
     def writes(level: BlockingLevel): JsValue = JsString(level.entryName)
-    def reads(json: JsValue): JsResult[BlockingLevel] = Reads.StringReads.reads(json).flatMap {
-      case "NONE" => JsSuccess(None)
-      case "SUGGEST" => JsSuccess(Suggest)
-      case "FORCE" => JsSuccess(Force)
-      case unknown: String => JsError(s"Invalid ad blocking level: $unknown")
-    }
+
+    def reads(json: JsValue): JsResult[BlockingLevel] = Reads.StringReads.reads(json).flatMap(v => {
+      val level = BlockingLevel.withName(v)
+      level match {
+        case BlockingLevel.NONE => JsSuccess(NONE)
+        case BlockingLevel.SUGGEST => JsSuccess(SUGGEST)
+        case BlockingLevel.FORCE => JsSuccess(FORCE)
+      }
+    })
   }
 }
 

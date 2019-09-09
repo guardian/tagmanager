@@ -75,7 +75,8 @@ case class Tag(
     paidContentInformation = paidContentInformation.map(_.asThrift),
     expired = expired,
     campaignInformation = campaignInformation.map(_.asThrift),
-    adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName))
+    adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
+    contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName))
   )
 
   // in this limited format for inCopy to consume
