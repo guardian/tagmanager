@@ -1,10 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: tag-manager
 Parameters:
-  KeyName:
-    Description: The EC2 Key Pair to allow SSH access to the instance
-    Type: String
-    Default: composer-team
   Stage:
     Description: Environment name
     Type: String
@@ -289,7 +285,6 @@ Resources:
   TagManagerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      KeyName: !Ref 'KeyName'
       ImageId: !Ref 'AMI'
       SecurityGroups:
       - !Ref 'AppServerSecurityGroup'
