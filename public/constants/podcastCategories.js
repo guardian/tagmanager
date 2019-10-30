@@ -2,10 +2,10 @@ export const podcastCategories = [
   {
     category: 'Arts',
     subCategories: [
+      'Books',
       'Design',
       'Fashion & Beauty',
       'Food',
-      'Literature',
       'Performing Arts',
       'Visual Arts'
     ]
@@ -13,62 +13,89 @@ export const podcastCategories = [
   {
     category: 'Business',
     subCategories: [
-      'Business News',
       'Careers',
+      'Entrepreneurship',
       'Investing',
-      'Management & Marketing',
-      'Shopping'
+      'Management',
+      'Marketing',
+      'Non-Profit'
     ]
   },
   {
-    category: 'Comedy'
+    category: 'Comedy',
+    subCategories: [
+      'Comedy Interviews',
+      'Improv',
+      'Stand-Up'
+    ]
   },
   {
     category: 'Education',
     subCategories: [
-      'Educational Technology',
-      'Higher Education',
-      'K-12',
-      'Language Courses',
-      'Training'
+      'Courses',
+      'How To',
+      'Language Learning',
+      'Self-Improvement'
     ]
   },
   {
-    category: 'Games & Hobbies',
-    subCategories: [
-      'Automotive',
-      'Aviation',
-      'Hobbies',
-      'Other Games',
-      'Video Games'
-    ]
+    category: 'Government'
   },
   {
-    category: 'Government & Organizations',
-    subCategories: [
-      'Local',
-      'National',
-      'Non-Profit',
-      'Regional'
-    ]
+    category: 'History'
   },
   {
-    category: 'Health',
+    category: 'Health & Fitness',
     subCategories: [
       'Alternative Health',
-      'Fitness & Nutrition',
-      'Self-Help',
+      'Fitness',
+      'Medicine',
+      'Mental Health',
+      'Nutrition',
       'Sexuality'
     ]
   },
   {
-    category: 'Kids & Family'
+    category: 'Kids & Family',
+    subCategories: [
+      'Education for Kids',
+      'Parenting',
+      'Pets & Animals',
+      'Stories for Kids'
+    ]
   },
   {
-    category: 'Music'
+    category: 'Leisure',
+    subCategories: [
+      'Animation & Manga',
+      'Automotive',
+      'Aviation',
+      'Crafts',
+      'Games',
+      'Hobbies',
+      'Home & Garden',
+      'Video Games'
+    ]
   },
   {
-    category: 'News & Politics'
+    category: 'Music',
+    subCategories: [
+      'Music Commentary',
+      'Music History',
+      'Music Interviews'
+    ]
+  },
+  {
+    category: 'News',
+    subCategories: [
+      'Business News',
+      'Daily News',
+      'Entertainment News',
+      'News Commentary',
+      'Politics',
+      'Sports News',
+      'Tech News'
+    ]
   },
   {
     category: 'Religion & Spirituality',
@@ -78,46 +105,65 @@ export const podcastCategories = [
       'Hinduism',
       'Islam',
       'Judaism',
-      'Other',
+      'Religion',
       'Spirituality'
     ]
   },
   {
-    category: 'Science & Medicine',
+    category: 'Science',
     subCategories: [
-      'Medicine',
+      'Astronomy',
+      'Chemistry',
+      'Earth Sciences',
+      'Life Sciences',
+      'Mathematics',
       'Natural Sciences',
+      'Nature',
+      'Physics',
       'Social Sciences'
     ]
   },
   {
     category: 'Society & Culture',
     subCategories: [
-      'History',
+      'Documentary',
       'Personal Journals',
       'Philosophy',
-      'Places & Travel'
+      'Places & Travel',
+      'Relationships'
     ]
   },
   {
-    category: 'Sports & Recreation',
+    category: 'Sports',
     subCategories: [
-      'Amateur',
-      'College & High School',
-      'Outdoor',
-      'Professional'
+      'Baseball',
+      'Basketball',
+      'Cricket',
+      'Fantasy Sports',
+      'Football',
+      'Golf',
+      'Hockey',
+      'Rugby',
+      'Running',
+      'Soccer',
+      'Swimming',
+      'Tennis',
+      'Volleyball',
+      'Wilderness',
+      'Wrestling'
     ]
   },
   {
-    category: 'Technology',
+    category: 'Technology'
+  },
+  {
+    category: 'TV & Film',
     subCategories: [
-      'Gadgets',
-      'Tech News',
-      'Podcasting',
-      'Software How-To'
+      'After Shows',
+      'Film History',
+      'Film Interviews',
+      'Film Reviews',
+      'TV Reviews'
     ]
-  },
-  {
-    category: 'TV & Film'
   }
 ];
