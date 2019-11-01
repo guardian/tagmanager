@@ -26,7 +26,7 @@ lazy val dependencies = Seq(
   "com.squareup.okhttp3" % "okhttp" % "3.9.0",
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client-default" % "14.2",
-  "com.gu" %% "tags-thrift-schema" % "2.6.0",
+  "com.gu" %% "tags-thrift-schema" % "2.7.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
