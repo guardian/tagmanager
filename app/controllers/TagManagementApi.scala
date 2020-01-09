@@ -1,6 +1,5 @@
 package controllers
 
-import com.amazonaws.services.pricing.model.FilterType
 import model._
 import model.command.CommandError._
 import model.command._
@@ -13,7 +12,7 @@ import repositories._
 import play.api.libs.concurrent.Execution.Implicits._
 import services.Config
 import helpers.CORSable
-import model.forms.GetSpreadSheet
+import model.forms.{FilterTypes, GetSpreadSheet}
 import services.Config.conf
 
 import scala.concurrent.Future
@@ -91,10 +90,17 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
 
   def spreadsheet = APIHMACAuthAction(parse.json[GetSpreadSheet]) { req =>
     val tags = req.body.filters.map { f =>
-      TagSearchCriteria(
-        q = Some(f.value),
-        searchField = Some(f.`type`.entryName)
-      )
+      f.`type` match {
+        case FilterTypes.HasFields =>
+          TagSearchCriteria(
+            hasFields = Some(f.value.split(',').toList)
+          )
+        case _ =>
+          TagSearchCriteria(
+            q = Some(f.value),
+            searchField = Some(f.`type`.entryName)
+          )
+      }
     }.foldLeft(TagLookupCache.allTags.get) { (acc, criteria) =>
       criteria.execute(acc)
     }
