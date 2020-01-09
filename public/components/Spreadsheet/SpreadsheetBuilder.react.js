@@ -2,14 +2,13 @@ import React from "react";
 import _startCase from "lodash.startcase";
 import { createSpreadsheet } from "../../util/spreadSheetApi";
 import debounce from "lodash.debounce";
-import R from "ramda";
 
 const DEFAULT_FILTER = {
   type: "internalName",
   value: ""
 };
 
-const FILTER_TYPES = ["internalName", "externalName", "path", "type"];
+const FILTER_TYPES = ["internalName", "externalName", "path", "type", "hasFields"];
 
 const DEFAULT_COLUMN = "internalName";
 const AVAILABLE_COLUMNS = [

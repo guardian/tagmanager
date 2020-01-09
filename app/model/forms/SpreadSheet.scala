@@ -13,6 +13,7 @@ object FilterTypes extends Enum[FilterTypes] {
   case object InternalName extends FilterTypes
   case object ExternalName extends FilterTypes
   case object Type extends FilterTypes
+  case object HasFields extends FilterTypes
 }
 
 case class SpreadSheetFilter(`type`: FilterTypes, value: String)
@@ -20,13 +21,14 @@ case class SpreadSheetFilter(`type`: FilterTypes, value: String)
 case class GetSpreadSheet(filters: List[SpreadSheetFilter])
 
 object GetSpreadSheet {
-  implicit val filterTypesRead: Reads[FilterTypes ] = new Reads[FilterTypes ] {
+  implicit val filterTypesRead: Reads[FilterTypes] = new Reads[FilterTypes] {
     def reads(json: JsValue): JsResult[FilterTypes] = Reads.StringReads.reads(json).flatMap {
+      case "hasFields" => JsSuccess(FilterTypes.HasFields)
       case "path" => JsSuccess(FilterTypes.Path)
       case "internalName" => JsSuccess(FilterTypes.InternalName)
       case "externalName" => JsSuccess(FilterTypes.ExternalName)
       case "type" => JsSuccess(FilterTypes.Type)
-      case unknown: String => JsError(s"Invalid ad blocking level: $unknown")
+      case unknown: String => JsError(s"Invalid filter type: $unknown")
     }
   }
 

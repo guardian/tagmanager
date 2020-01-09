@@ -132,6 +132,8 @@ case class TagSearchCriteria(
 
   private def hasFieldsFilter(fields: List[String])(tags: List[Tag]) = tags.filter { t =>
     fields.forall {
+        case "podcastmetadata" => t.podcastMetadata.isDefined
+        case "contributorinformation" => t.contributorInformation.isDefined
         case "contributorinformation.bylineimage" => t.contributorInformation.flatMap(_.bylineImage).isDefined
         case "contributorinformation.largebylineimage" => t.contributorInformation.flatMap(_.largeBylineImage).isDefined
         case unsupported => {
