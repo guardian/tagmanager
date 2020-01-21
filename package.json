@@ -47,7 +47,7 @@
     "style-loader": "^0.13.0",
     "svg-sprite": "^1.2.12",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "webpack": "^2.2.0"
   },
   "devDependencies": {
     "eslint": "^1.10.3",
