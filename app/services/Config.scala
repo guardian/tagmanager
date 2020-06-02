@@ -116,6 +116,7 @@ sealed trait Config {
 
   def composerDomain: String
   def targetingDomain: String
+  def workflowDomain: String
   def campaignCentralDomain: String
   def corsableDomains: Seq[String]
   def corsablePostDomains: Seq[String]
@@ -165,10 +166,12 @@ class DevConfig extends Config {
   override def composerDomain: String = "https://composer.local.dev-gutools.co.uk"
   override def targetingDomain: String = "https://targeting.local.dev-gutools.co.uk"
   override def campaignCentralDomain: String = "https://campaign-central.local.dev-gutools.co.uk"
+  override def workflowDomain: String = "https://workflow.local.dev-gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(
     composerDomain,
     targetingDomain,
-    campaignCentralDomain
+    campaignCentralDomain,
+    workflowDomain
   )
   override def corsablePostDomains: Seq[String] = Seq(
     targetingDomain
@@ -216,6 +219,8 @@ class CodeConfig extends Config {
   override def composerDomain: String = "https://composer.code.dev-gutools.co.uk"
   override def targetingDomain: String = "https://targeting.code.dev-gutools.co.uk"
   override def campaignCentralDomain: String = "https://campaign-central.code.dev-gutools.co.uk"
+  override def workflowDomain: String = "https://workflow.code.dev-gutools.co.uk"
+
   override def corsableDomains: Seq[String] = Seq(
     composerDomain,
     "https://composer-secondary.code.dev-gutools.co.uk",
@@ -223,7 +228,10 @@ class CodeConfig extends Config {
     targetingDomain,
     "https://targeting.local.dev-gutools.co.uk",
     campaignCentralDomain,
-    "https://campaign-central.local.dev-gutools.co.uk")
+    "https://campaign-central.local.dev-gutools.co.uk",
+    workflowDomain,
+    "https://workflow.local.dev-gutools.co.uk"
+    )
 
   override def frontendBucketWriteRole: Option[String] = Some("arn:aws:iam::642631414762:role/composerWriteToStaticBucket")
   override def corsablePostDomains: Seq[String] = Seq(
@@ -272,10 +280,12 @@ class ProdConfig extends Config {
   override def composerDomain: String = "https://composer.gutools.co.uk"
   override def targetingDomain: String = "https://targeting.gutools.co.uk"
   override def campaignCentralDomain: String = "https://campaign-central.gutools.co.uk"
+  override def workflowDomain: String = "https://workflow.gutools.co.uk"
   override def corsableDomains: Seq[String] = Seq(
     composerDomain,
     targetingDomain,
     campaignCentralDomain,
+    workflowDomain,
     "https://composer-secondary.gutools.co.uk"
     )
 
