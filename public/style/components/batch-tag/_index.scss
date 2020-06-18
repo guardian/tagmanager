@@ -9,10 +9,7 @@
 
 .batch-tag__filters {
   width: 100%;
-
   position: relative;
-
-
   background-color: $c-grey-100;
   border: 1px solid $c-grey-300;
 
@@ -25,7 +22,7 @@
   @extend %fs-data-3;
 
   position: absolute;
-
+  cursor: pointer;
 
   right: $standard-padding;
   bottom: -1px;
