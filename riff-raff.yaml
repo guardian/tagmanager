@@ -15,7 +15,7 @@ deployments:
     parameters:
       amiTags:
         BuiltBy: amigo
-        Recipe: editorial-tools-bionic-java8-ARM
+        Recipe: editorial-tools-xenial-java8
         AmigoStage: PROD
       amiEncrypted: true
       prependStackToCloudFormationStackName: false
