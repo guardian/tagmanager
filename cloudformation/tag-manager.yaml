@@ -70,10 +70,12 @@ Resources:
       PolicyName: TagManagersDescribeEC2Policy
       PolicyDocument:
         Statement:
-        - Action:
-          - EC2:Describe*
-          Effect: Allow
-          Resource: '*'
+        - Effect: Allow
+          Resource: "*"
+          Action:
+          - ec2:Describe*
+          - autoscaling:DescribeAutoScalingGroups
+          - autoscaling:DescribeAutoScalingInstances
       Roles:
       - !Ref 'TagManagerRole'
   TagManagerGetDistributablesPolicy:
