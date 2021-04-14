@@ -195,16 +195,6 @@ Resources:
       Path: /
       Roles:
       - !Ref 'TagManagerRole'
-  SSHSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow SSH access from the office
-      VpcId: !Ref 'VpcId'
-      SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
-        CidrIp: 0.0.0.0/0
   AppServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
