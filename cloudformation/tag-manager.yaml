@@ -290,7 +290,6 @@ Resources:
       ImageId: !Ref 'AMI'
       SecurityGroups:
       - !Ref 'AppServerSecurityGroup'
-      - !Ref 'SSHSecurityGroup'
       - !Ref 'VulnerabilityScanningSecurityGroup'
       InstanceType: !FindInMap [Config, !Ref 'Stage', InstanceType]
       IamInstanceProfile: !Ref 'TagManagerInstanceProfile'
