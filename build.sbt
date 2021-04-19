@@ -17,7 +17,7 @@ scalacOptions ++= Seq(
 resolvers += "Guardian Bintray" at "https://dl.bintray.com/guardian/editorial-tools"
 
 lazy val dependencies = Seq(
-  "com.amazonaws" % "aws-java-sdk" % "1.11.259",
+  "com.amazonaws" % "aws-java-sdk" % "1.11.678",
   "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
   "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
   "com.gu" %% "editorial-permissions-client" % "0.2",
