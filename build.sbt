@@ -17,19 +17,19 @@ scalacOptions ++= Seq(
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.11.678",
   "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
-  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
+  "com.gu" %% "pan-domain-auth-play_2-5" % "0.5.1",
   "com.gu" %% "editorial-permissions-client" % "0.2",
   ws, // for panda
   "org.cvogt" %% "play-json-extensions" % "0.6.0",
   "com.squareup.okhttp3" % "okhttp" % "3.9.0",
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client-default" % "14.2",
-  "com.gu" %% "tags-thrift-schema" % "2.7.0",
+  "com.gu" %% "tags-thrift-schema" % "2.8.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac" % "1.3.0",
+  "com.gu"  %% "panda-hmac-play_2-5" % "1.3.1",
   "com.gu" %% "content-api-client-aws" % "0.5",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
