@@ -14,8 +14,6 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-resolvers += "Guardian Bintray" at "https://dl.bintray.com/guardian/editorial-tools"
-
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.11.678",
   "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
