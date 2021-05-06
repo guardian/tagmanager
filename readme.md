@@ -7,6 +7,10 @@ interesting content. Tags can be mapped which allows them to magically show rich
 systems on relevant pages. Everyone loves tags.
 
 The tag manager allows the tags to be ... er ... managed
+
+### Useful Links
+- [Explainer video on 'book tags'](https://drive.google.com/file/d/1eIG_OjIm__moIGzyA8l4aSUBZ0_9ciz5/view)
+
  
 Running
 =======
