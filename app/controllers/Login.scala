@@ -1,10 +1,22 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
+import play.api.Logging
 import play.api.mvc._
-import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
 
-object Login extends Controller with PanDomainAuthActions {
+import scala.concurrent.{ExecutionContext, Future}
+import play.api.libs.ws.WSClient
+
+class Login(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with PanDomainAuthActions
+  with Logging {
 
   def reauth = AuthAction {
     Ok("auth ok")
