@@ -26,7 +26,8 @@ class AppComponents(context: Context, config: Config)
     new controllers.App(wsClient, controllerComponents, panDomainSettings),
     new controllers.TagManagementApi(wsClient, controllerComponents, panDomainSettings),
     new controllers.Reindex(wsClient, controllerComponents),
-    new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings)
+    new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings),
+    new controllers.ReadOnlyApi(wsClient, controllerComponents)
   )
 
 }

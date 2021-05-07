@@ -2,12 +2,23 @@ package controllers
 
 import helpers.XmlHelpers._
 import model.{Create, Delete, Merge, Section}
-import play.api.mvc.{Action, Controller}
+import play.api.Logging
+import play.api.libs.ws.WSClient
+import play.api.mvc.{BaseController, ControllerComponents}
 import repositories._
 
+import scala.concurrent.ExecutionContext
 import scala.xml.Node
 
-object ReadOnlyApi extends Controller {
+class ReadOnlyApi(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with Logging {
+
   def getTagsAsXml() = Action {
     val tags = TagLookupCache.allTags
 
