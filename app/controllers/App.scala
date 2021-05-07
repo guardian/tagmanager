@@ -1,18 +1,29 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model.ClientConfig
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
-import repositories.{TagSearchCriteria, TagRepository}
-import play.api.Logger
+import play.api.mvc.{BaseController, ControllerComponents}
+import repositories.{TagRepository, TagSearchCriteria}
+import play.api.Logging
 import services.Config
 import com.gu.tagmanagement.TagType
 import permissions._
+import play.api.libs.ws.WSClient
 
-import play.api.libs.concurrent.Execution.Implicits._
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.ExecutionContext
 
-object App extends Controller with PanDomainAuthActions {
+class App(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with PanDomainAuthActions
+  with Logging {
 
   def index(id: String = "") = AuthAction.async { req =>
 
@@ -59,7 +70,7 @@ object App extends Controller with PanDomainAuthActions {
   }
 
   def hello = AuthAction {
-    Logger.info("saying hello")
+    logger.info("saying hello")
     Ok(views.html.Application.hello("Hello world"))
   }
 
