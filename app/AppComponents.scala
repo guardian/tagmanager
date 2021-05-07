@@ -31,7 +31,8 @@ class AppComponents(context: Context, config: Config)
     new controllers.ReadOnlyApi(wsClient, controllerComponents),
     new controllers.Login(wsClient, controllerComponents, panDomainSettings),
     new controllers.Management(wsClient, controllerComponents),
-    assets
+    assets,
+    new controllers.Support(wsClient, controllerComponents, panDomainSettings)
   )
 
 }
