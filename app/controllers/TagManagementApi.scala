@@ -1,5 +1,6 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model._
 import model.command.CommandError._
 import model.command._
@@ -7,17 +8,27 @@ import model.jobs.JobRunner
 import org.joda.time.{DateTime, DateTimeZone}
 import permissions._
 import play.api.libs.json._
-import play.api.mvc.{Controller, Result}
+import play.api.mvc.{BaseController, ControllerComponents, Result}
 import repositories._
-import play.api.libs.concurrent.Execution.Implicits._
 import services.Config
 import helpers.CORSable
 import model.forms.{FilterTypes, GetSpreadSheet}
+import play.api.Logging
+import play.api.libs.ws.WSClient
 import services.Config.conf
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object TagManagementApi extends Controller with PanDomainAuthActions {
+class TagManagementApi(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+    with PanDomainAuthActions
+    with Logging {
 
   def getTag(id: Long) = APIAuthAction {
 
