@@ -28,7 +28,8 @@ class AppComponents(context: Context, config: Config)
     new controllers.Reindex(wsClient, controllerComponents),
     new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings),
     new controllers.ReadOnlyApi(wsClient, controllerComponents),
-    new controllers.Login(wsClient, controllerComponents, panDomainSettings)
+    new controllers.Login(wsClient, controllerComponents, panDomainSettings),
+    new controllers.Management(wsClient, controllerComponents)
   )
 
 }
