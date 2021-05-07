@@ -24,7 +24,8 @@ class AppComponents(context: Context, config: Config)
   lazy val router: Router = new Routes(
     httpErrorHandler,
     new controllers.App(wsClient, controllerComponents, panDomainSettings),
-    new controllers.TagManagementApi(wsClient, controllerComponents, panDomainSettings)
+    new controllers.TagManagementApi(wsClient, controllerComponents, panDomainSettings),
+    new controllers.Reindex(wsClient, controllerComponents)
   )
 
 }

@@ -2,13 +2,22 @@ package controllers
 
 import model.command.CommandError._
 import model.command.{ReindexPillarsCommand, ReindexSectionsCommand, ReindexTagsCommand}
-import play.api.mvc.{Action, Controller}
+import play.api.Logging
+import play.api.mvc.{BaseController, ControllerComponents}
 import repositories.ReindexProgressRepository
-import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.ws.WSClient
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object Reindex extends Controller {
+class Reindex(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with Logging {
+
   def reindexTags = Action.async { req =>
     ReindexProgressRepository.isTagReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
