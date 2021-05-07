@@ -1,4 +1,5 @@
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
+import controllers.AssetsComponents
 import play.api.ApplicationLoader.Context
 import play.api.BuiltInComponentsFromContext
 import play.api.libs.ws.ahc.AhcWSComponents
@@ -9,6 +10,7 @@ import services._
 
 class AppComponents(context: Context, config: Config)
   extends BuiltInComponentsFromContext(context)
+  with AssetsComponents
   with AhcWSComponents
   with HttpFiltersComponents {
 
@@ -20,7 +22,6 @@ class AppComponents(context: Context, config: Config)
     s3Client = AWS.S3Client,
   )
 
-
   lazy val router: Router = new Routes(
     httpErrorHandler,
     new controllers.App(wsClient, controllerComponents, panDomainSettings),
@@ -29,7 +30,8 @@ class AppComponents(context: Context, config: Config)
     new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings),
     new controllers.ReadOnlyApi(wsClient, controllerComponents),
     new controllers.Login(wsClient, controllerComponents, panDomainSettings),
-    new controllers.Management(wsClient, controllerComponents)
+    new controllers.Management(wsClient, controllerComponents),
+    assets
   )
 
 }
