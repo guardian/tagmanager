@@ -25,7 +25,8 @@ class AppComponents(context: Context, config: Config)
     httpErrorHandler,
     new controllers.App(wsClient, controllerComponents, panDomainSettings),
     new controllers.TagManagementApi(wsClient, controllerComponents, panDomainSettings),
-    new controllers.Reindex(wsClient, controllerComponents)
+    new controllers.Reindex(wsClient, controllerComponents),
+    new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings)
   )
 
 }
