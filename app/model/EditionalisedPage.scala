@@ -1,6 +1,7 @@
 package model
 
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import com.gu.tagmanagement.{EditionalisedPage => ThriftEditionalisedPage}
 
 case class EditionalisedPage(path: String, pageId: Long) {

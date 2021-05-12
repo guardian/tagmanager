@@ -2,8 +2,9 @@ package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import helpers.XmlHelpers._
-import org.cvogt.play.json.Jsonx
-import org.cvogt.play.json.implicits.optionWithNull
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
+import ai.x.play.json.implicits.optionWithNull
 import play.api.Logger
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
 import com.gu.tagmanagement.{Section => ThriftSection}

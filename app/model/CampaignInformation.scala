@@ -1,7 +1,8 @@
 package model
 
 import play.api.libs.json._
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import com.gu.tagmanagement.{CampaignInformation => ThriftCampaignInformation}
 
 case class CampaignInformation(campaignType: String) {

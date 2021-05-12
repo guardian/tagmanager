@@ -2,7 +2,8 @@ package model.command
 
 import model.command.CommandError._
 import model.jobs.JobHelper
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import repositories._
 import services.Contexts
 

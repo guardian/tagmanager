@@ -4,8 +4,11 @@ import com.gu.tagmanagement.{EventType, SectionEvent, TagEvent}
 import model.command.logic.{SponsorshipStatusCalculator, TagPathCalculator}
 import model._
 import org.apache.commons.lang3.StringUtils
-import org.cvogt.play.json.Jsonx
-import org.cvogt.play.json.implicits.optionWithNull
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
+import ai.x.play.json.implicits.optionWithNull
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}

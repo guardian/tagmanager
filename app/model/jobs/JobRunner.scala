@@ -7,6 +7,8 @@ import play.api.inject.ApplicationLifecycle
 
 import scala.concurrent.Future
 import javax.inject._
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
 
 import scala.concurrent.duration._

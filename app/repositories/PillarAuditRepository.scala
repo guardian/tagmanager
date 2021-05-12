@@ -2,6 +2,8 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.PillarAudit
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, Duration, ReadableDuration}
 import services.Dynamo
 

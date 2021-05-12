@@ -3,10 +3,13 @@ package model.jobs
 import com.amazonaws.services.dynamodbv2.document.Item
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import model.jobs.steps._
 import model.{AppAudit, Tag, TagAudit}
 import repositories._
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
 import scala.util.control.NonFatal
 

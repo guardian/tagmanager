@@ -2,6 +2,8 @@ package model;
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import org.joda.time.DateTime
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, JsPath, Format}
 import play.api.Logger
@@ -40,7 +42,7 @@ object AppAudit {
   def reindexSections()(implicit username: Option[String] = None): AppAudit = {
     AppAudit("reindexSections", new DateTime(), username.getOrElse("default user"), "section reindex started");
   }
-  
+
   def reindexPillars()(implicit username: Option[String] = None): AppAudit = {
     AppAudit("reindexPillars", new DateTime(), username.getOrElse("default user"), "pillar reindex started");
   }

@@ -3,6 +3,8 @@ package repositories
 import com.amazonaws.services.dynamodbv2.document.ScanFilter
 import model.Sponsorship
 import org.joda.time.DateTime
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import services.Dynamo
 
 import scala.collection.JavaConversions._

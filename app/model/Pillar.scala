@@ -1,7 +1,8 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import play.api.Logger
 import play.api.libs.json.{Format, Json}
 import com.gu.tagmanagement.{Pillar => ThriftPillar}

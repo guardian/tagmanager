@@ -1,7 +1,8 @@
 package model;
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
 import play.api.Logger
 import scala.util.control.NonFatal
@@ -52,7 +53,7 @@ object ReindexProgress {
   def progressSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, InProgress, docsSent, docsExpected)
   }
-  
+
   def progressPillar(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(PillarTypeName, InProgress, docsSent, docsExpected)
   }
@@ -64,7 +65,7 @@ object ReindexProgress {
   def completeSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Completed, docsSent, docsExpected)
   }
-  
+
   def completePillar(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(PillarTypeName, Completed, docsSent, docsExpected)
   }
@@ -76,7 +77,7 @@ object ReindexProgress {
   def failSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Failed, docsSent, docsExpected)
   }
-  
+
   def failPillar(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(PillarTypeName, Failed, docsSent, docsExpected)
   }

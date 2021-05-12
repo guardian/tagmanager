@@ -2,6 +2,8 @@ package model.command
 
 import com.gu.tagmanagement._
 import model.{DenormalisedTag, SectionAudit, Tag, TagAudit}
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import repositories._
@@ -55,7 +57,7 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
         }
       }
     }
-    
+
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
     existingTag foreach {(existing) =>

@@ -1,7 +1,8 @@
 package model.jobs.steps
 
 import model.{Section, Tag}
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import repositories._
 import play.api.Logger
 import play.api.libs.json._
