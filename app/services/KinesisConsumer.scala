@@ -11,16 +11,16 @@ import com.amazonaws.services.kinesis.model.Record
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
 import org.apache.thrift.protocol.{TCompactProtocol, TProtocol}
 import org.apache.thrift.transport.TIOStreamTransport
-import play.api.Logger
+import play.api.Logging
 
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
 
-class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) {
+class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) extends Logging {
 
-  Logger.info(s"Creating Kinesis Consumer for (streamName: $streamName, appName: $appName)")
+  logger.info(s"Creating Kinesis Consumer for (streamName: $streamName, appName: $appName)")
 
   val kinesisClientLibConfiguration =
     new KinesisClientLibConfiguration(appName, streamName,
@@ -45,21 +45,21 @@ class KinesisProcessorConsumerFactory(appName: String, processor: KinesisStreamR
   override def createProcessor(): IRecordProcessor = new KinesisProcessorConsumer(appName, processor)
 }
 
-class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessor {
+class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessor with Logging {
 
 
   override def shutdown(shutdownInput: ShutdownInput): Unit = {
     shutdownInput.getShutdownReason match {
       case ShutdownReason.TERMINATE => {
-        Logger.info(s"terminating $appName consumer")
+        logger.info(s"terminating $appName consumer")
         //shutdownInput.getCheckpointer.checkpoint
       }
-      case _ => Logger.info(s"shutting down $appName consumer reason = ${shutdownInput.getShutdownReason}")
+      case _ => logger.info(s"shutting down $appName consumer reason = ${shutdownInput.getShutdownReason}")
     }
   }
 
   override def initialize(initializationInput: InitializationInput): Unit = {
-    Logger.info(s"$appName consumer started for shard ${initializationInput.getShardId}")
+    logger.info(s"$appName consumer started for shard ${initializationInput.getShardId}")
   }
 
   override def processRecords(processRecordsInput: ProcessRecordsInput): Unit = {

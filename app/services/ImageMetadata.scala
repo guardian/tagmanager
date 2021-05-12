@@ -5,7 +5,7 @@ import java.io.{ByteArrayInputStream, File}
 import javax.imageio.ImageIO
 import java.security.MessageDigest
 
-import play.api.Logger
+import play.api.Logging
 import okhttp3.Request.Builder
 import okhttp3.OkHttpClient
 import play.api.libs.functional.syntax._
@@ -31,7 +31,7 @@ sealed trait MetadataError
 case class FetchError(errMsg: String) extends MetadataError
 case class InvalidImage(errMsg: String) extends MetadataError
 
-object ImageMetadataService {
+object ImageMetadataService extends Logging {
 
   val httpClient = new OkHttpClient()
 
@@ -64,7 +64,7 @@ object ImageMetadataService {
       }
       case c => {
         val body = response.body
-        Logger.warn(s"failed to get image metadata for $uri. response code $c, message $body")
+        logger.warn(s"failed to get image metadata for $uri. response code $c, message $body")
         Left(FetchError(s"failed to get image for $uri. response code $c, message $body"))
       }
     }

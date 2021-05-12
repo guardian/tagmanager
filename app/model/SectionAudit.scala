@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import org.joda.time.DateTime
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
 
@@ -26,7 +26,7 @@ case class SectionAudit(
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
-object SectionAudit {
+object SectionAudit extends Logging {
 
   implicit val sectionAuditFormat: Format[SectionAudit] = (
     (JsPath \ "sectionId").format[Long] and
@@ -41,7 +41,7 @@ object SectionAudit {
     Json.parse(item.toJSON).as[SectionAudit]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load section Audit ${item.toJSON}", e)
+      logger.error(s"failed to load section Audit ${item.toJSON}", e)
       throw e
     }
   }

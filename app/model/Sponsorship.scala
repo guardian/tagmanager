@@ -7,7 +7,7 @@ import ai.x.play.json.implicits.optionWithNull
 import org.joda.time.DateTime
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import repositories.{SectionRepository, TagRepository, TagLookupCache}
@@ -59,7 +59,7 @@ case class Sponsorship (
   )
 }
 
-object Sponsorship {
+object Sponsorship extends Logging {
 
   implicit val sponsorshipFormat: Format[Sponsorship] = Jsonx.formatCaseClass[Sponsorship]
 
@@ -69,7 +69,7 @@ object Sponsorship {
     Json.parse(item.toJSON).as[Sponsorship]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load sponsorship ${item.toJSON}", e)
+      logger.error(s"failed to load sponsorship ${item.toJSON}", e)
       throw e
     }
   }

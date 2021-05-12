@@ -4,20 +4,27 @@ import com.gu.tagmanagement.{PillarEvent, PillarEventType}
 import model.Pillar
 
 import scala.concurrent.duration._
-import play.api.Logger
+import play.api.Logging
 import services.KinesisStreams
 import repositories._
 
 import scala.util.control.NonFatal
 import model.jobs.{Step, StepStatus}
 
-case class ReindexPillars(`type`: String = ReindexPillars.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class ReindexPillars(
+  `type`: String = ReindexPillars.`type`,
+  var stepStatus: String = StepStatus.ready,
+  var stepMessage: String = "Waiting",
+  var attempts: Int = 0
+) extends Step
+  with Logging {
+
   override def process = {
     val pillars = PillarRepository.loadAllPillars.toList
     val total = pillars.size
     var progress: Int = 0
 
-    Logger.info("Starting pillar reindex")
+    logger.info("Starting pillar reindex")
     try {
       pillars.foreach { pillar =>
         val pillarEvent = PillarEvent(
@@ -33,7 +40,7 @@ case class ReindexPillars(`type`: String = ReindexPillars.`type`, var stepStatus
       ReindexProgressRepository.completePillarReindex(progress, total)
     } catch {
       case NonFatal(e) => {
-        Logger.error("Pillar reindex failed", e)
+        logger.error("Pillar reindex failed", e)
         ReindexProgressRepository.failPillarReindex(progress, total)
         // We need to rethrow the failure to make sure the jobrunner is aware we failed
         throw e

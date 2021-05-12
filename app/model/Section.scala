@@ -5,7 +5,7 @@ import helpers.XmlHelpers._
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.implicits.optionWithNull
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
 import com.gu.tagmanagement.{Section => ThriftSection}
 import repositories.SponsorshipRepository
@@ -57,14 +57,14 @@ case class Section(
   }
 }
 
-object Section {
+object Section extends Logging {
 
   implicit val sectionFormat: Format[Section] = Jsonx.formatCaseClassUseDefaults[Section]
 
   def fromItem(item: Item) = try{
     Json.parse(item.toJSON).as[Section]
   } catch {
-    case NonFatal(e) => Logger.error(s"failed to load section ${item.toJSON}", e); throw e
+    case NonFatal(e) => logger.error(s"failed to load section ${item.toJSON}", e); throw e
 
   }
 

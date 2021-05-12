@@ -4,9 +4,9 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.implicits.optionWithNull
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsValue, Json, JsPath, Format}
+import play.api.libs.json.{Format, JsPath, JsValue, Json}
 import com.gu.tagmanagement.{Section => ThriftSection}
 
 import scala.util.control.NonFatal
@@ -18,14 +18,14 @@ case class ExternalReferenceType (
                     capiType: Option[String]
                   )
 
-object ExternalReferenceType {
+object ExternalReferenceType extends Logging {
 
   implicit val sectionFormat = Jsonx.formatCaseClass[ExternalReferenceType]
 
   def fromItem(item: Item) = try{
     Json.parse(item.toJSON).as[ExternalReferenceType]
   } catch {
-    case NonFatal(e) => Logger.error(s"failed to load external reference type ${item.toJSON}", e); throw e
+    case NonFatal(e) => logger.error(s"failed to load external reference type ${item.toJSON}", e); throw e
   }
 
   def fromJson(json: JsValue) = json.as[ExternalReferenceType]

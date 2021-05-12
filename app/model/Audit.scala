@@ -4,11 +4,11 @@ import net.logstash.logback.marker.Markers
 import org.joda.time.DateTime
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
-import play.api.Logger
+import play.api.Logging
 
 import scala.collection.JavaConverters._
 
-trait Audit {
+trait Audit extends Logging {
   def user: String
   def operation: String
   def description: String
@@ -19,7 +19,7 @@ trait Audit {
   def resourceId: Option[String]
   def message: Option[String]
 
-  def logAudit = Logger.logger.info(createMarkers(), "Tag Manager Audit")
+  def logAudit = logger.logger.info(createMarkers(), "Tag Manager Audit")
 
   private def createMarkers() =
     Markers.appendEntries((

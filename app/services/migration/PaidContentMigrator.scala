@@ -4,13 +4,13 @@ import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.FlexTagReindexCommand
 import model.command.logic.SponsorshipStatusCalculator
 import model.{TagAudit, PaidContentInformation, Sponsorship}
-import play.api.Logger
+import play.api.Logging
 import repositories.{SectionRepository, TagAuditRepository, SponsorshipRepository, TagRepository}
 import services.KinesisStreams
 
 class AbortItemMigrationException extends RuntimeException
 
-object PaidContentMigrator {
+object PaidContentMigrator extends Logging {
 
   // NB sponsorships will arrive with ids but the status will not have been set. They are not persisted at this point.
   def migrate(sponsorship: Sponsorship): Unit = {
@@ -20,10 +20,10 @@ object PaidContentMigrator {
 
     tags foreach { t =>
       try {
-        Logger.info(s"migrating tag ${t.internalName} to paid content type")
+        logger.info(s"migrating tag ${t.internalName} to paid content type")
 
 //        if (sponsorship.sponsorshipType != "paidContent") {
-//          Logger.info(s"sponsorship provided is not a paid content type, aborting")
+//          logger.info(s"sponsorship provided is not a paid content type, aborting")
 //          throw new AbortItemMigrationException
 //        }
 

@@ -14,7 +14,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories._
 import CommandError._
-import play.api.Logger
+import play.api.Logging
 import services.{Contexts, KinesisStreams}
 
 import scala.concurrent.Future
@@ -83,7 +83,7 @@ case class CreateTagCommand(
                       createMicrosite: Boolean = false,
                       adBlockingLevel: Option[BlockingLevel] = None,
                       contributionBlockingLevel: Option[BlockingLevel] = None
-                           ) extends Command {
+                           ) extends Command with Logging {
 
   type T = Tag
 
@@ -91,7 +91,7 @@ case class CreateTagCommand(
 
     val tagId = Sequences.tagId.getNextId
 
-    Logger.info(s"Create Tag command process started for tagid: $tagId")
+    logger.info(s"Create Tag command process started for tagid: $tagId")
 
     val sectionId: Option[Long] = if(createMicrosite) {
 
@@ -186,7 +186,7 @@ case class CreateTagCommand(
 
     val tagUpdateEvent = TagEvent(EventType.Update, tag.id, Some(thriftTag))
 
-    Logger.info(s"Kiniesis producer publish tag-update event, tagEvent type: ${tagUpdateEvent.eventType}")
+    logger.info(s"Kiniesis producer publish tag-update event, tagEvent type: ${tagUpdateEvent.eventType}")
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, tagUpdateEvent)
 

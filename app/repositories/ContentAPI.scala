@@ -6,7 +6,7 @@ import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.contentapi.client.model._
-import play.api.Logger
+import play.api.Logging
 import services.{Config, Contexts}
 
 import scala.annotation.tailrec
@@ -16,7 +16,7 @@ import scala.language.postfixOps
 import scala.util.{Failure, Success, Try}
 
 
-object ContentAPI {
+object ContentAPI extends Logging {
 
   private implicit val executionContext = Contexts.capiContext
 
@@ -82,7 +82,7 @@ object ContentAPI {
       Await.result(response.map(_.tag), 5 seconds)
     } catch {
       case ContentApiError(404, _, _) =>
-        Logger.debug(s"No tag found for id $apiTagId")
+        logger.debug(s"No tag found for id $apiTagId")
         None
     }
   }
@@ -97,7 +97,7 @@ object ContentAPI {
 
   @tailrec
   def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
+    logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
     val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
@@ -113,7 +113,7 @@ object ContentAPI {
 
   @tailrec
   def getDraftContentIdsForSection(apiSectionId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.debug(s"Loading page $page of contentent ids for section $apiSectionId")
+    logger.debug(s"Loading page $page of contentent ids for section $apiSectionId")
     val response = previewApiClient.getResponse(SearchQuery().section(apiSectionId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)

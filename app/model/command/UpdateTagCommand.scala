@@ -5,21 +5,21 @@ import model.{DenormalisedTag, SectionAudit, Tag, TagAudit}
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.Logger
+import play.api.Logging
 import repositories._
 import services.{Contexts, KinesisStreams}
 
 import scala.concurrent.Future
 
 
-case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
+case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command with Logging {
 
   type T = Tag
 
   override def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future{
     val (tag, sponsorship) = denormalisedTag.normalise()
 
-    Logger.info(s"updating tag ${tag.id}")
+    logger.info(s"updating tag ${tag.id}")
     tag.updatedAt = new DateTime(DateTimeZone.UTC).getMillis
 
     val existingTag = TagRepository.getTag(tag.id)
@@ -41,13 +41,13 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     }
 
     if (tag.`type` == "PaidContent" && tag.externalName != existingTag.map(_.externalName).getOrElse("")) {
-      Logger.debug("paid content tag name changed, checking checking section")
+      logger.debug("paid content tag name changed, checking checking section")
       for (
         sectionId <- tag.section;
         section <- SectionRepository.getSection(sectionId)
         if(section.sectionTagId == tag.id)
       ) {
-        Logger.info(s"microsite's primary paidContent tag external name updated, updating section name (tag ${tag.id}, section ${sectionId} name ${tag.externalName})")
+        logger.info(s"microsite's primary paidContent tag external name updated, updating section name (tag ${tag.id}, section ${sectionId} name ${tag.externalName})")
         val renamedSection = section.copy(name = tag.externalName)
         val updatedSection = SectionRepository.updateSection(renamedSection)
 
@@ -62,7 +62,7 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
 
     existingTag foreach {(existing) =>
       if (tag.externalReferences != existing.externalReferences) {
-        Logger.info("Detected references change, triggering reindex")
+        logger.info("Detected references change, triggering reindex")
         FlexTagReindexCommand(tag).process
       }
     }

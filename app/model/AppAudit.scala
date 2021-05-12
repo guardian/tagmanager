@@ -6,7 +6,7 @@ import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, JsPath, Format}
-import play.api.Logger
+import play.api.Logging
 import scala.util.control.NonFatal
 
 case class AppAudit(action: String, date: DateTime, user: String, description: String) extends Audit {
@@ -18,7 +18,7 @@ case class AppAudit(action: String, date: DateTime, user: String, description: S
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
-object AppAudit {
+object AppAudit extends Logging {
   implicit val appAuditFormat: Format[AppAudit] = (
     (JsPath \ "action").format[String] and
       (JsPath \ "date").format[DateTime] and
@@ -30,7 +30,7 @@ object AppAudit {
     Json.parse(item.toJSON).as[AppAudit]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load app Audit ${item.toJSON}", e)
+      logger.error(s"failed to load app Audit ${item.toJSON}", e)
       throw e
     }
   }

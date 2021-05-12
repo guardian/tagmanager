@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
-import play.api.Logger
+import play.api.Logging
 import scala.util.control.NonFatal
 
 case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsExpected: Int) {
@@ -12,7 +12,7 @@ case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsEx
   def toCapiForm() = CapiReindexProgress(status, docsSent, docsExpected)
 }
 
-object ReindexProgress {
+object ReindexProgress extends Logging {
   val TagTypeName = "tag"
   val SectionTypeName = "section"
   val PillarTypeName = "pillar"
@@ -29,7 +29,7 @@ object ReindexProgress {
     Json.parse(item.toJSON).as[ReindexProgress]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load reindex progress ${item.toJSON}")
+      logger.error(s"failed to load reindex progress ${item.toJSON}")
       throw e
     }
   }

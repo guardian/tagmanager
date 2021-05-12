@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import org.joda.time.DateTime
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
 
@@ -26,7 +26,7 @@ case class PillarAudit(
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
-object PillarAudit {
+object PillarAudit extends Logging {
 
   implicit val pillarAuditFormat: Format[PillarAudit] = (
     (JsPath \ "pillarId").format[Long] and
@@ -41,7 +41,7 @@ object PillarAudit {
     Json.parse(item.toJSON).as[PillarAudit]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load pillar Audit ${item.toJSON}", e)
+      logger.error(s"failed to load pillar Audit ${item.toJSON}", e)
       throw e
     }
   }

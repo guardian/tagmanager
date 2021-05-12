@@ -5,11 +5,11 @@ import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import play.api.Logger
+import play.api.Logging
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-trait Step {
+trait Step extends Logging {
   // Inner details
   /** Do work. */
   protected def process
@@ -28,7 +28,7 @@ trait Step {
       doneProcessing
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"Error thrown during step processing: ${e}")
+        logger.error(s"Error thrown during step processing: ${e}")
         processFailed
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
@@ -48,7 +48,7 @@ trait Step {
       }
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"Error thrown during step check: ${e}")
+        logger.error(s"Error thrown during step check: ${e}")
         checkFailed
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
@@ -117,7 +117,7 @@ trait Step {
   }
 }
 
-object Step {
+object Step extends Logging {
 
   private val retryLimit = 10000
 
@@ -145,7 +145,7 @@ object Step {
         case s: RemoveTagFromContent => removeTagFromContentFormat.writes(s)
         case s: RemoveTagPath        => removeTagPathFormat.writes(s)
         case other => {
-          Logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
+          logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
           throw new UnsupportedOperationException(s"unable to serialize step of type ${other.getClass}")
         }
       }

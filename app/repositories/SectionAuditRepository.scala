@@ -5,7 +5,7 @@ import model.SectionAudit
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, Duration, ReadableDuration}
-import play.api.Logger
+import play.api.Logging
 import services.Dynamo
 
 import scala.collection.JavaConversions._

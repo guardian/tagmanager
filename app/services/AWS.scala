@@ -15,7 +15,7 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.util.EC2MetadataUtils
 import com.twitter.scrooge.ThriftStruct
-import play.api.Logger
+import play.api.Logging
 
 import scala.collection.JavaConverters._
 
@@ -77,7 +77,7 @@ object SQS {
   lazy val jobQueue = new SQSQueue(Config().jobQueueName)
 }
 
-class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean = false) {
+class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean = false) extends Logging {
 
   def publishUpdate(key: String, data: String) {
     publishUpdate(key, ByteBuffer.wrap(data.getBytes("UTF-8")))
@@ -88,7 +88,7 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
   }
 
   def publishUpdate(key: String, struct: ThriftStruct) {
-    Logger.info(s"Kinesis Producer publishUpdate for streamName: $streamName")
+    logger.info(s"Kinesis Producer publishUpdate for streamName: $streamName")
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(struct, requireCompressionByte)
     publishUpdate(key, ByteBuffer.wrap(thriftKinesisEvent))
   }

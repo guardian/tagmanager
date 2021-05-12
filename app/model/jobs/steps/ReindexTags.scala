@@ -4,19 +4,26 @@ import model.{Section, Tag}
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import repositories._
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json._
 import services.{Config, KinesisStreams}
 import scala.util.control.NonFatal
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
 
-case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class ReindexTags(
+  `type`: String = ReindexTags.`type`,
+  var stepStatus: String = StepStatus.ready,
+  var stepMessage: String = "Waiting",
+  var attempts: Int = 0
+) extends Step
+  with Logging {
+
   override def process = {
     val total = TagLookupCache.allTags.get.size
     var progress: Int = 0
 
-    Logger.info("Starting tag reindex")
+    logger.info("Starting tag reindex")
     try {
       TagRepository.loadAllTags.grouped(Config().reindexTagsBatchSize).foreach { tags =>
         KinesisStreams.reindexTagsStream.publishUpdate("tagReindex", Tag.createReindexBatch(tags.toList))
@@ -28,7 +35,7 @@ case class ReindexTags(`type`: String = ReindexTags.`type`, var stepStatus: Stri
       ReindexProgressRepository.completeTagReindex(progress, total)
     } catch {
       case NonFatal(e) => {
-        Logger.error("Tag reindex failed", e)
+        logger.error("Tag reindex failed", e)
         ReindexProgressRepository.failTagReindex(progress, total)
 
         // We need to rethrow the failure to make sure the jobrunner is aware we failed

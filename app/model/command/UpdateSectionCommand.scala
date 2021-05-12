@@ -2,19 +2,19 @@ package model.command
 
 import com.gu.tagmanagement.{EventType, SectionEvent}
 import model.{Section, SectionAudit}
-import play.api.Logger
+import play.api.Logging
 import repositories.{SectionAuditRepository, SectionRepository}
 import services.{Contexts, KinesisStreams}
 
 import scala.concurrent.Future
 
 
-case class UpdateSectionCommand(section: Section) extends Command {
+case class UpdateSectionCommand(section: Section) extends Command with Logging {
 
   type T = Section
 
   override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future{
-    Logger.info(s"updating section ${section.id}")
+    logger.info(s"updating section ${section.id}")
 
     val result = SectionRepository.updateSection(section)
 

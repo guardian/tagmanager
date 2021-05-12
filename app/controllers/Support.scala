@@ -14,7 +14,7 @@ import org.joda.time.DateTime
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import permissions.ModifySectionExpiryPermissionsCheck
-import play.api.{Logger, Logging}
+import play.api.Logging
 import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{BaseController, ControllerComponents}

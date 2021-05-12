@@ -5,14 +5,23 @@ import model.{Section, Tag, TagAudit}
 
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
-import play.api.Logger
+import play.api.Logging
 import services.KinesisStreams
 import repositories.{ContentAPI, TagAuditRepository}
 
 import scala.language.postfixOps
 
-case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: List[String],
-  `type`: String = RemoveTagFromContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class RemoveTagFromContent(
+  tag: Tag,
+  section: Option[Section],
+  contentIds: List[String],
+  `type`: String = RemoveTagFromContent.`type`,
+  var stepStatus: String = StepStatus.ready,
+  var stepMessage: String = "Waiting",
+  var attempts: Int = 0
+) extends Step
+  with Logging {
+
   override def process = {
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
@@ -21,7 +30,7 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(128), taggingOperation)
-      Logger.info(s"raising ${OperationType.Remove} for ${tag.id} on $contentPath operation")
+      logger.info(s"raising ${OperationType.Remove} for ${tag.id} on $contentPath operation")
     }
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, "remove", contentIds.length))
   }
@@ -32,7 +41,7 @@ case class RemoveTagFromContent(tag: Tag, section: Option[Section], contentIds: 
 
   override def check: Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
-    Logger.info(s"Checking tags removed from content. Expected=0 Actual=$count")
+    logger.info(s"Checking tags removed from content. Expected=0 Actual=$count")
     if (count == 0) {
       true
     } else {

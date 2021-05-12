@@ -6,7 +6,7 @@ import javax.inject.{Inject, Singleton}
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManager}
 import model.Sponsorship
-import play.api.Logger
+import play.api.Logging
 import play.api.inject.ApplicationLifecycle
 import play.api.libs.concurrent.Execution.Implicits._
 import repositories.SponsorshipOperations._
@@ -16,11 +16,11 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 @Singleton
-class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) {
+class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) extends Logging {
 
   import scala.collection.convert.wrapAll._
 
-  Logger.info("Starting sponsorship lifecycle jobs")
+  logger.info("Starting sponsorship lifecycle jobs")
   lazy val scheduledJobs = List(new SponsorshipLauncher, new SponsorshipExpirer)
 
   lazy val serviceManager = new ServiceManager(scheduledJobs)
@@ -31,26 +31,26 @@ class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) {
 
 
   def stop: Unit = {
-    Logger.info("stopping sponsorship lifecycle jobs")
-    Logger.info("Requesting stop...")
+    logger.info("stopping sponsorship lifecycle jobs")
+    logger.info("Requesting stop...")
     serviceManager.stopAsync()
-    Logger.info("Awaiting stop...")
+    logger.info("Awaiting stop...")
     serviceManager.awaitStopped(10, TimeUnit.SECONDS)
-    Logger.info("Stopped")
+    logger.info("Stopped")
   }
 
 }
 
-class SponsorshipLauncher extends AbstractScheduledService {
+class SponsorshipLauncher extends AbstractScheduledService with Logging {
   override def runOneIteration(): Unit = try {
     implicit val username = Some("Sponsorship launcher")
-    Logger.debug("checking for sponsorships to launch")
+    logger.debug("checking for sponsorships to launch")
 
     val sponsorships = SponsorshipRepository.getSponsorshipsToActivate
 
     sponsorships foreach { s =>
       try {
-        Logger.info(s"activating sponsorship ${s.sponsorName} ${s.id}")
+        logger.info(s"activating sponsorship ${s.sponsorName} ${s.id}")
         val activated = s.copy(status = "active")
         SponsorshipRepository.updateSponsorship(activated)
 
@@ -72,38 +72,38 @@ class SponsorshipLauncher extends AbstractScheduledService {
           addSponsorshipToSection(s.id, sectionId)
         }
       } catch {
-        case NonFatal(e) => Logger.error("failed to activate sponsorship", e)
+        case NonFatal(e) => logger.error("failed to activate sponsorship", e)
       }
     }
   } catch {
-    case NonFatal(e) => Logger.error("failed to activate sponsorships", e)
+    case NonFatal(e) => logger.error("failed to activate sponsorships", e)
   }
 
   override def scheduler(): Scheduler = Scheduler.newFixedDelaySchedule(0, 1, TimeUnit.MINUTES)
 }
 
-class SponsorshipExpirer extends AbstractScheduledService {
+class SponsorshipExpirer extends AbstractScheduledService with Logging {
   implicit val username = Some("Sponsorship expirer")
 
   override def runOneIteration(): Unit = try {
 
-    Logger.debug("checking for sponsorships to expire")
+    logger.debug("checking for sponsorships to expire")
     val sponsorships = SponsorshipRepository.getSponsorshipsToExpire
 
     sponsorships foreach { s =>
       try {
-        Logger.info(s"expiring sponsorship ${s.sponsorName} ${s.id}")
+        logger.info(s"expiring sponsorship ${s.sponsorName} ${s.id}")
         if(s.sponsorshipType == "paidContent") {
           expirePaidContent(s)
         } else {
           expireSponsorship(s)
         }
       } catch {
-        case NonFatal(e) => Logger.error("failed to expire sponsorship", e)
+        case NonFatal(e) => logger.error("failed to expire sponsorship", e)
       }
     }
   } catch {
-    case NonFatal(e) => Logger.error("failed to expire sponsorships", e)
+    case NonFatal(e) => logger.error("failed to expire sponsorships", e)
   }
 
 

@@ -6,7 +6,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories._
 import CommandError._
-import play.api.Logger
+import play.api.Logging
 import services.KinesisStreams
 
 import scala.concurrent.Future
@@ -15,7 +15,7 @@ import services.Contexts.tagOperationContext
 case class CreatePillarCommand(
   name: String,
   path: String,
-  sectionIds: Seq[String] = Nil) extends Command {
+  sectionIds: Seq[String] = Nil) extends Command with Logging {
 
   type T = Pillar
 
@@ -24,7 +24,7 @@ case class CreatePillarCommand(
     val pageIdFuture: Future[Long] = Future { try { PathManager.registerPathAndGetPageId(path) } catch {
       case p: PathRegistrationFailed => PathInUse
       case e: Throwable =>
-        Logger.warn(s"Error using pathmanager for $path: ${e.getMessage}", e)
+        logger.warn(s"Error using pathmanager for $path: ${e.getMessage}", e)
         throw e
     }}
 

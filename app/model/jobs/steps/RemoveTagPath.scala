@@ -6,12 +6,20 @@ import scala.concurrent.duration._
 import model.Tag
 import model.jobs.{Step, StepStatus}
 import scala.util.control.NonFatal
-import play.api.Logger
+import play.api.Logging
 
-case class RemoveTagPath(var tag: Tag, `type`: String = RemoveTagPath.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class RemoveTagPath(
+  var tag: Tag,
+  `type`: String = RemoveTagPath.`type`,
+  var stepStatus: String = StepStatus.ready,
+  var stepMessage: String = "Waiting",
+  var attempts: Int = 0
+) extends Step
+  with Logging {
+
   override def process = {
       PathManager.removePathForId(tag.pageId)
-      Logger.info(s"Removing path for ${tag.id}")
+      logger.info(s"Removing path for ${tag.id}")
   }
 
   override def waitDuration: Option[Duration] = {

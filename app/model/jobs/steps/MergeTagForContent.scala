@@ -5,14 +5,24 @@ import model.{Section, Tag, TagAudit}
 
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
-import play.api.Logger
+import play.api.Logging
 import services.KinesisStreams
 import repositories._
 
 import scala.language.postfixOps
 
-case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], toSection: Option[Section], username: Option[String],
-  `type`: String = MergeTagForContent.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class MergeTagForContent(
+  from: Tag,
+  to: Tag,
+  fromSection: Option[Section],
+  toSection: Option[Section],
+  username: Option[String],
+  `type`: String = MergeTagForContent.`type`,
+  var stepStatus: String = StepStatus.ready,
+  var stepMessage: String = "Waiting",
+  var attempts: Int = 0
+) extends Step
+  with Logging {
 
   override def process = {
     val contentIds = ContentAPI.getContentIdsForTag(from.path)
@@ -25,7 +35,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
         destinationTag = Some(TagWithSection(to.asThrift, toSection.map(_.asThrift)))
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
-      Logger.info(s"raising merge tag ${from.path} -> ${to.path} for content $contentPath")
+      logger.info(s"raising merge tag ${from.path} -> ${to.path} for content $contentPath")
     }
 
     TagAuditRepository.upsertTagAudit(TagAudit.merged(to, from, username))
@@ -38,7 +48,7 @@ case class MergeTagForContent(from: Tag, to: Tag, fromSection: Option[Section], 
   override def check: Boolean = {
     val fromCount = ContentAPI.countContentWithTag(from.path)
 
-    Logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on $fromCount pieces of content.")
+    logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on $fromCount pieces of content.")
 
     // We're basically assuming here that if there's no 'from's left that everything has successfully merged.
     // The way flexible-feeds currently works means this is true.

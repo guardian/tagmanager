@@ -2,13 +2,13 @@ package permissions
 
 import com.gu.editorial.permissions.client.{PermissionAuthorisation, PermissionDenied, PermissionGranted}
 import com.gu.pandomainauth.action.UserRequest
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.{ActionFilter, Results}
 
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Future
 
-trait PermissionActionFilter extends ActionFilter[UserRequest] {
+trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
   val testAccess: String => Future[PermissionAuthorisation]
   val restrictedAction: String
 
@@ -19,7 +19,7 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
       testAccess(request.user.email).map {
         case PermissionGranted => None
         case PermissionDenied =>
-          Logger.info(s"user not authorized to $restrictedAction")
+          logger.info(s"user not authorized to $restrictedAction")
           Some(Results.Unauthorized)}
     }
 }

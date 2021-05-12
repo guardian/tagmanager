@@ -12,7 +12,7 @@ import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
 
 import scala.concurrent.duration._
-import play.api.Logger
+import play.api.Logging
 import repositories._
 import services.Dynamo
 
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 import scala.util.Random
 
 @Singleton
-class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
+class JobRunner @Inject() (lifecycle: ApplicationLifecycle) extends Logging {
   // Scheduler boiler plate
   val serviceManager = new ServiceManager(List(new JobRunnerScheduler(this)))
   lifecycle.addStopHook{ () => Future.successful(stop) }
@@ -40,7 +40,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
       run
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"An unexpected exception occurred in the job runner: ${e.getStackTrace}")
+        logger.error(s"An unexpected exception occurred in the job runner: ${e.getStackTrace}")
       }
     }
   }
@@ -62,7 +62,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
         } catch {
           case NonFatal(e) => {
             // This catch exists to prevent an unexpected failure knocking over the entire job runner
-            Logger.error(s"Background job failed on ${JobRunner.nodeId}. $e")
+            logger.error(s"Background job failed on ${JobRunner.nodeId}. $e")
           }
         } finally {
           job.checkIfComplete
@@ -82,7 +82,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle) {
       || job.jobStatus ==  JobStatus.failed
       || job.jobStatus == JobStatus.rolledback) {
         if (job.createdAt < new DateTime(DateTimeZone.UTC).getMillis - JobRunner.cleanUpMillis) {
-          Logger.info("Cleaning up old job: " + job.id)
+          logger.info("Cleaning up old job: " + job.id)
           JobRepository.deleteIfTerminal(job.id)
         }
         return false;
