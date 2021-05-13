@@ -33,7 +33,8 @@ lazy val dependencies = Seq(
   "com.gu" %% "content-api-client-aws" % "0.5",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-  "com.typesafe.play" %% "play-json-joda" % "2.8.1"
+  "com.typesafe.play" %% "play-json-joda" % "2.8.1",
+  "org.apache.commons" % "commons-lang3" % "3.11",
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb, JDebPackaging, SystemdPlugin)
