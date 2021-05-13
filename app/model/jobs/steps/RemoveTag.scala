@@ -1,11 +1,14 @@
 package model.jobs.steps
 
-import repositories.{TagRepository, TagAuditRepository}
+import repositories.{TagAuditRepository, TagRepository}
+
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 import model.jobs.{Step, StepStatus}
 import model.{Tag, TagAudit}
 import play.api.Logging
+
+import scala.concurrent.ExecutionContext
 
 case class RemoveTag(
   tag: Tag,
@@ -17,7 +20,7 @@ case class RemoveTag(
 ) extends Step
   with Logging {
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     TagRepository.deleteTag(tag.id)
     logger.info(s"Removing tag ${tag.id} from tag manager")
     TagAuditRepository.upsertTagAudit(TagAudit.deleted(tag, username))
@@ -27,7 +30,7 @@ case class RemoveTag(
     None
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     // No check to be done, TagRepository calls are synchronous so `process` will fail if we didn't delete
     true
   }

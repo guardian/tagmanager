@@ -3,10 +3,11 @@ package model.jobs
 import model.{AppAudit, BatchTagOperation, Tag, TagAudit}
 import model.jobs.steps._
 import repositories._
+import scala.concurrent.ExecutionContext
 
 /** Utilities for starting jobs */
 object JobHelper {
-  def buildBatchTagJob(contentIds: List[String], toAddToTop: Option[Tag], toAddToBottom: List[Tag], toRemove: List[Tag])(implicit username: Option[String]): Unit = {
+  def buildBatchTagJob(contentIds: List[String], toAddToTop: Option[Tag], toAddToBottom: List[Tag], toRemove: List[Tag])(implicit username: Option[String], ec: ExecutionContext): Unit = {
     def getSection(tag: Tag) = tag.section.flatMap(SectionRepository.getSection)
 
     val steps: List[ModifyContentTags] =
@@ -42,7 +43,7 @@ object JobHelper {
     }
   }
 
-  def beginTagReindex()(implicit username: Option[String]) = {
+  def beginTagReindex()(implicit username: Option[String], ec: ExecutionContext) = {
     val expectedDocs = TagLookupCache.allTags.get().size
     ReindexProgressRepository.resetTagReindexProgress(expectedDocs)
 
@@ -57,7 +58,7 @@ object JobHelper {
     AppAuditRepository.upsertAppAudit(AppAudit.reindexTags)
   }
 
-  def beginSectionReindex()(implicit username: Option[String]) = {
+  def beginSectionReindex()(implicit username: Option[String], ec: ExecutionContext) = {
     ReindexProgressRepository.resetSectionReindexProgress(SectionRepository.count)
 
     JobRepository.addJob(
@@ -71,7 +72,7 @@ object JobHelper {
     AppAuditRepository.upsertAppAudit(AppAudit.reindexSections)
   }
 
-  def beginPillarReindex()(implicit username: Option[String]) = {
+  def beginPillarReindex()(implicit username: Option[String], ec: ExecutionContext) = {
     ReindexProgressRepository.resetPillarReindexProgress(PillarRepository.count)
 
     JobRepository.addJob(
@@ -85,7 +86,7 @@ object JobHelper {
     AppAuditRepository.upsertAppAudit(AppAudit.reindexPillars)
   }
 
-  def beginMergeTag(from: Tag, to: Tag)(implicit username: Option[String]) = {
+  def beginMergeTag(from: Tag, to: Tag)(implicit username: Option[String], ec: ExecutionContext) = {
     val fromSection = from.section.flatMap( SectionRepository.getSection(_) )
     val toSection = to.section.flatMap( SectionRepository.getSection(_) )
 
@@ -102,7 +103,7 @@ object JobHelper {
       )
   }
 
-  def beginTagDeletion(tag: Tag)(implicit username: Option[String]) = {
+  def beginTagDeletion(tag: Tag)(implicit username: Option[String], ec: ExecutionContext) = {
     val section = tag.section.flatMap( SectionRepository.getSection(_))
     val contentIds = ContentAPI.getContentIdsForTag(tag.path)
 

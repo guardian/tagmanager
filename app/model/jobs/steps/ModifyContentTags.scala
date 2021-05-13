@@ -5,6 +5,7 @@ import model.{BatchTagOperation, Section, Tag, TagAudit}
 import model.jobs.StepStatus
 
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
 import model.jobs.Step
 import play.api.Logging
 import services.KinesisStreams
@@ -28,7 +29,7 @@ case class ModifyContentTags(
 
   private val MAX_PARTITION_KEY_LENGTH = 128
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
         operation = OperationType.valueOf(op.replace("-", "")).get,
@@ -45,7 +46,7 @@ case class ModifyContentTags(
     Some(5 seconds)
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
 
     // As stated above, once we get the BatchTagOperation enum type serializable we can match against a type here instead of a string

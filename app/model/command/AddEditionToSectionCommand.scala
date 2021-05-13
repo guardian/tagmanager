@@ -6,16 +6,16 @@ import model.command.logic.SectionEditionPathCalculator
 import model.{EditionalisedPage, Section, SectionAudit}
 import play.api.Logging
 import repositories.{PathManager, PathRegistrationFailed, SectionAuditRepository, SectionRepository}
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
 case class AddEditionToSectionCommand(sectionId: Long, editionName: String) extends Command with Logging {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future{
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = Future{
     logger.info(s"add $editionName to section $sectionId")
 
     val section = SectionRepository.getSection(sectionId).getOrElse(SectionNotFound)
@@ -41,5 +41,5 @@ case class AddEditionToSectionCommand(sectionId: Long, editionName: String) exte
     SectionAuditRepository.upsertSectionAudit(SectionAudit.addedEdition(updatedSection, editionName))
 
     result
-  }(Contexts.tagOperationContext)
+  }
 }

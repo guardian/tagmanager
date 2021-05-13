@@ -27,7 +27,7 @@ class Migration(
   with PanDomainAuthActions
   with Logging {
 
-  def showPaidContentUploadForm = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def showPaidContentUploadForm = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     Ok(views.html.Application.migration.paidContentUploadForm())
   }
 
@@ -46,7 +46,7 @@ class Migration(
     }.getOrElse(BadRequest("unable to read file"))
   }
 
-  def movePaidcontentSponsorshipUpToSection = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def movePaidcontentSponsorshipUpToSection = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
 
     implicit val username = Some("sponsorship Migration")
 
@@ -79,7 +79,7 @@ class Migration(
     Ok(s"updated $count sections")
   }
 
-  def flattenSponsoredMicrosite(sponsorshipId: Long) =  (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def flattenSponsoredMicrosite(sponsorshipId: Long) =  (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     implicit val username = Some("sponsorship Migration")
 
     val spons = SponsorshipRepository.getSponsorship(sponsorshipId)
@@ -119,7 +119,7 @@ class Migration(
     Ok(s"updated $count partner zones")
   }
 
-  def addMissingPaidContentTypes() = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def addMissingPaidContentTypes() = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     implicit val username = Some("sponsorship Migration")
 
     val paidContentTags = TagLookupCache.search(
@@ -150,7 +150,7 @@ class Migration(
     Ok(missingSubType.map{t => t.externalName}.mkString("\n"))
   }
 
-  def dudupeActiveSponsorships() = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def dudupeActiveSponsorships() = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     implicit val username = Some("sponsorship Migration")
 
     val allTags = TagLookupCache.allTags.get

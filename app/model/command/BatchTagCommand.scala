@@ -5,14 +5,13 @@ import model.jobs.JobHelper
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import repositories._
-import services.Contexts
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], toAddToBottom: List[Long], toRemove: List[Long]) extends Command {
   type T = Unit
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Unit]] = Future {
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Unit]] = Future {
     val toTopList = toAddToTop.toList
 
     // We'd prefer if people didn't add and remove
@@ -34,7 +33,7 @@ case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], t
     JobHelper.buildBatchTagJob(contentIds, tops, bottoms, removals)
 
     Some(())
-  }(Contexts.tagOperationContext)
+  }
 }
 
 object BatchTagCommand {

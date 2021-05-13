@@ -4,8 +4,11 @@ import scala.concurrent.duration._
 import play.api.Logging
 import services.KinesisStreams
 import repositories._
+
 import scala.util.control.NonFatal
 import model.jobs.{Step, StepStatus}
+
+import scala.concurrent.ExecutionContext
 
 case class ReindexSections(
   `type`: String = ReindexSections.`type`,
@@ -15,7 +18,7 @@ case class ReindexSections(
 ) extends Step
   with Logging {
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     val sections = SectionRepository.loadAllSections.toList
     val total = sections.size
     var progress: Int = 0
@@ -43,7 +46,7 @@ case class ReindexSections(
     None
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     true
   }
 

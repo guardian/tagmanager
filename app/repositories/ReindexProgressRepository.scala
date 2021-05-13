@@ -1,10 +1,9 @@
 package repositories;
 
 import model.ReindexProgress
-import services.{Contexts, Dynamo}
+import services.Dynamo
 
-import scala.concurrent.Future
-import services.Contexts.tagOperationContext
+import scala.concurrent.{Future, ExecutionContext}
 
 object ReindexProgressRepository {
   // Write
@@ -57,40 +56,40 @@ object ReindexProgressRepository {
   }
 
   // Read
-  def getTagReindexProgress: Future[Option[ReindexProgress]] = {
+  def getTagReindexProgress(implicit ec: ExecutionContext): Future[Option[ReindexProgress]] = {
     Future{
       Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.TagTypeName))
         .map(ReindexProgress.fromItem)
     }
   }
 
-  def getSectionReindexProgress: Future[Option[ReindexProgress]] = {
+  def getSectionReindexProgress(implicit ec: ExecutionContext): Future[Option[ReindexProgress]] = {
     Future{
       Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.SectionTypeName))
         .map(ReindexProgress.fromItem)
     }
   }
 
-  def getPillarReindexProgress: Future[Option[ReindexProgress]] = {
+  def getPillarReindexProgress(implicit ec: ExecutionContext): Future[Option[ReindexProgress]] = {
     Future{
       Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.PillarTypeName))
         .map(ReindexProgress.fromItem)
     }
   }
 
-  def isTagReindexInProgress: Future[Boolean] = {
+  def isTagReindexInProgress(implicit ec: ExecutionContext): Future[Boolean] = {
     getTagReindexProgress.map { result =>
       result.exists(_.status == ReindexProgress.InProgress)
     }
   }
 
-  def isSectionReindexInProgress: Future[Boolean] = {
+  def isSectionReindexInProgress(implicit ec: ExecutionContext): Future[Boolean] = {
     getSectionReindexProgress.map { result =>
       result.exists(_.status == ReindexProgress.InProgress)
     }
   }
 
-  def isPillarReindexInProgress: Future[Boolean] = {
+  def isPillarReindexInProgress(implicit ec: ExecutionContext): Future[Boolean] = {
     getPillarReindexProgress.map { result =>
       result.exists(_.status == ReindexProgress.InProgress)
     }

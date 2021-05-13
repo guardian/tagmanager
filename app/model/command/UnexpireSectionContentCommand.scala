@@ -3,16 +3,16 @@ package model.command
 import model.Section
 import play.api.Logging
 import repositories._
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
 case class UnexpireSectionContentCommand(sectionId: Long) extends Command with Logging {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future{
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = Future{
     logger.info(s"Unexpiring Content for Section: $sectionId")
 
     SectionRepository.getSection(sectionId).map(section => {
@@ -27,5 +27,5 @@ case class UnexpireSectionContentCommand(sectionId: Long) extends Command with L
 
       section
     })
-  }(Contexts.tagOperationContext)
+  }
 }

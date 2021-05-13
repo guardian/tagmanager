@@ -6,6 +6,7 @@ import repositories.ContentAPI
 import services.KinesisStreams
 
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
 import model.jobs.{Step, StepStatus}
 import play.api.Logging
 
@@ -13,7 +14,7 @@ import scala.language.postfixOps
 
 case class RemoveTagFromCapi(tag: Tag,
   `type`: String = RemoveTagFromCapi.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
       KinesisStreams.tagUpdateStream.publishUpdate(
         tag.id.toString,
         TagEvent(EventType.Delete, tag.id, Some(tag.asThrift)))
@@ -24,7 +25,7 @@ case class RemoveTagFromCapi(tag: Tag,
     Some(5 seconds)
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     ContentAPI.getTag(tag.path) match {
       case Some(_) => false
       case None => true

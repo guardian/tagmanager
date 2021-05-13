@@ -1,11 +1,17 @@
 package helpers
 import play.api.mvc.{Action, Request, Result}
 
-import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.{ExecutionContext, Future}
 
 
-case class CORSable[A](origins: String*)(action: Action[A]) extends Action[A] {
+case class CORSable[A](
+  origins: String*
+)(
+  action: Action[A]
+)(
+  implicit val executionContext: ExecutionContext
+) extends Action[A] {
+
   def apply(request: Request[A]): Future[Result] = {
     val headers = request.headers.get("Origin").map { origin =>
       if(origins.contains(origin)) {

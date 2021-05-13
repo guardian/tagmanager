@@ -127,7 +127,7 @@ class Support(
     )
   }
 
-  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck).async { req =>
+  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
@@ -143,7 +143,7 @@ class Support(
     }
   }
 
-  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck).async { req =>
+  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck()).async { req =>
 
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>

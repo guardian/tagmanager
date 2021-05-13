@@ -5,16 +5,16 @@ import model.command.CommandError._
 import model.{Section, SectionAudit}
 import play.api.Logging
 import repositories.{PathManager, PathRemoveFailed, SectionAuditRepository, SectionRepository}
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
 case class RemoveEditionFromSectionCommand(sectionId: Long, editionName: String) extends Command with Logging {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Section]] = Future {
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = Future {
     logger.info(s"removing $editionName from section $sectionId")
 
     val section = SectionRepository.getSection(sectionId).getOrElse(SectionNotFound)
@@ -41,5 +41,5 @@ case class RemoveEditionFromSectionCommand(sectionId: Long, editionName: String)
     SectionAuditRepository.upsertSectionAudit(SectionAudit.removedEdition(updatedSection, editionName))
 
     result
-  }(Contexts.tagOperationContext)
+  }
 }

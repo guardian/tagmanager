@@ -7,13 +7,14 @@ import model.{TagAudit, PaidContentInformation, Sponsorship}
 import play.api.Logging
 import repositories.{SectionRepository, TagAuditRepository, SponsorshipRepository, TagRepository}
 import services.KinesisStreams
+import scala.concurrent.ExecutionContext
 
 class AbortItemMigrationException extends RuntimeException
 
 object PaidContentMigrator extends Logging {
 
   // NB sponsorships will arrive with ids but the status will not have been set. They are not persisted at this point.
-  def migrate(sponsorship: Sponsorship): Unit = {
+  def migrate(sponsorship: Sponsorship)(implicit ec: ExecutionContext): Unit = {
     implicit val username: Option[String] = Some("PaidContent Migration")
     val tagIds = sponsorship.tags.getOrElse(Nil) ::: sponsorship.sections.getOrElse(Nil).flatMap(SectionRepository.getSection(_).map(_.sectionTagId))
     val tags = tagIds.flatMap(TagRepository.getTag(_))

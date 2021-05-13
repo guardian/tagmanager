@@ -7,9 +7,12 @@ import repositories._
 import play.api.Logging
 import play.api.libs.json._
 import services.{Config, KinesisStreams}
+
 import scala.util.control.NonFatal
 import scala.concurrent.duration._
 import model.jobs.{Step, StepStatus}
+
+import scala.concurrent.ExecutionContext
 
 case class ReindexTags(
   `type`: String = ReindexTags.`type`,
@@ -19,7 +22,7 @@ case class ReindexTags(
 ) extends Step
   with Logging {
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     val total = TagLookupCache.allTags.get.size
     var progress: Int = 0
 
@@ -48,7 +51,7 @@ case class ReindexTags(
     None
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     true
   }
 

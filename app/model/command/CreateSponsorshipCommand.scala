@@ -10,9 +10,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories.SponsorshipOperations._
 import repositories.{Sequences, SponsorshipRepository}
-import services.Contexts
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 case class CreateSponsorshipCommand(
   validFrom: Option[DateTime],
@@ -30,7 +29,7 @@ case class CreateSponsorshipCommand(
 
   override type T = Sponsorship
 
-  override def process()(implicit username: Option[String]): Future[Option[T]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = Future{
 
     val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
@@ -69,7 +68,7 @@ case class CreateSponsorshipCommand(
       createdSponsorship
     }
 
-  }(Contexts.tagOperationContext)
+  }
 }
 
 object CreateSponsorshipCommand{

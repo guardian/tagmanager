@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManag
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import play.api.inject.ApplicationLifecycle
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import javax.inject._
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
@@ -19,11 +19,10 @@ import services.Dynamo
 import scala.util.control.NonFatal
 import java.net.InetAddress
 import java.util.concurrent.TimeUnit
-
 import scala.util.Random
 
 @Singleton
-class JobRunner @Inject() (lifecycle: ApplicationLifecycle) extends Logging {
+class JobRunner @Inject() (lifecycle: ApplicationLifecycle)(implicit ec: ExecutionContext) extends Logging {
   // Scheduler boiler plate
   val serviceManager = new ServiceManager(List(new JobRunnerScheduler(this)))
   lifecycle.addStopHook{ () => Future.successful(stop) }

@@ -7,16 +7,16 @@ import play.api.libs.json.JodaReads._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logging
 import repositories._
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
 case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command with Logging {
 
   type T = Tag
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future{
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Tag]] = Future{
     val (tag, sponsorship) = denormalisedTag.normalise()
 
     logger.info(s"updating tag ${tag.id}")
@@ -70,5 +70,5 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command wi
     TagAuditRepository.upsertTagAudit(TagAudit.updated(tag))
 
     result
-  }(Contexts.tagOperationContext)
+  }
 }

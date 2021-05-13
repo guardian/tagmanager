@@ -2,21 +2,23 @@ package modules.sponsorshiplifecycle
 
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
-
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManager}
 import model.Sponsorship
 import play.api.Logging
 import play.api.inject.ApplicationLifecycle
-import play.api.libs.concurrent.Execution.Implicits._
 import repositories.SponsorshipOperations._
 import repositories.SponsorshipRepository
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) extends Logging {
+class SponsorshipLifecycleJobs @Inject() (
+  lifecycle: ApplicationLifecycle
+)(
+  implicit val ec: ExecutionContext
+) extends Logging {
 
   import scala.collection.convert.wrapAll._
 
@@ -41,7 +43,7 @@ class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) exten
 
 }
 
-class SponsorshipLauncher extends AbstractScheduledService with Logging {
+class SponsorshipLauncher(implicit ec: ExecutionContext) extends AbstractScheduledService with Logging {
   override def runOneIteration(): Unit = try {
     implicit val username = Some("Sponsorship launcher")
     logger.debug("checking for sponsorships to launch")
@@ -82,7 +84,7 @@ class SponsorshipLauncher extends AbstractScheduledService with Logging {
   override def scheduler(): Scheduler = Scheduler.newFixedDelaySchedule(0, 1, TimeUnit.MINUTES)
 }
 
-class SponsorshipExpirer extends AbstractScheduledService with Logging {
+class SponsorshipExpirer(implicit ec: ExecutionContext) extends AbstractScheduledService with Logging {
   implicit val username = Some("Sponsorship expirer")
 
   override def runOneIteration(): Unit = try {

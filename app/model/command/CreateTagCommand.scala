@@ -15,9 +15,9 @@ import play.api.libs.json.{Format, JsPath}
 import repositories._
 import CommandError._
 import play.api.Logging
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 case class InlinePaidContentSponsorshipCommand(
                          validFrom: Option[DateTime],
@@ -87,7 +87,7 @@ case class CreateTagCommand(
 
   type T = Tag
 
-  def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future {
+  def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Tag]] = Future {
 
     val tagId = Sequences.tagId.getNextId
 
@@ -202,7 +202,7 @@ case class CreateTagCommand(
     }
 
     result
-  }(Contexts.tagOperationContext)
+  }
 }
 
 object CreateTagCommand {

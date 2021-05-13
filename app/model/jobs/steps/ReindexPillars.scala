@@ -11,6 +11,8 @@ import repositories._
 import scala.util.control.NonFatal
 import model.jobs.{Step, StepStatus}
 
+import scala.concurrent.ExecutionContext
+
 case class ReindexPillars(
   `type`: String = ReindexPillars.`type`,
   var stepStatus: String = StepStatus.ready,
@@ -19,7 +21,7 @@ case class ReindexPillars(
 ) extends Step
   with Logging {
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     val pillars = PillarRepository.loadAllPillars.toList
     val total = pillars.size
     var progress: Int = 0
@@ -52,7 +54,7 @@ case class ReindexPillars(
     None
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     true
   }
 

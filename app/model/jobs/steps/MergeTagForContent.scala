@@ -4,6 +4,7 @@ import com.gu.tagmanagement.{OperationType, TagWithSection, TaggingOperation}
 import model.{Section, Tag, TagAudit}
 
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
 import model.jobs.{Step, StepStatus}
 import play.api.Logging
 import services.KinesisStreams
@@ -24,7 +25,7 @@ case class MergeTagForContent(
 ) extends Step
   with Logging {
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     val contentIds = ContentAPI.getContentIdsForTag(from.path)
 
     contentIds foreach { contentPath =>
@@ -45,7 +46,7 @@ case class MergeTagForContent(
     Some(5 seconds)
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     val fromCount = ContentAPI.countContentWithTag(from.path)
 
     logger.info(s"Checking merge tag CAPI counts. From tag: '${from.path}' remains on $fromCount pieces of content.")

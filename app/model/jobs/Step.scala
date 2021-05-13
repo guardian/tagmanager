@@ -6,22 +6,25 @@ import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.Logging
+
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 trait Step extends Logging {
+
   // Inner details
   /** Do work. */
-  protected def process
+  protected def process(implicit ec: ExecutionContext)
 
   /** Confirm this check ran successfully */
-  protected def check: Boolean
+  protected def check(implicit ec: ExecutionContext): Boolean
 
   /** Undo this step */
   protected def rollback
 
   // Public methods that wrap the status updates
-  def processStep() = {
+  def processStep(implicit ec: ExecutionContext) = {
     try {
       beginProcessing
       process
@@ -35,7 +38,7 @@ trait Step extends Logging {
     }
   }
 
-  def checkStep() = {
+  def checkStep(implicit ec: ExecutionContext) = {
     attempts += 1
     if (attempts > Step.retryLimit) {
       checkFailed

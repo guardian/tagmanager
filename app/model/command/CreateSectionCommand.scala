@@ -8,8 +8,7 @@ import repositories._
 import CommandError._
 import services.KinesisStreams
 
-import scala.concurrent.Future
-import services.Contexts.tagOperationContext
+import scala.concurrent.{Future, ExecutionContext}
 
 case class CreateSectionCommand(
                                  name: String,
@@ -22,7 +21,7 @@ case class CreateSectionCommand(
 
           type T = Section
 
-          def process()(implicit username: Option[String] = None): Future[Option[Section]] = {
+          def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = {
 
             val calculatedPath = wordsForUrl
 
@@ -81,4 +80,3 @@ case class CreateSectionCommand(
 
           )(CreateSectionCommand.apply, unlift(CreateSectionCommand.unapply))
         }
-

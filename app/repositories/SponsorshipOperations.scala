@@ -4,6 +4,7 @@ import com.gu.tagmanagement.{SectionEvent, EventType, TagEvent}
 import model.{SectionAudit, TagAudit}
 import services.KinesisStreams
 import play.api.Logging
+import scala.concurrent.ExecutionContext
 
 
 object SponsorshipOperations extends Logging {
@@ -67,7 +68,7 @@ object SponsorshipOperations extends Logging {
     }
   }
 
-  def expirePaidContentTag(tagId: Long)(implicit username: Option[String]): Unit = {
+  def expirePaidContentTag(tagId: Long)(implicit username: Option[String], ec: ExecutionContext): Unit = {
     TagRepository.getTag(tagId).foreach { t =>
       val expiredTag = t.copy(activeSponsorships = Nil, expired = true)
       val result = TagRepository.upsertTag(expiredTag)
@@ -79,7 +80,7 @@ object SponsorshipOperations extends Logging {
     }
   }
 
-  def unexpirePaidContentTag(tagId: Long)(implicit username: Option[String]): Unit = {
+  def unexpirePaidContentTag(tagId: Long)(implicit username: Option[String],ec: ExecutionContext): Unit = {
     println("Unexpiring paid content tag")
 
     TagRepository.getTag(tagId).foreach { t =>
