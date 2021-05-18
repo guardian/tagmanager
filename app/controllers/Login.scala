@@ -23,7 +23,7 @@ class Login(
   }
 
   def oauthCallback = Action.async { implicit request =>
-    processGoogleCallback()
+    processOAuthCallback()
   }
 
   def logout = Action.async { implicit request =>
