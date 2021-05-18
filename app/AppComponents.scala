@@ -8,6 +8,7 @@ import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.BuiltInComponentsFromContext
 import play.api.libs.ws.ahc.AhcWSComponents
+import play.api.mvc.EssentialFilter
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
@@ -18,6 +19,8 @@ class AppComponents(context: Context, config: Config)
   with AssetsComponents
   with AhcWSComponents
   with HttpFiltersComponents {
+
+  override def httpFilters: Seq[EssentialFilter] = super.httpFilters.filterNot(allowedHostsFilter ==)
 
   new ClusterSynchronisation(context.lifecycle)
   new JobRunner(context.lifecycle)
