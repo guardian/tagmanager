@@ -5,7 +5,6 @@ import javax.inject.{Inject, Singleton}
 
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManager}
-import com.google.inject.AbstractModule
 import model.Sponsorship
 import play.api.Logger
 import play.api.inject.ApplicationLifecycle
@@ -15,12 +14,6 @@ import repositories.SponsorshipRepository
 
 import scala.concurrent.Future
 import scala.util.control.NonFatal
-
-class SponsorshipLifecycleModule extends AbstractModule {
-  override def configure(): Unit = {
-    bind(classOf[SponsorshipLifecycleJobs]).asEagerSingleton()
-  }
-}
 
 @Singleton
 class SponsorshipLifecycleJobs @Inject() (lifecycle: ApplicationLifecycle) {
