@@ -8,7 +8,7 @@ import com.gu.tagmanagement.{PublicationInformation => ThriftPublicationInformat
 
 case class PublicationInformation(
                                    mainNewspaperBookSectionId: Option[Long],
-                                   newspaperBooks: Set[Long]
+                                   newspaperBooks: Set[Long] = Set.empty
                                   ) {
 
   def asThrift = ThriftPublicationInformation(
