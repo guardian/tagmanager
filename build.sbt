@@ -37,6 +37,8 @@ lazy val dependencies = Seq(
   "org.apache.commons" % "commons-lang3" % "3.11",
 )
 
+dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb, JDebPackaging, SystemdPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
