@@ -20,7 +20,10 @@ class AppComponents(context: Context, config: Config)
   with AhcWSComponents
   with HttpFiltersComponents {
 
-  override def httpFilters: Seq[EssentialFilter] = super.httpFilters.filterNot(allowedHostsFilter ==)
+  override def httpFilters: Seq[EssentialFilter] =
+    super.httpFilters
+      .filterNot(allowedHostsFilter ==)
+      .filterNot(csrfFilter ==)
 
   new ClusterSynchronisation(context.lifecycle)
   new JobRunner(context.lifecycle)
