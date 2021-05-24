@@ -82,7 +82,7 @@ export default class Audit extends React.Component {
             <tr>
               <th>Date</th>
               <th>Operation</th>
-              <th>Desciption</th>
+              <th>Description</th>
               <th>User</th>
               <th></th>
             </tr>
