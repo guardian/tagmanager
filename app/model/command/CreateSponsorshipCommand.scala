@@ -4,8 +4,7 @@ import model._
 import model.command.logic.SponsorshipStatusCalculator
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories.SponsorshipOperations._

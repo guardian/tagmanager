@@ -2,8 +2,7 @@ package model;
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import org.joda.time.DateTime
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, JsPath, Format}
 import play.api.Logging

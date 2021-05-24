@@ -2,8 +2,7 @@ package model
 
 import net.logstash.logback.marker.Markers
 import org.joda.time.DateTime
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import play.api.Logging
 
 import scala.collection.JavaConverters._

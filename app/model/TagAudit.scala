@@ -2,9 +2,8 @@ package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import com.gu.pandomainauth.model.User
+import helpers.JodaDateTimeFormat._
 import org.joda.time.DateTime
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}

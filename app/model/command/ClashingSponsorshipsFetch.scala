@@ -1,8 +1,7 @@
 package model.command
 
 import model.Sponsorship
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, Interval}
 import repositories.{SponsorshipRepository, SponsorshipSearchCriteria}
 

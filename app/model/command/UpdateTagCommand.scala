@@ -2,8 +2,7 @@ package model.command
 
 import com.gu.tagmanagement._
 import model.{DenormalisedTag, SectionAudit, Tag, TagAudit}
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logging
 import repositories._

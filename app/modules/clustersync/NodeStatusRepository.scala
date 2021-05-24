@@ -5,8 +5,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.{PutItemSpec, UpdateItemS
 import com.amazonaws.services.dynamodbv2.document.utils.{NameMap, ValueMap}
 import com.amazonaws.services.dynamodbv2.model.{ConditionalCheckFailedException, ReturnValue}
 import org.joda.time.DateTime
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import play.api.Logging
 import services.Dynamo
 

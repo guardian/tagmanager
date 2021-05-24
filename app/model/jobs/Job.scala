@@ -8,8 +8,7 @@ import ai.x.play.json.Encoders.encoder
 import model.jobs.steps._
 import model.{AppAudit, Tag, TagAudit}
 import repositories._
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, DateTimeZone}
 
 import scala.concurrent.ExecutionContext
