@@ -14,9 +14,5 @@ trait PanDomainAuthActions extends HMACAuthActions {
 
   override def authCallbackUrl: String = Config().pandaAuthCallback
 
-  override lazy val domain: String = Config().pandaDomain
-
-  override lazy val system: String = "tagmanager"
-
   override lazy val secret: String = Config().hmacSecret
 }

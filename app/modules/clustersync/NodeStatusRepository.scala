@@ -2,17 +2,19 @@ package modules.clustersync
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import com.amazonaws.services.dynamodbv2.document.spec.{PutItemSpec, UpdateItemSpec}
-import com.amazonaws.services.dynamodbv2.document.utils.{ValueMap, NameMap}
+import com.amazonaws.services.dynamodbv2.document.utils.{NameMap, ValueMap}
 import com.amazonaws.services.dynamodbv2.model.{ConditionalCheckFailedException, ReturnValue}
 import org.joda.time.DateTime
-import play.api.Logger
+import helpers.JodaDateTimeFormat._
+import play.api.Logging
 import services.Dynamo
+
 import scala.collection.JavaConversions._
 
 
 case class HeartbeatException(message: String) extends RuntimeException(message)
 
-object NodeStatusRepository {
+object NodeStatusRepository extends Logging {
 
   def register(): NodeStatus = {
     val currentState = getCurrentState
@@ -23,11 +25,11 @@ object NodeStatusRepository {
 
     firstAvailable match {
       case Some(ns) => {
-        Logger.info(s"registering as available node id ${ns.nodeId}")
+        logger.info(s"registering as available node id ${ns.nodeId}")
         heartbeat(ns)
       }
       case None => {
-        Logger.info(s"no available node ids, creating new ")
+        logger.info(s"no available node ids, creating new ")
         registerNewNode(generateNextNodeId(currentState))
       }
     }
@@ -64,7 +66,7 @@ object NodeStatusRepository {
       NodeStatus.fromItem( Dynamo.clusterStatusTable.updateItem(heartbeatUpdate).getItem )
     } catch {
       case e: ConditionalCheckFailedException => {
-        Logger.warn("heartbeat failed", e)
+        logger.warn("heartbeat failed", e)
         throw HeartbeatException("heartbeat failed")
       }
     }
@@ -82,7 +84,7 @@ object NodeStatusRepository {
       NodeStatus.fromItem(item)
     } catch {
       case e: ConditionalCheckFailedException => {
-        Logger.warn("node registration failed", e)
+        logger.warn("node registration failed", e)
         throw HeartbeatException("registration failed")
       }
     }
@@ -90,7 +92,7 @@ object NodeStatusRepository {
 
   def deregister(nodeStatus: NodeStatus) {
 
-    Logger.info(s"deregistering as node ${nodeStatus.nodeId}")
+    logger.info(s"deregistering as node ${nodeStatus.nodeId}")
 
     val heartbeatUpdate = new UpdateItemSpec()
       .withPrimaryKey("nodeId", nodeStatus.nodeId)
@@ -106,7 +108,7 @@ object NodeStatusRepository {
       Dynamo.clusterStatusTable.updateItem(heartbeatUpdate)
     } catch {
       case e: ConditionalCheckFailedException => {
-        Logger.warn("heartbeat failed", e)
+        logger.warn("heartbeat failed", e)
         throw HeartbeatException("heartbeat failed")
       }
     }

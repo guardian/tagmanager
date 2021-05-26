@@ -1,6 +1,7 @@
 package model
 
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import com.gu.tagmanagement.{ImageAsset => ThriftImageAsset}
 
 case class ImageAsset(imageUrl: String, width: Long, height: Long, mimeType: String) {

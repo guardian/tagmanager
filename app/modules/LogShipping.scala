@@ -1,46 +1,44 @@
 package modules
 
 import ch.qos.logback.classic.{Logger => LogbackLogger}
-import com.google.inject.AbstractModule
 import com.gu.logback.appender.kinesis.KinesisAppender
 import net.logstash.logback.layout.LogstashLayout
-import org.slf4j.{Logger => SLFLogger, LoggerFactory}
-import play.api.Logger
+import org.slf4j.{LoggerFactory, Logger => SLFLogger}
 import services.{AWS, AwsInstanceTags, Config}
 
 
-class LogShipping extends AbstractModule with AwsInstanceTags {
+class LogShipping extends AwsInstanceTags {
 
   val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
 
-  def configure {
-    rootLogger.info("bootstrapping kinesis appender if configured correctly")
-    for (
-      stack <- readTag("Stack");
-      app <- readTag("App");
-      stage <- readTag("Stage");
-      streamName <- Config().logShippingStreamName
-    ) {
+  rootLogger.info("bootstrapping kinesis appender if configured correctly")
 
-      Logger.info(s"bootstrapping kinesis appender with $stack -> $app -> $stage")
-      val context = rootLogger.getLoggerContext
+  for (
+    stack <- readTag("Stack");
+    app <- readTag("App");
+    stage <- readTag("Stage");
+    streamName <- Config().logShippingStreamName
+  ) {
 
-      val layout = new LogstashLayout()
-      layout.setContext(context)
-      layout.setCustomFields(s"""{"stack":"$stack","app":"$app","stage":"$stage"}""")
-      layout.start()
+    rootLogger.info(s"bootstrapping kinesis appender with $stack -> $app -> $stage")
+    val context = rootLogger.getLoggerContext
 
-      val appender = new KinesisAppender()
-      appender.setBufferSize(1000)
-      appender.setRegion(AWS.region.getName)
-      appender.setStreamName(streamName)
-      appender.setContext(context)
-      appender.setLayout(layout)
+    val layout = new LogstashLayout()
+    layout.setContext(context)
+    layout.setCustomFields(s"""{"stack":"$stack","app":"$app","stage":"$stage"}""")
+    layout.start()
 
-      appender.start()
+    val appender = new KinesisAppender()
+    appender.setBufferSize(1000)
+    appender.setRegion(AWS.region.getName)
+    appender.setStreamName(streamName)
+    appender.setContext(context)
+    appender.setLayout(layout)
 
-      rootLogger.addAppender(appender)
-      rootLogger.info("Configured kinesis appender")
-    }
+    appender.start()
+
+    rootLogger.addAppender(appender)
+    rootLogger.info("Configured kinesis appender")
+
   }
 }

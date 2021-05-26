@@ -1,9 +1,7 @@
 package model
 
-import org.cvogt.play.json.Jsonx
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Json
-import scala.concurrent.{Future}
+import ai.x.play.json.Encoders.encoder
+import ai.x.play.json.Jsonx
 
 case class ClientConfig(username: String,
                         capiUrl: String,

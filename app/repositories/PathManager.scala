@@ -1,7 +1,7 @@
 package repositories
 
 import okhttp3.{FormBody, OkHttpClient, Request}
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json.Json
 import services.Config
 import java.util.concurrent.TimeUnit
@@ -10,13 +10,13 @@ import java.util.concurrent.TimeUnit
 case class PathRegistrationFailed(m: String) extends RuntimeException(m)
 case class PathRemoveFailed(m: String) extends RuntimeException(m)
 
-object PathManager {
+object PathManager extends Logging {
 
   val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
 
   def registerPathAndGetPageId(path: String): Long = {
-    Logger.info(s"registering path $path")
+    logger.info(s"registering path $path")
 
     val formBody = new FormBody.Builder()
       .add("path", path)
@@ -34,29 +34,29 @@ object PathManager {
         val responseJson = Json.parse(resp.body().string())
         val pathId = (responseJson \ "data" \ "canonical" \\ "identifier").head.as[Long]
 
-        Logger.info(s"path $path registered with pathId $pathId")
+        logger.info(s"path $path registered with pathId $pathId")
 
         pathId
       }
       case c => {
         val body = resp.body
-        Logger.warn(s"failed to register $path. response code $c, message $body")
+        logger.warn(s"failed to register $path. response code $c, message $body")
         throw PathRegistrationFailed(s"failed to register $path. response code $c, message $body")
       }
     }
   }
 
   def removePathForId(id: Long) = {
-    Logger.info(s"removing path entries for $id")
+    logger.info(s"removing path entries for $id")
 
     val req = new Request.Builder().url(s"${Config().pathManagerUrl}paths/$id").delete().build
     val resp = httpClient.newCall(req).execute
 
     resp.code match {
-      case 204 => Logger.info(s"path entries for $id removed")
+      case 204 => logger.info(s"path entries for $id removed")
       case c => {
         val body = resp.body
-        Logger.warn(s"failed to remove paths for $id. response code $c, message $body")
+        logger.warn(s"failed to remove paths for $id. response code $c, message $body")
         throw new PathRemoveFailed(s"failed to remove paths for $id. response code $c, message $body")
       }
     }
@@ -71,7 +71,7 @@ object PathManager {
       case 200 => true
       case c => {
         val body = resp.body
-        Logger.warn(s"failed to check path $path in use. response code $c, message $body")
+        logger.warn(s"failed to check path $path in use. response code $c, message $body")
         throw new RuntimeException(s"failed to check path $path in use. response code $c, message $body")
       }
     }

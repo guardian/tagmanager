@@ -3,6 +3,7 @@ package repositories
 import com.amazonaws.services.dynamodbv2.document.ScanFilter
 import model.Sponsorship
 import org.joda.time.DateTime
+import helpers.JodaDateTimeFormat._
 import services.Dynamo
 
 import scala.collection.JavaConversions._

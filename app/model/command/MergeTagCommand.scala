@@ -5,15 +5,14 @@ import model.jobs.JobHelper
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories._
-import services.Contexts
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
 case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends Command {
   override type T = Unit
 
-  override def process()(implicit username: Option[String] = None): Future[Option[T]] = Future{
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[T]] = Future{
     if (removingTagId == replacementTagId) {
       AttemptedSelfMergeTag
     }
@@ -32,7 +31,7 @@ case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends 
 
     JobHelper.beginMergeTag(removingTag, replacementTag)
     Some(())
-  }(Contexts.tagOperationContext)
+  }
 }
 
 object MergeTagCommand {

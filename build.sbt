@@ -17,37 +17,36 @@ scalacOptions ++= Seq(
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.11.678",
   "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
-  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
-  "com.gu" %% "editorial-permissions-client" % "0.2",
+  "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.4",
+  "com.gu" %% "editorial-permissions-client" % "0.9",
   ws, // for panda
-  "org.cvogt" %% "play-json-extensions" % "0.6.0",
+  "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "3.9.0",
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client-default" % "14.2",
-  "com.gu" %% "tags-thrift-schema" % "2.7.0",
+  "com.gu" %% "tags-thrift-schema" % "2.8.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac" % "1.3.0",
+  "com.gu"  %% "panda-hmac-play_2-6" % "1.3.1",
   "com.gu" %% "content-api-client-aws" % "0.5",
   "com.beachape" %% "enumeratum" % "1.5.13",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "com.typesafe.play" %% "play-json-joda" % "2.8.1",
+  "org.apache.commons" % "commons-lang3" % "3.11",
 )
 
-import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
-serverLoading in Debian := Systemd
+dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb, JDebPackaging)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb, JDebPackaging, SystemdPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
     name in Universal := normalizedName.value,
     topLevelDirectory := Some(normalizedName.value),
     riffRaffPackageType := (packageBin in Debian).value,
-    riffRaffPackageName := name.value,
     riffRaffManifestProjectName := s"editorial-tools:${name.value}",
-    riffRaffBuildIdentifier := Option(System.getenv("BUILD_NUMBER")).getOrElse("DEV"),
     riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
     riffRaffUploadManifestBucket := Option("riffraff-builds"),
     riffRaffArtifactResources := Seq(
@@ -64,9 +63,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     packageSummary := "tag manager",
     packageDescription := """manage tags""",
 
-    doc in Compile <<= target.map(_ / "none"),
-    scalaVersion := "2.11.12",
-    scalaVersion in ThisBuild := "2.11.8",
+    doc in Compile := (target.value / "none"),
+    scalaVersion := "2.12.13",
+    scalaVersion in ThisBuild := "2.12.13",
     libraryDependencies ++= dependencies
   )
   .settings(TagManager.settings: _*)

@@ -3,7 +3,7 @@ package modules.clustersync
 import com.amazonaws.services.kinesis.model.Record
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.Tag
-import play.api.Logger
+import play.api.Logging
 import repositories.TagLookupCache
 import services.KinesisStreamRecordProcessor
 
@@ -32,33 +32,33 @@ object TagEventDeserialiser {
 
 }
 
-object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor {
+object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor with Logging {
 
   override def process(record: Record) {
-    Logger.info(s"Kinesis consumer receives record \n $record")
+    logger.info(s"Kinesis consumer receives record \n $record")
     TagEventDeserialiser.deserialise(record) match {
       case Success(tagEvent) => updateTagsLookupCache(tagEvent)
       case Failure(exp) =>
-        Logger.error(s"issue while TagEvent decode:\n ${exp.getMessage}")
+        logger.error(s"issue while TagEvent decode:\n ${exp.getMessage}")
     }
   }
 
   private def updateTagsLookupCache(tagEvent: TagEvent): Unit = {
-    Logger.error(s"TagEvent received: \n $tagEvent")
+    logger.info(s"TagEvent received: \n $tagEvent")
     tagEvent.eventType match {
       case EventType.Update =>
-        Logger.info(s"inserting updated tag ${tagEvent.tagId} into lookup cache")
+        logger.info(s"inserting updated tag ${tagEvent.tagId} into lookup cache")
 
         tagEvent.tag match {
           case Some(thriftTag) => TagLookupCache.insertTag(Tag(thriftTag))
           case None =>
-            Logger.warn(s"TagEvent for ${tagEvent.tagId} did not contain any tag object")
+            logger.warn(s"TagEvent for ${tagEvent.tagId} did not contain any tag object")
         }
       case EventType.Delete =>
-        Logger.info(s"removing tag ${tagEvent.tagId} from lookup cache")
+        logger.info(s"removing tag ${tagEvent.tagId} from lookup cache")
         TagLookupCache.removeTag(tagEvent.tagId)
       case et =>
-        Logger.warn(s"unrecognised event type ${et.name}")
+        logger.warn(s"unrecognised event type ${et.name}")
     }
   }
 }

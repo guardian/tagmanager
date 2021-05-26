@@ -1,12 +1,14 @@
 package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json._
-import org.cvogt.play.json.Jsonx
-import com.gu.tagmanagement.{BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag, TagType, TagReindexBatch}
+import ai.x.play.json.Encoders.encoder
+import ai.x.play.json.Jsonx
+import com.gu.tagmanagement.{TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
 import helpers.XmlHelpers._
-import repositories.{SponsorshipRepository, SectionRepository}
+import repositories.{SectionRepository, SponsorshipRepository}
+
 import scala.util.control.NonFatal
 import scala.xml.Node
 
@@ -116,7 +118,7 @@ case class Tag(
   }
 }
 
-object Tag {
+object Tag extends Logging {
 
   implicit val tagFormat: Format[Tag] = Jsonx.formatCaseClassUseDefaults[Tag]
 
@@ -124,7 +126,7 @@ object Tag {
     Json.parse(item.toJSON).as[Tag]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load tag ${item.toJSON}", e)
+      logger.error(s"failed to load tag ${item.toJSON}", e)
       throw e
     }
   }

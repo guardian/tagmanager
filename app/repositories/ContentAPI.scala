@@ -6,8 +6,8 @@ import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.contentapi.client.model._
-import play.api.Logger
-import services.{Config, Contexts}
+import play.api.Logging
+import services.Config
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -16,9 +16,7 @@ import scala.language.postfixOps
 import scala.util.{Failure, Success, Try}
 
 
-object ContentAPI {
-
-  private implicit val executionContext = Contexts.capiContext
+object ContentAPI extends Logging {
 
   private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewIAMUrl)
 
@@ -34,7 +32,7 @@ object ContentAPI {
     awsRegion = Config().aws.region
   )
 
-  def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String): Int = {
+  def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String)(implicit ec: ExecutionContext): Int = {
     if (contentIds.nonEmpty) {
       val builder = StringBuilder.newBuilder
       var pageSize = 0
@@ -63,7 +61,7 @@ object ContentAPI {
     } else 0
   }
 
-  private def countTags(ids: String, pageSize: Int, apiTagId: String): Int = {
+  private def countTags(ids: String, pageSize: Int, apiTagId: String)(implicit ec: ExecutionContext): Int = {
     val response = previewApiClient.getResponse(SearchQuery()
       .ids(ids)
       .pageSize(pageSize)
@@ -75,19 +73,19 @@ object ContentAPI {
     Await.result(contentWithTagCount, 5 seconds)
   }
 
-  def getTag(apiTagId: String) = {
+  def getTag(apiTagId: String)(implicit ec: ExecutionContext) = {
 
     try {
       val response = previewApiClient.getResponse(ItemQuery(apiTagId))
       Await.result(response.map(_.tag), 5 seconds)
     } catch {
       case ContentApiError(404, _, _) =>
-        Logger.debug(s"No tag found for id $apiTagId")
+        logger.debug(s"No tag found for id $apiTagId")
         None
     }
   }
 
-  def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0): Int = {
+  def countContentWithTag(apiTagId: String, page: Int = 1, count: Int = 0)(implicit ec: ExecutionContext): Int = {
     val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(1))
     val resultPage = Await.result(response, 5 seconds)
 
@@ -96,8 +94,8 @@ object ContentAPI {
 
 
   @tailrec
-  def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
+  def getContentIdsForTag(apiTagId: String, page: Int = 1, ids: List[String] = Nil)(implicit ec: ExecutionContext): List[String] = {
+    logger.debug(s"Loading page $page of contentent ids for tag $apiTagId")
     val response = previewApiClient.getResponse(SearchQuery().tag(apiTagId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)
@@ -112,8 +110,8 @@ object ContentAPI {
   }
 
   @tailrec
-  def getDraftContentIdsForSection(apiSectionId: String, page: Int = 1, ids: List[String] = Nil): List[String] = {
-    Logger.debug(s"Loading page $page of contentent ids for section $apiSectionId")
+  def getDraftContentIdsForSection(apiSectionId: String, page: Int = 1, ids: List[String] = Nil)(implicit ec: ExecutionContext): List[String] = {
+    logger.debug(s"Loading page $page of contentent ids for section $apiSectionId")
     val response = previewApiClient.getResponse(SearchQuery().section(apiSectionId).pageSize(100).page(page))
 
     val resultPage = Await.result(response, 5 seconds)

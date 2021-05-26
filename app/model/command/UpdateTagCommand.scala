@@ -2,22 +2,23 @@ package model.command
 
 import com.gu.tagmanagement._
 import model.{DenormalisedTag, SectionAudit, Tag, TagAudit}
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.Logger
+import play.api.Logging
 import repositories._
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
-case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
+case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command with Logging {
 
   type T = Tag
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Tag]] = Future{
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Tag]] = Future{
     val (tag, sponsorship) = denormalisedTag.normalise()
 
-    Logger.info(s"updating tag ${tag.id}")
+    logger.info(s"updating tag ${tag.id}")
     tag.updatedAt = new DateTime(DateTimeZone.UTC).getMillis
 
     val existingTag = TagRepository.getTag(tag.id)
@@ -39,13 +40,13 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     }
 
     if (tag.`type` == "PaidContent" && tag.externalName != existingTag.map(_.externalName).getOrElse("")) {
-      Logger.debug("paid content tag name changed, checking checking section")
+      logger.debug("paid content tag name changed, checking checking section")
       for (
         sectionId <- tag.section;
         section <- SectionRepository.getSection(sectionId)
         if(section.sectionTagId == tag.id)
       ) {
-        Logger.info(s"microsite's primary paidContent tag external name updated, updating section name (tag ${tag.id}, section ${sectionId} name ${tag.externalName})")
+        logger.info(s"microsite's primary paidContent tag external name updated, updating section name (tag ${tag.id}, section ${sectionId} name ${tag.externalName})")
         val renamedSection = section.copy(name = tag.externalName)
         val updatedSection = SectionRepository.updateSection(renamedSection)
 
@@ -55,12 +56,12 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
         }
       }
     }
-    
+
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, TagEvent(EventType.Update, tag.id, Some(tag.asThrift)))
 
     existingTag foreach {(existing) =>
       if (tag.externalReferences != existing.externalReferences) {
-        Logger.info("Detected references change, triggering reindex")
+        logger.info("Detected references change, triggering reindex")
         FlexTagReindexCommand(tag).process
       }
     }
@@ -68,5 +69,5 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command {
     TagAuditRepository.upsertTagAudit(TagAudit.updated(tag))
 
     result
-  }(Contexts.tagOperationContext)
+  }
 }

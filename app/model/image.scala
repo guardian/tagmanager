@@ -1,8 +1,9 @@
 package model
 
 import play.api.libs.json._
-import org.cvogt.play.json.Jsonx
-import org.cvogt.play.json.implicits.optionWithNull
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
+import ai.x.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{Image => ThriftImage}
 
 

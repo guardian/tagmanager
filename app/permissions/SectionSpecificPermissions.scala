@@ -4,8 +4,7 @@ import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation,
 import com.gu.pandomainauth.action.UserRequest
 import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
 
-import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 object SectionPermissionMap {
   def apply(isMicrosite: Boolean): Option[Permission] = {
@@ -32,7 +31,7 @@ trait SectionSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
           testAccess(permission)(request.user.email).map {
             case PermissionGranted => None
             case PermissionDenied => Some(Results.Unauthorized)
-          }
+          }(executionContext)
         }.getOrElse {
           Future.successful(Some(Results.BadRequest("Expecting Json data")))
         }
@@ -42,12 +41,12 @@ trait SectionSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
   }
 }
 
-object UpdateSectionPermissionsCheck extends SectionSpecificPermissionActionFilter {
+case class UpdateSectionPermissionsCheck()(implicit val executionContext: ExecutionContext) extends SectionSpecificPermissionActionFilter {
   val testAccess: (Permission => (String => Future[PermissionAuthorisation])) = Permissions.testUser
   val restrictedAction = "update section"
 }
 
-object CreateSectionPermissionsCheck extends SectionSpecificPermissionActionFilter {
+case class CreateSectionPermissionsCheck()(implicit val executionContext: ExecutionContext) extends SectionSpecificPermissionActionFilter {
   val testAccess: (Permission => (String => Future[PermissionAuthorisation])) = Permissions.testUser
   val restrictedAction = "create section"
 }

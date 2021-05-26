@@ -1,9 +1,10 @@
 package model;
 
 import com.amazonaws.services.dynamodbv2.document.Item
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
-import play.api.Logger
+import play.api.Logging
 import scala.util.control.NonFatal
 
 case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsExpected: Int) {
@@ -11,7 +12,7 @@ case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsEx
   def toCapiForm() = CapiReindexProgress(status, docsSent, docsExpected)
 }
 
-object ReindexProgress {
+object ReindexProgress extends Logging {
   val TagTypeName = "tag"
   val SectionTypeName = "section"
   val PillarTypeName = "pillar"
@@ -28,7 +29,7 @@ object ReindexProgress {
     Json.parse(item.toJSON).as[ReindexProgress]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load reindex progress ${item.toJSON}")
+      logger.error(s"failed to load reindex progress ${item.toJSON}")
       throw e
     }
   }
@@ -52,7 +53,7 @@ object ReindexProgress {
   def progressSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, InProgress, docsSent, docsExpected)
   }
-  
+
   def progressPillar(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(PillarTypeName, InProgress, docsSent, docsExpected)
   }
@@ -64,7 +65,7 @@ object ReindexProgress {
   def completeSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Completed, docsSent, docsExpected)
   }
-  
+
   def completePillar(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(PillarTypeName, Completed, docsSent, docsExpected)
   }
@@ -76,7 +77,7 @@ object ReindexProgress {
   def failSection(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(SectionTypeName, Failed, docsSent, docsExpected)
   }
-  
+
   def failPillar(docsSent: Int, docsExpected: Int) = {
     ReindexProgress(PillarTypeName, Failed, docsSent, docsExpected)
   }

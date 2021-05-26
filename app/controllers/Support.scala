@@ -4,26 +4,36 @@ import java.io.File
 import java.net.URI
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-
 import com.amazonaws.services.s3.model._
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model.command.CommandError._
 import model.command.{ExpireSectionContentCommand, UnexpireSectionContentCommand, UpdateTagCommand}
 import model.{DenormalisedTag, Image, ImageAsset}
 import okhttp3.{Headers, OkHttpClient, Request}
 import org.joda.time.DateTime
+import helpers.JodaDateTimeFormat._
 import permissions.ModifySectionExpiryPermissionsCheck
-import play.api.Logger
-import play.api.libs.concurrent.Execution.Implicits._
+import play.api.Logging
 import play.api.libs.json.{JsString, Json}
-import play.api.mvc.{Action, Controller}
+import play.api.libs.ws.WSClient
+import play.api.mvc.{BaseController, ControllerComponents}
 import repositories.{ContentAPI, TagLookupCache, TagRepository}
-import services.{AWS, Config, FetchError, InvalidImage, ImageMetadataService}
+import services.{AWS, Config, FetchError, ImageMetadataService, InvalidImage}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import collection.JavaConverters._
 
-object Support extends Controller with PanDomainAuthActions {
+class Support(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with PanDomainAuthActions
+  with Logging {
 
   private val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
@@ -85,7 +95,7 @@ object Support extends Controller with PanDomainAuthActions {
 
   def previewCapiProxy(path: String) = APIAuthAction { request =>
     val url = s"${Config().capiPreviewIAMUrl}/$path?${request.rawQueryString}"
-    Logger.info(s"Requesting CAPI preview -> $url")
+    logger.info(s"Requesting CAPI preview -> $url")
 
     val req = new Request.Builder()
       .url(url)
@@ -116,7 +126,7 @@ object Support extends Controller with PanDomainAuthActions {
     )
   }
 
-  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck).async { req =>
+  def unexpireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
@@ -132,7 +142,7 @@ object Support extends Controller with PanDomainAuthActions {
     }
   }
 
-  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck).async { req =>
+  def expireSectionContent = (APIAuthAction andThen ModifySectionExpiryPermissionsCheck()).async { req =>
 
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
@@ -179,7 +189,7 @@ object Support extends Controller with PanDomainAuthActions {
       tag.parents.flatMap { parentId =>
         if (!knownTags.exists(tag => tag.id == parentId)) {
 
-          Logger.info(s"Tag ID: ${tag.id}, detected dangling parent $parentId")
+          logger.info(s"Tag ID: ${tag.id}, detected dangling parent $parentId")
 
           val updatedTag = tag.copy(parents = tag.parents.filterNot(_.equals(parentId)))
 

@@ -1,15 +1,14 @@
 package model.command
 
 import model.jobs.JobHelper
-import services.Contexts
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 case class ReindexPillarsCommand() extends Command {
   override type T = Unit
 
-  override def process()(implicit username: Option[String] = None): Future[Option[T]] = Future{
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[T]] = Future{
     JobHelper.beginPillarReindex
     Some(())
-  }(Contexts.tagOperationContext)
+  }
 }

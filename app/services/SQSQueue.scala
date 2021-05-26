@@ -3,7 +3,7 @@ package services
 import java.util.concurrent.atomic.AtomicBoolean
 
 import com.amazonaws.services.sqs.model._
-import play.api.Logger
+import play.api.Logging
 import collection.JavaConverters._
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
@@ -38,7 +38,7 @@ class SQSQueue(val queueName: String) {
   }
 }
 
-trait SQSQueueConsumer {
+trait SQSQueueConsumer extends Logging {
   def queue: SQSQueue
   def processMessage(message: Message): Unit
 
@@ -51,14 +51,14 @@ trait SQSQueueConsumer {
     if(running.get()) {
       try {
         for(message <- queue.pollMessages(1, 5)) { // only grab one message, do the rest of the cluster gets a chance
-          Logger.debug(s"processing message form queue ${queue.queueName}")
+          logger.debug(s"processing message form queue ${queue.queueName}")
           processMessage(message)
 
           queue.deleteMessage(message)
         }
       } catch {
         case NonFatal(e) => {
-          Logger.error(s"error processing messages from job queue ${queue.queueName}", e)
+          logger.error(s"error processing messages from job queue ${queue.queueName}", e)
         }
       }
       run

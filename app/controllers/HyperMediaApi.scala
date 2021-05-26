@@ -1,13 +1,28 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model._
 import play.api.libs.json._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{BaseController, ControllerComponents}
 import repositories._
 import services.Config.conf
 import helpers.CORSable
+import play.api.Logging
+import play.api.libs.ws.WSClient
 
-object HyperMediaApi extends Controller with PanDomainAuthActions {
+import scala.concurrent.ExecutionContext
+
+class HyperMediaApi(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with PanDomainAuthActions
+  with Logging {
+
   def hyper = CORSable(conf.corsableDomains: _*) {
     Action {
       val res = EmptyResponse()

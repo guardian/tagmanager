@@ -5,8 +5,7 @@ import com.gu.pandomainauth.action.UserRequest
 import com.gu.tagmanagement.TagType
 import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
 
-import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 object TagTypePermissionMap {
   def apply(tagType: String): Option[Permission] = {
@@ -40,7 +39,7 @@ trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
           testAccess(permission)(request.user.email).map {
             case PermissionGranted => None
             case PermissionDenied => Some(Results.Unauthorized)
-          }
+          }(executionContext)
           }.getOrElse {
             Future.successful(Some(Results.BadRequest("Expecting Json data")))
           }
@@ -50,12 +49,12 @@ trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
   }
 }
 
-object UpdateTagSpecificPermissionsCheck extends TagSpecificPermissionActionFilter {
+case class UpdateTagSpecificPermissionsCheck()(implicit val executionContext: ExecutionContext) extends TagSpecificPermissionActionFilter {
   val testAccess: Permission => (String => Future[PermissionAuthorisation]) = Permissions.testUser
   val restrictedAction = "update tag"
 }
 
-object CreateTagSpecificPermissionsCheck extends TagSpecificPermissionActionFilter {
+case class CreateTagSpecificPermissionsCheck()(implicit val executionContext: ExecutionContext) extends TagSpecificPermissionActionFilter {
   val testAccess: Permission => (String => Future[PermissionAuthorisation]) = Permissions.testUser
   val restrictedAction = "create tag"
 }

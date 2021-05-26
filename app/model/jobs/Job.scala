@@ -3,11 +3,15 @@ package model.jobs
 import com.amazonaws.services.dynamodbv2.document.Item
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import model.jobs.steps._
 import model.{AppAudit, Tag, TagAudit}
 import repositories._
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, DateTimeZone}
+
+import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 
 case class Job(
@@ -28,7 +32,7 @@ case class Job(
   /** Process the current step of a job
    *  returns a bool which tells the job runner to requeue the job in dynamo
    *  or simply continue processing. */
-  def process() = {
+  def process(implicit ec: ExecutionContext) = {
     steps.find(_.stepStatus != StepStatus.complete).foreach { step =>
       step.stepStatus match {
         case StepStatus.ready => processStep(step)
@@ -41,7 +45,7 @@ case class Job(
     }
   }
 
-  def processStep(step: Step) = {
+  def processStep(step: Step)(implicit ec: ExecutionContext) = {
     try {
       step.processStep
     } catch {
@@ -51,7 +55,7 @@ case class Job(
     }
   }
 
-  def checkStep(step: Step) = {
+  def checkStep(step: Step)(implicit ec: ExecutionContext) = {
     try {
       step.checkStep
     } catch {

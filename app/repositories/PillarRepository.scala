@@ -1,14 +1,14 @@
 package repositories
 
 import model.Pillar
-import play.api.Logger
+import play.api.Logging
 import services.Dynamo
 
 import scala.collection.JavaConversions._
 import scala.util.{Failure, Success, Try}
 
 
-object PillarRepository {
+object PillarRepository extends Logging {
   def getPillar(id: Long): Option[Pillar] = {
     Option(Dynamo.pillarTable.getItem("id", id)).map(Pillar.fromItem)
   }
@@ -19,7 +19,7 @@ object PillarRepository {
       Some(pillar)
     } catch {
       case e: Error =>
-        Logger.warn(s"Error updating pillar ${pillar.id}: ${e.getMessage}", e)
+        logger.warn(s"Error updating pillar ${pillar.id}: ${e.getMessage}", e)
         None
     }
   }
@@ -28,7 +28,7 @@ object PillarRepository {
     Try(Dynamo.pillarTable.deleteItem("id", id)) match {
       case Success(_) => Some(id)
       case Failure(e) =>
-        Logger.warn(s"Error deleting pillar $id: ${e.getMessage}", e)
+        logger.warn(s"Error deleting pillar $id: ${e.getMessage}", e)
         None
     }
   }

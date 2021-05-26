@@ -108,6 +108,7 @@ GET            /logout                                                 controlle
 GET            /reauth                                                 controllers.Login.reauth
 
 # Management
++anyhost
 GET            /management/healthcheck                                 controllers.Management.healthCheck
 
 # Map static resources from the /public folder to the /assets URL path

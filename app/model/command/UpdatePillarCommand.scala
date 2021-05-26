@@ -2,19 +2,19 @@ package model.command
 
 import com.gu.tagmanagement.{PillarEvent, PillarEventType}
 import model.{Pillar, PillarAudit}
-import play.api.Logger
+import play.api.Logging
 import repositories.{PillarAuditRepository, PillarRepository}
-import services.{Contexts, KinesisStreams}
+import services.KinesisStreams
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 
-case class UpdatePillarCommand(pillar: Pillar) extends Command {
+case class UpdatePillarCommand(pillar: Pillar) extends Command with Logging {
 
   type T = Pillar
 
-  override def process()(implicit username: Option[String] = None): Future[Option[Pillar]] = Future{
-    Logger.info(s"updating pillar ${pillar.id}")
+  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Pillar]] = Future{
+    logger.info(s"updating pillar ${pillar.id}")
 
     val result = PillarRepository.updatePillar(pillar)
 
@@ -23,5 +23,5 @@ case class UpdatePillarCommand(pillar: Pillar) extends Command {
     PillarAuditRepository.upsertPillarAudit(PillarAudit.updated(pillar))
 
     result
-  }(Contexts.tagOperationContext)
+  }
 }

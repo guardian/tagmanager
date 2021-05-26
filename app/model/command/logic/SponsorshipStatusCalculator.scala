@@ -1,6 +1,7 @@
 package model.command.logic
 
 import org.joda.time.DateTime
+import helpers.JodaDateTimeFormat._
 
 object SponsorshipStatusCalculator {
 

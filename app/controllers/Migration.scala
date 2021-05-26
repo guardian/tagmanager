@@ -1,20 +1,33 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.command.FlexTagReindexCommand
-import model.{PaidContentInformation, Sponsorship, Tag, TagAudit}
+import model.{PaidContentInformation, Sponsorship, TagAudit}
 import permissions.TriggerMigrationPermissionsCheck
+import play.api.Logging
 import play.api.libs.json.Json
-import play.api.mvc.Controller
+import play.api.libs.ws.WSClient
+import play.api.mvc.{BaseController, ControllerComponents}
 import repositories._
 import services.KinesisStreams
 import services.migration.PaidContentMigrator
 
+import scala.concurrent.ExecutionContext
 import scala.io.Source
 
-object Migration extends Controller with PanDomainAuthActions {
+class Migration(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+  with PanDomainAuthActions
+  with Logging {
 
-  def showPaidContentUploadForm = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def showPaidContentUploadForm = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     Ok(views.html.Application.migration.paidContentUploadForm())
   }
 
@@ -33,7 +46,7 @@ object Migration extends Controller with PanDomainAuthActions {
     }.getOrElse(BadRequest("unable to read file"))
   }
 
-  def movePaidcontentSponsorshipUpToSection = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def movePaidcontentSponsorshipUpToSection = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
 
     implicit val username = Some("sponsorship Migration")
 
@@ -66,7 +79,7 @@ object Migration extends Controller with PanDomainAuthActions {
     Ok(s"updated $count sections")
   }
 
-  def flattenSponsoredMicrosite(sponsorshipId: Long) =  (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def flattenSponsoredMicrosite(sponsorshipId: Long) =  (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     implicit val username = Some("sponsorship Migration")
 
     val spons = SponsorshipRepository.getSponsorship(sponsorshipId)
@@ -106,7 +119,7 @@ object Migration extends Controller with PanDomainAuthActions {
     Ok(s"updated $count partner zones")
   }
 
-  def addMissingPaidContentTypes() = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def addMissingPaidContentTypes() = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     implicit val username = Some("sponsorship Migration")
 
     val paidContentTags = TagLookupCache.search(
@@ -137,7 +150,7 @@ object Migration extends Controller with PanDomainAuthActions {
     Ok(missingSubType.map{t => t.externalName}.mkString("\n"))
   }
 
-  def dudupeActiveSponsorships() = (APIAuthAction andThen TriggerMigrationPermissionsCheck) {
+  def dudupeActiveSponsorships() = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
     implicit val username = Some("sponsorship Migration")
 
     val allTags = TagLookupCache.allTags.get

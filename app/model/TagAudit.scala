@@ -2,8 +2,9 @@ package model
 
 import com.amazonaws.services.dynamodbv2.document.Item
 import com.gu.pandomainauth.model.User
+import helpers.JodaDateTimeFormat._
 import org.joda.time.DateTime
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
 import repositories.SectionRepository
@@ -27,7 +28,7 @@ case class TagAudit(
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 }
 
-object TagAudit {
+object TagAudit extends Logging {
 
   implicit val tagAuditFormat: Format[TagAudit] = (
     (JsPath \ "tagId").format[Long] and
@@ -43,7 +44,7 @@ object TagAudit {
     Json.parse(item.toJSON).as[TagAudit]
   } catch {
     case NonFatal(e) => {
-      Logger.error(s"failed to load tag Audit ${item.toJSON}", e)
+      logger.error(s"failed to load tag Audit ${item.toJSON}", e)
       throw e
     }
   }

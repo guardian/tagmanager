@@ -3,7 +3,7 @@ package modules.clustersync
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject._
-import play.api.Logger
+import play.api.Logging
 import repositories.{TagLookupCache, SectionLookupCache}
 import services.{Config, KinesisConsumer}
 
@@ -17,7 +17,7 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 @Singleton
-class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
+class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends Logging {
 
   val serviceManager = new ServiceManager(List(new NodeStatusHeartbeater(this)))
 
@@ -34,39 +34,39 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
 
   def initialise {
     try {
-      Logger.info("starting sync components...")
+      logger.info("starting sync components...")
       val ns = NodeStatusRepository.register()
       reservation.set(Some(ns))
 
-      Logger.info("loading tag cache")
+      logger.info("loading tag cache")
       TagLookupCache.refresh
 
       val appName = s"tag-cache-syncroniser-${Config().aws.stage}-${ns.nodeId}"
-      Logger.info(s"Starting tag sync kinesis consumer with appName: $appName")
+      logger.info(s"Starting tag sync kinesis consumer with appName: $appName")
 
       val tagUpdateConsumer = new KinesisConsumer(Config().tagUpdateStreamName, appName, TagSyncUpdateProcessor)
-      Logger.info("starting tag sync consumer")
+      logger.info("starting tag sync consumer")
       tagUpdateConsumer.start()
       tagCacheSynchroniser.set(Some(tagUpdateConsumer))
     } catch {
-      case he: HeartbeatException => Logger.error("failed to register in the cluster, will try again next heartbeat")
+      case he: HeartbeatException => logger.error("failed to register in the cluster, will try again next heartbeat")
       case NonFatal(e) => {
-        Logger.error("failed to start sync", e)
+        logger.error("failed to start sync", e)
         pause
       }
     }
   }
 
   def pause {
-    Logger.warn("pausing cluster synchronisation")
+    logger.warn("pausing cluster synchronisation")
     tagCacheSynchroniser.get.foreach{consumer =>
-      Logger.warn("stopping consumer")
+      logger.warn("stopping consumer")
       consumer.stop()
       tagCacheSynchroniser.set(None)
     }
 
     reservation.get.foreach{ns =>
-      Logger.warn("deregistering node")
+      logger.warn("deregistering node")
       NodeStatusRepository.deregister(ns)
       reservation.set(None)
     }
@@ -77,11 +77,11 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
       reservation.get() match {
         case Some(ns) => {
           try {
-            Logger.info(s"heartbeating as node ${ns.nodeId}...")
+            logger.info(s"heartbeating as node ${ns.nodeId}...")
             reservation.set(Some(NodeStatusRepository.heartbeat(ns)))
           } catch {
             case he: HeartbeatException => {
-              Logger.error("heartbeat failed", he)
+              logger.error("heartbeat failed", he)
               pause
             }
           }
@@ -89,25 +89,25 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) {
         case None => initialise
       }
     } catch {
-      case NonFatal(e) => Logger.error("Error heartbeating", e)
+      case NonFatal(e) => logger.error("Error heartbeating", e)
     }
   }
 
   def stop(): Unit = {
-    Logger.info("shutting down synchronisation")
-    Logger.info("stopping heartbeater")
+    logger.info("shutting down synchronisation")
+    logger.info("stopping heartbeater")
     serviceManager.stopAsync()
 
-    Logger.info("awaiting service runner stop")
+    logger.info("awaiting service runner stop")
     serviceManager.awaitStopped(10, TimeUnit.SECONDS)
 
-    Logger.info("heartbeater stopped, stopping tag cache sync")
+    logger.info("heartbeater stopped, stopping tag cache sync")
     tagCacheSynchroniser.get foreach { consumer => consumer.stop() }
 
-    Logger.info("deregistering node")
+    logger.info("deregistering node")
     reservation.get foreach { ns => NodeStatusRepository.deregister(ns) }
 
-    Logger.info("synchronisation shutdown complete")
+    logger.info("synchronisation shutdown complete")
   }
 }
 

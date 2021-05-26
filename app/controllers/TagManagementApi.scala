@@ -1,23 +1,35 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model._
 import model.command.CommandError._
 import model.command._
 import model.jobs.JobRunner
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, DateTimeZone}
 import permissions._
 import play.api.libs.json._
-import play.api.mvc.{Controller, Result}
+import play.api.mvc.{BaseController, ControllerComponents, Result}
 import repositories._
-import play.api.libs.concurrent.Execution.Implicits._
 import services.Config
 import helpers.CORSable
 import model.forms.{FilterTypes, GetSpreadSheet}
+import play.api.Logging
+import play.api.libs.ws.WSClient
 import services.Config.conf
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object TagManagementApi extends Controller with PanDomainAuthActions {
+class TagManagementApi(
+  val wsClient: WSClient,
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+)(
+  implicit ec: ExecutionContext
+)
+  extends BaseController
+    with PanDomainAuthActions
+    with Logging {
 
   def getTag(id: Long) = APIAuthAction {
 
@@ -27,7 +39,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def updateTag(id: Long) =
-    (APIAuthAction andThen UpdateTagPermissionsCheck andThen UpdateTagSpecificPermissionsCheck).async { req =>
+    (APIAuthAction andThen UpdateTagPermissionsCheck() andThen UpdateTagSpecificPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
 
     req.body.asJson.map { json =>
@@ -42,7 +54,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
   }
 
   def createTag = CORSable(conf.corsablePostDomains: _*) {
-    (APIAuthAction andThen CreateTagPermissionsCheck andThen CreateTagSpecificPermissionsCheck).async { req =>
+    (APIAuthAction andThen CreateTagPermissionsCheck() andThen CreateTagSpecificPermissionsCheck()).async { req =>
       implicit val username = Option(req.user.email)
       req.body.asJson.map { json =>
         json.as[CreateTagCommand].process.map { result =>
@@ -114,7 +126,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck).async { req =>
+  def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreateSectionCommand].process.map { result =>
@@ -127,7 +139,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck).async { req =>
+  def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       UpdateSectionCommand(json.as[Section]).process.map { result =>
@@ -140,7 +152,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def addEditionToSection(id: Long) = (APIAuthAction andThen AddEditionToSectionPermissionsCheck).async { req =>
+  def addEditionToSection(id: Long) = (APIAuthAction andThen AddEditionToSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
@@ -155,7 +167,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck).async { req =>
+  def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map {result =>
       result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
@@ -178,7 +190,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }.getOrElse(NotFound)
   }
 
-  def createPillar() = (APIAuthAction andThen PillarPermissionsCheck).async { req =>
+  def createPillar() = (APIAuthAction andThen PillarPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreatePillarCommand].process.map { result =>
@@ -191,7 +203,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def updatePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck).async { req =>
+  def updatePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       UpdatePillarCommand(json.as[Pillar]).process.map { result =>
@@ -204,7 +216,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def deletePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck).async { req =>
+  def deletePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     DeletePillarCommand(id).process.map { result =>
       result.fold[Result](NotFound)(_ => NoContent)
@@ -239,7 +251,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck).async { req =>
+  def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[MergeTagCommand].process.map { result =>
@@ -252,7 +264,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def deleteTag(id: Long) = (APIHMACAuthAction andThen DeleteTagPermissionsCheck).async { req =>
+  def deleteTag(id: Long) = (APIHMACAuthAction andThen DeleteTagPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     (DeleteTagCommand(id)).process.map { result =>
       result.map { t => NoContent } getOrElse NotFound
@@ -289,7 +301,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(SponsorshipRepository.getSponsorship(id).map(DenormalisedSponsorship(_))))
   }
 
-  def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck).async { req =>
+  def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[CreateSponsorshipCommand].process.map { result =>
@@ -302,7 +314,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck).async { req =>
+  def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
       json.as[UpdateSponsorshipCommand].process.map { result =>
@@ -360,7 +372,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     Ok(Json.toJson(jobs))
   }
 
-  def deleteJob(jobId: Long) = (APIAuthAction andThen JobDeletePermissionsCheck) { req =>
+  def deleteJob(jobId: Long) = (APIAuthAction andThen JobDeletePermissionsCheck()) { req =>
     try {
       JobRepository.deleteIfTerminal(jobId)
       Ok
@@ -369,7 +381,7 @@ object TagManagementApi extends Controller with PanDomainAuthActions {
     }
   }
 
-  def rollbackJob(id: Long) = (APIAuthAction andThen JobRollbackPermissionsCheck) { req =>
+  def rollbackJob(id: Long) = (APIAuthAction andThen JobRollbackPermissionsCheck()) { req =>
     val currentTime = new DateTime(DateTimeZone.UTC).getMillis
     val lockBreakTime = currentTime - JobRunner.lockTimeOutMillis
     val nodeId = JobRunner.nodeId

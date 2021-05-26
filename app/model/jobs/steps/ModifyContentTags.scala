@@ -5,8 +5,9 @@ import model.{BatchTagOperation, Section, Tag, TagAudit}
 import model.jobs.StepStatus
 
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
 import model.jobs.Step
-import play.api.Logger
+import play.api.Logging
 import services.KinesisStreams
 import repositories.{ContentAPI, TagAuditRepository}
 
@@ -14,10 +15,21 @@ import scala.language.postfixOps
 
 // The 'op' argument of this case class should really be the BatchTagOperation type but serializing enums to JSON isn't very easy with the
 // current version of play and enumeratim
-case class ModifyContentTags(tag: Tag, section: Option[Section], contentIds: List[String], op: String, `type`: String = ModifyContentTags.`type`, var stepStatus: String = StepStatus.ready, var stepMessage: String = "Waiting", var attempts: Int = 0) extends Step {
+case class ModifyContentTags(
+  tag: Tag,
+  section: Option[Section],
+  contentIds: List[String],
+  op: String,
+  `type`: String = ModifyContentTags.`type`,
+  var stepStatus: String = StepStatus.ready,
+  var stepMessage: String = "Waiting",
+  var attempts: Int = 0
+) extends Step
+  with Logging {
+
   private val MAX_PARTITION_KEY_LENGTH = 128
 
-  override def process = {
+  override def process(implicit ec: ExecutionContext) = {
     contentIds foreach { contentPath =>
       val taggingOperation = TaggingOperation(
         operation = OperationType.valueOf(op.replace("-", "")).get,
@@ -25,7 +37,7 @@ case class ModifyContentTags(tag: Tag, section: Option[Section], contentIds: Lis
         tag = Some(TagWithSection(tag.asThrift, section.map(_.asThrift)))
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(MAX_PARTITION_KEY_LENGTH), taggingOperation)
-      Logger.info(s"raising $op for ${tag.id} on $contentPath operation")
+      logger.info(s"raising $op for ${tag.id} on $contentPath operation")
     }
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, op, contentIds.length))
   }
@@ -34,7 +46,7 @@ case class ModifyContentTags(tag: Tag, section: Option[Section], contentIds: Lis
     Some(5 seconds)
   }
 
-  override def check: Boolean = {
+  override def check(implicit ec: ExecutionContext): Boolean = {
     val count = ContentAPI.countOccurencesOfTagInContents(contentIds, tag.path)
 
     // As stated above, once we get the BatchTagOperation enum type serializable we can match against a type here instead of a string
@@ -43,7 +55,7 @@ case class ModifyContentTags(tag: Tag, section: Option[Section], contentIds: Lis
       case _ => contentIds.length
     }
 
-    Logger.info(s"Checking batch tag operations. Expected=$expected Actual=$count")
+    logger.info(s"Checking batch tag operations. Expected=$expected Actual=$count")
 
     count == expected
   }

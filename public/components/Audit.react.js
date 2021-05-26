@@ -20,7 +20,7 @@ export default class Audit extends React.Component {
       const state = newState || this.state;
       const updateFn = state.selectedSubject === 'tag' ? tagManagerApi.getAuditForTagOperation : tagManagerApi.getAuditForSectionOperation;
 
-      updateFn(state.selectedReport)
+      updateFn(state.selectedReport.replace("batched", "batchtag"))
       .then((logs) => {
         this.setState({
           auditLog: logs
@@ -82,7 +82,7 @@ export default class Audit extends React.Component {
             <tr>
               <th>Date</th>
               <th>Operation</th>
-              <th>Desciption</th>
+              <th>Description</th>
               <th>User</th>
               <th></th>
             </tr>

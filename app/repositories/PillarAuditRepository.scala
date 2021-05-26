@@ -2,6 +2,7 @@ package repositories
 
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
 import model.PillarAudit
+import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, Duration, ReadableDuration}
 import services.Dynamo
 

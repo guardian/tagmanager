@@ -1,40 +1,44 @@
 package model.jobs
 
 import model.jobs.steps._
-import org.cvogt.play.json.Jsonx
+import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import play.api.Logger
+import play.api.Logging
+
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-trait Step {
+trait Step extends Logging {
+
   // Inner details
   /** Do work. */
-  protected def process
+  protected def process(implicit ec: ExecutionContext)
 
   /** Confirm this check ran successfully */
-  protected def check: Boolean
+  protected def check(implicit ec: ExecutionContext): Boolean
 
   /** Undo this step */
   protected def rollback
 
   // Public methods that wrap the status updates
-  def processStep() = {
+  def processStep(implicit ec: ExecutionContext) = {
     try {
       beginProcessing
       process
       doneProcessing
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"Error thrown during step processing: ${e}")
+        logger.error(s"Error thrown during step processing: ${e}")
         processFailed
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
     }
   }
 
-  def checkStep() = {
+  def checkStep(implicit ec: ExecutionContext) = {
     attempts += 1
     if (attempts > Step.retryLimit) {
       checkFailed
@@ -47,7 +51,7 @@ trait Step {
       }
     } catch {
       case NonFatal(e) => {
-        Logger.error(s"Error thrown during step check: ${e}")
+        logger.error(s"Error thrown during step check: ${e}")
         checkFailed
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
@@ -116,7 +120,7 @@ trait Step {
   }
 }
 
-object Step {
+object Step extends Logging {
 
   private val retryLimit = 10000
 
@@ -144,7 +148,7 @@ object Step {
         case s: RemoveTagFromContent => removeTagFromContentFormat.writes(s)
         case s: RemoveTagPath        => removeTagPathFormat.writes(s)
         case other => {
-          Logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
+          logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
           throw new UnsupportedOperationException(s"unable to serialize step of type ${other.getClass}")
         }
       }

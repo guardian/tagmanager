@@ -1,6 +1,6 @@
 <configuration>
 
-    <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
 
     <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/application.log</file>
@@ -21,8 +21,9 @@
         </encoder>
     </appender>
 
-    <logger name="play" level="INFO" />
-    <logger name="application" level="DEBUG" />
+    <logger name="controllers" level="DEBUG" />
+    <logger name="model" level="DEBUG" />
+    <logger name="services" level="DEBUG" />
 
     <root level="INFO">
         <appender-ref ref="LOGFILE"/>

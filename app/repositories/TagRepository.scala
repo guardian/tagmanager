@@ -5,14 +5,14 @@ import java.util.concurrent.atomic.AtomicReference
 import com.amazonaws.services.dynamodbv2.document.{Item, ScanFilter}
 import model.Tag
 import org.apache.commons.lang3.StringUtils
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json.JsValue
 import services.Dynamo
 
 import scala.collection.JavaConversions._
 
 
-object TagRepository {
+object TagRepository extends Logging {
   def getTag(id: Long) = {
     Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
   }
@@ -51,7 +51,7 @@ case class TagSearchCriteria(
   searchField: Option[String] = None,
   subType: Option[String] = None,
   hasFields: Option[List[String]] = None
-) {
+) extends Logging {
 
   type TagFilter = (List[Tag]) => List[Tag]
 
@@ -137,7 +137,7 @@ case class TagSearchCriteria(
         case "contributorinformation.bylineimage" => t.contributorInformation.flatMap(_.bylineImage).isDefined
         case "contributorinformation.largebylineimage" => t.contributorInformation.flatMap(_.largeBylineImage).isDefined
         case unsupported => {
-          Logger.warn(s"Attempted to check if tag has field '$unsupported' which is not supported by the hasFieldsFilter")
+          logger.warn(s"Attempted to check if tag has field '$unsupported' which is not supported by the hasFieldsFilter")
           true
         }
     }

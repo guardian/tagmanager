@@ -26,8 +26,8 @@ object JobRepository {
       .withConditionExpression("(attribute_not_exists(ownedBy) AND jobStatus <> :ownedStatus) OR (attribute_exists(ownedBy) AND lockedAt < :lockBreakTime)")
       .withValueMap(new ValueMap()
         .withString(":newOwner", nodeId)
-        .withString(":lockedAt", currentTime.toString())
-        .withString(":lockBreakTime", lockBreakTime.toString())
+        .withLong(":lockedAt", currentTime)
+        .withLong(":lockBreakTime", lockBreakTime)
         .withString(":ownedStatus", JobStatus.owned))
 
     try {

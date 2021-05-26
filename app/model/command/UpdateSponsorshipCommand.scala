@@ -4,13 +4,13 @@ import model._
 import model.command.logic.SponsorshipStatusCalculator
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
+import helpers.JodaDateTimeFormat._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import repositories.SponsorshipOperations._
 import repositories.SponsorshipRepository
-import services.Contexts
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 case class UpdateSponsorshipCommand(
   id: Long,
@@ -29,7 +29,7 @@ case class UpdateSponsorshipCommand(
 
   override type T = Sponsorship
 
-  override def process()(implicit username: Option[String]): Future[Option[T]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = Future{
 
     val status = SponsorshipStatusCalculator.calculateStatus(validFrom, validTo)
 
@@ -80,7 +80,7 @@ case class UpdateSponsorshipCommand(
 
       updatedSponsorship
     }
-  }(Contexts.tagOperationContext)
+  }
 
   private def getActiveTags(s: Sponsorship): List[Long] = {
     s.status match {
@@ -116,4 +116,3 @@ object UpdateSponsorshipCommand{
     )(UpdateSponsorshipCommand.apply, unlift(UpdateSponsorshipCommand.unapply))
 
 }
-
