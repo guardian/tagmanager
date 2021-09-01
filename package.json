@@ -21,7 +21,7 @@
     "lodash.debounce": "^3.1.1",
     "lodash.startcase": "^4.4.0",
     "moment": "^2.10.6",
-    "node-sass": "4.13.0",
+    "node-sass": "5.0.0",
     "panda-session": "0.1.6",
     "phantomjs-prebuilt": "^2.1.14",
     "q": "1.4.1",
