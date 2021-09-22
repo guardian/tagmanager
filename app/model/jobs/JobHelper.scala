@@ -7,13 +7,14 @@ import scala.concurrent.ExecutionContext
 
 /** Utilities for starting jobs */
 object JobHelper {
-  def buildBatchTagJob(contentIds: List[String], toAddToTop: Option[Tag], toAddToBottom: List[Tag], toRemove: List[Tag])(implicit username: Option[String], ec: ExecutionContext): Unit = {
+  def buildBatchTagJob(contentIds: List[String], toAddToTop: Option[Tag], toAddToBottom: List[Tag], toAddTrackingTag: List[Tag], toRemove: List[Tag])(implicit username: Option[String], ec: ExecutionContext): Unit = {
     def getSection(tag: Tag) = tag.section.flatMap(SectionRepository.getSection)
 
     val steps: List[ModifyContentTags] =
       Nil ++
       toAddToTop.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.AddToTop.entryName)) ++
       toAddToBottom.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.AddToBottom.entryName)) ++
+      toAddTrackingTag.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.AddTrackingTag.entryName)) ++
       toRemove.map(tag => ModifyContentTags(tag, getSection(tag), contentIds, BatchTagOperation.Remove.entryName))
 
     var title = "Batch tag: \n"
@@ -23,6 +24,10 @@ object JobHelper {
 
     if (toAddToBottom.nonEmpty) {
       title += s"    Adding ${toAddToBottom.map(t => "'" + t.path + "'").mkString(", ")} to bottom. \n"
+    }
+
+    if (toAddTrackingTag.nonEmpty) {
+      title += s"    Adding tracking tag: ${toAddTrackingTag.map(t => "'" + t.path + "'").mkString(", ")} \n"
     }
 
     if (toRemove.nonEmpty) {

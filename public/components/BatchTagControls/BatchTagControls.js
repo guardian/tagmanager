@@ -11,15 +11,18 @@ export default class BatchTagControls extends React.Component {
         this.modeMap = {
           'add_to_top': {
             text: 'Add tag to top',
-            func: this.addTagToContentTop
+            func: this.addTagToContentTop,
+            filter: (tag => tag.type !== "Tracking")
           },
           'add_to_bottom': {
             text: 'Add tag to bottom',
-            func: this.addTagToContentBottom
+            func: this.addTagToContentBottom,
+            filter: (tag => tag.type !== "Tracking")
           },
           'add_tracking_tag': {
             text: 'Add tracking tag',
-            func: this.addTrackingTag
+            func: this.addTrackingTag,
+            filter: (tag => tag.type === "Tracking")
           },
           'remove': {
             text: 'Remove tag',
@@ -31,6 +34,7 @@ export default class BatchTagControls extends React.Component {
             mode: '',
             toAddToTop: [],
             toAddToBottom: [],
+            toAddTrackingTag: [],
             toRemove: [],
         };
     }
@@ -120,13 +124,13 @@ export default class BatchTagControls extends React.Component {
 
 
     renderTagPicker() {
-      const {text, func} = this.modeMap[this.state.mode];
+      const {text, func, filter} = this.modeMap[this.state.mode];
       return (
           <div className="batch-status__mode">
             <div className="batch-status__info">
               {text}
             </div>
-            <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} />
+            <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} filter={filter}/>
             <i className="i-cross batch-status__cancel" onClick={this.resetMode.bind(this)}></i>
           </div>
       );
@@ -195,7 +199,7 @@ export default class BatchTagControls extends React.Component {
             <div className="batch-status">
               {this.renderMode()}
             </div>
-            {toAddToTop.length + toAddToBottom.length + + toAddTrackingTag.length + toRemove.length > 0 ? this.renderBasket() : false}
+            {toAddToTop.length + toAddToBottom.length + toAddTrackingTag.length + toRemove.length > 0 ? this.renderBasket() : false}
           </div>
         </ReactCSSTransitionGroup>
       );

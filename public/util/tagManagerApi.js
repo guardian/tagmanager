@@ -1,4 +1,3 @@
-
 import Reqwest from 'reqwest';
 import Q from 'q';
 import {reEstablishSession} from 'babel?presets[]=es2015!panda-session';
@@ -270,8 +269,8 @@ export default {
     });
   },
 
-  batchTag: (contentIds, toAddToTop, toAddToBottom, toRemove) => {
-    const batchTagCommand = {contentIds, toAddToTop, toAddToBottom, toRemove};
+  batchTag: (contentIds, toAddToTop, toAddToBottom, toAddTrackingTag, toRemove) => {
+    const batchTagCommand = {contentIds, toAddToTop, toAddToBottom, toAddTrackingTag, toRemove};
 
     return PandaReqwest({
       url: '/api/batchTag',

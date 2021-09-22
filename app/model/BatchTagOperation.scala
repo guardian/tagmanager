@@ -9,5 +9,6 @@ object BatchTagOperation extends Enum[BatchTagOperation] {
   override val values = findValues
   case object AddToTop extends BatchTagOperation
   case object AddToBottom extends BatchTagOperation
+  case object AddTrackingTag extends BatchTagOperation
   case object Remove extends BatchTagOperation
 }
