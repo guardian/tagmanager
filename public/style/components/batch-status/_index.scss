@@ -69,21 +69,50 @@ $batch-status-height: 30px;
 
 .batch-status__submit {
   margin-top: 6px;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .batch-status__basket-title {
-  margin-left: 6px;
-  margin-bottom: 6px;
+  @extend %f-data;
+  @extend %fs-data-6;
+  margin: 0px;
+  padding-bottom: 4px;
+  font-weight: 600;
+  border-bottom: 1px solid $c-grey-300;
+}
+
+.batch-status__basket-category-title {
+  @extend %fs-data-4;
+  @extend %f-data;
+  padding: 0 0 2px 0;
 }
 
 .batch-status__basket-category {
-
+  padding: 4px 0;
+  border-bottom: 1px solid $c-grey-300;
   & li {
-    margin-left: 10px;
+    @extend %fs-data-4;
+    display: flex;
+    margin: 0 0 2px 0;
+    border: 1px solid $c-grey-300;
+    padding: 4px 2px;
+    background-color: $c-grey-100;
+  }
+  & .i-cross {
+    transform: scale(75%);
+    outline: none;
+    border:none;
+    margin-left: 4px;
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 
 .batch-status__small-path {
+  margin: 0 4px;
   font-size: 0.75em;
 }
 
