@@ -12,17 +12,17 @@ export default class BatchTagControls extends React.Component {
           'add_to_top': {
             text: 'Add tag to top',
             func: this.addTagToContentTop,
-            filter: (tag => tag.type !== "Tracking")
+            tagRules: { blockedTagTypes: ["Tracking"] }
           },
           'add_to_bottom': {
             text: 'Add tag to bottom',
             func: this.addTagToContentBottom,
-            filter: (tag => tag.type !== "Tracking")
+            tagRules: { blockedTagTypes: ["Tracking"] }
           },
           'add_tracking_tag': {
             text: 'Add tracking tag',
             func: this.addTrackingTag,
-            filter: (tag => tag.type === "Tracking")
+            tagRules: { tagType: "Tracking" }
           },
           'remove': {
             text: 'Remove tag',
@@ -124,13 +124,14 @@ export default class BatchTagControls extends React.Component {
 
 
     renderTagPicker() {
-      const {text, func, filter} = this.modeMap[this.state.mode];
+      const {text, func, tagRules} = this.modeMap[this.state.mode];
+      const { tagType, blockedTagTypes } = tagRules;
       return (
           <div className="batch-status__mode">
             <div className="batch-status__info">
               {text}
             </div>
-            <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} filter={filter}/>
+            <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} tagType={tagType} blockedTagTypes = {blockedTagTypes}/>
             <i className="i-cross batch-status__cancel" onClick={this.resetMode.bind(this)}></i>
           </div>
       );
