@@ -64,13 +64,13 @@ export default class BatchTagControls extends React.Component {
     }
 
     addTrackingTag(tag) {
-      if (!this.state.toAddTrackingTag.some(t => t.id === tag.id)) {
-          this.setState({
-            toAddTrackingTag: [tag, ...this.state.toAddTrackingTag],
-            mode: ''
-          });
-      }
-  }
+        if (!this.state.toAddTrackingTag.some(t => t.id === tag.id)) {
+            this.setState({
+              toAddTrackingTag: [tag, ...this.state.toAddTrackingTag],
+              mode: ''
+            });
+        }
+    }
 
     removeTagFromContent(tag) {
         if (!this.state.toRemove.some(t => t.id === tag.id)) {
