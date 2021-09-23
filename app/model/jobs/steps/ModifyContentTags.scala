@@ -67,7 +67,6 @@ case class ModifyContentTags(
   // TODO replace with nice enum type (Do I really expect this will ever happen? Well we all have dreams!)
   private def humanReadableOp = op match {
     case "remove" => "removed"
-    case "add-tracking-tag" => "added tracking tag"
     case "add-to-bottom" => "added to bottom"
     case "add-to-top" => "added to top"
   }

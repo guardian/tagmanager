@@ -8,7 +8,7 @@ import repositories._
 
 import scala.concurrent.{Future, ExecutionContext}
 
-case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], toAddToBottom: List[Long], toAddTrackingTag: List[Long], toRemove: List[Long]) extends Command {
+case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], toAddToBottom: List[Long], toRemove: List[Long]) extends Command {
   type T = Unit
 
   override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Unit]] = Future {
@@ -18,7 +18,6 @@ case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], t
     val hasIntersections =
       toTopList.intersect(toRemove).nonEmpty ||
       toTopList.intersect(toAddToBottom).nonEmpty ||
-      toTopList.intersect(toAddTrackingTag).nonEmpty ||
       toAddToBottom.intersect(toRemove).nonEmpty
 
     if (hasIntersections) {
@@ -29,10 +28,9 @@ case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], t
 
     val tops = toAddToTop.map(toTag)
     val bottoms = toAddToBottom.map(toTag)
-    val trackingTags = toAddTrackingTag.map(toTag)
     val removals = toRemove.map(toTag)
 
-    JobHelper.buildBatchTagJob(contentIds, tops, bottoms, trackingTags, removals)
+    JobHelper.buildBatchTagJob(contentIds, tops, bottoms, removals)
 
     Some(())
   }

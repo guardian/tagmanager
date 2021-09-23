@@ -11,18 +11,11 @@ export default class BatchTagControls extends React.Component {
         this.modeMap = {
           'add_to_top': {
             text: 'Add tag to top',
-            func: this.addTagToContentTop,
-            tagRules: { blockedTagTypes: ["Tracking"] }
+            func: this.addTagToContentTop
           },
           'add_to_bottom': {
             text: 'Add tag to bottom',
-            func: this.addTagToContentBottom,
-            tagRules: { blockedTagTypes: ["Tracking"] }
-          },
-          'add_tracking_tag': {
-            text: 'Add tracking tag',
-            func: this.addTrackingTag,
-            tagRules: { tagType: "Tracking" }
+            func: this.addTagToContentBottom
           },
           'remove': {
             text: 'Remove tag',
@@ -34,7 +27,6 @@ export default class BatchTagControls extends React.Component {
             mode: '',
             toAddToTop: [],
             toAddToBottom: [],
-            toAddTrackingTag: [],
             toRemove: [],
         };
     }
@@ -63,15 +55,6 @@ export default class BatchTagControls extends React.Component {
         }
     }
 
-    addTrackingTag(tag) {
-        if (!this.state.toAddTrackingTag.some(t => t.id === tag.id)) {
-            this.setState({
-              toAddTrackingTag: [tag, ...this.state.toAddTrackingTag],
-              mode: ''
-            });
-        }
-    }
-
     removeTagFromContent(tag) {
         if (!this.state.toRemove.some(t => t.id === tag.id)) {
             this.setState({
@@ -88,10 +71,10 @@ export default class BatchTagControls extends React.Component {
     }
 
     performBatchTag(tag, operation) {
-      const {toAddToTop, toAddToBottom, toAddTrackingTag, toRemove} = this.state;
+      const {toAddToTop, toAddToBottom, toRemove} = this.state;
       const toId = (tag) => tag.id;
       // Currently we only support setting 1 tag to "add to top" because otherwise it will depends on the order the events are processed
-      tagManagerApi.batchTag(this.props.selectedContent, toAddToTop.map(toId)[0], toAddToBottom.map(toId), toAddTrackingTag.map(toId), toRemove.map(toId))
+      tagManagerApi.batchTag(this.props.selectedContent, toAddToTop.map(toId)[0], toAddToBottom.map(toId), toRemove.map(toId))
         .then(_ => browserHistory.push('/status'));
     }
 
@@ -109,9 +92,6 @@ export default class BatchTagControls extends React.Component {
           <div className="batch-status__button" onClick={this.switchMode.bind(this, 'add_to_bottom')}>
             Add tag to bottom of tag list
           </div>
-          <div className="batch-status__button" onClick={this.switchMode.bind(this, 'add_tracking_tag')}>
-            Add tracking tag
-          </div>
           <div className="batch-status__button--remove" onClick={this.switchMode.bind(this, 'remove')}>
             Remove tag
           </div>
@@ -124,14 +104,13 @@ export default class BatchTagControls extends React.Component {
 
 
     renderTagPicker() {
-      const {text, func, tagRules} = this.modeMap[this.state.mode];
-      const { tagType, blockedTagTypes } = tagRules;
+      const {text, func} = this.modeMap[this.state.mode];
       return (
           <div className="batch-status__mode">
             <div className="batch-status__info">
               {text}
             </div>
-            <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} tagType={tagType} blockedTagTypes = {blockedTagTypes}/>
+            <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} />
             <i className="i-cross batch-status__cancel" onClick={this.resetMode.bind(this)}></i>
           </div>
       );
@@ -178,10 +157,9 @@ export default class BatchTagControls extends React.Component {
       return (
           <div className='batch-status__basket'>
             <h2 className='batch-status__basket-title'>Changes</h2>
-              {renderCategory('Tags to add to top:', this.state.toAddToTop, 'toAddToTop')}
-              {renderCategory('Tags to add to bottom:', this.state.toAddToBottom, 'toAddToBottom')}
-              {renderCategory('Tracking tags to add:', this.state.toAddTrackingTag, 'toAddTrackingTag')}
-              {renderCategory('Tags to remove:', this.state.toRemove, 'toRemove')}
+              {renderCategory('To Add to Top', this.state.toAddToTop, 'toAddToTop')}
+              {renderCategory('To Add to Bottom', this.state.toAddToBottom, 'toAddToBottom')}
+              {renderCategory('To Remove', this.state.toRemove, 'toRemove')}
             <button className='batch-status__submit' onClick={this.performBatchTag.bind(this)}>Submit</button>
           </div>
       );
@@ -193,14 +171,14 @@ export default class BatchTagControls extends React.Component {
         return false;
       }
 
-      const {toAddToTop, toAddToBottom, toAddTrackingTag, toRemove} = this.state;
+      const {toAddToTop, toAddToBottom, toRemove} = this.state;
       return (
         <ReactCSSTransitionGroup transitionName="batch-status-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
           <div className="batch-status__container">
             <div className="batch-status">
               {this.renderMode()}
             </div>
-            {toAddToTop.length + toAddToBottom.length + toAddTrackingTag.length + toRemove.length > 0 ? this.renderBasket() : false}
+            {toAddToTop.length + toAddToBottom.length + toRemove.length > 0 ? this.renderBasket() : false}
           </div>
         </ReactCSSTransitionGroup>
       );

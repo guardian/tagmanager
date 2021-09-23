@@ -269,8 +269,8 @@ export default {
     });
   },
 
-  batchTag: (contentIds, toAddToTop, toAddToBottom, toAddTrackingTag, toRemove) => {
-    const batchTagCommand = {contentIds, toAddToTop, toAddToBottom, toAddTrackingTag, toRemove};
+  batchTag: (contentIds, toAddToTop, toAddToBottom, toRemove) => {
+    const batchTagCommand = {contentIds, toAddToTop, toAddToBottom, toRemove};
 
     return PandaReqwest({
       url: '/api/batchTag',
