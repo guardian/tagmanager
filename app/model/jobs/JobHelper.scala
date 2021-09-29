@@ -26,7 +26,7 @@ object JobHelper {
     }
 
     if (toRemove.nonEmpty) {
-      title += s"    Removing ${toAddToBottom.map(t => "'" + t.path + "'").mkString(", ")}."
+      title += s"    Removing ${toRemove.map(t => "'" + t.path + "'").mkString(", ")}."
     }
 
     JobRepository.addJob(

@@ -138,7 +138,7 @@ export default class BatchTagControls extends React.Component {
         if (tags.length) {
           return (
             <ul className='batch-status__basket-category'>
-              <h3 className='batch-status__basket-title'>{title}</h3>
+              <h3 className='batch-status__basket-category-title'>{title}</h3>
               {tags.map((tag, i) => {
                 return (
                     <li key={tag.id}>
@@ -156,7 +156,7 @@ export default class BatchTagControls extends React.Component {
 
       return (
           <div className='batch-status__basket'>
-            <h2>Changes</h2>
+            <h2 className='batch-status__basket-title'>Changes</h2>
               {renderCategory('To Add to Top', this.state.toAddToTop, 'toAddToTop')}
               {renderCategory('To Add to Bottom', this.state.toAddToBottom, 'toAddToBottom')}
               {renderCategory('To Remove', this.state.toRemove, 'toRemove')}
