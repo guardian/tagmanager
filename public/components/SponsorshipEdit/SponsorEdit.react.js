@@ -1,6 +1,16 @@
 import React from 'react';
 import SponsorLogo from './SponsorLogo.react';
 import {PAID_HOSTEDCONTENT_TYPE} from '../../constants/paidContentTagTypes';
+import ReactTooltip from 'react-tooltip';
+
+const imageRules = `
+  <p style="text-align:left; margin-left: -10px">This image should be:</p>
+  <ul style="list-style-type: circle; margin-left: 5px;">
+    <li>280 pixels wide</li>
+    <li>180 pixels tall</i>
+    <li>A .png or .jpg file</li>
+  </ul>
+`
 
 export default class SponsorEdit extends React.Component {
 
@@ -49,6 +59,7 @@ export default class SponsorEdit extends React.Component {
 
     return (
       <div className="tag-edit__input-group">
+        <ReactTooltip html={true}/>
         <label className="tag-edit__input-group__header">Sponsor</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Name</label>
@@ -57,6 +68,7 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Logo</label>
+          <span data-tip={imageRules}><i className="i-info-grey sponsor-tooltip" /></span>
           <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)} requiredWidth={logoWidth} requiredHeight={logoHeight}/>
         </div>
 
