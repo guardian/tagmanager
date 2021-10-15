@@ -168,7 +168,7 @@ export default class TagImageEdit extends React.Component {
           className="tag-edit__image__add--success"
           onClick={this.addImage.bind(this)}
         >
-          <i className="i-tick-green" />
+          <i className="i-tick-green clickable-icon" />
           Click here to add the image
         </div>
       );
@@ -193,7 +193,7 @@ export default class TagImageEdit extends React.Component {
             className="tag-edit__image__remove"
             onClick={this.removeImage.bind(this)}
           >
-            <i className="i-delete" />
+            <i className="i-delete clickable-icon" />
             Remove image
           </div>
         </div>

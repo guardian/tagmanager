@@ -21,7 +21,7 @@ class ReactApp extends React.Component {
       return (
         <div className="error-bar">
           {this.props.error || 'An error has occured, please refresh your browser. If this problem persists please contact Central Production'}
-          <span className="error-bar__dismiss" onClick={this.clearError.bind(this)}>
+          <span className="error-bar__dismiss clickable-icon" onClick={this.clearError.bind(this)}>
             <i className="i-cross-white"></i>
           </span>
         </div>

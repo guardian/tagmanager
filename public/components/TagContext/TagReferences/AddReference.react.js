@@ -64,7 +64,7 @@ export default class AddReference extends React.Component {
       if (!this.state.expanded) {
         return (
           <div onClick={this.expand.bind(this)}>
-            <i className="i-plus" /> Add Reference
+            <i className="i-plus clickable-icon" /> Add Reference
           </div>
         );
       }

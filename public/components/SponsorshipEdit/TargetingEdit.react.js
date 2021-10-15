@@ -68,7 +68,7 @@ export default class TargetingEdit extends React.Component {
             return (
               <div className="merge__tag" key={tag.id}>
                 {tag.internalName}
-                <i className="i-cross" onClick={removeTagFn.bind(null, tag)}/>
+                <i className="i-cross clickable-icon" onClick={removeTagFn.bind(null, tag)}/>
               </div>
             )
           })}

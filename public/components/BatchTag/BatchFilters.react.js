@@ -144,19 +144,19 @@ export default class BatchFilters extends React.Component {
                 </div>
                 <div className={this.isTodayActive() ? 'batch-filters__option--active' : 'batch-filters__option'} onClick={this.setFiltersToToday.bind(this)}>
                   Today
-                  <div className="batch-filters__option__clear" onClick={this.clearDateFilter.bind(this)}>
+                  <div className="batch-filters__option__clear clickable-icon" onClick={this.clearDateFilter.bind(this)}>
                     <i className="i-cross"></i>
                   </div>
                 </div>
                 <div className={this.isThisWeekActive() ? 'batch-filters__option--active' : 'batch-filters__option'} onClick={this.setFiltersToThisWeek.bind(this)}>
                   Last 7 Days
-                  <div className="batch-filters__option__clear" onClick={this.clearDateFilter.bind(this)}>
+                  <div className="batch-filters__option__clear clickable-icon" onClick={this.clearDateFilter.bind(this)}>
                     <i className="i-cross"></i>
                   </div>
                 </div>
                 <div className={this.isThisMonthActive() ? 'batch-filters__option--active' : 'batch-filters__option'} onClick={this.setFiltersToThisMonth.bind(this)}>
                   Last 31 Days
-                  <div className="batch-filters__option__clear" onClick={this.clearDateFilter.bind(this)}>
+                  <div className="batch-filters__option__clear clickable-icon" onClick={this.clearDateFilter.bind(this)}>
                     <i className="i-cross"></i>
                   </div>
                 </div>
@@ -189,7 +189,7 @@ export default class BatchFilters extends React.Component {
                     return (
                       <div className='batch-filters__option--active' key={tag}>
                         {tag}
-                        <div className="batch-filters__option__clear" onClick={this.removeTag.bind(this, tag)}>
+                        <div className="batch-filters__option__clear clickable-icon" onClick={this.removeTag.bind(this, tag)}>
                           <i className="i-cross"></i>
                         </div>
                       </div>
@@ -207,7 +207,7 @@ export default class BatchFilters extends React.Component {
                     return (
                       <div className='batch-filters__option--active' key={tag}>
                         {tag}
-                        <div className="batch-filters__option__clear" onClick={this.removeTag.bind(this, tag)}>
+                        <div className="batch-filters__option__clear clickable-icon" onClick={this.removeTag.bind(this, tag)}>
                           <i className="i-cross"></i>
                         </div>
                       </div>

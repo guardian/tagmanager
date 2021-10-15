@@ -52,7 +52,7 @@ export default class TagReferences extends React.Component {
           <td>{matchingReferenceType.length ? matchingReferenceType[0].displayName : reference.type}</td>
           <td>{reference.value}</td>
           <td>
-            <i className="i-delete" onClick={this.removeReference.bind(this, reference)} />
+            <i className="i-delete clickable-icon" onClick={this.removeReference.bind(this, reference)} />
           </td>
         </tr>
       );

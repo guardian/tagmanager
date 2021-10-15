@@ -70,7 +70,7 @@ export default class AddTagMapping extends React.Component {
         return (
           <div className="mapping__add__selectedtag">
             {this.state.selectedTag.internalName}
-            <i className="i-cross" onClick={this.updateSelectedTag.bind(this, undefined)}/>
+            <i className="i-cross clickable-icon" onClick={this.updateSelectedTag.bind(this, undefined)}/>
           </div>
         );
       } else {

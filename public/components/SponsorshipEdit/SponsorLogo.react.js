@@ -86,7 +86,7 @@ export default class SponsorEdit extends React.Component {
         <div className="tag-edit__image__info">
           <div>Width: {imageAsset.width}px</div>
           <div>Height: {imageAsset.height}px</div>
-          <div className="tag-edit__image__remove" onClick={this.removeImage.bind(this)}>
+          <div className="tag-edit__image__remove clickable-icon" onClick={this.removeImage.bind(this)}>
             <i className="i-cross-red" />Remove image
           </div>
           {this.renderImageError(imageAsset)}

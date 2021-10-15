@@ -9,7 +9,7 @@ export default class TagValidation extends React.Component {
 
   renderValidationResult(validation) {
     return (
-      <div className="tag-validation__result" key={validation.message}>
+      <div className="tag-validation__result clickable-icon" key={validation.message}>
         <i className="tag-validation__result__dot"/><span className="tag-validation__result__message">{validation.message}</span>
       </div>
     );
