@@ -1,15 +1,21 @@
 .top-toolbar {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
 
   display: flex;
   min-height: $size-header-height;
-  max-height: $size-header-height;
-  background-color: $c-alt-green;
   z-index: 2;
 
+}
+
+.top-toolbar-background {
+  z-index: -1;
+  width: 100%;
+  position: absolute;
+  height: $size-header-height;
+  background-color: $c-alt-green;
   border-bottom: 1px solid $c-grey-400;
 }
 
@@ -19,6 +25,8 @@
 
 .top-toolbar__item,
 .top-toolbar__item--highlight {
+  background-color: $c-alt-green;
+  border-bottom: 1px solid $c-grey-400;
   position: relative;
   padding: 0 15px;
   @extend %f-data;
@@ -53,6 +61,7 @@
 }
 
 .home-logo {
+  max-height: $size-header-height;
   flex: 0 0 50px;
   display: flex;
   flex-direction: column;
