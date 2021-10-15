@@ -8,9 +8,9 @@ export default class Unauthorised extends React.Component {
 
     render () {
         return (
-            <div className="editor">
+            <div className="editor unauthorised">
                 <h2>Unauthorised</h2>
-                You don't have permission to access this page, please contact central production.
+                You don't have permission to access this page, please <a href="mailto:central.production@guardian.co.uk">contact central production</a> if you require access.
             </div>
         );
     }
