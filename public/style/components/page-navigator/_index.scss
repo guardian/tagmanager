@@ -7,10 +7,13 @@
 .page-navigator__selected {
     margin-right: 2px;
     margin-left: 2px;
-
+    cursor: pointer;
     padding: 5px;
     background-color: $c-grey-100;
     border: 1px solid $c-grey-300;
+    &:hover {
+        background-color: $c-grey-300;
+    }
 }
 
 .page-navigator__selected {

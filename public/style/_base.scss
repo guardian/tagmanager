@@ -41,3 +41,10 @@ a[disabled] {
   background-color: $c-grey-200;
   user-select: none;
 }
+
+select {
+  cursor: pointer;
+  &:hover {
+    background-color: $c-grey-100;
+  }
+}
