@@ -34,6 +34,10 @@ input {
   @extend %fs-data-3;
 }
 
+input[type="submit"], input[type="checkbox"]{
+  cursor: pointer;
+}
+
 a[disabled] {
   pointer-events: none;
   border-color: $c-grey-600;
@@ -42,9 +46,13 @@ a[disabled] {
   user-select: none;
 }
 
-select {
+select:enabled {
   cursor: pointer;
   &:hover {
     background-color: $c-grey-100;
   }
+}
+
+button {
+  cursor: pointer;
 }
