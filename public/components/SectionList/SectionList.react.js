@@ -52,8 +52,8 @@ class SectionList extends React.Component {
         <div className="sectionlist">
           <div className="tag-search__filters">
             {this.props.route.isMicrositeView ?
-              <Link className="tag-search__create" to="/microsite/create">Create a new Microsite</Link> :
-              <Link className="tag-search__create" to="/section/create">Create a new Section</Link>
+              <Link className="tag-search__create tag-search__create-button" to="/microsite/create">Create a new Microsite</Link> :
+              <Link className="tag-search__create tag-search__create-button" to="/section/create">Create a new Section</Link>
             }
           </div>
           <div className="sectionlist__table" >

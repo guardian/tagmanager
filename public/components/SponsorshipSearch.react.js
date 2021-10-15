@@ -92,7 +92,7 @@ export class SponsorshipSearch extends React.Component {
 
                     </div>
 
-                    <Link className="tag-search__create" to="/sponsorship/create">Create a new sponsorship</Link>
+                    <Link className="tag-search__create tag-search__create-button" to="/sponsorship/create">Create a new sponsorship</Link>
 
                 </div>
                 <div className="tag-search__suggestions">
