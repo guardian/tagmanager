@@ -20,14 +20,16 @@
   border: 1px solid $c-grey-300;
 
   padding: $standard-padding;
+  &:only-child {
+    justify-content: flex-end;
+  }
 }
 
 .tag-search__create {
   right: 0;
   top: 0;
   padding-right: 10px;
-  margin-left: 0px;
-
+  margin-left: auto;
 }
 
 .tag-search__create-button {
