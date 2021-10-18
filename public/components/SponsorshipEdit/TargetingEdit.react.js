@@ -8,6 +8,7 @@ import momentLocalizer from 'react-widgets/lib/localizers/moment';
 import {allowedEditions} from '../../constants/allowedEditions';
 import SectionSelect from '../utils/SectionSelect.react';
 import TagSelect from '../utils/TagSelect.js';
+import { Required } from './Required.react';
 
 export default class TargetingEdit extends React.Component {
 
@@ -66,7 +67,7 @@ export default class TargetingEdit extends React.Component {
         <div>
           {tags.map(function (tag) {
             return (
-              <div className="merge__tag" key={tag.id}>
+              <div className="sponsorship-tag" key={tag.id}>
                 {tag.internalName}
                 <i className="i-cross" onClick={removeTagFn.bind(null, tag)}/>
               </div>
@@ -85,7 +86,7 @@ export default class TargetingEdit extends React.Component {
         <div>
           {sections.map(function (section) {
             return (
-                <div className="merge__tag" key={section.id}>
+                <div className="sponsorship-tag" key={section.id}>
                   {section.name}
                   <i className="i-cross" onClick={removeSectionFn.bind(null, section)}/>
                 </div>
@@ -206,6 +207,16 @@ export default class TargetingEdit extends React.Component {
     });
   }
 
+  hasTagOrSection() {
+    if (this.props.sponsorship.tags && this.props.sponsorship.tags.length) {
+      return !!this.props.sponsorship.tags.length
+    }
+    if (this.props.sponsorship.sections && this.props.sponsorship.sections.length) {
+      return !!this.props.sponsorship.sections.length
+    }
+    return undefined
+  }
+
   render () {
 
     if (!this.props.sponsorship) {
@@ -218,11 +229,13 @@ export default class TargetingEdit extends React.Component {
 
         <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">Tags</label>
+          <Required fieldValue={this.hasTagOrSection()} message="* This sponsorship must have at least one tag or section"/>
           {this.renderTags(this.props.sponsorship.tags)}
         </div>
 
         <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">Sections</label>
+          <Required fieldValue={this.hasTagOrSection()} message="* This sponsorship must have at least one tag or section"/>
           {this.renderSections(this.props.sponsorship.sections)}
         </div>
 

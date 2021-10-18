@@ -1,4 +1,3 @@
-import { drop } from 'lodash';
 import React from 'react';
 import Dropzone from 'react-dropzone';
 
@@ -58,7 +57,6 @@ export default class SponsorEdit extends React.Component {
     if (!this.state.errorMessage) {
       return false;
     }
-
     return (<div>{this.state.errorMessage}</div>);
   }
 

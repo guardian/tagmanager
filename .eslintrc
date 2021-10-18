@@ -10,6 +10,7 @@
     "escape": false,
     "unescape": false
   },
+  "sourceType": "module",
   "ecmaFeatures": {
     "arrowFunctions": true,
     "binaryLiterals": true,

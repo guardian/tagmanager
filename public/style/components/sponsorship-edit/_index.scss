@@ -56,3 +56,48 @@
 
   margin-bottom: $standard-padding;
 }
+
+.sponsorship-validation {
+  color: $c-red;
+  font-weight: 300;
+}
+
+.sponsor-tooltip:hover {
+  cursor: help;
+}
+
+.sponsorship-tag {
+  @extend %fs-data-4;
+  display: flex;
+  margin: 0 0 2px 0;
+  border: 1px solid $c-grey-300;
+  padding: 4px 2px 4px 6px;
+  background-color: $c-grey-100;
+  width: fit-content;
+  i {
+    transform: scale(75%);
+    outline: none;
+    border:none;
+    margin-left: 4px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.sponsorship-clash {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid $c-grey-300;
+  font-size: 14px;
+  th, tr, td {
+    border: 1px solid $c-grey-300;
+    padding: 4px;
+    line-height: 14px;
+    vertical-align: top;
+  }
+  img {
+    max-width: 100%;
+  }
+}
