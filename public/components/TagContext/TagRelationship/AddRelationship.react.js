@@ -33,7 +33,7 @@ export default class AddRelationship extends React.Component {
         return (
           <div className="tag-relationship__add--expanded">
           <TagSelect onTagClick={this.onAddTag.bind(this)} disabled={!this.props.tagEditable}/>
-          <i className="i-cross" onClick={this.minimise.bind(this)}></i>
+          <i className="i-cross clickable-icon" onClick={this.minimise.bind(this)}></i>
           </div>
         )
       } else {
@@ -47,7 +47,7 @@ export default class AddRelationship extends React.Component {
       return (
         <span>
           <div className="tag-relationship__add" onClick={this.toggle.bind(this)}>
-            <i className="i-plus" /> Add parent
+            <i className="i-plus clickable-icon" /> Add parent
           </div>
           {this.renderTagSelect()}
         </span>

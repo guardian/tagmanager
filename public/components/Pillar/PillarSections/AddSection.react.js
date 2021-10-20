@@ -41,7 +41,7 @@ export default class AddSection extends React.Component {
         if (!this.state.expanded) {
             return (
                 <div onClick={this.expand.bind(this)}>
-                    <i className="i-plus" /> Add Section
+                    <i className="i-plus clickable-icon" /> Add Section
                 </div>
             );
         }

@@ -23,7 +23,7 @@ export default class SectionEdit extends React.Component {
           <td>{editionRegion}</td>
           <td>{edition.path}</td>
           <td>
-            <i className="i-delete" onClick={this.removeEdition.bind(this, editionRegion)} />
+            <i className="i-delete clickable-icon" onClick={this.removeEdition.bind(this, editionRegion)} />
           </td>
         </tr>
       );

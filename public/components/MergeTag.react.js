@@ -88,7 +88,7 @@ export default class MergeTag extends React.Component {
       return (
         <div className="merge__tag">
           {tag.internalName}
-          <i className="i-cross" onClick={setTagFn.bind(this, undefined)} />
+          <i className="i-cross clickable-icon" onClick={setTagFn.bind(this, undefined)} />
           <ul className="merge__select__details">
             <li>Path: {tag.path}</li>
             <li>ID: {tag.id}</li>

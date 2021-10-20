@@ -49,7 +49,7 @@ export default class PublicationInfoEdit extends React.Component {
         <div className="tag-edit__field">
           <label className="tag-edit__label">Main Newspaper Book Section</label>
           <input type="text" disabled="true" className="tag-edit__input" value={this.props.tag.publicationInformation.mainNewspaperBookSectionId}/>
-          <i className="i-cross" onClick={this.removeMainNewspaperBookSectionId.bind(this)} />
+          <i className="i-cross clickable-icon" onClick={this.removeMainNewspaperBookSectionId.bind(this)} />
         </div>
       );
     }
@@ -72,7 +72,7 @@ export default class PublicationInfoEdit extends React.Component {
             <td><Link to={`/tag/${tagId}`}>{tagId}</Link></td>
             <td>{tagType}</td>
             <td>
-              <i className="i-delete" onClick={this.removeNewspaperBook.bind(this, tagId)} />
+              <i className="i-delete clickable-icon" onClick={this.removeNewspaperBook.bind(this, tagId)} />
             </td>
           </tr>
       )

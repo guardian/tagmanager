@@ -43,7 +43,7 @@ export default class PillarSections extends React.Component {
             <tr className="pillar-sections__item" key={sectionPath}>
                 <td>{title}</td>
                 <td>
-                    <i className="i-delete" onClick={this.removeSection.bind(this, sectionPath)} />
+                    <i className="i-delete clickable-icon" onClick={this.removeSection.bind(this, sectionPath)} />
                 </td>
             </tr>
         );

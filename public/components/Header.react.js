@@ -10,7 +10,7 @@ export default class Header extends React.Component {
     render () {
         return (
             <header className="top-toolbar">
-
+                <div className="top-toolbar-background"/>
                 <Link to="/" className="home-logo">
                     <span className="home-logo__text-large">Tags</span>
                     <span className="home-logo__text-small">home</span>

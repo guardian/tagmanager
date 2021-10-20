@@ -1,5 +1,5 @@
 .tag-search {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: $standard-padding;
 
@@ -9,6 +9,10 @@
   width: 100%;
 
   position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
 
   min-height: 50px;
 
@@ -16,14 +20,16 @@
   border: 1px solid $c-grey-300;
 
   padding: $standard-padding;
+  &:only-child {
+    justify-content: flex-end;
+  }
 }
 
 .tag-search__create {
-  position: absolute;
   right: 0;
   top: 0;
   padding-right: 10px;
-
+  margin-left: auto;
 }
 
 .tag-search__create-button {
@@ -47,4 +53,9 @@
 .tag-search__input,
 .tag-search__select {
   margin-right: $standard-padding;
+}
+
+.tag-search__item {
+  display: inline-flex;
+  margin-top: 5px;
 }

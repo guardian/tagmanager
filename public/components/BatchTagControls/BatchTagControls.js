@@ -111,7 +111,7 @@ export default class BatchTagControls extends React.Component {
               {text}
             </div>
             <TagSelect onTagClick={func.bind(this)} showResultsAbove={true} />
-            <i className="i-cross batch-status__cancel" onClick={this.resetMode.bind(this)}></i>
+            <i className="i-cross batch-status__cancel clickable-icon" onClick={this.resetMode.bind(this)}></i>
           </div>
       );
     }
@@ -142,7 +142,7 @@ export default class BatchTagControls extends React.Component {
               {tags.map((tag, i) => {
                 return (
                     <li key={tag.id}>
-                        <i className="i-cross" onClick={() => this.removeFromList(i, tags, name)}></i>
+                        <i className="i-cross clickable-icon" onClick={() => this.removeFromList(i, tags, name)}></i>
                         <strong>{tag.internalName}</strong> <span className='batch-status__small-path'>({tag.path})</span>
                     </li>
                 );

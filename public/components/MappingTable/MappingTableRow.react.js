@@ -33,7 +33,7 @@ export default class MappingTableRow extends React.Component {
             <input type="submit" onClick={this.saveTag.bind(this)} />
           </td>
           <td style={{textAlign: 'center'}}>
-            <i className="i-delete" onClick={this.deleteMapping.bind(this)}/>
+            <i className="i-delete clickable-icon" onClick={this.deleteMapping.bind(this)}/>
           </td>
         </tr>
       );

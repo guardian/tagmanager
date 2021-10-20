@@ -21,6 +21,10 @@
   font-weight: bold;
 }
 
+.batch-filters__option:not(.batch-filters__option--active){
+  cursor: pointer;
+}
+
 .batch-filters__option,
 .batch-filters__option--active {
   display: inline-block;

@@ -180,7 +180,7 @@ export default class SpreadsheetBuilder extends React.Component {
           value={filter.value}
           onChange={e => this.updateFilterValue(index, e.target.value)}
         />
-        <i className="i-delete" onClick={() => this.deleteFilter(index)} />
+        <i className="i-delete clickable-icon" onClick={() => this.deleteFilter(index)} />
       </div>
     );
   }

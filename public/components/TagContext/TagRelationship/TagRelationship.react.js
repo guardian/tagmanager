@@ -86,7 +86,7 @@ export default class TagRelationship extends React.Component {
          <tr>
            <td><Link to={`/tag/${tag.id}`}>{tag.internalName}</Link></td>
            <td>{tag.type}</td>
-           <td onClick={this.removeParentTag.bind(this, tag)}><i className="i-delete" /></td>
+           <td onClick={this.removeParentTag.bind(this, tag)}><i className="i-delete clickable-icon" /></td>
          </tr>
       );
     }

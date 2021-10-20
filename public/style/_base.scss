@@ -18,7 +18,6 @@ h2, h3, h4, h5, h6 {
 }
 
 .wrapper {
-  margin-top: 50px;
   height: 100%;
 }
 
@@ -35,10 +34,25 @@ input {
   @extend %fs-data-3;
 }
 
+input[type="submit"], input[type="checkbox"]{
+  cursor: pointer;
+}
+
 a[disabled] {
   pointer-events: none;
   border-color: $c-grey-600;
   color: $c-grey-600;
   background-color: $c-grey-200;
   user-select: none;
+}
+
+select:enabled {
+  cursor: pointer;
+  &:hover {
+    background-color: $c-grey-100;
+  }
+}
+
+button {
+  cursor: pointer;
 }
