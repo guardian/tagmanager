@@ -58,10 +58,10 @@ export default class TagList extends React.Component {
         return (
             <div className="taglist">
               <div className="taglist__row">
-                  <div className="taglist__type--header  taglist__item" onClick={this.sortBy.bind(this, 'type')}>Type</div>
-                  <div className="taglist__internalName--header  taglist__item" onClick={this.sortBy.bind(this, 'internalName')}>Tag Name</div>
-                  <div className="taglist__sectionName--header  taglist__item" onClick={this.sortBy.bind(this, 'path')}>Section</div>
-                  <div className="taglist__path--header  taglist__item" onClick={this.sortBy.bind(this, 'path')}>Path</div>
+                  <div className="taglist__type--header taglist__item" onClick={this.sortBy.bind(this, 'type')}>Type</div>
+                  <div className="taglist__internalName--header taglist__item" onClick={this.sortBy.bind(this, 'internalName')}>Tag Name</div>
+                  <div className="taglist__sectionName--header taglist__item" onClick={this.sortBy.bind(this, 'path')}>Section</div>
+                  <div className="taglist__path--header taglist__item" onClick={this.sortBy.bind(this, 'path')}>Path</div>
               </div>
               {this.props.tags.map(this.renderListItem)}
             </div>
