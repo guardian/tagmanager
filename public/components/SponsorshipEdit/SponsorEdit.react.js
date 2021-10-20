@@ -5,11 +5,11 @@ import ReactTooltip from 'react-tooltip';
 import { Required } from './Required.react';
 
 const imageRules = `
-  <p style="text-align:left; margin-left: -10px">This image should be:</p>
+  <p style="text-align:left; margin-left: -10px">This image should:</p>
   <ul style="list-style-type: circle; margin-left: 5px;">
-    <li>280 pixels wide</li>
-    <li>180 pixels tall</i>
-    <li>A .png or .jpg file</li>
+    <li>Have a height of 180px</i>
+    <li>Have a width of 280px</li>
+    <li>Be a .png or .jpg file</li>
   </ul>
 `
 
