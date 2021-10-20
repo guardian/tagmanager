@@ -5,7 +5,6 @@ import ValidityEdit from '../SponsorshipEdit/ValidityEdit.react';
 import TargetingEdit from '../SponsorshipEdit/TargetingEdit.react';
 import ClashWarning from '../SponsorshipEdit/ClashWarning.react';
 import SaveButton from '../utils/SaveButton.react';
-import { Required } from '../SponsorshipEdit/Required.react';
 
 class SponsorshipCreate extends React.Component {
 
