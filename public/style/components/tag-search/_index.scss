@@ -54,3 +54,8 @@
 .tag-search__select {
   margin-right: $standard-padding;
 }
+
+.tag-search__item {
+  display: inline-flex;
+  margin-top: 5px;
+}

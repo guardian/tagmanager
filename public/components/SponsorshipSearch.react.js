@@ -73,7 +73,7 @@ export class SponsorshipSearch extends React.Component {
                     <div className="tag-search__filters__group">
                         <label>Search</label>
                         <input className="tag-search__input" type="text" value={this.state.searchString} onChange={this.handleSearchInputChange.bind(this)} />
-                        <span className="search-bar-item">
+                        <span className="tag-search__item">
                           Status:&nbsp;
                           <select className="tag-search__select" onChange={this.handleSearchStatusChange.bind(this)} value={this.state.status}>
                             {Object.keys(sponsorshipSearchStatuses).map((field) => {
@@ -81,7 +81,7 @@ export class SponsorshipSearch extends React.Component {
                             })}
                           </select>
                         </span>
-                        <span className="search-bar-item">
+                        <span className="tag-search__item">
                           Type:&nbsp;
                           <select className="tag-search__select" onChange={this.handleSearchTypeChange.bind(this)} value={this.state.type}>
                             {Object.keys(sponsorshipSearchTypes).map((field) => {
