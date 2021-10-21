@@ -69,7 +69,7 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Logo</label>
-          <span data-tip={imageRules}><i className="i-info-grey sponsor-tooltip" /></span>
+          <span data-tip={imageRules}><i className="i-info-grey sponsorship-edit__tooltip" /></span>
           <Required fieldValue={this.props.sponsorship.sponsorLogo} />
           <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)} requiredWidth={logoWidth} requiredHeight={logoHeight}/>
         </div>
@@ -87,7 +87,7 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">High contrast logo</label>
-          <span data-tip={imageRules}><i className="i-info-grey sponsor-tooltip" /></span>
+          <span data-tip={imageRules}><i className="i-info-grey sponsorship-edit__tooltip" /></span>
           <div className="tag-edit__image__info">This optional logo will be used on media pages with a dark background</div>
           <SponsorLogo logo={this.props.sponsorship.highContrastSponsorLogo} onImageUpdated={this.updateHighContrastLogo.bind(this)} requiredWidth={logoWidth} requiredHeight={logoHeight}/>
         </div>

@@ -62,11 +62,11 @@
   font-weight: 300;
 }
 
-.sponsor-tooltip:hover {
+.sponsor-edit__tooltip:hover {
   cursor: help;
 }
 
-.sponsorship-tag {
+.sponsorship-edit__tag {
   @extend %fs-data-4;
   display: flex;
   margin: 0 0 2px 0;
@@ -85,7 +85,7 @@
   }
 }
 
-.sponsorship-clash {
+.sponsorship-edit__clash {
   table-layout: fixed;
   width: 100%;
   border-collapse: collapse;

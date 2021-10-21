@@ -53,7 +53,7 @@ export default class ClashWarning extends React.Component {
     return (
       <div className="tag-audit">
         <div className="tag-audit__header sponsorship-edit__validation">Warning: this sponsorship clashes with other sponsorships</div>
-        <table className="sponsorship-clash">
+        <table className="sponsorship-edit__clash">
           <thead className="taglist__header">
           <tr>
             <th>Sponsor</th>

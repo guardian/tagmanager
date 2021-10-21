@@ -67,7 +67,7 @@ export default class TargetingEdit extends React.Component {
         <div>
           {tags.map(function (tag) {
             return (
-              <div className="sponsorship-tag" key={tag.id}>
+              <div className="sponsorship-edit__tag" key={tag.id}>
                 {tag.internalName}
                 <i className="i-cross" onClick={removeTagFn.bind(null, tag)}/>
               </div>
@@ -86,7 +86,7 @@ export default class TargetingEdit extends React.Component {
         <div>
           {sections.map(function (section) {
             return (
-                <div className="sponsorship-tag" key={section.id}>
+                <div className="sponsorship-edit__tag" key={section.id}>
                   {section.name}
                   <i className="i-cross" onClick={removeSectionFn.bind(null, section)}/>
                 </div>
