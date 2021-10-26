@@ -1,6 +1,17 @@
 import React from 'react';
 import SponsorLogo from './SponsorLogo.react';
 import {PAID_HOSTEDCONTENT_TYPE} from '../../constants/paidContentTagTypes';
+import ReactTooltip from 'react-tooltip';
+import { Required } from './Required.react';
+
+const imageRules = `
+  <p style="text-align:left; margin-left: -10px">This image should:</p>
+  <ul style="list-style-type: circle; margin-left: 5px;">
+    <li>Have a height of 180px</i>
+    <li>Have a width of 280px</li>
+    <li>Be a .png or .jpg file</li>
+  </ul>
+`
 
 export default class SponsorEdit extends React.Component {
 
@@ -37,7 +48,6 @@ export default class SponsorEdit extends React.Component {
       aboutLink: e.target.value.trim()
     }));
   }
-
   render () {
 
     if (!this.props.sponsorship) {
@@ -49,19 +59,24 @@ export default class SponsorEdit extends React.Component {
 
     return (
       <div className="tag-edit__input-group">
+        <ReactTooltip html={true}/>
         <label className="tag-edit__input-group__header">Sponsor</label>
         <div className="tag-edit__field">
           <label className="tag-edit__label">Name</label>
+          <Required fieldValue={this.props.sponsorship.sponsorName} />
           <input type="text" className="tag-edit__input" value={this.props.sponsorship.sponsorName || ""} onChange={this.updateName.bind(this)}/>
         </div>
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Logo</label>
+          <span data-tip={imageRules}><i className="i-info-grey sponsorship-edit__tooltip" /></span>
+          <Required fieldValue={this.props.sponsorship.sponsorLogo} />
           <SponsorLogo logo={this.props.sponsorship.sponsorLogo} onImageUpdated={this.updateLogo.bind(this)} requiredWidth={logoWidth} requiredHeight={logoHeight}/>
         </div>
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">Link</label>
+          <Required fieldValue={this.props.sponsorship.sponsorLink} />
           <input type="text" className="tag-edit__input" value={this.props.sponsorship.sponsorLink || ""} onChange={this.updateLink.bind(this)}/>
         </div>
 
@@ -72,6 +87,7 @@ export default class SponsorEdit extends React.Component {
 
         <div className="tag-edit__field">
           <label className="tag-edit__label">High contrast logo</label>
+          <span data-tip={imageRules}><i className="i-info-grey sponsorship-edit__tooltip" /></span>
           <div className="tag-edit__image__info">This optional logo will be used on media pages with a dark background</div>
           <SponsorLogo logo={this.props.sponsorship.highContrastSponsorLogo} onImageUpdated={this.updateHighContrastLogo.bind(this)} requiredWidth={logoWidth} requiredHeight={logoHeight}/>
         </div>

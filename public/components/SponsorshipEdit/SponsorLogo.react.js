@@ -1,6 +1,15 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 
+const dropzoneStyles = {
+  height: "180px", 
+  width: "280px", 
+  border: "2px dashed rgb(102, 102, 102)",
+  borderRadius: "5px",
+  cursor: "pointer",
+  padding: "10px"
+}
+
 export default class SponsorEdit extends React.Component {
 
   constructor(props) {
@@ -48,10 +57,8 @@ export default class SponsorEdit extends React.Component {
     if (!this.state.errorMessage) {
       return false;
     }
-
     return (<div>{this.state.errorMessage}</div>);
   }
-
 
   renderImageError(imageAsset) {
     if (imageAsset.height < 500 && imageAsset.width < 500 ) {
@@ -70,7 +77,7 @@ export default class SponsorEdit extends React.Component {
     if (!this.props.logo) {
       return (
         <div className="tag-edit__field">
-          <Dropzone onDrop={this.onDrop.bind(this)} multiple={false} >
+          <Dropzone onDrop={this.onDrop.bind(this)} multiple={false} style={dropzoneStyles} >
             <div>Drop a logo here, or click to select file.</div>
           </Dropzone>
           {this.errorDiv()}

@@ -9,11 +9,11 @@ export default class ClashWarning extends React.Component {
 
   renderTargeting(sponsorship) {
     if(sponsorship.tag) {
-      return (<div>Tag: {sponsorship.tag.internalName}</div>);
+      return (<p>Tag: {sponsorship.tag.internalName}</p>);
     } else if(sponsorship.section) {
-      return (<div>Section: {sponsorship.section.name}</div>);
+      return (<p>Section: {sponsorship.section.name}</p>);
     } else {
-      return (<div>Untargeted</div>);
+      return (<p>Untargeted</p>);
     }
   }
 
@@ -52,8 +52,8 @@ export default class ClashWarning extends React.Component {
 
     return (
       <div className="tag-audit">
-        <div className="tag-audit__header">Warning this sponsorship clashes with other sponsorships</div>
-        <table>
+        <div className="tag-audit__header sponsorship-edit__validation">Warning: this sponsorship clashes with other sponsorships</div>
+        <table className="sponsorship-edit__clash">
           <thead className="taglist__header">
           <tr>
             <th>Sponsor</th>
