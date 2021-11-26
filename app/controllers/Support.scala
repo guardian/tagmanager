@@ -37,6 +37,20 @@ class Support(
 
   private val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
+  def checkFileExtension(image: File, filename: String): Either[String, File] = {
+    val fileExtension = filename.contains(".") match {
+      case true => filename.substring(filename.lastIndexOf("."));
+      case false => ""
+    }
+
+    fileExtension match { 
+      case ".jpg" => Right(image)
+      case ".jpeg" => Right(image)
+      case ".png" => Right(image)
+      case _ => Left("Image must have a file extension of '.jpg' or '.png'")
+    }
+  }
+
   def imageMetadata(imageUrl: String = "") = APIAuthAction {
      ImageMetadataService.fetch(imageUrl) match {
        case Right(imageMetadata) =>  Ok(Json.toJson(imageMetadata))
@@ -45,12 +59,16 @@ class Support(
      }
   }
 
-  def validateImageDimensions(image: File, requiredWidth: Option[Long], requiredHeight: Option[Long]): Boolean = {
-    (requiredWidth, requiredHeight) match {
+  def validateImageDimensions(image: File, requiredWidth: Option[Long], requiredHeight: Option[Long]): Either[String, File] = {
+    val dimensionsAreValid = (requiredWidth, requiredHeight) match {
       case (None, None) => true
       case (Some(width), None) => width >= ImageMetadataService.imageWidth(image)
       case (None, Some(height)) => height >= ImageMetadataService.imageHeight(image)
       case (Some(width), Some(height)) => width >= ImageMetadataService.imageWidth(image) && height >= ImageMetadataService.imageHeight(image)
+    }
+    dimensionsAreValid match {
+      case true => Right(image)
+      case false => Left(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")}px h:${requiredHeight.getOrElse("Not Specified")}px")
     }
   }
 
@@ -59,8 +77,13 @@ class Support(
     val requiredWidth = req.getQueryString("width").map(_.toLong)
     val requiredHeight = req.getQueryString("height").map(_.toLong)
 
-    validateImageDimensions(picture.file, requiredWidth, requiredHeight) match {
-      case true => {
+    val imageValidationResult = for {
+      fileWithValidExtension <- checkFileExtension(picture.file, filename)
+      image <- validateImageDimensions(fileWithValidExtension, requiredWidth, requiredHeight)
+    } yield image
+
+    imageValidationResult match {
+      case Right(file) => {
         val dateSlug = new DateTime().toString("dd/MMM/yyyy")
         val logoPath = s"commercial/sponsor/${dateSlug}/${UUID.randomUUID}-${filename}"
         val contentType = req.contentType
@@ -68,7 +91,7 @@ class Support(
         contentType.foreach(objectMetadata.setContentType(_))
 
         AWS.frontendStaticFilesS3Client.putObject(
-          new PutObjectRequest("static-theguardian-com", logoPath, picture.file)
+          new PutObjectRequest("static-theguardian-com", logoPath, file)
             .withMetadata(objectMetadata)
         )
 
@@ -89,7 +112,7 @@ class Support(
           case Left(err: InvalidImage) => UnprocessableEntity(err.errMsg)
         }
       }
-      case false => BadRequest(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")} h:${requiredHeight.getOrElse("Not Specified")}")
+      case Left(err) => BadRequest(err)
     }
   }
 

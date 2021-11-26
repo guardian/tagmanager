@@ -24,12 +24,19 @@ export default class SponsorEdit extends React.Component {
     this.props.onImageUpdated(undefined);
   }
 
+  constructErrorMessage(error){
+    if (error.status === 400) { // 400 errors are returned by our application, with useful responseText
+      return {errorMessage: error.responseText}
+    } else return {errorMessage: error.statusText} // Other errors are returned by nginx, where statusText is more useful
+  }
+
   fileUploaded(e) {
     const resp = e.target;
     if (resp.status === 200) {
       this.props.onImageUpdated(JSON.parse(e.target.response));
+      this.setState({errorMessage: undefined});
     } else {
-      this.setState({errorMessage: resp.responseText});
+      this.setState(this.constructErrorMessage(e.target));
     }
   }
 
@@ -57,7 +64,12 @@ export default class SponsorEdit extends React.Component {
     if (!this.state.errorMessage) {
       return false;
     }
-    return (<div>{this.state.errorMessage}</div>);
+    return (
+      <div className="tag-edit__image__error">
+        <i className="i-failed-face-red" />
+        {this.state.errorMessage}
+      </div>
+    );
   }
 
   renderImageError(imageAsset) {
