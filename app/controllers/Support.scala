@@ -47,6 +47,7 @@ class Support(
       case ".jpg" => Right(image)
       case ".jpeg" => Right(image)
       case ".png" => Right(image)
+      case ".bmp" => Right(image) // BMP is not preferable, but is technically supported.
       case _ => Left("Image must have a file extension of '.png' or '.jpg'")
     }
   }
