@@ -47,7 +47,7 @@ class Support(
       case ".jpg" => Right(image)
       case ".jpeg" => Right(image)
       case ".png" => Right(image)
-      case _ => Left("Image must have a file extension of '.jpg' or '.png'")
+      case _ => Left("Image must have a file extension of '.png' or '.jpg'")
     }
   }
 
