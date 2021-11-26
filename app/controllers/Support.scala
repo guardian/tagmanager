@@ -79,7 +79,7 @@ class Support(
     val requiredHeight = req.getQueryString("height").map(_.toLong)
 
     val imageValidationResult = for {
-      fileWithValidExtension <- checkFileExtension(picture.file, filename)
+      fileWithValidExtension <- checkFileExtension(picture.path.toFile, filename)
       image <- validateImageDimensions(fileWithValidExtension, requiredWidth, requiredHeight)
     } yield image
 
