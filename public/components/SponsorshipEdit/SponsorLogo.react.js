@@ -72,18 +72,6 @@ export default class SponsorEdit extends React.Component {
     );
   }
 
-  renderImageError(imageAsset) {
-    if (imageAsset.height < 500 && imageAsset.width < 500 ) {
-      return false;
-    }
-
-    return (
-      <div className="tag-edit__image__error">
-        <i className="i-info-grey" /> Note: The uploaded logo is greater than 500px.
-      </div>
-    );
-  }
-
   render () {
 
     if (!this.props.logo) {
@@ -108,7 +96,6 @@ export default class SponsorEdit extends React.Component {
           <div className="tag-edit__image__remove clickable-icon" onClick={this.removeImage.bind(this)}>
             <i className="i-cross-red" />Remove image
           </div>
-          {this.renderImageError(imageAsset)}
         </div>
       </div>
     );
