@@ -39,7 +39,6 @@ class Support(
 
   def checkFileExtension(image: File, filename: String): Either[String, File] = {
     val fileExtension = if(filename.contains(".")) filename.substring(filename.lastIndexOf(".")) else ""
-    }
 
     fileExtension match { 
       case ".jpg" => Right(image)
