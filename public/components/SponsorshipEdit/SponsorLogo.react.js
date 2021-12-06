@@ -27,7 +27,9 @@ export default class SponsorEdit extends React.Component {
   constructErrorMessage(error){
     if (error.status === 400) { // 400 errors are returned by our application, with useful responseText
       return {errorMessage: error.responseText}
-    } else return {errorMessage: error.statusText} // Other errors are returned by nginx, where statusText is more useful
+    } else {
+         return {errorMessage: error.statusText} // Other errors are returned by nginx, where statusText is more useful
+    }
   }
 
   fileUploaded(e) {
