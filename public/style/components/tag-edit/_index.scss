@@ -112,7 +112,9 @@ $tag-edit-padding: $standard-padding/2;
 }
 
 .tag-edit__image__error {
-  margin-top: 5px;
+  font-size: 14px;
+  margin: 10px 0px;
+  color: $c-red;
 }
 
 .tag-edit__label, .tag-edit__label-inline {
