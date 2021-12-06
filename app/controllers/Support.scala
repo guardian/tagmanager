@@ -38,9 +38,7 @@ class Support(
   private val httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build
 
   def checkFileExtension(image: File, filename: String): Either[String, File] = {
-    val fileExtension = filename.contains(".") match {
-      case true => filename.substring(filename.lastIndexOf("."));
-      case false => ""
+    val fileExtension = if(filename.contains(".")) filename.substring(filename.lastIndexOf(".")) else ""
     }
 
     fileExtension match { 
