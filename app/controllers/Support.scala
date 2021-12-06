@@ -64,9 +64,8 @@ class Support(
       case (None, Some(height)) => height >= ImageMetadataService.imageHeight(image)
       case (Some(width), Some(height)) => width >= ImageMetadataService.imageWidth(image) && height >= ImageMetadataService.imageHeight(image)
     }
-    if (dimensionsAreValid) Right(image) 
+    if(dimensionsAreValid) Right(image)
     else Left(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")}px h:${requiredHeight.getOrElse("Not Specified")}px")
-    }
   }
 
   def uploadLogo(filename: String) = APIAuthAction(parse.temporaryFile) { req =>
