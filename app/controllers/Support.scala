@@ -78,8 +78,9 @@ class Support(
       image <- validateImageDimensions(fileWithValidExtension, requiredWidth, requiredHeight)
     } yield image
 
-    imageValidationResult match {
-      case Right(file) => {
+    imageValidationResult.fold(
+      err => BadRequest(err),
+      file => {
         val dateSlug = new DateTime().toString("dd/MMM/yyyy")
         val logoPath = s"commercial/sponsor/${dateSlug}/${UUID.randomUUID}-${filename}"
         val contentType = req.contentType
@@ -107,9 +108,7 @@ class Support(
           case Left(err: FetchError) => InternalServerError(err.errMsg)
           case Left(err: InvalidImage) => UnprocessableEntity(err.errMsg)
         }
-      }
-      case Left(err) => BadRequest(err)
-    }
+    })
   }
 
   def previewCapiProxy(path: String) = APIAuthAction { request =>
