@@ -65,9 +65,8 @@ class Support(
       case (None, Some(height)) => height >= ImageMetadataService.imageHeight(image)
       case (Some(width), Some(height)) => width >= ImageMetadataService.imageWidth(image) && height >= ImageMetadataService.imageHeight(image)
     }
-    dimensionsAreValid match {
-      case true => Right(image)
-      case false => Left(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")}px h:${requiredHeight.getOrElse("Not Specified")}px")
+    if (dimensionsAreValid) Right(image) 
+    else Left(s"Image must have dimensions w:${requiredWidth.getOrElse("Not Specified")}px h:${requiredHeight.getOrElse("Not Specified")}px")
     }
   }
 
