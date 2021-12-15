@@ -43,9 +43,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
-    name in Universal := normalizedName.value,
+    Universal / name := normalizedName.value,
     topLevelDirectory := Some(normalizedName.value),
-    riffRaffPackageType := (packageBin in Debian).value,
+    riffRaffPackageType := (Debian / packageBin).value,
     riffRaffManifestProjectName := s"editorial-tools:${name.value}",
     riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
     riffRaffUploadManifestBucket := Option("riffraff-builds"),
@@ -54,7 +54,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
       riffRaffPackageType.value -> s"${name.value}/${name.value}.deb",
       baseDirectory.value / "cloudformation" / "tag-manager.yaml" -> "cloudformation/tag-manager.yaml"
     ),
-    javaOptions in Universal ++= Seq(
+    Universal / javaOptions ++= Seq(
       "-Dpidfile.path=/dev/null"
     ),
 
@@ -63,9 +63,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     packageSummary := "tag manager",
     packageDescription := """manage tags""",
 
-    doc in Compile := (target.value / "none"),
+    Compile / doc := (target.value / "none"),
     scalaVersion := "2.12.13",
-    scalaVersion in ThisBuild := "2.12.13",
+    ThisBuild / scalaVersion := "2.12.13",
     libraryDependencies ++= dependencies
   )
   .settings(TagManager.settings: _*)
