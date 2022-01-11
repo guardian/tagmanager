@@ -25,7 +25,7 @@
     "panda-session": "0.1.6",
     "phantomjs-prebuilt": "^2.1.14",
     "q": "1.4.1",
-    "ramda": "^0.18.0",
+    "ramda": "^0.27.2",
     "react": "^15.3.0",
     "react-addons-css-transition-group": "^15.3.0",
     "react-dom": "^15.3.0",
