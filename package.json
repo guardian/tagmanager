@@ -38,16 +38,16 @@
     "redux-logger": "^2.0.4",
     "redux-thunk": "^1.0.0",
     "reqwest": "^2.0.5",
-    "sass-loader": "^3.1.1",
+    "sass-loader": "^6.0.7",
     "scribe-editor": "^2.1.1",
     "scribe-plugin-keyboard-shortcuts": "^0.1.1",
     "scribe-plugin-link-prompt-command": "^0.4.0",
     "scribe-plugin-sanitizer": "^0.1.10",
     "scribe-plugin-toolbar": "^0.2.2",
     "style-loader": "^0.13.0",
-    "svg-sprite": "^1.2.12",
+    "svg-sprite": "^1.5.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "webpack": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "^4.18.2",
