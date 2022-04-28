@@ -16,7 +16,7 @@
     "babel-preset-react": "^6.0.15",
     "css-loader": "^0.22.0",
     "expose-loader": "^0.7.0",
-    "extract-text-webpack-plugin": "^0.9.1",
+    "extract-text-webpack-plugin": "^2.0.0",
     "file-loader": "^0.8.5",
     "lodash.debounce": "^3.1.1",
     "lodash.startcase": "^4.4.0",
