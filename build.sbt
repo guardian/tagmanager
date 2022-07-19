@@ -6,6 +6,8 @@ name := "tag-manager"
 
 version := "1.0"
 
+lazy val scalaVer = "2.12.16"
+
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
   "-encoding", "UTF-8",
@@ -64,8 +66,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     packageDescription := """manage tags""",
 
     Compile / doc := (target.value / "none"),
-    scalaVersion := "2.12.13",
-    ThisBuild / scalaVersion := "2.12.13",
-    libraryDependencies ++= dependencies
+    scalaVersion := scalaVer,
+    ThisBuild / scalaVersion := scalaVer,
+    libraryDependencies ++= dependencies,
   )
   .settings(TagManager.settings: _*)
