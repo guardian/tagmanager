@@ -69,5 +69,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     scalaVersion := scalaVer,
     ThisBuild / scalaVersion := scalaVer,
     libraryDependencies ++= dependencies,
+
+    gzip / includeFilter := "*.html" || "*.css" || "*.js",
+    pipelineStages := Seq(digest, gzip),
   )
-  .settings(TagManager.settings: _*)
