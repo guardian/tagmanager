@@ -14,8 +14,14 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
+lazy val awsVersion = "1.11.1034"
+
 lazy val dependencies = Seq(
-  "com.amazonaws" % "aws-java-sdk" % "1.11.678",
+  "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
+  "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
+  "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,
+  "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
+  "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
   "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
   "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.6",
   "com.gu" %% "editorial-permissions-client" % "0.9",
