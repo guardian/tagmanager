@@ -1,5 +1,3 @@
-addCommandAlias("dist", ";riffRaffArtifact")
-
 import play.sbt.PlayImport.PlayKeys._
 
 name := "tag-manager"
