@@ -1,10 +1,10 @@
+addCommandAlias("dist", ";riffRaffArtifact")
+
 import play.sbt.PlayImport.PlayKeys._
 
 name := "tag-manager"
 
 version := "1.0"
-
-lazy val scalaVer = "2.12.16"
 
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
@@ -14,16 +14,10 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsVersion = "1.11.1034"
-
 lazy val dependencies = Seq(
-  "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
+  "com.amazonaws" % "aws-java-sdk" % "1.11.678",
   "com.amazonaws" % "amazon-kinesis-client" % "1.8.9",
-  "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.6",
+  "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.4",
   "com.gu" %% "editorial-permissions-client" % "0.9",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
@@ -35,7 +29,7 @@ lazy val dependencies = Seq(
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac-play_2-8" % "2.0.1",
+  "com.gu"  %% "panda-hmac-play_2-6" % "1.3.1",
   "com.gu" %% "content-api-client-aws" % "0.5",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
@@ -70,10 +64,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact
     packageDescription := """manage tags""",
 
     Compile / doc := (target.value / "none"),
-    scalaVersion := scalaVer,
-    ThisBuild / scalaVersion := scalaVer,
-    libraryDependencies ++= dependencies,
-
-    gzip / includeFilter := "*.html" || "*.css" || "*.js",
-    pipelineStages := Seq(digest, gzip),
+    scalaVersion := "2.12.13",
+    ThisBuild / scalaVersion := "2.12.13",
+    libraryDependencies ++= dependencies
   )
+  .settings(TagManager.settings: _*)
