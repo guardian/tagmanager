@@ -1,18 +1,17 @@
-# This action runs snyk monitor on every push to main
-name: Snyk
+# This action is just a test
+name: Snyk (test)
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+on: push
 
 jobs:
   security:
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
     with:
       DEBUG: true
-      ORG: guardian
+      ORG: guardian-test
       SKIP_NODE: false
+      NODE_VERSION_FILE: ./.nvmrc
+      
+      
     secrets:
        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
