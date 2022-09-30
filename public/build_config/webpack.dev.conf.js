@@ -8,7 +8,7 @@ module.exports = {
       {
         test:    /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
+        loaders: ['babel-loader?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
       },
       {
         test: /\.scss$/,
@@ -28,16 +28,18 @@ module.exports = {
       }
     ]
   },
-  resolveLoader: {
-    root: path.join(__dirname, '..', 'node_modules')
-  },
 
   sassLoader: {
     includePaths: [path.resolve(__dirname, '../style')]
   },
 
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json', '.scss']
+    modules: [
+        path.join(__dirname, "src"),
+        "node_modules"
+    ],
+    // Allows require('file') instead of require('file.js|x')
+    extensions: ['.js', '.jsx', '.json']
   },
 
   plugins: [

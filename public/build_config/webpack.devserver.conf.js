@@ -18,9 +18,6 @@ var host = 'https://' + addr;
 //
 
 module.exports = {
-    port:  port,
-    addr:  addr,
-    host:  host,
     entry: {
         app: [
             'webpack-dev-server/client?' + host,
@@ -33,27 +30,24 @@ module.exports = {
         publicPath: host + '/assets/build/',
         filename:   'app.js'
     },
-    resolveLoader: {
-        modulesDirectories: ['node_modules']
-    },
     module: {
         loaders: [
             {
                 test:    /\.jsx?$/,
                 exclude: /node_modules/,
-                loaders: ['react-hot', 'babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
+                loaders: ['react-hot-loader', 'babel-loader?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
             },
             {
                 test:   require.resolve('react'),
-                loader: 'expose?React'
+                loader: 'expose-loader?React'
             },
             {
                 test: /\.scss$/,
-                loaders: ['style', 'css', 'sass']
+                loaders: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
                 test: /\.css$/,
-                loaders: ['style', 'css']
+                loaders: ['style-loader', 'css-loader']
             },
             {
                 test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
@@ -69,7 +63,11 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin()
     ],
     resolve: {
+        modules: [
+            path.join(__dirname, "src"),
+            "node_modules"
+        ],
         // Allows require('file') instead of require('file.js|x')
-        extensions: ['', '.js', '.jsx', '.json']
+        extensions: ['.js', '.jsx', '.json']
     }
 };

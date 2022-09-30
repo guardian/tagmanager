@@ -6,6 +6,10 @@ var webpack          = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var wpConfig         = require('./build_config/webpack.devserver.conf.js');
 
+var port = 8248;
+var addr = 'tagmanager-assets.local.dev-gutools.co.uk';
+var host = 'https://' + addr;
+
 //
 // Webpack
 //
@@ -36,6 +40,6 @@ var wpServer = new WebpackDevServer(webpack(wpConfig), {
 
 //wpServer.use('/public', express.static('public'));
 
-wpServer.listen(wpConfig.port, wpConfig.addr, function() {
-    console.log('WebpackDevServer listening on port %d', wpConfig.port);
+wpServer.listen(port, addr, function() {
+    console.log('WebpackDevServer listening on port %d', port);
 });

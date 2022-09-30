@@ -9,15 +9,15 @@ module.exports = {
       {
         test:    /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
+        loaders: ['babel-loader?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader' })
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
       },
       {
         test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
@@ -37,19 +37,18 @@ module.exports = {
       }
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
       }
     })
   ],
-  resolveLoader: {
-    root: path.join(__dirname, '..', 'node_modules')
-  },
 
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json']
+    modules: [
+      path.join(__dirname, "src"),
+      "node_modules"
+    ],
+    extensions: ['.js', '.jsx', '.json']
   }
 };
