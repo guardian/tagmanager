@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# printf "\n\rRemoving compiled css file... \n\r\n\r"
-# rm public/build/main.css
+printf "\n\rRemoving compiled css file... \n\r\n\r"
+rm public/build/main.css
 printf "\n\rStarting Webpack Dev Server... \n\r\n\r"
 npm run client-dev &
 printf "\n\rStarting Play App... \n\r\n\r"
