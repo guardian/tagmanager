@@ -38,7 +38,7 @@
   padding-right: 5px;
 
   &:before {
-    @extend .i-article;
+    @extend .i-article !optional;
 
     content: " ";
   }
