@@ -32,9 +32,9 @@
   display: inline-block;
   border: 1px solid $c-grey-300;
   background-color: $c-grey-200;
-  padding: $standard-padding/2 $standard-padding;
-  margin-right: $standard-padding/2;
-  margin-bottom: $standard-padding/2;
+  padding: calc($standard-padding / 2) $standard-padding;
+  margin-right: calc($standard-padding / 2);
+  margin-bottom: calc($standard-padding / 2);
   padding-right: 5px;
 
   &:before {

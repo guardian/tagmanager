@@ -47,7 +47,7 @@
   background-color: $c-red;
   text-align: center;
   color: $c-white;
-  padding: $standard-padding/2;
+  padding: calc($standard-padding / 2);
 
 }
 
@@ -58,7 +58,7 @@
   background-color: $c-blue;
   text-align: center;
   color: $c-white;
-  padding: $standard-padding/2;
+  padding: calc($standard-padding / 2);
 
 }
 

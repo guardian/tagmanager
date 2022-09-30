@@ -11,7 +11,7 @@
 
   display: inline-block;
 
-  padding: $standard-padding/2 $standard-padding;
+  padding: calc($standard-padding / 2) $standard-padding;
 
   border-left: 1px solid $c-grey-300;
   border-bottom: 1px solid $c-grey-300;
@@ -32,7 +32,7 @@ table.grid-table {
     width: 100%;
 
     td, th {
-        padding: $standard-padding/2 $standard-padding;
+        padding: calc($standard-padding / 2) $standard-padding;
     }
 
     thead {

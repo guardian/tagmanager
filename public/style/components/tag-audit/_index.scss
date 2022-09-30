@@ -1,5 +1,5 @@
 .tag-audit {
-  margin: $standard-padding / 2;
+  margin: calc($standard-padding / 2);
   padding: $standard-padding;
 }
 
@@ -8,6 +8,6 @@
 
   font-weight: bold;
 
-  margin-bottom: $standard-padding/2;
+  margin-bottom: calc($standard-padding / 2);
 
 }

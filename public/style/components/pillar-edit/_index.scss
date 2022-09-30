@@ -24,7 +24,7 @@
   border: 1px solid $c-red;
   color: $c-red;
 
-  padding: $standard-padding/2 $standard-padding;
+  padding: calc($standard-padding / 2) $standard-padding;
 
   font-weight: bold;
 
