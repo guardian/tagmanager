@@ -5,6 +5,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   bail: true,
   mode: 'production',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.js'
+  },
   module: {
     rules: [
       {
