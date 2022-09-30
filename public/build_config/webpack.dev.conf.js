@@ -1,8 +1,9 @@
 var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   devtool: 'source-map',
+  mode: 'development',
   module: {
     rules: [
       {
@@ -16,18 +17,18 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: "css-loader"
-        })
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          //resolve-url-loader may be chained before sass-loader if necessary
-          use: ['css-loader', 'sass-loader']
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+          },
+          "sass-loader"
+        ]
       },
       {
         test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
@@ -58,6 +59,6 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('main.css')
+    new MiniCssExtractPlugin({filename: 'main.css'}),
   ]
 };

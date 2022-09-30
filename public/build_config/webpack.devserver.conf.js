@@ -18,6 +18,7 @@ var host = 'https://' + addr;
 //
 
 module.exports = {
+    mode: 'development',
     entry: {
         app: [
             'webpack-dev-server/client?' + host,
@@ -51,12 +52,12 @@ module.exports = {
               exclude: /node_modules/,
             },
             {
-                test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader', 'sass-loader']
-            },
-            {
                 test: /\.css$/,
                 loaders: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.scss$/,
+                loaders: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
               test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
