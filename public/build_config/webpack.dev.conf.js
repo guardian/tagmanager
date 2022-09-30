@@ -4,27 +4,46 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   devtool: 'source-map',
   module: {
-    loaders: [
+    rules: [
       {
         test:    /\.js$/,
+        use: [{
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-react"]
+          }
+        }],
         exclude: /node_modules/,
-        loaders: ['babel-loader?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
-      },
-      {
-        test: /\.scss$/,
-        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader' })
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
+        use: ExtractTextPlugin.extract({
+          use: "css-loader"
+        })
+      },
+      {
+        test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          //resolve-url-loader may be chained before sass-loader if necessary
+          use: ['css-loader', 'sass-loader']
+        })
       },
       {
         test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
-        loader: "url-loader?mimetype=application/font-woff"
+        use: [{loader: "url-loader", options: {mimetype: 'application/font-woff'}}]
       },
       {
         test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
-        loader: "file-loader?name=[name].[ext]"
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          }
+        ]
       }
     ]
   },

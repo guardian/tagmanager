@@ -3,7 +3,7 @@ import TagSelect from './utils/TagSelect.js';
 import CapiStats from './CapiStats/CapiStats.react';
 import ConfirmButton from './utils/ConfirmButton.react';
 import tagManagerApi from '../util/tagManagerApi';
-import showError from '../actions/UIActions/showError';
+import { showError } from '../actions/UIActions/showError';
 import { browserHistory } from 'react-router'
 
 
@@ -47,7 +47,7 @@ export default class MergeTag extends React.Component {
       }
 
       if (this.state.fromTag.id === this.state.toTag.id) {
-        return (<div> className="merge__warning">
+        return (<div className="merge__warning">
                   <div>Cannot merge a tag into itself.</div>
                 </div>);
       }

@@ -1,6 +1,6 @@
 import Reqwest from 'reqwest';
 import Q from 'q';
-import {reEstablishSession} from 'babel-loader?presets[]=es2015!panda-session';
+import {reEstablishSession} from 'panda-session';
 import {getStore} from './storeAccessor';
 
 export function PandaReqwest(reqwestBody) {
