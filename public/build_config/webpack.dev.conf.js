@@ -12,11 +12,11 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!sass-loader?sourceMap')
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader' })
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap')
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
       },
       {
         test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
@@ -27,10 +27,6 @@ module.exports = {
         loader: "file-loader?name=[name].[ext]"
       }
     ]
-  },
-
-  sassLoader: {
-    includePaths: [path.resolve(__dirname, '../style')]
   },
 
   resolve: {
