@@ -31,15 +31,24 @@ module.exports = {
         filename:   'app.js'
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test:    /\.jsx?$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                loaders: ['react-hot-loader', 'babel-loader?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
+                use: [{ loader: 'babel-loader' }]
             },
+            { 
+                test: require.resolve('react'), 
+                use: [{ loader: 'expose-loader', options: 'React' }]},
             {
-                test:   require.resolve('react'),
-                loader: 'expose-loader?React'
+              test:    /\.js$/,
+              use: [{
+                loader: "babel-loader",
+                options: {
+                  presets: ["@babel/preset-env", "@babel/preset-react"]
+                }
+              }],
+              exclude: /node_modules/,
             },
             {
                 test: /\.scss$/,
@@ -50,14 +59,22 @@ module.exports = {
                 loaders: ['style-loader', 'css-loader']
             },
             {
-                test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
-                loader: "url-loader?mimetype=application/font-woff"
+              test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
+              use: [{loader: "url-loader", options: {mimetype: 'application/font-woff'}}]
             },
             {
-                test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
-                loader: "file-loader?name=[name].[ext]"
+              test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
+              use: [
+                {
+                  loader: 'file-loader',
+                  options: {
+                    name: '[name].[ext]',
+                    outputPath: 'fonts/'
+                  }
+                }
+              ]
             }
-        ]
+          ]
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin()
