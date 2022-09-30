@@ -55,11 +55,6 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({filename: 'main.css'}),
-    // new webpack.DefinePlugin({
-    //   'process.env': {
-    //     'NODE_ENV': '"production"'
-    //   }
-    // }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
 
