@@ -1,5 +1,5 @@
 .capi-stats {
-  margin: $standard-padding / 2;
+  margin: calc($standard-padding / 2);
   padding: $standard-padding;
 
   background-color: $c-grey-100;
@@ -11,7 +11,7 @@
 
   font-weight: bold;
 
-  margin-bottom: $standard-padding/2;
+  margin-bottom: calc($standard-padding / 2);
 
 }
 
@@ -23,7 +23,7 @@
 
   text-align: center;
 
-  margin-bottom: $standard-padding/2;
+  margin-bottom: calc($standard-padding / 2);
 }
 
 .capi-stats__stat__header {

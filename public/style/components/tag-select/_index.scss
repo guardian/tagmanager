@@ -29,7 +29,7 @@
   li {
     position: relative;
     display: flex;
-    padding: $standard-padding/2 $standard-padding;
+    padding: calc($standard-padding / 2) $standard-padding;
 
     cursor: pointer;
 

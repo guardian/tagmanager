@@ -6,7 +6,7 @@
 
   display: inline-block;
 
-  padding: $standard-padding/2 $standard-padding;
+  padding: calc($standard-padding / 2) $standard-padding;
   margin: $standard-padding;
   min-width: 100px;
 

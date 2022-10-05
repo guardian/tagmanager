@@ -1,46 +1,64 @@
 var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   devtool: 'source-map',
+  mode: 'development',
   module: {
-    loaders: [
+    rules: [
       {
         test:    /\.js$/,
+        use: [{
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-react"]
+          }
+        }],
         exclude: /node_modules/,
-        loaders: ['babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
+      },
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!sass-loader?sourceMap')
-      },
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap')
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+          },
+          "sass-loader"
+        ]
       },
       {
         test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
-        loader: "url-loader?mimetype=application/font-woff"
+        use: [{loader: "url-loader", options: {mimetype: 'application/font-woff'}}]
       },
       {
         test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
-        loader: "file-loader?name=[name].[ext]"
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          }
+        ]
       }
     ]
   },
-  resolveLoader: {
-    root: path.join(__dirname, '..', 'node_modules')
-  },
-
-  sassLoader: {
-    includePaths: [path.resolve(__dirname, '../style')]
-  },
 
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json', '.scss']
+    modules: [
+        path.join(__dirname, "src"),
+        "node_modules"
+    ],
+    // Allows require('file') instead of require('file.js|x')
+    extensions: ['.js', '.jsx', '.json']
   },
 
   plugins: [
-    new ExtractTextPlugin('main.css')
+    new MiniCssExtractPlugin({filename: 'main.css'}),
   ]
 };

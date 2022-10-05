@@ -1,6 +1,6 @@
 
 $tag-edit-linked-field-height: $standard-padding * 4;
-$tag-edit-padding: $standard-padding/2;
+$tag-edit-padding: calc($standard-padding / 2);
 
 .tag-edit__input-group {
   padding: $standard-padding * 1.5;
@@ -47,7 +47,7 @@ $tag-edit-padding: $standard-padding/2;
 
 %tag-edit__field {
   position: relative;
-  margin: $standard-padding/2 0;
+  margin: calc($standard-padding / 2) 0;
 }
 
 .tag-edit__field {
@@ -236,7 +236,7 @@ $tag-edit-padding: $standard-padding/2;
 
   @extend %fs-data-3;
 
-  margin-top: $standard-padding/2;
+  margin-top: calc($standard-padding / 2);
 
   background-color: white;
   border: 1px solid $c-grey-300;
@@ -254,7 +254,7 @@ $tag-edit-padding: $standard-padding/2;
   display: inline-block;
 
   cursor: pointer;
-  padding: $standard-padding/2 $standard-padding;
+  padding: calc($standard-padding / 2) $standard-padding;
 
   border-right: 1px solid $c-grey-300;
 }

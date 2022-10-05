@@ -18,9 +18,7 @@ var host = 'https://' + addr;
 //
 
 module.exports = {
-    port:  port,
-    addr:  addr,
-    host:  host,
+    mode: 'development',
     entry: {
         app: [
             'webpack-dev-server/client?' + host,
@@ -33,43 +31,56 @@ module.exports = {
         publicPath: host + '/assets/build/',
         filename:   'app.js'
     },
-    resolveLoader: {
-        modulesDirectories: ['node_modules']
-    },
     module: {
-        loaders: [
+        rules: [
+            { 
+                test: require.resolve('react'), 
+                use: [{ loader: 'expose-loader', options: 'React' }]},
             {
-                test:    /\.jsx?$/,
-                exclude: /node_modules/,
-                loaders: ['react-hot', 'babel?presets[]=es2015&presets[]=react&plugins[]=transform-object-assign']
-            },
-            {
-                test:   require.resolve('react'),
-                loader: 'expose?React'
-            },
-            {
-                test: /\.scss$/,
-                loaders: ['style', 'css', 'sass']
+              test:    /\.js$/,
+              use: [{
+                loader: "babel-loader",
+                options: {
+                  presets: ["@babel/preset-env", "@babel/preset-react"]
+                }
+              }],
+              exclude: /node_modules/,
             },
             {
                 test: /\.css$/,
-                loaders: ['style', 'css']
+                loaders: ['style-loader', 'css-loader']
             },
             {
-                test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
-                loader: "url-loader?mimetype=application/font-woff"
+                test: /\.scss$/,
+                loaders: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
-                test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
-                loader: "file-loader?name=[name].[ext]"
+              test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
+              use: [{loader: "url-loader", options: {mimetype: 'application/font-woff'}}]
+            },
+            {
+              test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
+              use: [
+                {
+                  loader: 'file-loader',
+                  options: {
+                    name: '[name].[ext]',
+                    outputPath: 'fonts/'
+                  }
+                }
+              ]
             }
-        ]
+          ]
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin()
     ],
     resolve: {
+        modules: [
+            path.join(__dirname, "src"),
+            "node_modules"
+        ],
         // Allows require('file') instead of require('file.js|x')
-        extensions: ['', '.js', '.jsx', '.json']
+        extensions: ['.js', '.jsx', '.json']
     }
 };
