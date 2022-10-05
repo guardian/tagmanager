@@ -6,150 +6,153 @@
 	top: 2px;
 }
 
-.i-public--images--icons--add-image {
-	@extend %svg-common;
-	background-position: 0 0;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--add-image-grey {
+.i-add-image {
 	@extend %svg-common;
 	background-position: 25.806451612903224% 0;
 	width: 16px;
 	height: 16px;
 }
 
-.i-public--images--icons--article {
-	@extend %svg-common;
-	background-position: 0 26.229508196721312%;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--clock {
-	@extend %svg-common;
-	background-position: 25.806451612903224% 26.229508196721312%;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--cross {
-	@extend %svg-common;
-	background-position: 51.61290322580645% 0;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--cross-red {
-	@extend %svg-common;
-	background-position: 98.46153846153847% 43.75%;
-	width: 13px;
-	height: 13px;
-}
-
-.i-public--images--icons--cross-white {
-	@extend %svg-common;
-	background-position: 98.46153846153847% 64.0625%;
-	width: 13px;
-	height: 13px;
-}
-
-.i-public--images--icons--delete {
-	@extend %svg-common;
-	background-position: 51.61290322580645% 26.229508196721312%;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--delete-red {
-	@extend %svg-common;
-	background-position: 0 52.459016393442624%;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--down-arrow {
-	@extend %svg-common;
-	background-position: 100% 0;
-	width: 14px;
-	height: 14px;
-}
-
-.i-public--images--icons--failed-face-red {
-	@extend %svg-common;
-	background-position: 25.806451612903224% 52.459016393442624%;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--info-grey {
-	@extend %svg-common;
-	background-position: 100% 22.22222222222222%;
-	width: 14px;
-	height: 14px;
-}
-
-.i-public--images--icons--plus {
-	@extend %svg-common;
-	background-position: 51.61290322580645% 52.459016393442624%;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--preview-eye {
-	@extend %svg-common;
-	background-position: 77.41935483870968% 0;
-	width: 16px;
-	height: 16px;
-}
-
-.i-public--images--icons--publish {
+.i-add-image-grey {
 	@extend %svg-common;
 	background-position: 77.41935483870968% 26.229508196721312%;
 	width: 16px;
 	height: 16px;
 }
 
-.i-public--images--icons--publish-disabled {
+.i-article {
 	@extend %svg-common;
-	background-position: 77.41935483870968% 52.459016393442624%;
+	background-position: 0 26.229508196721312%;
 	width: 16px;
 	height: 16px;
 }
 
-.i-public--images--icons--rollback-grey {
+.i-clock {
+	@extend %svg-common;
+	background-position: 25.806451612903224% 26.229508196721312%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-cross {
+	@extend %svg-common;
+	background-position: 51.61290322580645% 0;
+	width: 16px;
+	height: 16px;
+}
+
+.i-cross-red {
+	@extend %svg-common;
+	background-position: 98.46153846153847% 64.0625%;
+	width: 13px;
+	height: 13px;
+}
+
+.i-cross-white {
+	@extend %svg-common;
+	background-position: 98.46153846153847% 43.75%;
+	width: 13px;
+	height: 13px;
+}
+
+.i-delete {
+	@extend %svg-common;
+	background-position: 25.806451612903224% 52.459016393442624%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-delete-red {
+	@extend %svg-common;
+	background-position: 51.61290322580645% 52.459016393442624%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-down-arrow {
+	@extend %svg-common;
+	background-position: 100% 22.22222222222222%;
+	width: 14px;
+	height: 14px;
+}
+
+.i-failed-face-red {
+	@extend %svg-common;
+	background-position: 0 0;
+	width: 16px;
+	height: 16px;
+}
+
+.i-info-grey {
+	@extend %svg-common;
+	background-position: 100% 0;
+	width: 14px;
+	height: 14px;
+}
+
+.i-plus {
 	@extend %svg-common;
 	background-position: 0 78.68852459016394%;
 	width: 16px;
 	height: 16px;
 }
 
-.i-public--images--icons--tag-white-30 {
+.i-preview-eye {
 	@extend %svg-common;
 	background-position: 25.806451612903224% 78.68852459016394%;
 	width: 16px;
 	height: 16px;
 }
 
-.i-public--images--icons--tick {
+.i-publish {
 	@extend %svg-common;
 	background-position: 51.61290322580645% 78.68852459016394%;
 	width: 16px;
 	height: 16px;
 }
 
-.i-public--images--icons--tick-green {
+.i-publish-disabled {
+	@extend %svg-common;
+	background-position: 77.41935483870968% 52.459016393442624%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-rollback-grey {
+	@extend %svg-common;
+	background-position: 77.41935483870968% 0;
+	width: 16px;
+	height: 16px;
+}
+
+.i-tag-white-30 {
+	@extend %svg-common;
+	background-position: 0 52.459016393442624%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-tick {
+	@extend %svg-common;
+	background-position: 51.61290322580645% 26.229508196721312%;
+	width: 16px;
+	height: 16px;
+}
+
+.i-tick-green {
 	@extend %svg-common;
 	background-position: 0 100%;
 	width: 13px;
 	height: 13px;
 }
 
-.i-public--images--icons--tick-selected {
+.i-tick-selected {
 	@extend %svg-common;
 	background-position: 77.41935483870968% 78.68852459016394%;
 	width: 16px;
 	height: 16px;
 }
 
+.clickable-icon {
+	cursor: pointer;
+}
