@@ -5,7 +5,7 @@ deployments:
   tag-manager:
     type: autoscaling
     parameters:
-      bucket: composer-dist
+      bucketSsmLookup: true
     dependencies:
       - cloudformation
 
