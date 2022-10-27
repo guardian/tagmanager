@@ -4,8 +4,6 @@ stacks: [flexible]
 deployments:
   tag-manager:
     type: autoscaling
-    parameters:
-      bucketSsmLookup: true
     dependencies:
       - cloudformation
 
