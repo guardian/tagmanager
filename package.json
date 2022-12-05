@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack --mode production --entry ./public/app.js --output-path ./public/build/ --config ./public/build_config/webpack.prod.conf.js",
     "build-dev": "webpack --entry ./public/app.js --output-path ./public/build/ --config ./public/build_config/webpack.dev.conf.js --watch",
-    "build-icons": "svg-sprite -w 16 -h 16 -v true --view-bust false --view-prefix .i-%s --view-dest . --vs ./public/images/icons.svg --vscss true --view-render-scss-template ./public/images/icons/scssTemplate.scss --view-render-scss-dest ./public/style/_icons.scss  ./public/images/icons/*.svg",
+    "build-icons": "svg-sprite -w 16 -h 16 -v true --view-bust false --view-prefix .i-%s --shape-id-separator '' --view-dest . --vs ./public/images/icons.svg --vscss true --view-render-scss-template ./public/images/icons/scssTemplate.scss --view-render-scss-dest ./public/style/_icons.scss  ./public/images/icons/*.svg",
     "client-dev": "node ./public/devserver.js"
   },
   "dependencies": {
@@ -41,7 +41,7 @@
     "scribe-plugin-sanitizer": "^0.1.10",
     "scribe-plugin-toolbar": "^0.2.2",
     "style-loader": "^2.0.0",
-    "svg-sprite": "^1.5.4",
+    "svg-sprite": "^2.0.2",
     "url-loader": "^0.5.7",
     "webpack": "^4.46.0"
   },
