@@ -1,3 +1,6 @@
+/* THIS FILE IS GENERATED - DO NOT EDIT MANUALLY!!
+   edit the template at public/images/icons/scssTemplate.scss */
+
 %svg-common {
 	background: url('/assets/images/icons.svg') no-repeat;
 	display: inline-block;
@@ -153,3 +156,7 @@
 	height: 16px;
 }
 
+
+.clickable-icon {
+  cursor: pointer;
+}
