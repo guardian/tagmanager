@@ -1,3 +1,7 @@
+{{! The following only applies to the output file. Please do manually edit this file (scssTemplate.scss)! }}
+/* THIS FILE IS GENERATED - DO NOT EDIT MANUALLY!!
+   edit the template at public/images/icons/scssTemplate.scss */
+
 {{#hasMixin}}@mixin {{mixinName}} {
 	background: url('/images/icons.svg') no-repeat;
 }
@@ -23,3 +27,7 @@
 }
 
 {{/shapes}}
+
+.clickable-icon {
+  cursor: pointer;
+}
