@@ -30,7 +30,7 @@ lazy val dependencies = Seq(
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client-default" % "14.2",
+  "com.gu" %% "content-api-client-default" % "17.24.1",
   "com.gu" %% "tags-thrift-schema" % "2.8.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
