@@ -13,6 +13,7 @@ import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
 import services._
+import scala.language.postfixOps
 
 class AppComponents(context: Context, config: Config)
   extends BuiltInComponentsFromContext(context)

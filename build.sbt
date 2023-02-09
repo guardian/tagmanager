@@ -14,7 +14,7 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsVersion = "1.11.1034"
+lazy val awsVersion = "1.12.403"
 
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
@@ -23,7 +23,7 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-  "com.amazonaws" % "amazon-kinesis-client" % "1.14.0",
+  "com.amazonaws" % "amazon-kinesis-client" % "1.14.8",
   "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.6",
   "com.gu" %% "editorial-permissions-client" % "0.9",
   ws, // for panda
@@ -32,7 +32,7 @@ lazy val dependencies = Seq(
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client-default" % "17.24.1",
   "com.gu" %% "tags-thrift-schema" % "2.8.0",
-  "net.logstash.logback" % "logstash-logback-encoder" % "4.2",
+  "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
@@ -42,6 +42,7 @@ lazy val dependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
   "org.apache.commons" % "commons-lang3" % "3.11",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
 )
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
