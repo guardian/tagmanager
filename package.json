@@ -16,7 +16,7 @@
     "file-loader": "^3.0.1",
     "lodash.debounce": "^3.1.1",
     "lodash.startcase": "^4.4.0",
-    "moment": "^2.10.6",
+    "moment": "^2.29.4",
     "panda-session": "0.1.6",
     "phantomjs-prebuilt": "^2.1.14",
     "q": "1.4.1",
