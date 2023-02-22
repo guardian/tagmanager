@@ -33,16 +33,12 @@ Tag Manager also makes requests to CAPI preview. This means you will also need C
 If you are working on the commercial tag functionality and need to be able to upload logos you will also need AWS credentials for 
 the frontend aws account available as an AWS profile named "frontend". This can also be obtained via janus.
 
-The tag manager is a standard play app, fire up sbt and run.
-
-By default if you change any frontend code, you will need to recompile the assets using `./scripts/setup.sh` but there
-are alternatives:
+Run `./scripts/start.sh` to start the full app.
 
 Client Side Development
 =======================
 
-We use webpack to compile the assets for this project. You have the option to run `./scripts/setup.sh` after each change
-as mentioned above, or alternatively you can choose to use one of the alternative startup scripts provided
+We use webpack to compile the assets for this project. You have the option to run `./scripts/setup.sh` after each change, or alternatively you can choose to use one of the alternative startup scripts provided
 
 1. `./scripts/start.sh` This starts a webpack watcher in addition to running the application - The watcher will compile
 unminified code when it detects a change to the javascript. Refresh the webpage to see the new code.
