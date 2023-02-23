@@ -18,7 +18,8 @@ case class PodcastMetadata( linkUrl: String,
                             podcastType: Option[String] = None,
                             googlePodcastsUrl: Option[String] = None,
                             spotifyUrl: Option[String] = None,
-                            acastId: Option[String] = None
+                            acastId: Option[String] = None,
+                            pocketCastsUrl: Option[String] = None
 ) {
 
   def asThrift = ThriftPodcastMetadata(
@@ -34,7 +35,8 @@ case class PodcastMetadata( linkUrl: String,
     podcastType =       podcastType,
     googlePodcastsUrl = googlePodcastsUrl,
     spotifyUrl =        spotifyUrl,
-    acastId =           acastId
+    acastId =           acastId,
+    pocketCastsUrl =    pocketCastsUrl
   )
 
   def asExportedXml = {
@@ -46,6 +48,7 @@ case class PodcastMetadata( linkUrl: String,
     <GooglePodcastsUrl>{this.googlePodcastsUrl.getOrElse("")}</GooglePodcastsUrl>
     <SpotifyUrl>{this.spotifyUrl.getOrElse("")}</SpotifyUrl>
     <AcastId>{this.acastId.getOrElse("")}</AcastId>
+    <PocketCastsUrl>{this.pocketCastsUrl.getOrElse("")}</PocketCastsUrl>
     <clean>{this.clean}</clean>
     <explicit>{this.explicit}</explicit>
     <image>{this.image.map(x => x.asExportedXml).getOrElse("")}</image>
@@ -72,7 +75,8 @@ object PodcastMetadata {
       podcastType =       thriftPodcastMetadata.podcastType,
       googlePodcastsUrl = thriftPodcastMetadata.googlePodcastsUrl,
       spotifyUrl =        thriftPodcastMetadata.spotifyUrl,
-      acastId =           thriftPodcastMetadata.acastId
+      acastId =           thriftPodcastMetadata.acastId,
+      pocketCastsUrl =    thriftPodcastMetadata.pocketCastsUrl
     )
 }
 
