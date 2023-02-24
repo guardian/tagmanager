@@ -144,7 +144,7 @@ case class CreateTagCommand(
     val pageId = try { PathManager.registerPathAndGetPageId(calculatedPath) } catch { case p: PathRegistrationFailed => PathInUse}
 
     val createdSponsorship = sponsorship flatMap(_.createSponsorship(tagId, createdSectionId))
-    val createdSponsorshipActive = createdSponsorship.map(_.status == "active").getOrElse(false)
+    val createdSponsorshipActive = createdSponsorship.exists(_.status == "active")
 
     val tag = Tag(
       id = tagId,
@@ -173,7 +173,7 @@ case class CreateTagCommand(
       activeSponsorships = if(createdSponsorshipActive) List(createdSponsorship.map(_.id).get) else Nil,
       sponsorship = createdSponsorship.map(_.id),
       paidContentInformation = paidContentInformation,
-      expired = createdSponsorship.map(_.status == "expired").getOrElse(false),
+      expired = createdSponsorship.exists(_.status == "expired"),
       updatedAt = new DateTime(DateTimeZone.UTC).getMillis,
       adBlockingLevel = adBlockingLevel,
       contributionBlockingLevel = contributionBlockingLevel
@@ -181,7 +181,8 @@ case class CreateTagCommand(
 
     val result = TagRepository.upsertTag(tag)
 
-    val thriftTag = tag.asThrift
+    // shortcut, passing the sponsorship into the thrift conversion to avoid needing to read back out of Dynamo
+    val thriftTag = tag.asThrift(if (createdSponsorshipActive) createdSponsorship.map(List(_)) else None)
 
     val tagUpdateEvent = TagEvent(EventType.Update, tag.id, Some(thriftTag))
 
