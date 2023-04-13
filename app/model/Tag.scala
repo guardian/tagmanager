@@ -70,6 +70,8 @@ case class Tag(
     capiSectionId     = capiSectionId,
     trackingInformation = trackingInformation.map(_.asThrift),
     updatedAt = Some(updatedAt),
+    // TODO should this line be flatMap? if there is an active sponsorship ID here, then that sponsorship should
+    // exist in the repository. If it doesn't, unexpected behaviour can & will happen downstream!!
     activeSponsorships = if (activeSponsorships.isEmpty) None else Some(activeSponsorships.flatMap {sid =>
       SponsorshipRepository.getSponsorship(sid).map(_.asThrift)
     }),

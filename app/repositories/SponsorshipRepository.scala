@@ -1,9 +1,9 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.ScanFilter
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec
+import com.amazonaws.services.dynamodbv2.document.{PrimaryKey, ScanFilter}
 import model.Sponsorship
 import org.joda.time.DateTime
-import helpers.JodaDateTimeFormat._
 import services.Dynamo
 
 import scala.collection.JavaConversions._
@@ -11,7 +11,10 @@ import scala.collection.JavaConversions._
 
 object SponsorshipRepository {
   def getSponsorship(id: Long) = {
-    Option(Dynamo.sponsorshipTable.getItem("id", id)).map(Sponsorship.fromItem)
+    val getItemSpec = new GetItemSpec()
+      .withPrimaryKey(new PrimaryKey("id", id))
+      .withConsistentRead(true)
+    Option(Dynamo.sponsorshipTable.getItem(getItemSpec)).map(Sponsorship.fromItem)
   }
 
   def updateSponsorship(sponsorship: Sponsorship) = {
