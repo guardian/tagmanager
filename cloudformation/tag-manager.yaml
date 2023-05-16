@@ -250,7 +250,7 @@ Resources:
       - Key: Stack
         Value: flexible
       - Key: App
-        Value: feeds
+        Value: tag-manager
   AutoscalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
