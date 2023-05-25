@@ -4,7 +4,7 @@ resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releas
 resolvers += "crappy twitter mvn repository" at "https://maven.twttr.com/"
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.16")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.19")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.4.4")
 
