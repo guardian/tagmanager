@@ -37,6 +37,10 @@ Parameters:
   CapiPreviewRole:
     Type: String
     Description: ARN of the CAPI preview role
+  AlertTopicArn:
+    Description: The ARN of the SNS topic to notify when an alarm occurs
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /account/services/alert.topic.arn
 Mappings:
   Config:
     CODE:
@@ -303,3 +307,46 @@ Resources:
             Ref: CapiPreviewRole
       Roles:
       - Ref: TagManagerRole
+  Tagmanager5XXAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      TreatMissingData: notBreaching
+      AlarmDescription: Tag manager is returning 5x responses
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: '0'
+      EvaluationPeriods: '3'
+      Metrics:
+        - Expression: backend5XX + elb5XX
+          Id: sum
+          Label: "Count of Backend AND ELB 5XX"
+          ReturnData: true
+        - Id: backend5XX
+          ReturnData: false
+          Label: "backend5XX"
+          MetricStat:
+            Metric:
+              MetricName: HTTPCode_Backend_5XX
+              Namespace: AWS/ELB
+              Dimensions:
+              - Name: LoadBalancerName
+                Value: !Ref 'TagManagerLoadBalancer'
+            Period: 300
+            Stat: Sum
+            Unit: Count
+        - Id: elb5XX
+          ReturnData: false
+          Label: "elb5XX"
+          MetricStat:
+            Metric:
+              MetricName: HTTPCode_ELB_5XX
+              Namespace: AWS/ELB
+              Dimensions:
+              - Name: LoadBalancerName
+                Value: !Ref 'TagManagerLoadBalancer'
+            Period: 300
+            Stat: Sum
+            Unit: Count
+      AlarmActions:
+        - !Ref 'AlertTopicArn'
+      OKActions:
+        - !Ref 'AlertTopicArn'
