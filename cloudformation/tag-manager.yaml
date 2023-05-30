@@ -41,6 +41,8 @@ Parameters:
     Description: The ARN of the SNS topic to notify when an alarm occurs
     Type: AWS::SSM::Parameter::Value<String>
     Default: /account/services/alert.topic.arn
+Conditions:
+  IsProd: !Equals [!Ref Stage, PROD]
 Mappings:
   Config:
     CODE:
@@ -309,6 +311,7 @@ Resources:
       - Ref: TagManagerRole
   Tagmanager5XXAlarm:
     Type: AWS::CloudWatch::Alarm
+    Condition: IsProd
     Properties:
       TreatMissingData: notBreaching
       AlarmDescription: Tag manager is returning 5x responses
