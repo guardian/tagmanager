@@ -5,7 +5,7 @@ import model.ExternalReferenceType
 import play.api.libs.json.JsValue
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.collection.convert.ImplicitConversions._
 
 
 object ExternalReferencesTypeRepository {

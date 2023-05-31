@@ -1,7 +1,6 @@
 package services
 
 import java.nio.ByteBuffer
-
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.{IRecordProcessor, IRecordProcessorFactory}
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{InitialPositionInStream, KinesisClientLibConfiguration, ShutdownReason, Worker}
@@ -13,7 +12,7 @@ import org.apache.thrift.protocol.{TCompactProtocol, TProtocol}
 import org.apache.thrift.transport.TIOStreamTransport
 import play.api.Logging
 
-import scala.collection.JavaConversions._
+import scala.collection.convert.ImplicitConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions

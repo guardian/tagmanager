@@ -1,12 +1,10 @@
 package services
 
 import java.util.Properties
-
 import com.amazonaws.services.s3.model.GetObjectRequest
 import services.Config._
 
-import scala.collection.JavaConversions._
-
+import scala.collection.convert.ImplicitConversions._
 
 object Config extends AwsInstanceTags {
 

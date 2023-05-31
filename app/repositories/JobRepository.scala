@@ -7,10 +7,11 @@ import com.amazonaws.services.dynamodbv2.model._
 import model.Section
 import model.jobs.{Job, JobStatus}
 import play.api.libs.json.JsValue
+
 import scala.util.control.NonFatal
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.collection.convert.ImplicitConversions._
 
 
 object JobRepository {
