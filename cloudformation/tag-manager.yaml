@@ -316,7 +316,7 @@ Resources:
       TreatMissingData: notBreaching
       AlarmDescription: Tag manager is returning 5x responses
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      Threshold: '0'
+      Threshold: '10'
       EvaluationPeriods: '3'
       Metrics:
         - Expression: backend5XX + elb5XX
