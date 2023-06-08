@@ -1,4 +1,3 @@
-import com.gu.editorial.permissions.client.PermissionsUser
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import controllers.AssetsComponents
 import model.jobs.JobRunner
@@ -35,7 +34,7 @@ class AppComponents(context: Context, config: Config)
   // to request them. Seems to be a timing bug...
   //
   // This should only be a temporary fix @ 2016/02/09
-  Permissions.list(PermissionsUser("preload@permissions"))
+//  Permissions.list(PermissionsUser("preload@permissions"))
 
   val panDomainSettings = new PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
