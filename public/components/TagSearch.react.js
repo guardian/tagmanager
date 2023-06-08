@@ -114,7 +114,7 @@ export class TagSearch extends React.Component {
     }
 
     render () {
-        const canCreateTags = hasPermission("tag_edit");
+        const canCreateTags = hasPermission("tagEdit");
 
         return (
             <div className="tag-search">

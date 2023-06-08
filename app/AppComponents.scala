@@ -34,7 +34,7 @@ class AppComponents(context: Context, config: Config)
   // to request them. Seems to be a timing bug...
   //
   // This should only be a temporary fix @ 2016/02/09
-//  Permissions.list(PermissionsUser("preload@permissions"))
+//  Permissions.listPermission(PermissionsUser("preload@permissions"))
 
   val panDomainSettings = new PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,

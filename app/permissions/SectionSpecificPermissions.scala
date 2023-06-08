@@ -4,7 +4,7 @@ import com.gu.pandomainauth.action.UserRequest
 import com.gu.permissions.PermissionDefinition
 import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 object SectionPermissionMap {
   def apply(isMicrosite: Boolean): Option[PermissionDefinition] = {
