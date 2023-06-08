@@ -34,6 +34,7 @@ abstract class BasePermissionCheck(
 // Tag Edit
 case class CreateTagPermissionsCheck()(implicit executionContext: ExecutionContext)
   extends BasePermissionCheck(Permissions.TagEdit, "create tag")
+
 case class UpdateTagPermissionsCheck()(implicit executionContext: ExecutionContext)
   extends BasePermissionCheck(Permissions.TagEdit, "update tag")
 

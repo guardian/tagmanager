@@ -1,6 +1,6 @@
 package permissions
 
-import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
+import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
 import com.gu.permissions.{PermissionDefinition, PermissionsConfig, PermissionsProvider}
 import services.Config
 
