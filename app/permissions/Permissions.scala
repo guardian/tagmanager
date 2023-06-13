@@ -23,7 +23,7 @@ object Permissions {
 
   private val permissions: PermissionsProvider = PermissionsProvider(PermissionsConfig(Config().permissionsStage, Config().aws.region, credentials))
 
-  def testUser(email: String)(permission: PermissionDefinition): Boolean = {
+  def testUser(permission:PermissionDefinition)(email: String): Boolean = {
     println("Permissions for: " + email)
     permissions.hasPermission(permission, email)
   }

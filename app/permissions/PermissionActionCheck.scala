@@ -8,18 +8,20 @@ import play.api.mvc.{ActionFilter, Results}
 import scala.concurrent.{Future, ExecutionContext}
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
-  val testAccess: String => Future[Boolean]
+  val testAccess: String => Boolean
   val restrictedAction: String
 
   override def filter[A](request: UserRequest[A]) =
-    if(request.user.email == "hmac-authed-service") {
+    if (request.user.email == "hmac-authed-service") {
       Future.successful(None)
     } else {
-      testAccess(request.user.email).map {
-        case true => None
-        case false => logger.info(s"user not authorized to $restrictedAction")
-          Some(Results.Unauthorized)
-      }(executionContext)
+      val hasAccess = testAccess(request.user.email)
+      if (hasAccess) {
+        Future.successful(None)
+      } else {
+        logger.info(s"user not authorized to $restrictedAction")
+        Future.successful(Some(Results.Unauthorized))
+      }
     }
 }
 abstract class BasePermissionCheck(
@@ -27,8 +29,7 @@ abstract class BasePermissionCheck(
                                     val restrictedAction: String
                                   )(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
 
-  val testAccess: String => Future[Boolean] =
-    email => Future.successful(Permissions.testUser(email)(permission))
+  val testAccess: String => Boolean = Permissions.testUser(permission)
 }
 
 // Tag Edit
