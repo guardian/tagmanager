@@ -33,7 +33,7 @@ class Migration(
 
   def migratePaidContent = APIAuthAction(parse.multipartFormData) { req =>
     req.body.file("migrationFile").map{ jsonFile =>
-      val jsonString = Source.fromFile(jsonFile.ref.file, "UTF-8").getLines().mkString("\n")
+      val jsonString = Source.fromFile(jsonFile.ref.path.toFile, "UTF-8").getLines().mkString("\n")
 
       val json = Json.parse(jsonString)
       val sponsorships = json.as[List[Sponsorship]]

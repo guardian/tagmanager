@@ -12,7 +12,7 @@ import permissions._
 import play.api.libs.ws.WSClient
 
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class App(
   val wsClient: WSClient,
@@ -34,39 +34,35 @@ class App(
       case None => routes.Assets.versioned(jsFileName).toString
     }
 
-    Permissions.getPermissionsForUser(req.user.email).map { permissions =>
+    val userPermissions = Permissions.getPermissionsForUser(req.user.email)
 
-      val allTags = TagType.list.map(_.name)
-      var permittedTags = ListBuffer[String]()
+    val allTags = TagType.list.map(_.name)
+    var permittedTags = ListBuffer[String]()
 
-      for (tag <- allTags) {
-        TagTypePermissionMap(tag) match {
-          case Some(p) => {
-            permissions.get(p.name).map { hasPermission =>
-              if (hasPermission) {
-                permittedTags += tag
-              }
-            }
+    for (tag <- allTags) {
+      TagTypePermissionMap(tag) match {
+        case Some(permissionDefinition) =>
+          if (userPermissions.get(permissionDefinition.name).contains(true)) {
+            permittedTags += tag
           }
-          case None => permittedTags += tag
-        }
+        case None => permittedTags += tag
       }
-
-      val clientConfig = ClientConfig(
-        username = req.user.email,
-        capiUrl = Config().capiUrl,
-        capiPreviewUrl = "/support/previewCapi",
-        capiKey = Config().capiKey,
-        tagTypes = allTags,
-        permittedTagTypes = permittedTags.toList,
-        permissions = permissions,
-        reauthUrl = "/reauth",
-        tagSearchPageSize = Config().tagSearchPageSize
-      )
-
-      Ok(views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString()))
     }
 
+    val clientConfig = ClientConfig(
+      username = req.user.email,
+      capiUrl = Config().capiUrl,
+      capiPreviewUrl = "/support/previewCapi",
+      capiKey = Config().capiKey,
+      tagTypes = allTags,
+      permittedTagTypes = permittedTags.toList,
+      permissions = userPermissions,
+      reauthUrl = "/reauth",
+      tagSearchPageSize = Config().tagSearchPageSize
+    )
+
+    val result = views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString())
+    Future.successful(Ok(result))
   }
 
   def hello = AuthAction {

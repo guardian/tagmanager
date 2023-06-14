@@ -1,6 +1,6 @@
 package permissions
 
-import com.gu.editorial.permissions.client.{Permission, PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.permissions.{PermissionDefinition, PermissionsConfig, PermissionsProvider}
 import com.gu.pandomainauth.action.UserRequest
 import com.gu.tagmanagement.TagType
 import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
@@ -8,7 +8,7 @@ import play.api.mvc.{ActionFilter, AnyContent, Result, Results}
 import scala.concurrent.{ExecutionContext, Future}
 
 object TagTypePermissionMap {
-  def apply(tagType: String): Option[Permission] = {
+  def apply(tagType: String): Option[PermissionDefinition] = {
     tagType match {
       case TagType.Tone.name => Some(Permissions.TagAdmin)
       case TagType.Blog.name => Some(Permissions.TagAdmin) //Blog is to be deprecated
@@ -25,21 +25,26 @@ object TagTypePermissionMap {
 
 trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
 
-  val testAccess: Permission => (String => Future[PermissionAuthorisation])
+  val testAccess: PermissionDefinition => String => Boolean
   val restrictedAction: String
+
+  def commonTestAccess: PermissionDefinition => String => Boolean =
+    Permissions.testUser
 
   override def filter[A](request: UserRequest[A]): Future[Option[Result]] = {
     request.body match {
       case b: AnyContent => {
         b.asJson.map { json =>
           val tagType: String = (json \ "type").as[String]
-
           val permission = TagTypePermissionMap(tagType).getOrElse { return Future.successful(None) }
 
-          testAccess(permission)(request.user.email).map {
-            case PermissionGranted => None
-            case PermissionDenied => Some(Results.Unauthorized)
-          }(executionContext)
+          val hasPermission = testAccess(permission)(request.user.email)
+
+          if (hasPermission) {
+            return Future.successful(None)
+          } else {
+            return Future.successful(Some(Results.Unauthorized))
+          }
           }.getOrElse {
             Future.successful(Some(Results.BadRequest("Expecting Json data")))
           }
@@ -49,12 +54,15 @@ trait TagSpecificPermissionActionFilter extends ActionFilter[UserRequest] {
   }
 }
 
-case class UpdateTagSpecificPermissionsCheck()(implicit val executionContext: ExecutionContext) extends TagSpecificPermissionActionFilter {
-  val testAccess: Permission => (String => Future[PermissionAuthorisation]) = Permissions.testUser
-  val restrictedAction = "update tag"
-}
+  // Tag Specific Permissions
+  case class UpdateTagSpecificPermissionsCheck()(implicit val executionContext: ExecutionContext)
+    extends TagSpecificPermissionActionFilter {
+    val testAccess: PermissionDefinition => String => Boolean = commonTestAccess
+    val restrictedAction: String = "update tag"
+  }
 
-case class CreateTagSpecificPermissionsCheck()(implicit val executionContext: ExecutionContext) extends TagSpecificPermissionActionFilter {
-  val testAccess: Permission => (String => Future[PermissionAuthorisation]) = Permissions.testUser
-  val restrictedAction = "create tag"
+  case class CreateTagSpecificPermissionsCheck()(implicit val executionContext: ExecutionContext)
+    extends TagSpecificPermissionActionFilter {
+    val testAccess: PermissionDefinition => String => Boolean = commonTestAccess
+    val restrictedAction: String = "create tag"
 }

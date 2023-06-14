@@ -1,6 +1,6 @@
 package permissions
 
-import com.gu.editorial.permissions.client.{PermissionAuthorisation, PermissionDenied, PermissionGranted}
+import com.gu.permissions.PermissionDefinition
 import com.gu.pandomainauth.action.UserRequest
 import play.api.Logging
 import play.api.mvc.{ActionFilter, Results}
@@ -8,84 +8,69 @@ import play.api.mvc.{ActionFilter, Results}
 import scala.concurrent.{Future, ExecutionContext}
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
-  val testAccess: String => Future[PermissionAuthorisation]
+  val testAccess: String => Boolean
   val restrictedAction: String
 
   override def filter[A](request: UserRequest[A]) =
-    if(request.user.email == "hmac-authed-service") {
+    if (request.user.email == "hmac-authed-service") {
       Future.successful(None)
     } else {
-      testAccess(request.user.email).map {
-        case PermissionGranted => None
-        case PermissionDenied =>
-          logger.info(s"user not authorized to $restrictedAction")
-          Some(Results.Unauthorized)}(executionContext)
+      val hasAccess = testAccess(request.user.email)
+      if (hasAccess) {
+        Future.successful(None)
+      } else {
+        logger.info(s"user not authorized to $restrictedAction")
+        Future.successful(Some(Results.Unauthorized))
+      }
     }
+}
+abstract class BasePermissionCheck(
+                                    val permission: PermissionDefinition,
+                                    val restrictedAction: String
+                                  )(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
+
+  val testAccess: String => Boolean = Permissions.testUser(permission)
 }
 
 // Tag Edit
-case class CreateTagPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagEdit)
-  val restrictedAction = "create tag"
-}
+case class CreateTagPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagEdit, "create tag")
 
-case class UpdateTagPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagEdit)
-  val restrictedAction = "update tag"
-}
+case class UpdateTagPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagEdit, "update tag")
 
 // Tag Admin
-case class AddEditionToSectionPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "add edition to section"
-}
 
-case class RemoveEditionFromSectionPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "remove edition from section"
-}
+case class AddEditionToSectionPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "add edition to section")
 
-case class DeleteTagPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "delete tag"
-}
+case class RemoveEditionFromSectionPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "remove edition from section")
 
-case class DeleteJobPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "delete job"
-}
+case class DeleteTagPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "delete tag")
 
-case class MergeTagPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "merge tag"
-}
+case class DeleteJobPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "delete job")
 
-case class JobDeletePermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "job delete"
-}
+case class MergeTagPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "merge tag")
 
-case class JobRollbackPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "job rollback"
-}
+case class JobDeletePermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "job delete")
 
-case class ModifySectionExpiryPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "trigger unexpiry of section content"
-}
+case class JobRollbackPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "job rollback")
 
-case class ManageSponsorshipsPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.CommercialTags)
-  val restrictedAction = "manage sponsorships"
-}
+case class ModifySectionExpiryPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin,"trigger unexpiry of section content")
 
-case class TriggerMigrationPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "manage sponsorships"
-}
+// Other Permissions
+case class ManageSponsorshipsPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.CommercialTags, "manage sponsorships")
 
-case class PillarPermissionsCheck()(implicit val executionContext: ExecutionContext) extends PermissionActionFilter {
-  val testAccess: String => Future[PermissionAuthorisation] = Permissions.testUser(Permissions.TagAdmin)
-  val restrictedAction = "manage pillars"
-}
+case class TriggerMigrationPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "trigger migration")
+
+case class PillarPermissionsCheck()(implicit executionContext: ExecutionContext)
+  extends BasePermissionCheck(Permissions.TagAdmin, "manage pillars")

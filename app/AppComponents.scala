@@ -1,5 +1,6 @@
-import com.gu.editorial.permissions.client.PermissionsUser
+import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
+import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import controllers.AssetsComponents
 import model.jobs.JobRunner
 import modules.clustersync.ClusterSynchronisation
@@ -13,6 +14,7 @@ import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
 import services._
+
 import scala.language.postfixOps
 
 class AppComponents(context: Context, config: Config)
@@ -29,13 +31,6 @@ class AppComponents(context: Context, config: Config)
   new ClusterSynchronisation(context.lifecycle)
   new JobRunner(context.lifecycle)
   new SponsorshipLifecycleJobs(context.lifecycle)
-
-  // This is requried because there's an issue in the permissions client
-  // which causes the permissions to come back as denied for the first person
-  // to request them. Seems to be a timing bug...
-  //
-  // This should only be a temporary fix @ 2016/02/09
-  Permissions.list(PermissionsUser("preload@permissions"))
 
   val panDomainSettings = new PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
