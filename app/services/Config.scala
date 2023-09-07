@@ -65,7 +65,6 @@ sealed trait Config {
 
     val props = new Properties()
 
-    loadPropertiesFromS3(s"${aws.app}/global.properties", props)
     loadPropertiesFromS3(s"${aws.app}/${aws.stage}.properties", props)
 
     props.toMap
