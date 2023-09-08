@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactScribe from '../../utils/ReactScribe.react';
+import { Editor } from '@guardian/prosemirror-editor';
 
 export default class TagDescription extends React.Component {
 
@@ -20,7 +21,7 @@ export default class TagDescription extends React.Component {
 
     return (
       <div className="tag-edit__input-group">
-        <label className="tag-edit__input-group__header">Description/Profile</label>
+        <label className="tag-edit__input-group__header">Description/Profile sdsdsh</label>
         <div>
           <ReactScribe
             onChange={this.updateDescription.bind(this)}
@@ -31,6 +32,7 @@ export default class TagDescription extends React.Component {
             editorClassName="tag-edit__richtext__editor"
             disabled={!this.props.tagEditable}
           />
+          <Editor></Editor>
         </div>
         <div className="tag-edit__profile-guidelines">
           <a
