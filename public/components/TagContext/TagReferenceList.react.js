@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Renders the table header and the passed content & action button for the
@@ -44,7 +45,7 @@ export default class TagReferenceList extends React.Component {
 }
 
 TagReferenceList.propTypes = {
-    title: React.PropTypes.string.isRequired,
-    headers: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    actionButton: React.PropTypes.node
+    title: PropTypes.string.isRequired,
+    headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+    actionButton: PropTypes.node
 }

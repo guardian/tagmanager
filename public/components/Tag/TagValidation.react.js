@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 export default class TagValidation extends React.Component {
 
@@ -23,9 +23,9 @@ export default class TagValidation extends React.Component {
     return (
       <div className="tag-validation">
         <div className="tag-validation__header">Validation</div>
-        <ReactCSSTransitionGroup transitionName="validation-transition" transitionEnter={false} transitionLeaveTimeout={500}>
+        <CSSTransitionGroup transitionName="validation-transition" transitionEnter={false} transitionLeaveTimeout={500}>
           {this.props.validations.map(this.renderValidationResult, this)}
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }

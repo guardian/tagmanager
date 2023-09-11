@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class PillarSectionsList extends React.Component {
     renderFinalRow() {
@@ -31,6 +32,6 @@ export default class PillarSectionsList extends React.Component {
 }
 
 PillarSectionsList.propTypes = {
-    title: React.PropTypes.string.isRequired,
-    actionButton: React.PropTypes.node
+    title: PropTypes.string.isRequired,
+    actionButton: PropTypes.node
 }
