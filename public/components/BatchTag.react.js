@@ -28,7 +28,7 @@ export class BatchTag extends React.Component {
       }
     }
 
-    componentWillUpdate(newProps, newState) {
+    UNSAFE_componentWillUpdate(newProps, newState) {
       const prevCount = this.state.selectedContent.length;
       const newCount = newState.selectedContent.length;
       if (prevCount === 0 && newCount > 0) {
@@ -42,7 +42,7 @@ export class BatchTag extends React.Component {
       }
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
       window.onbeforeunload = null;
     }
 

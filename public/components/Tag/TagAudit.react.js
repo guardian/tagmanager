@@ -16,7 +16,7 @@ export default class TagAudit extends React.Component {
     this.fetchAudit();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if(this.props.saveState === 'SAVE_STATE_INPROGRESS' && nextProps.saveState === 'SAVE_STATE_CLEAN') { //I.E a save just completed
       this.fetchAudit();
     }

@@ -14,7 +14,7 @@ class SectionList extends React.Component {
       browserHistory.push(path);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       if (!this.props.sections || !this.props.sections.length) {
         this.props.sectionActions.getSections();
       }

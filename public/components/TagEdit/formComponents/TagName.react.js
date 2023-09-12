@@ -21,7 +21,7 @@ export default class TagNameEdit extends React.Component {
     this.getPathPrefixForSection = this.getPathPrefixForSection.bind(this);
   }
 
-  componentWillReceiveProps(props) {
+  UNSFE_componentWillReceiveProps(props) {
     this.setState(inferLockStateFromProps(props));
   }
 

@@ -31,7 +31,7 @@ class Status extends React.Component {
       this.jobCheck = setInterval(this.fetchJobs.bind(this), 15000);
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
       clearInterval(this.jobCheck);
     }
 

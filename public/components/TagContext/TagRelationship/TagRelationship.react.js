@@ -26,7 +26,7 @@ export default class TagRelationship extends React.Component {
       });
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
       props.tag.parents.forEach(parentId => {
         this.fetchTagInformation(parentId);
       });
