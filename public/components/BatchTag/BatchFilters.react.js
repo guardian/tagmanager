@@ -7,7 +7,7 @@ import SectionSelect from '../utils/SectionSelect.react';
 
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import DateTimePickerCSS from 'react-widgets/dist/css/react-widgets.css';
-import momentLocalizer from 'react-widgets/lib/localizers/moment';
+import momentLocalizer from 'react-widgets-moment';
 momentLocalizer(moment);
 
 const CAPI_DATE_FORMAT = 'YYYY-MM-DD';

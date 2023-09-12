@@ -3,7 +3,7 @@ import R from 'ramda';
 import moment from 'moment';
 
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import momentLocalizer from 'react-widgets/lib/localizers/moment';
+import momentLocalizer from 'react-widgets-moment';
 
 import {allowedEditions} from '../../constants/allowedEditions';
 import SectionSelect from '../utils/SectionSelect.react';
