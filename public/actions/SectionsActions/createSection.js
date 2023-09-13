@@ -1,5 +1,5 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../router';
 
 
 export const SECTION_CREATE_REQUEST = 'SECTION_CREATE_REQUEST';

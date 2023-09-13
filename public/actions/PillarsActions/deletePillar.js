@@ -1,5 +1,5 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../router';
 
 export const PILLAR_DELETE_REQUEST = 'PILLAR_DELETE_REQUEST';
 export const PILLAR_DELETE_RECEIVE = 'PILLAR_DELETE_RECEIVE';

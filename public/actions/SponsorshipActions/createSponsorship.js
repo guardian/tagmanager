@@ -1,5 +1,5 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../router'
 
 
 export const SPONSORSHIP_CREATE_REQUEST = 'SPONSORSHIP_CREATE_REQUEST';

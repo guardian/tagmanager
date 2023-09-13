@@ -1,5 +1,5 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../router'
 
 export const TAG_CREATE_REQUEST = 'TAG_CREATE_REQUEST';
 export const TAG_CREATE_RECEIVE = 'TAG_CREATE_RECEIVE';

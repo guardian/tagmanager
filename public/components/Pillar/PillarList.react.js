@@ -1,17 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router';
-import { browserHistory } from 'react-router'
-
+import { Link } from 'react-router-dom';
 
 class PillarList extends React.Component {
 
     constructor(props) {
         super(props);
-    }
-
-    onPillarClick(pillar) {
-        const path = '/pillar/' + pillar.id;
-        browserHistory.push(path);
     }
 
     UNSAFE_componentWillMount() {

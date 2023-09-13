@@ -1,5 +1,5 @@
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../router';
 
 
 export const PILLAR_CREATE_REQUEST = 'PILLAR_CREATE_REQUEST';

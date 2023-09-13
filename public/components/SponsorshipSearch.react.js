@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import tagManagerApi from '../util/tagManagerApi';
 import SponsorshipList from './SponsorshipList/SponsorshipList.react';
 import {sponsorshipSearchStatuses} from '../constants/sponsorshipSearchStatuses'

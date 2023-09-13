@@ -1,5 +1,7 @@
 import React from 'react';
-import {Router, Route, IndexRoute, browserHistory} from 'react-router';
+import { BrowserRouter, Route } from 'react-router-dom'
+
+import {createBrowserHistory} from 'history';
 
 import {getStore} from './util/storeAccessor';
 import {clearError} from './actions/UIActions/clearError';
@@ -41,31 +43,35 @@ function clearErrorBar() {
     store.dispatch(clearError());
 }
 
+export const browserHistory = createBrowserHistory();
+
 export const router = (
-  <Router history={browserHistory}>
-    <Route path="/" component={ReactApp}>
-      <Route name="tag" path="/tag/create" component={TagCreate} onEnter={requirePermission.bind(this, 'tag_edit')}/>
-      <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
-      <Route name="batch" path="/batch" component={BatchTag}/>
-      <Route name="mapping" path="/mapping" component={MappingManager} />
-      <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="audit" path="/audit" component={Audit} />
-      <Route name="status" path="/status" component={Status} />
-      <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'commercial_tags')} />
-      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'commercial_tags')} />
-      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'commercial_tags')}/>
-      <Route name="pillarList" path="/pillar" component={PillarList} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="pillarCreate" path="/pillar/create" component={PillarCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="pillarEdit" path="/pillar/:pillarId" component={PillarDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
-      <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
-      <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />
-      <Route name="spreadsheetBuilder" path="/spreadsheets" component={SpreadsheetBuilder}  />
-      <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
-      <IndexRoute component={TagSearch}/>
-    </Route>
-  </Router>
+    <BrowserRouter>
+      <Route path="/">
+        <ReactApp>
+          <Route name="tag" path="/tag/create" component={TagCreate} onEnter={requirePermission.bind(this, 'tag_edit')}/>
+          <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
+          <Route name="batch" path="/batch" component={BatchTag}/>
+          <Route name="mapping" path="/mapping" component={MappingManager} />
+          <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+          <Route name="audit" path="/audit" component={Audit} />
+          <Route name="status" path="/status" component={Status} />
+          <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_admin')} />
+          <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
+          <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+          <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'commercial_tags')} />
+          <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'commercial_tags')} />
+          <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'commercial_tags')}/>
+          <Route name="pillarList" path="/pillar" component={PillarList} onEnter={requirePermission.bind(this, 'tag_admin')} />
+          <Route name="pillarCreate" path="/pillar/create" component={PillarCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
+          <Route name="pillarEdit" path="/pillar/:pillarId" component={PillarDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
+          <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
+          <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
+          <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />
+          <Route name="spreadsheetBuilder" path="/spreadsheets" component={SpreadsheetBuilder}  />
+          <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
+          <Route exact path="/" component={TagSearch}/>
+        </ReactApp>
+      </Route>
+    </BrowserRouter>
 )

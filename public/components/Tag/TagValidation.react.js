@@ -1,5 +1,5 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {CSSTransitionGroup} from 'react-transition-group';
 
 export default class TagValidation extends React.Component {
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactScribe from '../../utils/ReactScribe.react';
+import { Editor } from '@guardian/prosemirror-editor';
 
 export default class TagDescription extends React.Component {
 
@@ -12,12 +13,10 @@ export default class TagDescription extends React.Component {
       description: html
     }));
   }
-
   render () {
     if (!this.props.tag) {
       return false;
     }
-
     return (
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Description/Profile</label>
@@ -32,6 +31,7 @@ export default class TagDescription extends React.Component {
             disabled={!this.props.tagEditable}
           />
         </div>
+        <Editor></Editor>
         <div className="tag-edit__profile-guidelines">
           <a
               href="https://docs.google.com/document/d/1iqgHNoGnglFjvL94meG4broH9xSiGyR87i_-fQpDrwA"

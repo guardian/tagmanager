@@ -1,6 +1,6 @@
 import React from 'react';
 import R from 'ramda';
-import {Link} from 'react-router';
+import { Link } from 'react-router-dom';
 import TagSelect from '../../../utils/TagSelect.js';
 import TagReferenceList from '../../../TagContext/TagReferenceList.react'
 

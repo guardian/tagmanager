@@ -4,7 +4,7 @@ import CapiStats from './CapiStats/CapiStats.react';
 import ConfirmButton from './utils/ConfirmButton.react';
 import tagManagerApi from '../util/tagManagerApi';
 import { showError } from '../actions/UIActions/showError';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../router';
 
 
 const blockedTagTypes = ["Publication", "NewspaperBook", "NewspaperBookSection", "ContentType"];

@@ -1,8 +1,8 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {CSSTransitionGroup} from 'react-transition-group';
 import TagSelect from '../utils/TagSelect';
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../router'
 
 export default class BatchTagControls extends React.Component {
     constructor(props) {

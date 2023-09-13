@@ -1,5 +1,5 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {CSSTransitionGroup} from 'react-transition-group';
 import {saveState} from "../../reducers/rootReducer"
 import ProgressSpinner from "../utils/ProgressSpinner.react"
 
