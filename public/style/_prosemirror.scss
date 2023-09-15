@@ -1,0 +1,122 @@
+.prosemirror__input {
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid #dcdcdc;
+}
+
+
+.ProseMirror {
+    // width: 100%;
+    // padding: 20px;
+    // background: #393939;
+    // border: 1px solid #898984;
+    // white-space: pre-wrap;
+    // word-break: break-word;
+    @extend %fs-data-3;
+    padding: 10px;
+}
+    
+
+.ProseMirror p {
+    margin: 0px
+}
+
+.ProseMirror-menubar {
+    position: relative;
+
+    background-color: $c-grey-100;
+    border-bottom: 1px solid $c-grey-300;
+}
+
+.ProseMirror-menuitem {
+    @extend %fs-data-3;
+    display: inline-block;
+
+    cursor: pointer;
+    padding: calc($standard-padding / 2) $standard-padding;
+  
+    border-right: 1px solid $c-grey-300;
+}
+  
+.ProseMirror-menu-disabled {
+    opacity: .3;
+}
+
+.ProseMirror-menu-submenu-wrap:hover .ProseMirror-menu-submenu, .ProseMirror-menu-submenu-wrap-active .ProseMirror-menu-submenu {
+display: block;
+}
+
+.ProseMirror-icon {
+display: inline-block;
+line-height: .8;
+vertical-align: -2px;
+padding: 2px 8px;
+cursor: pointer;
+}
+
+.ProseMirror-menu-disabled.ProseMirror-icon {
+cursor: default;
+}
+
+.ProseMirror-icon svg {
+fill: currentColor;
+height: 1em;
+}
+
+.ProseMirror-icon span {
+vertical-align: text-top;
+}
+
+.prosemirror__input {
+width: 100%;
+}
+
+.ProseMirror-menubar {
+display: flex;
+flex-direction: row;
+}
+
+.prosemirror__iconBox:hover {
+cursor: pointer;
+}
+
+.prosemirror__iconBox:hover svg {
+fill: #ffbc01;
+}
+// .ProseMirror-menuitem {
+// width: 36px;
+// height: 36px;
+// font-size: 16px;
+// background-color: #666;
+// color: #333;
+// font-family: 'Material Icons';
+// border: {
+//     left: 1px solid #444;
+//     top: 1px solid #555;
+// }
+
+// &:last-child {
+//     border-right: 1px solid #444;
+// }
+
+// &:hover {
+//     background-color: #666;
+// //   color: ;
+//     cursor: pointer;
+// }
+
+// div {
+//     width: 100%;
+//     height: 100%;
+//     text-align: center;
+//     line-height: 36px;
+// }
+// }
+
+.ProseMirror-menu-active {
+// color: $brandColor;
+}
+
+.form__message__text--error {
+color: #a31818;
+}

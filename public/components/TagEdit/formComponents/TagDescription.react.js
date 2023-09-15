@@ -1,5 +1,11 @@
 import React from 'react';
 import ReactScribe from '../../utils/ReactScribe.react';
+import { RichTextEditor, customMultiBlockTextConfig } from '@guardian/prosemirror-editor';
+
+const config = customMultiBlockTextConfig({ 
+  allowedNodes: ["text", "paragraph", "hard_break"],
+  allowedMarks: ["strong", "em", "link"]
+})
 
 export default class TagDescription extends React.Component {
 
@@ -29,6 +35,12 @@ export default class TagDescription extends React.Component {
             toolbarClassName="tag-edit__richtext__toolbar"
             toolbarItemClassName="tag-edit__richtext__toolbar__item"
             editorClassName="tag-edit__richtext__editor"
+            disabled={!this.props.tagEditable}
+          />
+          <RichTextEditor 
+            value={this.props.tag.description || ''}
+            onUpdate={this.updateDescription.bind(this)}
+            config={config}
             disabled={!this.props.tagEditable}
           />
         </div>
