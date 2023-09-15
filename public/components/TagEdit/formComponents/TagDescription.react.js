@@ -4,7 +4,7 @@ import { RichTextEditor, customMultiBlockTextConfig } from '@guardian/prosemirro
 
 const config = customMultiBlockTextConfig({ 
   allowedNodes: ["text", "paragraph", "hard_break"],
-  allowedMarks: ["strong", "em", "link"]
+  allowedMarks: ["b", "i", "link"]
 })
 
 export default class TagDescription extends React.Component {
