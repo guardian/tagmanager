@@ -47,21 +47,12 @@ lazy val dependencies = Seq(
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, SbtWeb, JDebPackaging, SystemdPlugin)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
     Universal / name := normalizedName.value,
     topLevelDirectory := Some(normalizedName.value),
-    riffRaffPackageType := (Debian / packageBin).value,
-    riffRaffManifestProjectName := s"editorial-tools:${name.value}",
-    riffRaffUploadArtifactBucket := Option("riffraff-artifact"),
-    riffRaffUploadManifestBucket := Option("riffraff-builds"),
-    riffRaffArtifactResources := Seq(
-      baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
-      riffRaffPackageType.value -> s"${name.value}/${name.value}.deb",
-      baseDirectory.value / "cloudformation" / "tag-manager.yaml" -> "cloudformation/tag-manager.yaml"
-    ),
     Universal / javaOptions ++= Seq(
       "-Dpidfile.path=/dev/null"
     ),
