@@ -40,6 +40,9 @@ jobs:
       - name: Install NPM dependencies
         run: npm ci
 
+      - name: Build app
+        run: npm run build
+
       - name: SBT
         run: sbt "clean;compile;test;Debian / packageBin"
 
