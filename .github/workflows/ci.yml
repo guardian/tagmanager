@@ -53,5 +53,7 @@ jobs:
           buildNumberOffset: 1654
           configPath: riff-raff.yaml
           contentDirectories: |
+            cloudformation:
+              - cloudformation/tag-manager.yaml
             tag-manager:
               - target/tag-manager.deb
