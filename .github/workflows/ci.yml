@@ -36,6 +36,7 @@ jobs:
         with:
           java-version: '8'
           distribution: 'corretto'
+          cache: 'sbt'
 
       - name: Install NPM dependencies
         run: npm ci
