@@ -48,7 +48,7 @@ jobs:
         run: npm run build-icons
 
       - name: SBT
-        run: sbt "clean;compile;test;Debian / packageBin"
+        run: sbt clean compile test Debian/packageBin
 
       # Make the filename produced by SBT easier.
       - name: Rename debian artifact
