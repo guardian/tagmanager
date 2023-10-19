@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactScribe from '../../utils/ReactScribe.react';
-import { RichTextEditor, customMultiBlockTextConfig } from '@guardian/prosemirror-editor';
+import { RichTextEditor, customMultiBlockTextConfig, transformToLegacyMarkup } from '@guardian/prosemirror-editor';
+
 
 const config = customMultiBlockTextConfig({ 
   allowedNodes: ["text", "paragraph", "hard_break"],
-  allowedMarks: ["b", "i", "link"]
+  allowedMarks: ["strong", "em", "link"]
 })
 
 export default class TagDescription extends React.Component {
@@ -15,7 +16,7 @@ export default class TagDescription extends React.Component {
 
   updateDescription(html) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
-      description: html
+      description: transformToLegacyMarkup(html)
     }));
   }
 
