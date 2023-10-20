@@ -31,7 +31,7 @@ export default class TagReferenceList extends React.Component {
               <table className={"grid-table tag-references " + this.props.tableClassName}>
                 <thead className="tag-references__header">
                   <tr>
-                    {this.props.headers.map(h => <th>{h}</th>)}
+                    {this.props.headers.map((h, index) => <th key={index}>{h}</th>)}
                   </tr>
                 </thead>
                 <tbody className="tag-references__references">
