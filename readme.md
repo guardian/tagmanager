@@ -33,6 +33,13 @@ Tag Manager also makes requests to CAPI preview. This means you will also need C
 If you are working on the commercial tag functionality and need to be able to upload logos you will also need AWS credentials for 
 the frontend aws account available as an AWS profile named "frontend". This can also be obtained via janus.
 
+If you want to integrate with [Path Manager](https://github.com/guardian/path-manager), e.g. to create tags, you'll need to
+create a tunnel from your local server (localhost 6000) to the Path Manager load balancer. This can be done using this command:
+```
+ssm ssh -x -t tag-manager,CODE -p composer --tunnel 6000:<internal-path-manager-url>:80
+```
+The internal path manager DNS name can be found in EC2 load balancers in AWS.
+
 Run `./scripts/start.sh` to start the full app.
 
 Client Side Development
