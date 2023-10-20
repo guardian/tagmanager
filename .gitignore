@@ -19,3 +19,6 @@ npm-debug.log
 .metals
 .vscode
 .yalc
+yalc.lock
+.bloop
+metals.sbt
