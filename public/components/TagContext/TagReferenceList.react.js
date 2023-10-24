@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Renders the table header and the passed content & action button for the
@@ -30,7 +31,7 @@ export default class TagReferenceList extends React.Component {
               <table className={"grid-table tag-references " + this.props.tableClassName}>
                 <thead className="tag-references__header">
                   <tr>
-                    {this.props.headers.map(h => <th>{h}</th>)}
+                    {this.props.headers.map((h, index) => <th key={index}>{h}</th>)}
                   </tr>
                 </thead>
                 <tbody className="tag-references__references">
@@ -44,7 +45,7 @@ export default class TagReferenceList extends React.Component {
 }
 
 TagReferenceList.propTypes = {
-    title: React.PropTypes.string.isRequired,
-    headers: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    actionButton: React.PropTypes.node
+    title: PropTypes.string.isRequired,
+    headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+    actionButton: PropTypes.node
 }

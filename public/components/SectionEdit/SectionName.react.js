@@ -18,7 +18,7 @@ export default class SectionNameEdit extends React.Component {
     this.state = inferLockStateFromProps(props);
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState(inferLockStateFromProps(props));
   }
 

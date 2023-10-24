@@ -26,7 +26,7 @@ export default class TagRelationship extends React.Component {
       });
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
       props.tag.parents.forEach(parentId => {
         this.fetchTagInformation(parentId);
       });
@@ -70,20 +70,20 @@ export default class TagRelationship extends React.Component {
       }));
     }
 
-    renderTag(tagId) {
+    renderTag(tagId, index) {
 
       const tag = this.state.cachedTags[tagId];
 
       if (!tag) {
           return (
-            <tr>
-              <td colspan="3">Fetching tag #{tagId}</td>
+            <tr key={index}>
+              <td colSpan="3">Fetching tag #{tagId}</td>
             </tr>
         )
       }
 
       return (
-         <tr>
+         <tr key={index}>
            <td><Link to={`/tag/${tag.id}`}>{tag.internalName}</Link></td>
            <td>{tag.type}</td>
            <td onClick={this.removeParentTag.bind(this, tag)}><i className="i-delete clickable-icon" /></td>
@@ -122,7 +122,7 @@ export default class TagRelationship extends React.Component {
                 </tr>
               </thead>
               <tbody className="tag-references__references">
-                {this.props.tag.parents.map(this.renderTag)}
+                {this.props.tag.parents.map((tag, index) => this.renderTag(tag, index))}
                 <tr>
                   <td colSpan="3" className="tag-references__addrow">
                     {this.renderAddTagToContext()}

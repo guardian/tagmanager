@@ -23,7 +23,7 @@ export default class ReactScribe extends React.Component {
     }
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     if (!this.props.disabled) {
       this.scribe.off('content-changed', this.onContentChange);
     }

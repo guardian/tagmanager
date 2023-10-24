@@ -14,7 +14,7 @@ class PillarList extends React.Component {
         browserHistory.push(path);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.props.pillars || !this.props.pillars.length) {
             this.props.pillarActions.getPillars();
         }

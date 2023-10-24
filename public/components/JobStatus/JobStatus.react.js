@@ -19,7 +19,7 @@ export default class JobStatus extends React.Component {
     this.jobCheck = setInterval(this.fetchJobs.bind(this), 5000);
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     clearInterval(this.jobCheck);
   }
 

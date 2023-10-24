@@ -34,7 +34,7 @@ class TagDisplay extends React.Component {
       }
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
       if (props.tag.id !== parseInt(props.routeParams.tagId, 10)) {
         props.tagActions.getTag(parseInt(props.routeParams.tagId, 10));
       }
