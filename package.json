@@ -9,7 +9,7 @@
     "client-dev": "node ./public/devserver.js"
   },
   "dependencies": {
-    "@guardian/prosemirror-editor": "^0.1.0",
+    "@guardian/prosemirror-editor": "^0.2.0",
     "ajv": "^6.12.3",
     "babel-loader": "^8.2.5",
     "css-loader": "^3.6.0",
