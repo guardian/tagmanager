@@ -18,3 +18,7 @@ npm-debug.log
 .bsp
 .metals
 .vscode
+.yalc
+yalc.lock
+.bloop
+metals.sbt

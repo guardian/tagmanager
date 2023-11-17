@@ -9,6 +9,7 @@
     "client-dev": "node ./public/devserver.js"
   },
   "dependencies": {
+    "@guardian/prosemirror-editor": "^0.2.0",
     "ajv": "^6.12.3",
     "babel-loader": "^8.2.5",
     "css-loader": "^3.6.0",
@@ -37,11 +38,6 @@
     "reqwest": "^2.0.5",
     "sass": "^1.55.0",
     "sass-loader": "^8.0.2",
-    "scribe-editor": "^2.1.1",
-    "scribe-plugin-keyboard-shortcuts": "^0.1.1",
-    "scribe-plugin-link-prompt-command": "^0.4.0",
-    "scribe-plugin-sanitizer": "^0.1.10",
-    "scribe-plugin-toolbar": "^0.2.2",
     "style-loader": "^2.0.0",
     "svg-sprite": "^2.0.2",
     "url-loader": "^0.5.7",

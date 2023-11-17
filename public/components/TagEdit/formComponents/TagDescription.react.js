@@ -1,5 +1,11 @@
 import React from 'react';
-import ReactScribe from '../../utils/ReactScribe.react';
+import { RichTextEditor, customMultiBlockTextConfig, transformToLegacyMarkup } from '@guardian/prosemirror-editor';
+
+
+const config = customMultiBlockTextConfig({ 
+  allowedNodes: ["text", "paragraph", "hard_break"],
+  allowedMarks: ["strong", "em", "link"]
+})
 
 export default class TagDescription extends React.Component {
 
@@ -9,7 +15,7 @@ export default class TagDescription extends React.Component {
 
   updateDescription(html) {
     this.props.updateTag(Object.assign({}, this.props.tag, {
-      description: html
+      description: transformToLegacyMarkup(html)
     }));
   }
 
@@ -22,13 +28,10 @@ export default class TagDescription extends React.Component {
       <div className="tag-edit__input-group">
         <label className="tag-edit__input-group__header">Description/Profile</label>
         <div>
-          <ReactScribe
-            onChange={this.updateDescription.bind(this)}
+          <RichTextEditor 
             value={this.props.tag.description || ''}
-            className="tag-edit__richtext"
-            toolbarClassName="tag-edit__richtext__toolbar"
-            toolbarItemClassName="tag-edit__richtext__toolbar__item"
-            editorClassName="tag-edit__richtext__editor"
+            onUpdate={this.updateDescription.bind(this)}
+            config={config}
             disabled={!this.props.tagEditable}
           />
         </div>

@@ -7,6 +7,7 @@ import {setStore} from './util/storeAccessor';
 import {router} from './router';
 
 import './style/main.scss';
+import '@guardian/prosemirror-editor/dist/style.css'
 
 function extractConfigFromPage() {
 
