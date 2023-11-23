@@ -3,6 +3,7 @@ import ContentList from './ContentList/ContentList';
 import PageNavigator from './utils/PageNavigator.react';
 import BatchTagControls from './BatchTagControls/BatchTagControls';
 import BatchFilters from './BatchTag/BatchFilters.react';
+import {BatchTagArbitraryUrls} from "./BatchTagControls/BatchTagArbitraryUrls";
 import R from 'ramda';
 
 const CAPI_PAGE_SIZE = 10;
@@ -35,7 +36,7 @@ export class BatchTag extends React.Component {
         window.onbeforeunload = function() {
           return 'Unsaved batch tag changes, are you sure you want to leave?';
         };
-      } 
+      }
 
       if (prevCount > 0 && newCount === 0) {
         window.onbeforeunload = null;
@@ -196,6 +197,7 @@ export class BatchTag extends React.Component {
                         <label>Search by byline</label>
                         <input className="batch-tag__input" type="text" value={this.props.capiSearch.byline || ''} onChange={this.searchFieldChange.bind(this, 'byline')} />
                     </div>
+                    {" OR "}<BatchTagArbitraryUrls addPathsToSelection={(paths) => this.setState({selectedContent: R.union(this.state.selectedContent, paths)})}/>
                     <div className="batch-tag__show-filters" onClick={this.toggleFilters.bind(this)}>
                       { this.state.showFilters ? 'Hide Filters' : 'Show Filters'}
                     </div>
