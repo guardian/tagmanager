@@ -62,5 +62,9 @@ jobs:
           contentDirectories: |
             cloudformation:
               - cloudformation/tag-manager.yaml
+            cloudformation-pillar-db:
+              - cloudformation/pillar-dynamo.yaml
+            cloudformation-pillar-audit-db:
+              - cloudformation/pillar-audit-dynamo.yaml
             tag-manager:
               - target/tag-manager.deb
