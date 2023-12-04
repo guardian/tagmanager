@@ -6,6 +6,8 @@ deployments:
     type: autoscaling
     dependencies:
       - cloudformation
+      - cloudformation-pillar-db
+      - cloudformation-pillar-audit-db
 
   cloudformation:
     type: cloud-formation
@@ -20,3 +22,23 @@ deployments:
       cloudFormationStackName: TagManager
       cloudFormationStackByTags: false
       templatePath: tag-manager.yaml
+
+  cloudformation-pillar-db:
+    type: cloud-formation
+    app: tag-manager-pillar-db
+    parameters:
+      templatePath: pillar-dynamo.yaml
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: pillars-dynamo
+      cloudFormationStackByTags: false
+      createStackIfAbsent: false
+
+  cloudformation-pillar-audit-db:
+    type: cloud-formation
+    app: tag-manager-pillar-audit-db
+    parameters:
+      templatePath: pillar-audit-dynamo.yaml
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: pillars-audit-dynamo
+      cloudFormationStackByTags: false
+      createStackIfAbsent: false
