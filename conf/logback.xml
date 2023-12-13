@@ -16,9 +16,10 @@
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%coloredLevel %logger{15} - %message%n%xException{5}</pattern>
-        </encoder>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+    <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT" />
     </appender>
 
     <logger name="controllers" level="DEBUG" />
@@ -27,7 +28,6 @@
 
     <root level="INFO">
         <appender-ref ref="LOGFILE"/>
-        <!-- uncomment to console log locally -->
-        <!--<appender-ref ref="STDOUT"/>-->
+        <appender-ref ref="ASYNCSTDOUT"/>
     </root>
 </configuration>
