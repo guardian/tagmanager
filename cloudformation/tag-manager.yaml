@@ -41,6 +41,14 @@ Parameters:
     Description: The ARN of the SNS topic to notify when an alarm occurs
     Type: AWS::SSM::Parameter::Value<String>
     Default: /account/services/alert.topic.arn
+  LoggingStreamName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of the kinesis stream for logging to ELK (logs.gutools)
+    Default: /account/services/logging.stream.name
+  LoggingStreamArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: ARN of the kinesis stream for logging to ELK (logs.gutools)
+    Default: /account/services/logging.stream
 Conditions:
   IsProd: !Equals [!Ref Stage, PROD]
 Mappings:
@@ -195,6 +203,21 @@ Resources:
           Resource: '*'
       Roles:
       - !Ref 'TagManagerRole'
+  LogServerPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LogServerPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - kinesis:PutRecord
+              - kinesis:PutRecords
+              - kinesis:DescribeStream
+            Resource: !Ref LoggingStreamArn
+      Roles:
+      - !Ref 'TagManagerRole'
   TagManagerInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -279,6 +302,12 @@ Resources:
         PropagateAtLaunch: 'true'
       - Key: App
         Value: tag-manager
+        PropagateAtLaunch: 'true'
+      - Key: LogKinesisStreamName
+        Value: !Ref 'LoggingStreamName'
+        PropagateAtLaunch: 'true'
+      - Key: SystemdUnit
+        Value: tag-manager.service
         PropagateAtLaunch: 'true'
   TagManagerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration

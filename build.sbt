@@ -33,7 +33,6 @@ lazy val dependencies = Seq(
   "com.gu" %% "content-api-client-default" % "17.24.1",
   "com.gu" %% "tags-thrift-schema" % "2.8.1",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
-  "com.gu" % "kinesis-logback-appender" % "1.0.5",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac-play_2-8" % "2.0.1",
