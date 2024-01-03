@@ -99,6 +99,7 @@ sealed trait Config {
   def commercialExpiryStreamName: String
   def auditingStreamName: String
 
+  def reindexKeys: List[String]
   def reindexTagsStreamName: String
   def reindexTagsBatchSize: Int
   def reindexSectionsStreamName: String
@@ -151,6 +152,7 @@ class DevConfig extends Config {
   override def auditingStreamName: String = "auditing-CODE"
   override def pillarUpdateStreamName: String = "pillar-update-stream-CODE"
 
+  override def reindexKeys: List[String] = List("test-key")
   override def reindexTagsStreamName: String = "tag-reindex-dev"
   override def reindexTagsBatchSize: Int = 500
   override def reindexSectionsStreamName: String = "section-reindex-dev"
