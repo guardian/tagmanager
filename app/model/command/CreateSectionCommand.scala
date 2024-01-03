@@ -21,7 +21,7 @@ case class CreateSectionCommand(
 
           type T = Section
 
-          def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = {
+          def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Section]] = {
 
             val calculatedPath = wordsForUrl
 

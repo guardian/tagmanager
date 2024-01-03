@@ -230,6 +230,7 @@ class TagManagementApi(
   }
 
   def checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String]) = APIAuthAction.async { req =>
+    implicit val username = Option(req.user.email)
     new PathUsageCheck(tagType, slug, section, tagSubType).process.map{ result =>
       result.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
     } recover {
@@ -329,6 +330,7 @@ class TagManagementApi(
 
   def clashingSponsorships(id: Option[Long], tagIds: Option[String], sectionIds: Option[String], validFrom: Option[Long],
                            validTo: Option[Long], editions: Option[String]) = APIAuthAction.async { req =>
+    implicit val username = Option(req.user.email)
     val editionSearch = editions.map(_.split(",").toList)
     val tagSearch: Option[List[Long]] = tagIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
     val sectionSearch: Option[List[Long]] = sectionIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))

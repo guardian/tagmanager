@@ -49,15 +49,15 @@ object TagAudit extends Logging {
     }
   }
 
-  def created(tag: Tag)(implicit username: Option[String] = None): TagAudit = {
+  def created(tag: Tag)(implicit username: Option[String]): TagAudit = {
     TagAudit(tag.id, "created", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' created", TagSummary(tag), None)
   }
 
-  def updated(tag: Tag)(implicit username: Option[String] = None): TagAudit = {
+  def updated(tag: Tag)(implicit username: Option[String]): TagAudit = {
     TagAudit(tag.id, "updated", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
   }
 
-  def deleted(tag: Tag, username: Option[String] = None): TagAudit = {
+  def deleted(tag: Tag, username: Option[String]): TagAudit = {
     TagAudit(tag.id, "deleted", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' deleted", TagSummary(tag), None)
   }
 

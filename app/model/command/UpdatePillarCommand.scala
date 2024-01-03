@@ -13,7 +13,7 @@ case class UpdatePillarCommand(pillar: Pillar) extends Command with Logging {
 
   type T = Pillar
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Pillar]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Pillar]] = Future{
     logger.info(s"updating pillar ${pillar.id}")
 
     val result = PillarRepository.updatePillar(pillar)

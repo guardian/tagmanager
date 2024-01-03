@@ -15,7 +15,7 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command wi
 
   type T = Tag
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Tag]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Tag]] = Future{
     val (tag, sponsorship) = denormalisedTag.normalise()
 
     logger.info(s"updating tag ${tag.id}")

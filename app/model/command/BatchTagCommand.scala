@@ -11,7 +11,7 @@ import scala.concurrent.{Future, ExecutionContext}
 case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], toAddToBottom: List[Long], toRemove: List[Long]) extends Command {
   type T = Unit
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Unit]] = Future {
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Unit]] = Future {
     val toTopList = toAddToTop.toList
 
     // We'd prefer if people didn't add and remove

@@ -15,7 +15,7 @@ case class AddEditionToSectionCommand(sectionId: Long, editionName: String) exte
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Section]] = Future{
     logger.info(s"add $editionName to section $sectionId")
 
     val section = SectionRepository.getSection(sectionId).getOrElse(SectionNotFound)

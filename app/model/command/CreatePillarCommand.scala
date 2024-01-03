@@ -18,7 +18,7 @@ case class CreatePillarCommand(
 
   type T = Pillar
 
-  def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Pillar]] = {
+  def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Pillar]] = {
 
     val pageIdFuture: Future[Long] = Future { try { PathManager.registerPathAndGetPageId(path) } catch {
       case p: PathRegistrationFailed => PathInUse

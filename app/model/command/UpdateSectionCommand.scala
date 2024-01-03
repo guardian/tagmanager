@@ -13,7 +13,7 @@ case class UpdateSectionCommand(section: Section) extends Command with Logging {
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Section]] = Future{
     logger.info(s"updating section ${section.id}")
 
     val result = SectionRepository.updateSection(section)

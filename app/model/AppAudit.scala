@@ -34,15 +34,15 @@ object AppAudit extends Logging {
     }
   }
 
-  def reindexTags()(implicit username: Option[String] = None): AppAudit = {
+  def reindexTags()(implicit username: Option[String]): AppAudit = {
     AppAudit("reindexTags", new DateTime(), username.getOrElse("default user"), "tag reindex started");
   }
 
-  def reindexSections()(implicit username: Option[String] = None): AppAudit = {
+  def reindexSections()(implicit username: Option[String]): AppAudit = {
     AppAudit("reindexSections", new DateTime(), username.getOrElse("default user"), "section reindex started");
   }
 
-  def reindexPillars()(implicit username: Option[String] = None): AppAudit = {
+  def reindexPillars()(implicit username: Option[String]): AppAudit = {
     AppAudit("reindexPillars", new DateTime(), username.getOrElse("default user"), "pillar reindex started");
   }
 }
