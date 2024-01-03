@@ -39,7 +39,6 @@ case class ModifyContentTags(
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(MAX_PARTITION_KEY_LENGTH), taggingOperation)
       logger.info(s"raising $op for ${tag.id} on $contentPath operation")
     }
-    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, op, contentIds.length))
   }
 
   override def waitDuration: Option[Duration] = {

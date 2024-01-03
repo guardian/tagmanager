@@ -33,7 +33,6 @@ case class RemoveTagFromContent(
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(128), taggingOperation)
       logger.info(s"raising ${OperationType.Remove} for ${tag.id} on $contentPath operation")
     }
-    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, "remove", contentIds.length))
   }
 
   override def waitDuration: Option[Duration] = {
