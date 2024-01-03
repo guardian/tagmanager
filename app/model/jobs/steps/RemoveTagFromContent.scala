@@ -59,6 +59,7 @@ case class RemoveTagFromContent(
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
+    implicit val username: Option[String] = None // unfortunately we don't have easy access to job.createdBy here
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, OperationType.AddToBottom.toString, contentIds.length))
   }
 
