@@ -72,12 +72,12 @@ object TagAudit extends Logging {
     )
   }
 
-  def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[User] = None): TagAudit = {
+  def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[String] = None): TagAudit = {
     val message = operation match {
       case "remove" => s"tag '${tag.internalName}' removed from $contentCount items(s)"
       case _ => s"tag '${tag.internalName}' added to $contentCount items(s)"
     }
-    TagAudit(tag.id, "batchtag", new DateTime(), user.map(_.email).getOrElse("default user"), message, TagSummary(tag), None)
+    TagAudit(tag.id, "batchtag", new DateTime(), user.getOrElse("default user"), message, TagSummary(tag), None)
   }
 
 
