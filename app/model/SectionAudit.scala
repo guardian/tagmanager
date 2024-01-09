@@ -46,19 +46,19 @@ object SectionAudit extends Logging {
   }
 
   def created(section: Section)(implicit user: Option[String]): SectionAudit = {
-    SectionAudit(section.id, "created", new DateTime(), user.getOrElse("default user"), s"section '${section.name}' created", SectionSummary(section))
+    SectionAudit(section.id, "created", new DateTime(), user.getOrElse("unknown"), s"section '${section.name}' created", SectionSummary(section))
   }
 
   def updated(section: Section)(implicit user: Option[String]): SectionAudit = {
-    SectionAudit(section.id, "updated", new DateTime(), user.getOrElse("default user"), s"section '${section.name}' updated", SectionSummary(section))
+    SectionAudit(section.id, "updated", new DateTime(), user.getOrElse("unknown"), s"section '${section.name}' updated", SectionSummary(section))
   }
 
   def addedEdition(section: Section, editionName: String)(implicit user: Option[String]): SectionAudit = {
-    SectionAudit(section.id, "added edition", new DateTime(), user.getOrElse("default user"), s"added ${editionName} edition to section '${section.name}", SectionSummary(section))
+    SectionAudit(section.id, "added edition", new DateTime(), user.getOrElse("unknown"), s"added ${editionName} edition to section '${section.name}", SectionSummary(section))
   }
 
   def removedEdition(section: Section, editionName: String)(implicit user: Option[String]): SectionAudit = {
-    SectionAudit(section.id, "removed edition", new DateTime(), user.getOrElse("default user"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
+    SectionAudit(section.id, "removed edition", new DateTime(), user.getOrElse("unknown"), s"removed ${editionName} edition from section '${section.name}", SectionSummary(section))
   }
 }
 

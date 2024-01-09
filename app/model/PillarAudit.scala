@@ -46,10 +46,10 @@ object PillarAudit extends Logging {
   }
 
   def created(pillar: Pillar)(implicit user: Option[String]): PillarAudit = {
-    PillarAudit(pillar.id, "created", new DateTime(), user.getOrElse("default user"), s"pillar '${pillar.name}' created", pillar)
+    PillarAudit(pillar.id, "created", new DateTime(), user.getOrElse("unknown"), s"pillar '${pillar.name}' created", pillar)
   }
 
   def updated(pillar: Pillar)(implicit user: Option[String]): PillarAudit = {
-    PillarAudit(pillar.id, "updated", new DateTime(), user.getOrElse("default user"), s"pillar '${pillar.name}' updated", pillar)
+    PillarAudit(pillar.id, "updated", new DateTime(), user.getOrElse("unknown"), s"pillar '${pillar.name}' updated", pillar)
   }
 }
