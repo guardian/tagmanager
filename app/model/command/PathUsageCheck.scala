@@ -10,7 +10,7 @@ class PathUsageCheck(tagType: String, slug: String, sectionId: Option[Long], tag
 
   type T = Map[String, Boolean]
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Some[Map[String, Boolean]]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Some[Map[String, Boolean]]] = Future{
     val calculatedPath = TagPathCalculator calculatePath(tagType, slug, sectionId, tagSubType)
 
     val inUse = PathManager isPathInUse(calculatedPath)

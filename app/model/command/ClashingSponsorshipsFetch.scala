@@ -12,7 +12,7 @@ class ClashingSponsorshipsFetch(id: Option[Long], tagIds: Option[List[Long]], se
 
   type T = List[Sponsorship]
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[List[Sponsorship]]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[List[Sponsorship]]] = Future{
 
     val targetedSponsorships = (tagIds.map{ tids =>
       tids.flatMap{ tagId => SponsorshipRepository.searchSponsorships(SponsorshipSearchCriteria(tagId = Some(tagId)))}

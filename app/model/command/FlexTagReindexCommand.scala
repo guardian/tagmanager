@@ -12,7 +12,7 @@ case class FlexTagReindexCommand(tag: Tag) extends Command with Logging {
 
   type T = Tag
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[T]] = {
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = {
     Future {
       val contentIds = ContentAPI.getContentIdsForTag(tag.path)
 

@@ -86,7 +86,7 @@ case class CreateTagCommand(
 
   type T = Tag
 
-  def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Tag]] = Future {
+  def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Tag]] = Future {
 
     val tagId = Sequences.tagId.getNextId
 

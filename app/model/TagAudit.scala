@@ -49,35 +49,35 @@ object TagAudit extends Logging {
     }
   }
 
-  def created(tag: Tag)(implicit username: Option[String] = None): TagAudit = {
-    TagAudit(tag.id, "created", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' created", TagSummary(tag), None)
+  def created(tag: Tag)(implicit username: Option[String]): TagAudit = {
+    TagAudit(tag.id, "created", new DateTime(), username.getOrElse("unknown"), s"tag '${tag.internalName}' created", TagSummary(tag), None)
   }
 
-  def updated(tag: Tag)(implicit username: Option[String] = None): TagAudit = {
-    TagAudit(tag.id, "updated", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
+  def updated(tag: Tag)(implicit username: Option[String]): TagAudit = {
+    TagAudit(tag.id, "updated", new DateTime(), username.getOrElse("unknown"), s"tag '${tag.internalName}' updated", TagSummary(tag), None)
   }
 
-  def deleted(tag: Tag, username: Option[String] = None): TagAudit = {
-    TagAudit(tag.id, "deleted", new DateTime(), username.getOrElse("default user"), s"tag '${tag.internalName}' deleted", TagSummary(tag), None)
+  def deleted(tag: Tag, username: Option[String]): TagAudit = {
+    TagAudit(tag.id, "deleted", new DateTime(), username.getOrElse("unknown"), s"tag '${tag.internalName}' deleted", TagSummary(tag), None)
   }
 
   def merged(removingTag: Tag, replacementTag: Tag, username: Option[String]): TagAudit = {
     TagAudit(removingTag.id,
       "merged" ,
       new DateTime(),
-      username.getOrElse("default user"),
+      username.getOrElse("unknown"),
       s"tag '${removingTag.internalName}' merged with '${replacementTag.internalName}'",
       TagSummary(removingTag),
       Some(TagSummary(replacementTag))
     )
   }
 
-  def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[User] = None): TagAudit = {
+  def batchTag(tag: Tag, operation: String, contentCount: Int)(implicit user: Option[String]): TagAudit = {
     val message = operation match {
       case "remove" => s"tag '${tag.internalName}' removed from $contentCount items(s)"
       case _ => s"tag '${tag.internalName}' added to $contentCount items(s)"
     }
-    TagAudit(tag.id, "batchtag", new DateTime(), user.map(_.email).getOrElse("default user"), message, TagSummary(tag), None)
+    TagAudit(tag.id, "batchtag", new DateTime(), user.getOrElse("unknown"), message, TagSummary(tag), None)
   }
 
 

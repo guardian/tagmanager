@@ -33,7 +33,6 @@ case class RemoveTagFromContent(
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(128), taggingOperation)
       logger.info(s"raising ${OperationType.Remove} for ${tag.id} on $contentPath operation")
     }
-    TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, "remove", contentIds.length))
   }
 
   override def waitDuration: Option[Duration] = {
@@ -59,6 +58,7 @@ case class RemoveTagFromContent(
       )
       KinesisStreams.taggingOperationsStream.publishUpdate(contentPath.take(200), taggingOperation)
     }
+    implicit val username: Option[String] = None // unfortunately we don't have easy access to job.createdBy here
     TagAuditRepository.upsertTagAudit(TagAudit.batchTag(tag, OperationType.AddToBottom.toString, contentIds.length))
   }
 

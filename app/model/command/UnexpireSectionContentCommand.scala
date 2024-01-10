@@ -12,7 +12,7 @@ case class UnexpireSectionContentCommand(sectionId: Long) extends Command with L
 
   type T = Section
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Section]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Section]] = Future{
     logger.info(s"Unexpiring Content for Section: $sectionId")
 
     SectionRepository.getSection(sectionId).map(section => {

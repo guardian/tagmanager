@@ -12,7 +12,7 @@ import scala.concurrent.{Future, ExecutionContext}
 case class MergeTagCommand(removingTagId: Long, replacementTagId: Long) extends Command {
   override type T = Unit
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[T]] = Future{
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = Future{
     if (removingTagId == replacementTagId) {
       AttemptedSelfMergeTag
     }

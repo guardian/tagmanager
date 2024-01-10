@@ -19,6 +19,7 @@ class Reindex(
   with Logging {
 
   def reindexTags = Action.async { req =>
+    implicit val username: Option[String] = None // unfortunately we don't have a username available
     ReindexProgressRepository.isTagReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
         Future.successful(Forbidden)
@@ -33,6 +34,7 @@ class Reindex(
   }
 
   def reindexSections = Action.async { req =>
+    implicit val username: Option[String] = None // unfortunately we don't have a username available
     ReindexProgressRepository.isSectionReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
         Future.successful(Forbidden)
@@ -47,6 +49,7 @@ class Reindex(
   }
 
   def reindexPillars = Action.async { req =>
+    implicit val username: Option[String] = None // unfortunately we don't have a username available
     ReindexProgressRepository.isPillarReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
         Future.successful(Forbidden)

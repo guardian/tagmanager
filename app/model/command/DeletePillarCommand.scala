@@ -10,7 +10,7 @@ import scala.concurrent.{Future, ExecutionContext}
 case class DeletePillarCommand(id: Long) extends Command {
   override type T = Long
 
-  override def process()(implicit username: Option[String] = None, ec: ExecutionContext): Future[Option[Long]] = Future {
+  override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[Long]] = Future {
     for {
       pillar <- PillarRepository.getPillar(id)
       _ <- PillarRepository.deletePillar(id)
