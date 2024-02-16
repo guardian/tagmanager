@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class SponsorEdit extends React.Component {
+export default class SponsorshipTypeEdit extends React.Component {
 
   constructor(props) {
     super(props);

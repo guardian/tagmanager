@@ -10,7 +10,7 @@ const dropzoneStyles = {
   padding: "10px"
 }
 
-export default class SponsorEdit extends React.Component {
+export default class SponsorLogo extends React.Component {
 
   constructor(props) {
     super(props);
