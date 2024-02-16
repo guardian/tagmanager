@@ -3,6 +3,8 @@ import SponsorLogo from './SponsorLogo.react';
 import {PAID_HOSTEDCONTENT_TYPE} from '../../constants/paidContentTagTypes';
 import ReactTooltip from 'react-tooltip';
 import { Required } from './Required.react';
+import SponsorshipPackageEdit from "./SponsorshipPackageEdit.react";
+import SponsorshipTypeEdit from "./SponsorshipTypeEdit.react";
 
 const imageRules = `
   <p style="text-align:left; margin-left: -10px">This image should:</p>
@@ -57,7 +59,12 @@ export default class SponsorEdit extends React.Component {
     const logoWidth = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 280;
     const logoHeight = this.props.paidContentTagType === PAID_HOSTEDCONTENT_TYPE.value ? false : 180;
 
-    return (
+    return (<>
+      <div className="tag-edit__input-group">
+        <label className="tag-edit__input-group__header">Sponsorship</label>
+        { <SponsorshipTypeEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.updateSponsorship} editable={!!this.props.creating}/> }
+        { this.props.sponsorship.sponsorshipType == "sponsored" ? <SponsorshipPackageEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.updateSponsorship}/> : null }
+      </div>
       <div className="tag-edit__input-group">
         <ReactTooltip html={true}/>
         <label className="tag-edit__input-group__header">Sponsor</label>
@@ -93,6 +100,7 @@ export default class SponsorEdit extends React.Component {
         </div>
 
       </div>
+      </>
     );
 
   }

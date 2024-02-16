@@ -1,5 +1,6 @@
 import React from 'react';
 import SponsorshipTypeEdit from '../SponsorshipEdit/SponsorshipTypeEdit.react';
+import SponsorshipPackageEdit from '../SponsorshipEdit/SponsorshipPackageEdit.react';
 import SponsorEdit from '../SponsorshipEdit/SponsorEdit.react';
 import ValidityEdit from '../SponsorshipEdit/ValidityEdit.react';
 import TargetingEdit from '../SponsorshipEdit/TargetingEdit.react';
@@ -64,8 +65,7 @@ class SponsorshipCreate extends React.Component {
       return (
         <div className="sponsorship-edit">
           <div className="sponsorship-edit__column--sidebar">
-            <SponsorshipTypeEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
-            <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship}/>
+            <SponsorEdit sponsorship={this.props.sponsorship} updateSponsorship={this.props.sponsorshipActions.updateSponsorship} creating={true} />
           </div>
           <div className="sponsorship-edit__column">
             <ValidityEdit sponsorship={this.props.sponsorship} updateSponsorship={this.updateSponsorshipAndCheckClashes.bind(this)} />
