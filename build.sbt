@@ -6,6 +6,8 @@ version := "1.0"
 
 lazy val scalaVer = "2.12.16"
 
+resolvers ++= Resolver.sonatypeOssRepos("releases")
+
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
   "-encoding", "UTF-8",
