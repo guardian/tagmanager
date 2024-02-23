@@ -45,10 +45,14 @@ case class Sponsorship (
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 
+  private def sponsorshipPackageAsThrift(s: String) = SponsorshipPackage.valueOf(
+    s.replace("-", "") // convert us-exclusive to usexclusive
+  )
+
   def asThrift: ThriftSponsorship = ThriftSponsorship(
     id = id,
     sponsorshipType = SponsorshipType.valueOf(sponsorshipType).get,
-    sponsorshipPackage = sponsorshipPackage.map(SponsorshipPackage.valueOf(_).get),
+    sponsorshipPackage = sponsorshipPackage.flatMap(sponsorshipPackageAsThrift),
     sponsorName = sponsorName,
     sponsorLogo = sponsorLogo.asThrift,
     highContrastSponsorLogo = highContrastSponsorLogo.map(_.asThrift),
