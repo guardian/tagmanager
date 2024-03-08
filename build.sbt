@@ -6,6 +6,8 @@ version := "1.0"
 
 lazy val scalaVer = "2.12.16"
 
+resolvers ++= Resolver.sonatypeOssRepos("releases")
+
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
   "-encoding", "UTF-8",
@@ -31,7 +33,7 @@ lazy val dependencies = Seq(
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
   "com.gu" %% "content-api-client-default" % "17.24.1",
-  "com.gu" %% "tags-thrift-schema" % "2.8.1",
+  "com.gu" %% "tags-thrift-schema" % "2.8.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",

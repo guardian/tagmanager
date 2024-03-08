@@ -10,7 +10,7 @@ import play.api.Logging
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import repositories.{SectionRepository, TagRepository, TagLookupCache}
-import com.gu.tagmanagement.{Sponsorship => ThriftSponsorship, SponsorshipTargeting => ThriftSponsorshipTargeting, SponsorshipType}
+import com.gu.tagmanagement.{Sponsorship => ThriftSponsorship, SponsorshipTargeting => ThriftSponsorshipTargeting, SponsorshipType, SponsorshipPackage}
 
 import scala.util.control.NonFatal
 
@@ -32,6 +32,7 @@ case class Sponsorship (
   validTo: Option[DateTime],
   status: String,
   sponsorshipType: String,
+  sponsorshipPackage: Option[String],
   sponsorName: String,
   sponsorLogo: Image,
   highContrastSponsorLogo: Option[Image],
@@ -44,9 +45,14 @@ case class Sponsorship (
 
   def toItem = Item.fromJSON(Json.toJson(this).toString())
 
+  private def sponsorshipPackageAsThrift(s: String) = SponsorshipPackage.valueOf(
+    s.replace("-", "") // convert us-exclusive to usexclusive
+  )
+
   def asThrift: ThriftSponsorship = ThriftSponsorship(
     id = id,
     sponsorshipType = SponsorshipType.valueOf(sponsorshipType).get,
+    sponsorshipPackage = sponsorshipPackage.flatMap(sponsorshipPackageAsThrift),
     sponsorName = sponsorName,
     sponsorLogo = sponsorLogo.asThrift,
     highContrastSponsorLogo = highContrastSponsorLogo.map(_.asThrift),
@@ -81,6 +87,7 @@ case class DenormalisedSponsorship (
                          validTo: Option[DateTime],
                          status: String,
                          sponsorshipType: String,
+                         sponsorshipPackage: Option[String],
                          sponsorName: String,
                          sponsorLogo: Image,
                          highContrastSponsorLogo: Option[Image],
@@ -101,6 +108,7 @@ object DenormalisedSponsorship {
       validTo = s.validTo,
       status = s.status,
       sponsorshipType = s.sponsorshipType,
+      sponsorshipPackage = s.sponsorshipPackage,
       sponsorName = s.sponsorName,
       sponsorLogo = s.sponsorLogo,
       highContrastSponsorLogo = s.highContrastSponsorLogo,

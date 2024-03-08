@@ -37,6 +37,7 @@ case class InlinePaidContentSponsorshipCommand(
       validTo = validTo,
       status = status,
       sponsorshipType = "paidContent",
+      sponsorshipPackage = None,
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       highContrastSponsorLogo = highContrastSponsorLogo,

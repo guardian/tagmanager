@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class SponsorEdit extends React.Component {
+export default class SponsorshipTypeEdit extends React.Component {
 
   constructor(props) {
     super(props);
@@ -20,14 +20,14 @@ export default class SponsorEdit extends React.Component {
     }
 
     return (
-      <div className="tag-edit__input-group">
-        <label className="tag-edit__input-group__header">Sponsorship type</label>
-        <div className="tag-edit__field">
-          <select value={this.props.sponsorship.sponsorshipType} onChange={this.updateType.bind(this)}>
-            <option value="sponsored">sponsored</option>
-            <option value="foundation">foundation</option>
-          </select>
-        </div>
+      <div className="tag-edit__field">
+        { this.props.editable ? <>
+            <label className="tag-edit__label">Type</label>
+            <select value={this.props.sponsorship.sponsorshipType} onChange={this.updateType.bind(this)}>
+              <option value="sponsored">sponsored</option>
+              <option value="foundation">foundation</option>
+            </select>
+          </> : this.props.sponsorship.sponsorshipType }
       </div>
     );
   }

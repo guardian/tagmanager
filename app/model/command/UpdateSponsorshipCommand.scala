@@ -17,6 +17,7 @@ case class UpdateSponsorshipCommand(
   validFrom: Option[DateTime],
   validTo: Option[DateTime],
   sponsorshipType: String,
+  sponsorshipPackage: Option[String],
   sponsorName: String,
   sponsorLogo: Image,
   highContrastSponsorLogo: Option[Image],
@@ -39,6 +40,7 @@ case class UpdateSponsorshipCommand(
       validTo = validTo,
       status = status,
       sponsorshipType = sponsorshipType,
+      sponsorshipPackage = sponsorshipPackage,
       sponsorName = sponsorName,
       sponsorLogo = sponsorLogo,
       highContrastSponsorLogo = highContrastSponsorLogo,
@@ -104,6 +106,7 @@ object UpdateSponsorshipCommand{
       (JsPath \ "validFrom").formatNullable[DateTime] and
       (JsPath \ "validTo").formatNullable[DateTime] and
       (JsPath \ "sponsorshipType").format[String] and
+      (JsPath \ "sponsorshipPackage").formatNullable[String] and
       (JsPath \ "sponsorName").format[String] and
       (JsPath \ "sponsorLogo").format[Image] and
       (JsPath \ "highContrastSponsorLogo").formatNullable[Image] and
