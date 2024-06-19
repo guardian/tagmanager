@@ -14,6 +14,7 @@ object FilterTypes extends Enum[FilterTypes] {
   case object ExternalName extends FilterTypes
   case object Type extends FilterTypes
   case object HasFields extends FilterTypes
+  case object Description extends FilterTypes
 }
 
 case class SpreadSheetFilter(`type`: FilterTypes, value: String)
@@ -28,6 +29,7 @@ object GetSpreadSheet {
       case "internalName" => JsSuccess(FilterTypes.InternalName)
       case "externalName" => JsSuccess(FilterTypes.ExternalName)
       case "type" => JsSuccess(FilterTypes.Type)
+      case "description" => JsSuccess(FilterTypes.Description)
       case unknown: String => JsError(s"Invalid filter type: $unknown")
     }
   }

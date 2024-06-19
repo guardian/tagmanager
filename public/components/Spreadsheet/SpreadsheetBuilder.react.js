@@ -8,7 +8,7 @@ const DEFAULT_FILTER = {
   value: ""
 };
 
-const FILTER_TYPES = ["internalName", "externalName", "path", "type", "hasFields"];
+const FILTER_TYPES = ["internalName", "externalName", "path", "type", "hasFields", "description"];
 
 const DEFAULT_COLUMN = "internalName";
 const AVAILABLE_COLUMNS = [
@@ -20,7 +20,8 @@ const AVAILABLE_COLUMNS = [
   "section",
   "path",
   "type",
-  "hyperlink"
+  "hyperlink",
+  "description"
 ];
 
 const MAX_PREVIEW_ROWS = 20;
