@@ -88,7 +88,7 @@ case class TagSearchCriteria(
   private def getSearchField(t: Tag) = {
     val field = searchField.getOrElse("internalName") match {
       case "externalName" => t.externalName
-      case "description" => t.description
+      case "description" => t.description.getOrElse("")
       case "id" => t.id.toString
       case "type" => t.`type`
       case "path" => t.path
@@ -148,7 +148,7 @@ case class TagSearchCriteria(
 
   private def internalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.internalName.toLowerCase == n }
   private def externalNameFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalName.toLowerCase == n }
-  private def descriptionFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.description.toLowerCase == n }
+  private def descriptionFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.description.getOrElse("").toLowerCase == n }
 
   private def referenceTypeFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalReferences.exists(_.`type`.toLowerCase == n) }
   private def referenceTokenFilter(n: String)(tags: List[Tag]) = tags.filter{ t => t.externalReferences.exists(_.value.toLowerCase == n) }
