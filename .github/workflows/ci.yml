@@ -72,7 +72,7 @@ jobs:
       - name: Upload certificates project to riff-raff
         uses: guardian/actions-riff-raff@v2
         with:
-          configPath: ./certificates-riff-raff.yaml
+          configPath: certificates-riff-raff.yaml
           projectName: editorial-tools:tag-manager-certificates
           buildNumberOffset: 1654
           contentDirectories: |

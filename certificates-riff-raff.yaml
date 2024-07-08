@@ -1,0 +1,9 @@
+stacks:
+- composer
+deployments:
+  tag-manager-certificates:
+   type: cloud-formation
+   parameters:
+     templatePath: ./cloudformation/tag-manager-certificate.yaml
+regions:
+- us-east-1
