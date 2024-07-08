@@ -68,3 +68,13 @@ jobs:
               - cloudformation/pillar-audit-dynamo.yaml
             tag-manager:
               - target/tag-manager.deb
+        
+      - name: Upload certificates project to riff-raff
+        uses: guardian/actions-riff-raff@v2
+        with:
+          configPath: ./certificates-riff-raff.yaml
+          projectName: editorial-tools:tag-manager-certificates
+          buildNumberOffset: 1654
+          contentDirectories: |
+            cloudformation:
+            - cloudformation/tag-manager-certificates.yaml

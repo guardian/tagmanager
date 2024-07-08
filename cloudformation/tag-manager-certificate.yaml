@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFront certificate for tagmanager, to be based internet-facing us-east-1
+
+Parameters:
+  Stage:
+    Description: Environment name
+    Type: String
+    AllowedValues:
+    - PROD
+    - CODE
+Mappings:
+  Config:
+    CODE:
+      DNSName: tagmanager.code.dev-gutools.co.uk
+    PROD:
+      DNSName: tagmanager.gutools.co.uk
+Resources:
+  TagManagerCloudfrontCertificate:
+    Type: "AWS::CertificateManager::Certificate"
+    Properties:
+      DomainName: !FindInMap [Config, !Ref 'Stage', DNSName]
+      ValidationMethod: "DNS"
+      Tags:
+        - Key: "gu:repo"
+          Value: "guardian/tagmanager"
+        - Key: Stage
+          Value: !Ref 'Stage'
+        - Key: Stack
+          Value: flexible
+        - Key: App
+          Value: tag-manager
