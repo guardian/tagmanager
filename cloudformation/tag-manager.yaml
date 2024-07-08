@@ -59,12 +59,14 @@ Mappings:
       DesiredCapacity: 1
       InstanceType: t4g.medium
       DNSName: tagmanager.code.dev-gutools.co.uk
+      TTL: 14400
     PROD:
       MinSize: 3
       MaxSize: 6
       DesiredCapacity: 3
       InstanceType: t4g.medium
       DNSName: tagmanager.gutools.co.uk
+      TTL: 7200
 Resources:
   TagManagerRole:
     Type: AWS::IAM::Role
@@ -312,14 +314,14 @@ Resources:
         Value: tag-manager.service
         PropagateAtLaunch: 'true'
   TagManagerDNSRecord: 
-    Type: Guardian::DNS::RecordSet,
+    Type: Guardian::DNS::RecordSet
     Properties:
-      Name: presence.gutools.co.uk,
-      RecordType: CNAME,
+      Name: !FindInMap [Config, !Ref 'Stage', DNSName]
+      RecordType: CNAME
       ResourceRecords:
       - !GetAtt TagManagerLoadBalancer.DNSName
       Stage: !Ref Stage
-      TTL: 14400
+      TTL: !FindInMap [Config, !Ref 'Stage', TTL]
   TagManagerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
