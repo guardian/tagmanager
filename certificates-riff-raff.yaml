@@ -4,6 +4,6 @@ deployments:
   tag-manager-certificates:
    type: cloud-formation
    parameters:
-     templatePath: ./cloudformation/tag-manager-certificate.yaml
+     templatePath: tag-manager-certificates.yaml
 regions:
 - us-east-1
