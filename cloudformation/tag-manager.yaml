@@ -319,7 +319,10 @@ Resources:
       Name: !FindInMap [Config, !Ref 'Stage', DNSName]
       RecordType: CNAME
       ResourceRecords:
-      - !GetAtt TagManagerLoadBalancer.DNSName
+      - Fn::Join:
+          - ""
+          - - !GetAtt TagManagerLoadBalancer.DNSName
+            - "."
       Stage: !Ref Stage
       TTL: !FindInMap [Config, !Ref 'Stage', TTL]
   TagManagerLaunchConfig:
