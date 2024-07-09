@@ -2,11 +2,9 @@ stacks:
 - composer
 deployments:
   tag-manager-certificates:
-    dependencies:
-      - cloudformation
-  cloudformation:
-    type: cloud-formation
-    parameters:
-      templatePath: tag-manager-certificates.yaml
+   contentDirectory: cloudformation
+   type: cloud-formation
+   parameters:
+     templatePath: tag-manager-certificates.yaml
 regions:
 - us-east-1
