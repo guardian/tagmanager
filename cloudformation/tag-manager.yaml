@@ -321,7 +321,7 @@ Resources:
           CachePolicyId: !Ref 'TagManagerCloudfrontCachePolicy'
           Compress: true
           TargetOriginId: !Ref 'TagManagerLoadBalancer'
-        ViewerProtocolPolicy: "allow-all"
+          ViewerProtocolPolicy: "allow-all"
         Enabled: true
         HttpVersion: "http2"
         IPV6Enabled: true
