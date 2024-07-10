@@ -334,7 +334,7 @@ Resources:
           DomainName: !FindInMap [Config, !Ref 'Stage', DNSName]
           Id: !Ref 'TagManagerLoadBalancer'
       ViewerCertificate:
-        AcmCertificateArn: !Sub '{{resolve:ssm:/${Stage}/tagmanager/cloudFrontCertificateArn}}'
+        AcmCertificateArn: !Sub '{{resolve:ssm:/${Stage}/flexible/tagmanager/cloudFrontCertificateArn}}'
         MinimumProtocolVersion: "TLSv1.2_2021"
         SslSupportMethod: "sni-only"
     Tags:
