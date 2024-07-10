@@ -143,7 +143,7 @@ Resources:
           Action: sts:AssumeRole
           Resource: arn:aws:iam::642631414762:role/composerWriteToStaticBucket
       Roles:
-      - !Ref 'TagManagerRole'    
+      - !Ref 'TagManagerRole'
   TagManagerPermissionsBucketPolicy:
     Type: AWS::IAM::Policy
     Properties:
