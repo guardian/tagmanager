@@ -59,14 +59,12 @@ Mappings:
       DesiredCapacity: 1
       InstanceType: t4g.medium
       DNSName: tagmanager.code.dev-gutools.co.uk
-      TTL: 7200
     PROD:
       MinSize: 3
       MaxSize: 6
       DesiredCapacity: 3
       InstanceType: t4g.medium
       DNSName: tagmanager.gutools.co.uk
-      TTL: 14400
 Resources:
   TagManagerRole:
     Type: AWS::IAM::Role
@@ -291,7 +289,7 @@ Resources:
         DefaultTTL: 86400
         MaxTTL: 31536000
         MinTTL: 0
-        Name: !Ref TagManagerCloudfrontCachePolicy
+        Name: !Sub "tag-manager-cache-policy-${Stage}"
         ParametersInCacheKeyAndForwardedToOrigin:
           CookiesConfig:
             CookieBehavior: "all"
@@ -311,41 +309,42 @@ Resources:
             QueryStringBehavior: "all"
   TagManagerCloudFrontDistribution:
     Type: "AWS::CloudFront::Distribution"
-    DistributionConfig:
-      Aliases:
-        - !FindInMap [Config, !Ref 'Stage', DNSName]
-      DefaultCacheBehavior:
-        AllowedMethods:
-          - "GET"
-          - "HEAD"
-          - "OPTIONS"
-        CachePolicyId: !Ref 'TagManagerCloudfrontCachePolicy'
-        Compress: true
-        TargetOriginId: !Ref 'TagManagerLoadBalancer'
-      ViewerProtocolPolicy: "allow-all"
-      Enabled: true
-      HttpVersion: "http2"
-      IPV6Enabled: true
-      Origins:
-        - CustomOriginConfig:
-            OriginProtocolPolicy: "https-only"
-            OriginSSLProtocols:
-              - "TLSv1.2"
-          DomainName: !FindInMap [Config, !Ref 'Stage', DNSName]
-          Id: !Ref 'TagManagerLoadBalancer'
-      ViewerCertificate:
-        AcmCertificateArn: !Sub '{{resolve:ssm:/${Stage}/flexible/tagmanager/cloudFrontCertificateArn}}'
-        MinimumProtocolVersion: "TLSv1.2_2021"
-        SslSupportMethod: "sni-only"
-    Tags:
-      - Key: "gu:repo"
-        Value: "guardian/tagmanager"
-      - Key: Stack
-        Value: flexible
-      - Key: Stage
-        Value: !Ref 'Stage'
-      - Key: App
-        Value: tag-manager
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !FindInMap [Config, !Ref 'Stage', DNSName]
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - "GET"
+            - "HEAD"
+            - "OPTIONS"
+          CachePolicyId: !Ref 'TagManagerCloudfrontCachePolicy'
+          Compress: true
+          TargetOriginId: !Ref 'TagManagerLoadBalancer'
+        ViewerProtocolPolicy: "allow-all"
+        Enabled: true
+        HttpVersion: "http2"
+        IPV6Enabled: true
+        Origins:
+          - CustomOriginConfig:
+              OriginProtocolPolicy: "https-only"
+              OriginSSLProtocols:
+                - "TLSv1.2"
+            DomainName: !FindInMap [Config, !Ref 'Stage', DNSName]
+            Id: !Ref 'TagManagerLoadBalancer'
+        ViewerCertificate:
+          AcmCertificateArn: !Sub '{{resolve:ssm:/${Stage}/flexible/tagmanager/cloudFrontCertificateArn}}'
+          MinimumProtocolVersion: "TLSv1.2_2021"
+          SslSupportMethod: "sni-only"
+      Tags:
+        - Key: "gu:repo"
+          Value: "guardian/tagmanager"
+        - Key: Stack
+          Value: flexible
+        - Key: Stage
+          Value: !Ref 'Stage'
+        - Key: App
+          Value: tag-manager
   AutoscalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -383,10 +382,10 @@ Resources:
       ResourceRecords:
       - Fn::Join:
           - ""
-          - - !GetAtt TagManagerLoadBalancer.DNSName
+          - - !GetAtt TagManagerCloudFrontDistribution.DNSName
             - "."
       Stage: !Ref Stage
-      TTL: !FindInMap [Config, !Ref 'Stage', TTL]
+      TTL: 3600
   TagManagerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
