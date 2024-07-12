@@ -286,15 +286,15 @@ Resources:
     Type: "AWS::CloudFront::CachePolicy"
     Properties:
       CachePolicyConfig:
-        DefaultTTL: 86400
-        MaxTTL: 31536000
+        DefaultTTL: 3600
+        MaxTTL: 3600
         MinTTL: 0
         Name: !Sub "tag-manager-cache-policy-${Stage}"
         ParametersInCacheKeyAndForwardedToOrigin:
           CookiesConfig:
             CookieBehavior: "all"
-          EnableAcceptEncodingBrotli: false
-          EnableAcceptEncodingGzip: false
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
           HeadersConfig:
             HeaderBehavior: "whitelist"
             Headers:
@@ -318,10 +318,13 @@ Resources:
             - "GET"
             - "HEAD"
             - "OPTIONS"
+            - "PUT"
+            - "POST"
+            - "DELETE"
           CachePolicyId: !Ref 'TagManagerCloudfrontCachePolicy'
           Compress: true
           TargetOriginId: !Ref 'TagManagerLoadBalancer'
-          ViewerProtocolPolicy: "allow-all"
+          ViewerProtocolPolicy: "redirect-to-https"
         Enabled: true
         HttpVersion: "http2"
         IPV6Enabled: true
