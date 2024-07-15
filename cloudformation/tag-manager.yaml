@@ -319,6 +319,7 @@ Resources:
             - "HEAD"
             - "OPTIONS"
             - "PUT"
+            - "PATCH"
             - "POST"
             - "DELETE"
           CachePolicyId: !Ref 'TagManagerCloudfrontCachePolicy'
