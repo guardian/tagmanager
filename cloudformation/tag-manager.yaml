@@ -386,7 +386,7 @@ Resources:
       ResourceRecords:
       - Fn::Join:
           - ""
-          - - !GetAtt TagManagerCloudFrontDistribution.DNSName
+          - - !GetAtt TagManagerCloudFrontDistribution.DomainName
             - "."
       Stage: !Ref Stage
       TTL: 60
