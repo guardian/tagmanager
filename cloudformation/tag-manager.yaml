@@ -389,7 +389,7 @@ Resources:
           - - !GetAtt TagManagerCloudFrontDistribution.DNSName
             - "."
       Stage: !Ref Stage
-      TTL: 3600
+      TTL: 60
   TagManagerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
