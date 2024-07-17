@@ -334,7 +334,7 @@ Resources:
               OriginProtocolPolicy: "https-only"
               OriginSSLProtocols:
                 - "TLSv1.2"
-            DomainName: !FindInMap [Config, !Ref 'Stage', DNSName]
+            DomainName: !GetAtt TagManagerLoadBalancer.DNSName
             Id: !Ref 'TagManagerLoadBalancer'
         ViewerCertificate:
           AcmCertificateArn: !Sub '{{resolve:ssm:/${Stage}/flexible/tagmanager/cloudFrontCertificateArn}}'
