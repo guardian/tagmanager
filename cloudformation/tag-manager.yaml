@@ -286,7 +286,7 @@ Resources:
     Type: "AWS::CloudFront::CachePolicy"
     Properties:
       CachePolicyConfig:
-        DefaultTTL: 3600
+        DefaultTTL: 0
         MaxTTL: 3600
         MinTTL: 0
         Name: !Sub "tag-manager-cache-policy-${Stage}"
