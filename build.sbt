@@ -44,6 +44,7 @@ lazy val dependencies = Seq(
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
   "org.apache.commons" % "commons-lang3" % "3.11",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
+  "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0"
 )
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"

@@ -10,7 +10,7 @@ import play.api.libs.json.JsValue
 import scala.util.control.NonFatal
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 object JobRepository {
@@ -99,10 +99,10 @@ object JobRepository {
   }
 
   def loadAllJobs = {
-    Dynamo.jobTable.scan().map(Job.fromItem(_)).toList
+    Dynamo.jobTable.scan().asScala.map(Job.fromItem(_)).toList
   }
 
   def findJobsForTag(tagId: Long): List[Job] = {
-    Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).map(Job.fromItem).toList
+    Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).asScala.map(Job.fromItem).toList
   }
 }

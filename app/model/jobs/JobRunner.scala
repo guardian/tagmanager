@@ -19,11 +19,12 @@ import scala.util.control.NonFatal
 import java.net.InetAddress
 import java.util.concurrent.TimeUnit
 import scala.util.Random
+import scala.jdk.CollectionConverters._
 
 @Singleton
 class JobRunner @Inject() (lifecycle: ApplicationLifecycle)(implicit ec: ExecutionContext) extends Logging {
   // Scheduler boiler plate
-  val serviceManager = new ServiceManager(List(new JobRunnerScheduler(this)))
+  val serviceManager = new ServiceManager(List(new JobRunnerScheduler(this)).asJava)
   lifecycle.addStopHook{ () => Future.successful(stop) }
   serviceManager.startAsync()
 
