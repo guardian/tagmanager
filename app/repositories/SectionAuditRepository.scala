@@ -7,7 +7,7 @@ import org.joda.time.{DateTime, Duration, ReadableDuration}
 import play.api.Logging
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 object SectionAuditRepository {
@@ -18,13 +18,14 @@ object SectionAuditRepository {
   }
 
   def getAuditTrailForSection(sectionId: Long): List[SectionAudit] = {
-    Dynamo.sectionAuditTable.query("sectionId", sectionId).map(SectionAudit.fromItem).toList
+    Dynamo.sectionAuditTable.query("sectionId", sectionId).asScala.map(SectionAudit.fromItem).toList
   }
 
   def getRecentAuditOfSectionOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[SectionAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
     Dynamo.sectionAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
+      .asScala
       .map(SectionAudit.fromItem).toList
   }
 }

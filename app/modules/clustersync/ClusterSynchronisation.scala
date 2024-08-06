@@ -15,11 +15,12 @@ import play.api.inject.ApplicationLifecycle
 
 import scala.concurrent.Future
 import scala.util.control.NonFatal
+import scala.jdk.CollectionConverters._
 
 @Singleton
 class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends Logging {
 
-  val serviceManager = new ServiceManager(List(new NodeStatusHeartbeater(this)))
+  val serviceManager = new ServiceManager(List(new NodeStatusHeartbeater(this)).asJava)
 
   val reservation: AtomicReference[Option[NodeStatus]] = new AtomicReference[Option[NodeStatus]](None)
   val tagCacheSynchroniser: AtomicReference[Option[KinesisConsumer]] = new AtomicReference[Option[KinesisConsumer]](None)

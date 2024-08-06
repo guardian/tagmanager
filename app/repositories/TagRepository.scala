@@ -9,7 +9,7 @@ import play.api.Logging
 import play.api.libs.json.JsValue
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 object TagRepository extends Logging {
@@ -31,12 +31,12 @@ object TagRepository extends Logging {
   }
 
   def scanSearch(criteria: TagSearchCriteria) = {
-    Dynamo.tagTable.scan(criteria.asFilters: _*).map { item =>
+    Dynamo.tagTable.scan(criteria.asFilters: _*).asScala.map { item =>
       item.getString("internalName")
     }
   }
 
-  def loadAllTags = Dynamo.tagTable.scan().map(Tag.fromItem)
+  def loadAllTags = Dynamo.tagTable.scan().asScala.map(Tag.fromItem)
 
   def allTagIter = Dynamo.tagTable.scan()
 }

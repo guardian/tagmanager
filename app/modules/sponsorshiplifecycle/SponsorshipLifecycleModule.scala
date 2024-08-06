@@ -12,6 +12,7 @@ import repositories.SponsorshipRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
+import scala.jdk.CollectionConverters._
 
 @Singleton
 class SponsorshipLifecycleJobs @Inject() (
@@ -25,7 +26,7 @@ class SponsorshipLifecycleJobs @Inject() (
   logger.info("Starting sponsorship lifecycle jobs")
   lazy val scheduledJobs = List(new SponsorshipLauncher, new SponsorshipExpirer)
 
-  lazy val serviceManager = new ServiceManager(scheduledJobs)
+  lazy val serviceManager = new ServiceManager(scheduledJobs.asJava)
 
   serviceManager.startAsync()
 

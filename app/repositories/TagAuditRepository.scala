@@ -7,7 +7,7 @@ import org.joda.time.{DateTime, Duration, ReadableDuration}
 import play.api.Logging
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 object TagAuditRepository {
   def upsertTagAudit(tagAudit: TagAudit): Unit = {
@@ -16,23 +16,25 @@ object TagAuditRepository {
   }
 
   def getAuditTrailForTag(tagId: Long): List[TagAudit] = {
-    Dynamo.tagAuditTable.query("tagId", tagId).map(TagAudit.fromItem).toList
+    Dynamo.tagAuditTable.query("tagId", tagId).asScala.map(TagAudit.fromItem).toList
   }
 
   def getRecentAuditOfTagOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(31)): List[TagAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
     Dynamo.tagAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
+      .asScala
       .map(TagAudit.fromItem).toList
   }
 
   def getAuditsOfTagOperationsSince(operation: String, since: Long): List[TagAudit] = {
     Dynamo.tagAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(since))
+      .asScala
       .map(TagAudit.fromItem).toList
   }
 
-  def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().map(TagAudit.fromItem).toList
+  def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().asScala.map(TagAudit.fromItem).toList
 
   val lastModifiedTags: Long => List[TagAudit] = since => loadAllAudits
     .filter(x => x.operation == "updated" && x.date.getMillis > since)
