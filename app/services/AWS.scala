@@ -79,21 +79,21 @@ object SQS {
 
 class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean = false) extends Logging {
 
-  def publishUpdate(key: String, data: String) {
+  def publishUpdate(key: String, data: String): Unit = {
     publishUpdate(key, ByteBuffer.wrap(data.getBytes("UTF-8")))
   }
 
-  def publishUpdate(key: String, data: Array[Byte]) {
+  def publishUpdate(key: String, data: Array[Byte]): Unit = {
     publishUpdate(key, ByteBuffer.wrap(data))
   }
 
-  def publishUpdate(key: String, struct: ThriftStruct) {
+  def publishUpdate(key: String, struct: ThriftStruct): Unit = {
     logger.info(s"Kinesis Producer publishUpdate for streamName: $streamName")
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(struct, requireCompressionByte)
     publishUpdate(key, ByteBuffer.wrap(thriftKinesisEvent))
   }
 
-  def publishUpdate(key: String, dataBuffer: ByteBuffer) {
+  def publishUpdate(key: String, dataBuffer: ByteBuffer): Unit = {
     AWS.Kinesis.putRecord(streamName, dataBuffer, key)
   }
 }

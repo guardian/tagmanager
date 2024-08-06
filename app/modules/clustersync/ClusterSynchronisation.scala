@@ -32,7 +32,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
 
   initialise
 
-  def initialise {
+  def initialise: Unit = {
     try {
       logger.info("starting sync components...")
       val ns = NodeStatusRepository.register()
@@ -57,7 +57,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
     }
   }
 
-  def pause {
+  def pause: Unit = {
     logger.warn("pausing cluster synchronisation")
     tagCacheSynchroniser.get.foreach{consumer =>
       logger.warn("stopping consumer")
@@ -72,7 +72,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
     }
   }
 
-  def heartbeat {
+  def heartbeat: Unit = {
     try {
       reservation.get() match {
         case Some(ns) => {
