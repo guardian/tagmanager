@@ -15,13 +15,13 @@ trait Step extends Logging {
 
   // Inner details
   /** Do work. */
-  protected def process(implicit ec: ExecutionContext)
+  protected def process(implicit ec: ExecutionContext): Unit
 
   /** Confirm this check ran successfully */
   protected def check(implicit ec: ExecutionContext): Boolean
 
   /** Undo this step */
-  protected def rollback
+  protected def rollback: Unit
 
   // Public methods that wrap the status updates
   def processStep(implicit ec: ExecutionContext) = {

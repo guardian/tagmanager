@@ -43,7 +43,7 @@ object SectionSyncUpdateProcessor extends KinesisStreamRecordProcessor with Logg
 
   }
 
-  private def updateSectionLookupCache(sectionEvent: SectionEvent) {
+  private def updateSectionLookupCache(sectionEvent: SectionEvent): Unit = {
     sectionEvent.eventType match {
       case EventType.Update =>
         logger.info(s"inserting updated section ${sectionEvent.sectionId} into lookup cache")

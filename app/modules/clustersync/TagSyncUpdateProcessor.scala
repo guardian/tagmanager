@@ -34,7 +34,7 @@ object TagEventDeserialiser {
 
 object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor with Logging {
 
-  override def process(record: Record) {
+  override def process(record: Record): Unit = {
     logger.info(s"Kinesis consumer receives record \n $record")
     TagEventDeserialiser.deserialise(record) match {
       case Success(tagEvent) => updateTagsLookupCache(tagEvent)

@@ -22,7 +22,7 @@ class SQSQueue(val queueName: String) {
     response.getMessages.asScala.toList
   }
 
-  def deleteMessage(message: Message) {
+  def deleteMessage(message: Message): Unit = {
     SQS.SQSClient.deleteMessage(
       new DeleteMessageRequest(queueUrl, message.getReceiptHandle)
     )

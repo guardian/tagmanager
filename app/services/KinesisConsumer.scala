@@ -37,8 +37,8 @@ class KinesisConsumer(streamName: String, appName: String, processor: KinesisStr
     .config(kinesisClientLibConfiguration)
     .build()
 
-  def start() { Future{ worker.run() } }
-  def stop() { worker.shutdown() }
+  def start(): Unit = { Future{ worker.run() } }
+  def stop(): Unit = { worker.shutdown() }
 }
 
 class KinesisProcessorConsumerFactory(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessorFactory {

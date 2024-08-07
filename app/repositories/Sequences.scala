@@ -31,7 +31,7 @@ class DynamoSequence(sequenceTable: Table, sequenceName: String) {
     Dynamo.sequenceTable.getItem("sequenceName", sequenceName).getLong("value")
   }
 
-  def setCurrentId(v: Long) {
+  def setCurrentId(v: Long): Unit = {
     Dynamo.sequenceTable.putItem(new Item().withString("sequenceName", sequenceName).withLong("value", v))
   }
 }

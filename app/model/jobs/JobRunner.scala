@@ -27,7 +27,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle)(implicit ec: Executi
   lifecycle.addStopHook{ () => Future.successful(stop) }
   serviceManager.startAsync()
 
-  def stop {
+  def stop: Unit = {
     serviceManager.stopAsync()
     serviceManager.awaitStopped(20, TimeUnit.SECONDS)
   }

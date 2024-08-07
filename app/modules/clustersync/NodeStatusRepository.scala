@@ -90,7 +90,7 @@ object NodeStatusRepository extends Logging {
     }
   }
 
-  def deregister(nodeStatus: NodeStatus) {
+  def deregister(nodeStatus: NodeStatus): Unit = {
 
     logger.info(s"deregistering as node ${nodeStatus.nodeId}")
 
