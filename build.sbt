@@ -48,7 +48,7 @@ lazy val dependencies = Seq(
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
@@ -67,6 +67,13 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPack
     scalaVersion := scalaVer,
     ThisBuild / scalaVersion := scalaVer,
     libraryDependencies ++= dependencies,
+    buildInfoKeys := Seq(
+      name,
+      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
+      "gitCommitId" -> Option(System.getenv("GITHUB_SHA")).getOrElse("Unknown")
+    ),
+    buildInfoPackage := "com.gu.tagmanager",
+    buildInfoOptions := Seq(BuildInfoOption.ToJson),
 
     gzip / includeFilter := "*.html" || "*.css" || "*.js",
     pipelineStages := Seq(digest, gzip),

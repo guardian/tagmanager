@@ -1,0 +1,5 @@
+{
+  "checkpoints": {
+    "PROD": { "url": "https://tagmanager.gutools.co.uk/management/healthcheck", "overdue": "30M" }
+  }
+}

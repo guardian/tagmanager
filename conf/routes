@@ -106,6 +106,7 @@ GET            /reauth                                                 controlle
 
 # Management
 +anyhost
+GET            /management/manifest                                    controllers.Management.manifest()
 GET            /management/healthcheck                                 controllers.Management.healthCheck
 
 # Map static resources from the /public folder to the /assets URL path
