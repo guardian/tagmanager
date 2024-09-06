@@ -100,9 +100,6 @@ GET            /tools/newspaperintegration/tags/deleted/:since         controlle
 GET            /tools/newspaperintegration/tags/created/:since         controllers.ReadOnlyApi.createsAsXml(since: Long)
 
 
-GET            /hello                                                  controllers.App.hello
-GET            /testScan                                               controllers.App.testScan
-
 GET            /oauthCallback                                          controllers.Login.oauthCallback
 GET            /logout                                                 controllers.Login.logout
 GET            /reauth                                                 controllers.Login.reauth
