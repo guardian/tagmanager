@@ -20,7 +20,8 @@ case class TagEntity(
   path: String,
   subType: Option[String],
   adBlockingLevel: Option[BlockingLevel],
-  contributionBlockingLevel: Option[BlockingLevel]
+  contributionBlockingLevel: Option[BlockingLevel],
+  contributorInformation: Option[ContributorInformation] = None,
 )
 
 object TagEntity {
@@ -54,7 +55,8 @@ object TagEntity {
         tag.path,
         subtype,
         tag.adBlockingLevel,
-        tag.contributionBlockingLevel
+        tag.contributionBlockingLevel,
+        tag.contributorInformation
       )
   }
 
@@ -81,7 +83,8 @@ object TagEntity {
       "section" -> Json.toJson(te.section),
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
       "externalReferences" -> JsArray(te.references.map(Json.toJson(_))),
-      "path" -> JsString(te.path)
+      "path" -> JsString(te.path),
+      "contributorInformation" -> Json.toJson(te.contributorInformation)
     ) ++ te.subType.map("subType" -> JsString(_))
       ++ te.adBlockingLevel.map(level => "adBlockingLevel" -> JsString(level.entryName))
       ++ te.contributionBlockingLevel.map(level => "contributionBlockingLevel" -> JsString(level.entryName))
