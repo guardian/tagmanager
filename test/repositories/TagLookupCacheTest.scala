@@ -1,11 +1,9 @@
 package repositories
 
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.{BeforeAndAfterEach, FlatSpec, Matchers}
 import utils.TagTestUtils._
 
-class TagLookupCacheTest extends AnyFlatSpec with BeforeAndAfterEach with Matchers {
+class TagLookupCacheTest extends FlatSpec with BeforeAndAfterEach with Matchers {
 
   private val cache = TagLookupCache
 

@@ -1,17 +1,16 @@
 package modules.clustersync
 
+import java.nio.ByteBuffer
+
 import com.amazonaws.services.kinesis.model.Record
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.BlockingLevel
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.{FlatSpec, Matchers}
 import repositories.TagLookupCache
 import services.ThriftSerializer
 import utils.TagTestUtils._
 
-import java.nio.ByteBuffer
-
-class TagSyncUpdateProcessorTest extends AnyFlatSpec with Matchers {
+class TagSyncUpdateProcessorTest extends FlatSpec with Matchers {
 
   behavior of "TagSyncUpdateProcessor.process()"
 
