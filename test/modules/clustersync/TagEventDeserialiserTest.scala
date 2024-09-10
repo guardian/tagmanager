@@ -1,15 +1,15 @@
 package modules.clustersync
 
+import java.nio.ByteBuffer
+
 import com.amazonaws.services.kinesis.model.Record
 import com.gu.tagmanagement.{EventType, TagEvent}
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.{FlatSpec, FunSuite, Matchers, TryValues}
 import services.ThriftSerializer
 
-import java.nio.ByteBuffer
 import scala.util.Success
 
-class TagEventDeserialiserTest extends AnyFlatSpec with Matchers  {
+class TagEventDeserialiserTest extends  FlatSpec with Matchers  {
 
   it should  "serialise byte stream from Kinesis record" in {
 

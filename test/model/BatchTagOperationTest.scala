@@ -1,9 +1,8 @@
 package model
 
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+import org.scalatest._
 
-class BatchTagOperationTest extends AnyFlatSpec with Matchers {
+class BatchTagOperationTest extends FlatSpec with Matchers {
   "AddToBottom operation" should "parse correctly" in {
     BatchTagOperation.AddToBottom.entryName should be ("add-to-bottom")
   }
