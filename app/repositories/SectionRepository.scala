@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import model.Section
 import play.api.libs.json.JsValue
 import services.Dynamo
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import java.util.concurrent.atomic.AtomicReference
 
 
@@ -22,9 +22,9 @@ object SectionRepository {
     }
   }
 
-  def loadAllSections = Dynamo.sectionTable.scan().map(Section.fromItem)
+  def loadAllSections = Dynamo.sectionTable.scan().asScala.map(Section.fromItem)
 
-  def count = Dynamo.sectionTable.scan().count(_ => true)
+  def count = Dynamo.sectionTable.scan().asScala.count(_ => true)
 
 }
 

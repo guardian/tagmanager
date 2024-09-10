@@ -5,7 +5,7 @@ import model.AppAudit
 import org.joda.time.{Duration, ReadableDuration, DateTime}
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 object AppAuditRepository {
   def upsertAppAudit(appAudit: AppAudit): Unit = {
@@ -17,6 +17,7 @@ object AppAuditRepository {
     val from = new DateTime().minus(timePeriod).getMillis
     Dynamo.appAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
+      .asScala
       .map(AppAudit.fromItem).toList
   }
 }

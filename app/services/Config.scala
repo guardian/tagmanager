@@ -5,7 +5,7 @@ import java.util.Properties
 import com.amazonaws.services.s3.model.GetObjectRequest
 import services.Config._
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 object Config extends AwsInstanceTags {
@@ -46,7 +46,7 @@ sealed trait Config {
     lazy val stack = readTag("Stack") getOrElse "flexible"
     lazy val stage = readTag("Stage") getOrElse "DEV"
     lazy val app = readTag("App") getOrElse "tag-manager"
-    lazy val region = remoteConfiguration.getOrDefault("aws.region", "eu-west-1")
+    lazy val region = remoteConfiguration.getOrElse("aws.region", "eu-west-1")
   }
 
   private def loadConfiguration = {
@@ -68,7 +68,7 @@ sealed trait Config {
     loadPropertiesFromS3(s"${aws.app}/global.properties", props)
     loadPropertiesFromS3(s"${aws.app}/${aws.stage}.properties", props)
 
-    props.toMap
+    props.asScala.toMap
   }
 
   lazy val permissionsStage: String = readTag("Stage") match {

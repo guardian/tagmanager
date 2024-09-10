@@ -9,7 +9,7 @@ import helpers.JodaDateTimeFormat._
 import play.api.Logging
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 case class HeartbeatException(message: String) extends RuntimeException(message)
@@ -114,7 +114,7 @@ object NodeStatusRepository extends Logging {
     }
   }
 
-  def getCurrentState = Dynamo.clusterStatusTable.scan().map(NodeStatus.fromItem).toList
+  def getCurrentState = Dynamo.clusterStatusTable.scan().asScala.map(NodeStatus.fromItem).toList
 
 }
 

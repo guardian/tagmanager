@@ -6,7 +6,7 @@ import model.Sponsorship
 import org.joda.time.DateTime
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 object SponsorshipRepository {
@@ -26,14 +26,14 @@ object SponsorshipRepository {
     }
   }
 
-  def loadAllSponsorships = Dynamo.sponsorshipTable.scan().map(Sponsorship.fromItem)
+  def loadAllSponsorships = Dynamo.sponsorshipTable.scan().asScala.map(Sponsorship.fromItem)
 
   def searchSponsorships(criteria: SponsorshipSearchCriteria) = {
     val filters = criteria.asFilters
     if (filters.isEmpty) {
-      Dynamo.sponsorshipTable.scan().map(Sponsorship.fromItem).toList
+      Dynamo.sponsorshipTable.scan().asScala.map(Sponsorship.fromItem).toList
     } else {
-      Dynamo.sponsorshipTable.scan(filters: _*).map(Sponsorship.fromItem).toList
+      Dynamo.sponsorshipTable.scan(filters: _*).asScala.map(Sponsorship.fromItem).toList
     }
   }
 
@@ -43,25 +43,25 @@ object SponsorshipRepository {
       new ScanFilter("validFrom").lt(now),
       new ScanFilter("validTo").gt(now),
       new ScanFilter("status").ne("active")
-    ).map(Sponsorship.fromItem).toList
+    ).asScala.map(Sponsorship.fromItem).toList
 
     val withoutEnd = Dynamo.sponsorshipTable.scan(
       new ScanFilter("validFrom").lt(now),
       new ScanFilter("validTo").notExist(),
       new ScanFilter("status").ne("active")
-    ).map(Sponsorship.fromItem).toList
+    ).asScala.map(Sponsorship.fromItem).toList
 
     val withoutStartAndNotEnded = Dynamo.sponsorshipTable.scan(
       new ScanFilter("validFrom").notExist(),
       new ScanFilter("validTo").gt(now),
       new ScanFilter("status").ne("active")
-    ).map(Sponsorship.fromItem).toList
+    ).asScala.map(Sponsorship.fromItem).toList
 
     val alwaysActive = Dynamo.sponsorshipTable.scan(
       new ScanFilter("validFrom").notExist(),
       new ScanFilter("validTo").notExist(),
       new ScanFilter("status").ne("active")
-    ).map(Sponsorship.fromItem).toList
+    ).asScala.map(Sponsorship.fromItem).toList
 
     withEnd ::: withoutEnd ::: withoutStartAndNotEnded ::: alwaysActive
   }
@@ -72,7 +72,7 @@ object SponsorshipRepository {
     Dynamo.sponsorshipTable.scan(
       new ScanFilter("validTo").lt(now),
       new ScanFilter("status").eq("active")
-    ).map(Sponsorship.fromItem).toList
+    ).asScala.map(Sponsorship.fromItem).toList
   }
 
 }

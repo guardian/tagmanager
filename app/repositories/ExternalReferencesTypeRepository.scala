@@ -5,7 +5,7 @@ import model.ExternalReferenceType
 import play.api.libs.json.JsValue
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 
 object ExternalReferencesTypeRepository {
@@ -23,6 +23,6 @@ object ExternalReferencesTypeRepository {
     }
   }
 
-  def loadAllReferenceTypes = Dynamo.referencesTypeTable.scan().map(ExternalReferenceType.fromItem)
+  def loadAllReferenceTypes = Dynamo.referencesTypeTable.scan().asScala.map(ExternalReferenceType.fromItem)
 
 }

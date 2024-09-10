@@ -4,7 +4,7 @@ import model.Pillar
 import play.api.Logging
 import services.Dynamo
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 
@@ -33,7 +33,7 @@ object PillarRepository extends Logging {
     }
   }
 
-  def loadAllPillars: Iterable[Pillar] = Dynamo.pillarTable.scan().map(Pillar.fromItem)
+  def loadAllPillars: Iterable[Pillar] = Dynamo.pillarTable.scan().asScala.map(Pillar.fromItem)
 
-  def count = Dynamo.pillarTable.scan().count(_ => true)
+  def count = Dynamo.pillarTable.scan().asScala.count(_ => true)
 }

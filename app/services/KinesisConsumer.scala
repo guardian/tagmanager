@@ -13,7 +13,7 @@ import org.apache.thrift.protocol.{TCompactProtocol, TProtocol}
 import org.apache.thrift.transport.TIOStreamTransport
 import play.api.Logging
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
@@ -64,7 +64,7 @@ class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordPr
 
   override def processRecords(processRecordsInput: ProcessRecordsInput): Unit = {
 
-    processRecordsInput.getRecords foreach { record =>
+    processRecordsInput.getRecords.asScala foreach { record =>
       processor.process(record)
     }
 
