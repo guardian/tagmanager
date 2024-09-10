@@ -4,7 +4,7 @@ name := "tag-manager"
 
 version := "1.0"
 
-lazy val scalaVer = "2.12.16"
+lazy val scalaVer = "2.12.19"
 
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
@@ -27,20 +27,20 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
   "com.amazonaws" % "amazon-kinesis-client" % "1.14.10",
   "com.gu" %% "pan-domain-auth-play_2-8" % "4.0.0",
-  "com.gu" %% "editorial-permissions-client" % "2.0",
+  "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client-default" % "17.24.1",
+  "com.gu" %% "content-api-client-default" % "31.0.3",
   "com.gu" %% "tags-thrift-schema" % "2.8.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac-play_2-8" % "4.0.0",
-  "com.gu" %% "content-api-client-aws" % "0.5",
+  "com.gu" %% "content-api-client-aws" % "0.7.4",
   "com.beachape" %% "enumeratum" % "1.5.13",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
   "org.apache.commons" % "commons-lang3" % "3.11",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
