@@ -9,7 +9,7 @@ lazy val scalaVer = "2.12.19"
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
 scalacOptions ++= Seq(
-  "-target:jvm-1.8",
+  "-release:17",
   "-encoding", "UTF-8",
   "-unchecked",
   "-deprecation",

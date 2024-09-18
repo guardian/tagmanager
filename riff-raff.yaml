@@ -15,7 +15,7 @@ deployments:
     parameters:
       amiTags:
         BuiltBy: amigo
-        Recipe: editorial-tools-focal-java8-ARM-WITH-cdk-base
+        Recipe: editorial-tools-focal-java17
         AmigoStage: PROD
       amiEncrypted: true
       prependStackToCloudFormationStackName: false
