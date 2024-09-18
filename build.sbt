@@ -18,6 +18,7 @@ scalacOptions ++= Seq(
 
 lazy val awsVersion = "1.12.403"
 
+val pandaVersion = "7.0.0"
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
@@ -26,7 +27,7 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
   "com.amazonaws" % "amazon-kinesis-client" % "1.14.10",
-  "com.gu" %% "pan-domain-auth-play_2-8" % "4.0.0",
+  "com.gu" %% "pan-domain-auth-play_2-8" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
@@ -37,7 +38,7 @@ lazy val dependencies = Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac-play_2-8" % "4.0.0",
+  "com.gu"  %% "panda-hmac-play_2-8" % pandaVersion,
   "com.gu" %% "content-api-client-aws" % "0.7.4",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,

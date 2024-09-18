@@ -1,11 +1,8 @@
-import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
-import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
-import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
+import com.gu.pandomainauth.{PanDomainAuthSettingsRefresher, S3BucketLoader}
 import controllers.AssetsComponents
 import model.jobs.JobRunner
 import modules.clustersync.ClusterSynchronisation
 import modules.sponsorshiplifecycle.SponsorshipLifecycleJobs
-import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.BuiltInComponentsFromContext
 import play.api.libs.ws.ahc.AhcWSComponents
@@ -32,12 +29,10 @@ class AppComponents(context: Context, config: Config)
   new JobRunner(context.lifecycle)
   new SponsorshipLifecycleJobs(context.lifecycle)
 
-  val panDomainSettings = new PanDomainAuthSettingsRefresher(
+  val panDomainSettings = PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
     system = config.pandaSystemIdentifier,
-    bucketName = config.pandaBucketName,
-    settingsFileKey= config.pandaSettingsFileKey,
-    s3Client = AWS.S3Client,
+    S3BucketLoader.forAwsSdkV1(AWS.S3Client, "pan-domain-auth-settings")
   )
 
   lazy val router: Router = new Routes(
