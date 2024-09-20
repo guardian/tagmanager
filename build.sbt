@@ -9,7 +9,7 @@ lazy val scalaVer = "2.12.19"
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
 scalacOptions ++= Seq(
-  "-target:jvm-1.8",
+  "-release:11",
   "-encoding", "UTF-8",
   "-unchecked",
   "-deprecation",
@@ -59,7 +59,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPack
       "-Dpidfile.path=/dev/null"
     ),
 
-    debianPackageDependencies := Seq("openjdk-8-jre-headless"),
+    debianPackageDependencies := Seq("java11-runtime-headless"),
     maintainer := "digital tools team <digitalcms.dev@guardian.co.uk>",
     packageSummary := "tag manager",
     packageDescription := """manage tags""",
