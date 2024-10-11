@@ -149,7 +149,7 @@ class Support(
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
 
-      UnexpireSectionContentCommand(sectionId).process.map{ result =>
+      UnexpireSectionContentCommand(sectionId).process().map{ result =>
         result.map(t => Ok("Unexpiry Completed Successfully")) getOrElse BadRequest("Failed to trigger unexpiry")
 
       } recover {
@@ -166,7 +166,7 @@ class Support(
     req.body.asJson.map { json =>
       val sectionId = (json \ "sectionId").as[Long]
 
-      ExpireSectionContentCommand(sectionId).process.map { result =>
+      ExpireSectionContentCommand(sectionId).process().map { result =>
         result.map(t => Ok("Expiry Completed Successfully")) getOrElse BadRequest("Failed to trigger expiry")
       } recover {
         commandErrorAsResult
@@ -211,7 +211,7 @@ class Support(
 
           val updatedTag = tag.copy(parents = tag.parents.filterNot(_.equals(parentId)))
 
-          Some(UpdateTagCommand(DenormalisedTag(updatedTag)).process.map {result =>
+          Some(UpdateTagCommand(DenormalisedTag(updatedTag)).process().map {result =>
             result getOrElse InternalServerError(s"Could not update tag: ${tag.id}")
             danglingParentsCount += 1
           })

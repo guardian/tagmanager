@@ -78,7 +78,7 @@ case class Job(
   def rollback = {
     if (rollbackEnabled) {
       val revSteps = steps.reverse
-      revSteps.foreach(step => step.rollbackStep)
+      revSteps.foreach(step => step.rollbackStep())
       jobStatus = JobStatus.rolledback
     }
   }

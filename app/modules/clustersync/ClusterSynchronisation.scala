@@ -28,7 +28,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
     AtomicReference[Option[KinesisConsumer]](None)
 
 
-  lifecycle.addStopHook{ () => Future.successful(stop) }
+  lifecycle.addStopHook{ () => Future.successful(stop()) }
   serviceManager.startAsync()
 
   initialise

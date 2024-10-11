@@ -61,7 +61,7 @@ trait SQSQueueConsumer extends Logging {
           logger.error(s"error processing messages from job queue ${queue.queueName}", e)
         }
       }
-      run
+      run()
     }
   }
 }

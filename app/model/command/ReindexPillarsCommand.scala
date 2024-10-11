@@ -8,7 +8,7 @@ case class ReindexPillarsCommand() extends Command {
   override type T = Unit
 
   override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = Future{
-    JobHelper.beginPillarReindex
+    JobHelper.beginPillarReindex()
     Some(())
   }
 }

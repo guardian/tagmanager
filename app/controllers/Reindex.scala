@@ -24,7 +24,7 @@ class Reindex(
       if (reindexing) {
         Future.successful(Forbidden)
       } else {
-        ReindexTagsCommand().process.map { result =>
+        ReindexTagsCommand().process().map { result =>
           result.map { count => Ok } getOrElse InternalServerError
         }
       }
@@ -39,7 +39,7 @@ class Reindex(
       if (reindexing) {
         Future.successful(Forbidden)
       } else {
-        ReindexSectionsCommand().process.map { result =>
+        ReindexSectionsCommand().process().map { result =>
           result.map { count => Ok } getOrElse InternalServerError
         }
       }
@@ -54,7 +54,7 @@ class Reindex(
       if (reindexing) {
         Future.successful(Forbidden)
       } else {
-        ReindexPillarsCommand().process.map { result =>
+        ReindexPillarsCommand().process().map { result =>
           result.map { count => Ok } getOrElse InternalServerError
         }
       }

@@ -62,7 +62,7 @@ case class UpdateTagCommand(denormalisedTag: DenormalisedTag) extends Command wi
     existingTag foreach {(existing) =>
       if (tag.externalReferences != existing.externalReferences) {
         logger.info("Detected references change, triggering reindex")
-        FlexTagReindexCommand(tag).process
+        FlexTagReindexCommand(tag).process()
       }
     }
 

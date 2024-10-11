@@ -8,7 +8,7 @@ case class ReindexSectionsCommand() extends Command {
   override type T = Unit
 
   override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = Future{
-    JobHelper.beginSectionReindex
+    JobHelper.beginSectionReindex()
     Some(())
   }
 }
