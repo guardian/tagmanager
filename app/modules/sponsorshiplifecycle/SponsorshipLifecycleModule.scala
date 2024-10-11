@@ -21,7 +21,7 @@ class SponsorshipLifecycleJobs @Inject() (
   implicit val ec: ExecutionContext
 ) extends Logging {
 
-  import scala.collection.convert.wrapAll._
+  import scala.jdk.CollectionConverters._
 
   logger.info("Starting sponsorship lifecycle jobs")
   lazy val scheduledJobs = List(new SponsorshipLauncher, new SponsorshipExpirer)

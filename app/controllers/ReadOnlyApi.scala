@@ -22,7 +22,7 @@ class ReadOnlyApi(
   def getTagsAsXml() = Action {
     val tags = TagLookupCache.allTags
 
-    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s).toMap
     val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml(sections))
 
     Ok(<tags>
@@ -54,7 +54,7 @@ class ReadOnlyApi(
 
   def tagAsXml(id: Long) = Action {
 
-    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s).toMap
 
 
     TagRepository.getTag(id).map { tag =>
@@ -104,7 +104,7 @@ class ReadOnlyApi(
 
     val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
-    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s).toMap
 
     val ret = tags.foldLeft(root: Node)((x, parent) => addChild(x, parent.asExportedXml(sections)))
     Ok(ret)
@@ -127,7 +127,7 @@ class ReadOnlyApi(
       case (_ , _) => None
     }
 
-    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s)(collection.breakOut)
+    val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s).toMap
     val tags = audits.map(x => TagRepository.getTag(x.tagId)).flatten
     val root = createElem("tags") % createAttribute("dateRange", dateRange)
 

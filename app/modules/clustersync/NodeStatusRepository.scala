@@ -37,7 +37,7 @@ object NodeStatusRepository extends Logging {
 
   private def generateNextNodeId(currentNodes: List[NodeStatus]) = {
     if(currentNodes.isEmpty) {
-      1l
+      1L
     } else {
       currentNodes.map(_.nodeId).max + 1
     }

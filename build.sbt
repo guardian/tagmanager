@@ -4,11 +4,12 @@ name := "tag-manager"
 
 version := "1.0"
 
-lazy val scalaVer = "2.12.19"
+lazy val scalaVer = "2.13.15"
 
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
 scalacOptions ++= Seq(
+  "-quickfix:any",
   "-release:11",
   "-encoding", "UTF-8",
   "-unchecked",
@@ -45,7 +46,7 @@ lazy val dependencies = Seq(
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
   "org.apache.commons" % "commons-lang3" % "3.11",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
-  "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0"
+  "com.madgag" %% "scala-collection-plus" % "0.11"
 )
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"

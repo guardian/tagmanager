@@ -3,6 +3,7 @@ package permissions
 import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
 import com.gu.permissions.{PermissionDefinition, PermissionsConfig, PermissionsProvider}
 import services.Config
+import com.madgag.scala.collection.decorators._
 
 object Permissions {
   val app = "tag-manager"
@@ -28,6 +29,6 @@ object Permissions {
     permissions.hasPermission(permission, email)
   }
   def getPermissionsForUser(email: String): Map[String, Boolean] =
-    permissionDefinitions.mapValues(permission => permissions.hasPermission(permission, email))
+    permissionDefinitions.mapV(permission => permissions.hasPermission(permission, email))
 }
 

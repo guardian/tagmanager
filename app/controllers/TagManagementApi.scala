@@ -287,7 +287,7 @@ class TagManagementApi(
 
     val orderedSponsorships: List[Sponsorship] = orderBy match {
       case("sponsor") => sponsorships.sortBy(_.sponsorName)
-      case("from") => sponsorships.sortBy(_.validFrom.map(_.getMillis).getOrElse(0l))
+      case("from") => sponsorships.sortBy(_.validFrom.map(_.getMillis).getOrElse(0L))
       case("to") => sponsorships.sortBy(_.validTo.map(_.getMillis).getOrElse(Long.MaxValue))
       case("status") => sponsorships.sortBy(_.status)
       case(_) => sponsorships.sortBy(_.sponsorName)

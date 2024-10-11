@@ -17,7 +17,7 @@ import com.amazonaws.util.EC2MetadataUtils
 import com.twitter.scrooge.ThriftStruct
 import play.api.Logging
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object AWS {
 
