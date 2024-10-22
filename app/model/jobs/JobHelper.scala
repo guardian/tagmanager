@@ -55,7 +55,7 @@ object JobHelper {
         steps = List(ReindexTags())
         )
       )
-    AppAuditRepository.upsertAppAudit(AppAudit.reindexTags)
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexTags())
   }
 
   def beginSectionReindex()(implicit username: Option[String], ec: ExecutionContext) = {
@@ -69,7 +69,7 @@ object JobHelper {
         steps = List(ReindexSections())
         )
       )
-    AppAuditRepository.upsertAppAudit(AppAudit.reindexSections)
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexSections())
   }
 
   def beginPillarReindex()(implicit username: Option[String], ec: ExecutionContext) = {
@@ -83,7 +83,7 @@ object JobHelper {
         steps = List(ReindexPillars())
       )
     )
-    AppAuditRepository.upsertAppAudit(AppAudit.reindexPillars)
+    AppAuditRepository.upsertAppAudit(AppAudit.reindexPillars())
   }
 
   def beginMergeTag(from: Tag, to: Tag)(implicit username: Option[String], ec: ExecutionContext) = {

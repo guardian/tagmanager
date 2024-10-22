@@ -36,7 +36,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle)(implicit ec: Executi
 
   def tryRun() = {
     try {
-      run
+      run()
     } catch {
       case NonFatal(e) => {
         logger.error(s"An unexpected exception occurred in the job runner: ${e.getStackTrace}")
@@ -64,7 +64,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle)(implicit ec: Executi
             logger.error(s"Background job failed on ${JobRunner.nodeId}. $e")
           }
         } finally {
-          job.checkIfComplete
+          job.checkIfComplete()
           JobRepository.upsertJobIfOwned(job, JobRunner.nodeId)
           JobRepository.unlock(job, JobRunner.nodeId)
         }
@@ -97,6 +97,6 @@ object JobRunner {
 }
 
 class JobRunnerScheduler(runner: JobRunner) extends AbstractScheduledService {
-  override def runOneIteration(): Unit = runner.tryRun
+  override def runOneIteration(): Unit = runner.tryRun()
   override def scheduler(): Scheduler = Scheduler.newFixedDelaySchedule(1, 10, TimeUnit.SECONDS)
 }

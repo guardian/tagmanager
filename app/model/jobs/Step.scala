@@ -26,13 +26,13 @@ trait Step extends Logging {
   // Public methods that wrap the status updates
   def processStep(implicit ec: ExecutionContext) = {
     try {
-      beginProcessing
+      beginProcessing()
       process
-      doneProcessing
+      doneProcessing()
     } catch {
       case NonFatal(e) => {
         logger.error(s"Error thrown during step processing: ${e}")
-        processFailed
+        processFailed()
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
     }
@@ -41,18 +41,18 @@ trait Step extends Logging {
   def checkStep(implicit ec: ExecutionContext) = {
     attempts += 1
     if (attempts > Step.retryLimit) {
-      checkFailed
+      checkFailed()
       throw TooManyAttempts(s"Too many attempts at checking ${this.`type`}")
     }
 
     try {
       if (check) {
-          checkOk
+          checkOk()
       }
     } catch {
       case NonFatal(e) => {
         logger.error(s"Error thrown during step check: ${e}")
-        checkFailed
+        checkFailed()
         throw e // Need to rethrow the exception to inform the job to start a rollback
       }
     }

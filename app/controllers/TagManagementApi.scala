@@ -43,7 +43,7 @@ class TagManagementApi(
     implicit val username = Option(req.user.email)
 
     req.body.asJson.map { json =>
-      UpdateTagCommand(json.as[DenormalisedTag]).process.map { result =>
+      UpdateTagCommand(json.as[DenormalisedTag]).process().map { result =>
         result.map{t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -57,7 +57,7 @@ class TagManagementApi(
     (APIAuthAction andThen CreateTagPermissionsCheck() andThen CreateTagSpecificPermissionsCheck()).async { req =>
       implicit val username = Option(req.user.email)
       req.body.asJson.map { json =>
-        json.as[CreateTagCommand].process.map { result =>
+        json.as[CreateTagCommand].process().map { result =>
           result.map { t => Ok(Json.toJson(DenormalisedTag(t))) } getOrElse NotFound
         } recover {
           commandErrorAsResult
@@ -129,7 +129,7 @@ class TagManagementApi(
   def createSection() = (APIAuthAction andThen CreateSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[CreateSectionCommand].process.map { result =>
+      json.as[CreateSectionCommand].process().map { result =>
         result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -142,7 +142,7 @@ class TagManagementApi(
   def updateSection(id: Long) = (APIAuthAction andThen UpdateSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      UpdateSectionCommand(json.as[Section]).process.map { result =>
+      UpdateSectionCommand(json.as[Section]).process().map { result =>
         result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -157,7 +157,7 @@ class TagManagementApi(
     req.body.asJson.map { json =>
       val editionName = (json \ "editionName").as[String]
 
-      AddEditionToSectionCommand(id, editionName.toUpperCase).process.map { result =>
+      AddEditionToSectionCommand(id, editionName.toUpperCase).process().map { result =>
         result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -169,7 +169,7 @@ class TagManagementApi(
 
   def removeEditionFromSection(id: Long, editionName: String) = (APIAuthAction andThen RemoveEditionFromSectionPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
-    RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process.map {result =>
+    RemoveEditionFromSectionCommand(id, editionName.toUpperCase).process().map {result =>
       result.map{ t => Ok(Json.toJson(t)) } getOrElse NotFound
     } recover {
       commandErrorAsResult
@@ -193,7 +193,7 @@ class TagManagementApi(
   def createPillar() = (APIAuthAction andThen PillarPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[CreatePillarCommand].process.map { result =>
+      json.as[CreatePillarCommand].process().map { result =>
         result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -206,7 +206,7 @@ class TagManagementApi(
   def updatePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      UpdatePillarCommand(json.as[Pillar]).process.map { result =>
+      UpdatePillarCommand(json.as[Pillar]).process().map { result =>
         result.map { t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -218,7 +218,7 @@ class TagManagementApi(
 
   def deletePillar(id: Long) = (APIAuthAction andThen PillarPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
-    DeletePillarCommand(id).process.map { result =>
+    DeletePillarCommand(id).process().map { result =>
       result.fold[Result](NotFound)(_ => NoContent)
     } recover {
       commandErrorAsResult
@@ -231,7 +231,7 @@ class TagManagementApi(
 
   def checkPathInUse(tagType: String, slug: String, section: Option[Long], tagSubType: Option[String]) = APIAuthAction.async { req =>
     implicit val username = Option(req.user.email)
-    new PathUsageCheck(tagType, slug, section, tagSubType).process.map{ result =>
+    new PathUsageCheck(tagType, slug, section, tagSubType).process().map{ result =>
       result.map{ t => Ok(Json.toJson(t)) } getOrElse BadRequest
     } recover {
       commandErrorAsResult
@@ -242,7 +242,7 @@ class TagManagementApi(
 
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[BatchTagCommand].process.map{ result =>
+      json.as[BatchTagCommand].process().map{ result =>
         result.map{t => NoContent } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -255,7 +255,7 @@ class TagManagementApi(
   def mergeTag = (APIAuthAction andThen MergeTagPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[MergeTagCommand].process.map { result =>
+      json.as[MergeTagCommand].process().map { result =>
         result.map{t => NoContent } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -267,7 +267,7 @@ class TagManagementApi(
 
   def deleteTag(id: Long) = (APIHMACAuthAction andThen DeleteTagPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
-    (DeleteTagCommand(id)).process.map { result =>
+    (DeleteTagCommand(id)).process().map { result =>
       result.map { t => NoContent } getOrElse NotFound
     } recover {
       commandErrorAsResult
@@ -305,7 +305,7 @@ class TagManagementApi(
   def createSponsorship = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[CreateSponsorshipCommand].process.map { result =>
+      json.as[CreateSponsorshipCommand].process().map { result =>
         result.map{t => Ok(Json.toJson(t)) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -318,7 +318,7 @@ class TagManagementApi(
   def updateSponsorship(id: Long) = (APIAuthAction andThen ManageSponsorshipsPermissionsCheck()).async { req =>
     implicit val username = Option(req.user.email)
     req.body.asJson.map { json =>
-      json.as[UpdateSponsorshipCommand].process.map { result =>
+      json.as[UpdateSponsorshipCommand].process().map { result =>
         result.map{s => Ok(Json.toJson(DenormalisedSponsorship(s))) } getOrElse NotFound
       } recover {
         commandErrorAsResult
@@ -335,7 +335,7 @@ class TagManagementApi(
     val tagSearch: Option[List[Long]] = tagIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
     val sectionSearch: Option[List[Long]] = sectionIds.map(_.split(",").toList.filter(_.length > 0).map(_.toLong))
     new ClashingSponsorshipsFetch(id, tagSearch, sectionSearch, validFrom.map(new DateTime(_)), validTo.map(new DateTime(_)), editionSearch)
-        .process.map { result =>
+        .process().map { result =>
       result.map{ ss => Ok(Json.toJson(ss.map(DenormalisedSponsorship(_)))) } getOrElse BadRequest
     } recover {
       commandErrorAsResult
