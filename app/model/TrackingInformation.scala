@@ -18,7 +18,7 @@ case class TrackingInformation(trackingType: String) {
 
 object TrackingInformation {
 
-  implicit val trackingFormat = Jsonx.formatCaseClass[TrackingInformation]
+  implicit val trackingFormat: OFormat[TrackingInformation] = Jsonx.formatCaseClass[TrackingInformation]
 
   def apply(thriftTrackingInformation: ThriftTrackingInformation): TrackingInformation =
     TrackingInformation(

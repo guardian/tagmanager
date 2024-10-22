@@ -18,7 +18,7 @@ case class CampaignInformation(campaignType: String) {
 
 object CampaignInformation {
 
-  implicit val trackingFormat = Jsonx.formatCaseClass[CampaignInformation]
+  implicit val trackingFormat: OFormat[CampaignInformation] = Jsonx.formatCaseClass[CampaignInformation]
 
   def apply(thriftCampaignInformation: ThriftCampaignInformation): CampaignInformation =
     CampaignInformation(

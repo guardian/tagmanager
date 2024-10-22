@@ -172,7 +172,7 @@ object Step extends Logging {
     }
   }
 
-  implicit val stepFormat = Format(stepReads, stepWrites)
+  implicit val stepFormat: Format[Step] = Format(stepReads, stepWrites)
 }
 
 // Step status is required so we know which steps require rollback

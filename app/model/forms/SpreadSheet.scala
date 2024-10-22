@@ -34,6 +34,6 @@ object GetSpreadSheet {
     }
   }
 
-  implicit val filterFormat = Json.reads[SpreadSheetFilter]
-  implicit val format = Json.reads[GetSpreadSheet]
+  implicit val filterFormat: Reads[SpreadSheetFilter] = Json.reads[SpreadSheetFilter]
+  implicit val format: Reads[GetSpreadSheet] = Json.reads[GetSpreadSheet]
 }

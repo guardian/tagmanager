@@ -19,7 +19,7 @@ case class Image(imageId: String, assets: List[ImageAsset]) {
 }
 
 object Image {
-  implicit val imageFormat = Jsonx.formatCaseClass[Image]
+  implicit val imageFormat: OFormat[Image] = Jsonx.formatCaseClass[Image]
 
   def apply(thriftImage: ThriftImage): Image = Image(
     imageId = thriftImage.imageId,

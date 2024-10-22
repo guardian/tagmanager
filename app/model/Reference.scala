@@ -25,7 +25,7 @@ case class Reference(`type`: String, value: String, capiType: Option[String]) {
 
 object Reference {
 
-  implicit val referenceFormat = Jsonx.formatCaseClass[Reference]
+  implicit val referenceFormat: OFormat[Reference] = Jsonx.formatCaseClass[Reference]
 
   def apply(thriftReference: ThriftReference): Reference = Reference(thriftReference.`type`, thriftReference.value, thriftReference.capiType)
 

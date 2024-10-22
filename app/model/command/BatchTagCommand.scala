@@ -7,6 +7,7 @@ import ai.x.play.json.Encoders.encoder
 import repositories._
 
 import scala.concurrent.{Future, ExecutionContext}
+import play.api.libs.json.OFormat
 
 case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], toAddToBottom: List[Long], toRemove: List[Long]) extends Command {
   type T = Unit
@@ -37,5 +38,5 @@ case class BatchTagCommand(contentIds: List[String], toAddToTop: Option[Long], t
 }
 
 object BatchTagCommand {
-  implicit val batchTagCommandFormat = Jsonx.formatCaseClassUseDefaults[BatchTagCommand]
+  implicit val batchTagCommandFormat: OFormat[BatchTagCommand] = Jsonx.formatCaseClassUseDefaults[BatchTagCommand]
 }

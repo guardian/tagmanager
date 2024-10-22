@@ -4,7 +4,7 @@ import services.Config.conf
 
 
 case class LinkEntity(rel: String, href: String)
-object LinkEntity { implicit val jsonWrites = Json.writes[LinkEntity] }
+object LinkEntity { implicit val jsonWrites: OWrites[LinkEntity] = Json.writes[LinkEntity] }
 
 case class EmbeddedEntity[T](uri: String,
                              data: Option[T] = None,
@@ -59,7 +59,7 @@ object CollectionResponse {
 case class EmptyResponse(links: Option[List[LinkEntity]] = None) {
   def addLink(rel: String, href: String) = copy(links = Some(LinkEntity(rel, href) :: (links getOrElse Nil)))
 }
-object EmptyResponse { implicit val jsonWrites = Json.writes[EmptyResponse] }
+object EmptyResponse { implicit val jsonWrites: OWrites[EmptyResponse] = Json.writes[EmptyResponse] }
 
 object HyperMediaHelpers {
   def tagUri(id: Long): String = s"https://tagmanager.${conf.pandaDomain}/hyper/tags/${id}"

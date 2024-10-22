@@ -3,6 +3,7 @@ package model
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import com.gu.tagmanagement.{PaidContentInformation => ThriftPaidContentInformation}
+import play.api.libs.json.OFormat
 
 case class PaidContentInformation(paidContentType: String, campaignColour: Option[String] = None) {
 
@@ -19,7 +20,7 @@ case class PaidContentInformation(paidContentType: String, campaignColour: Optio
 
 object PaidContentInformation {
 
-  implicit val paidContentInformationFormat = Jsonx.formatCaseClass[PaidContentInformation]
+  implicit val paidContentInformationFormat: OFormat[PaidContentInformation] = Jsonx.formatCaseClass[PaidContentInformation]
 
   def apply(thriftPaidContentInformation: ThriftPaidContentInformation): PaidContentInformation =
     PaidContentInformation(

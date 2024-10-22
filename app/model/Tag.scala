@@ -248,7 +248,7 @@ case class DenormalisedTag (
 
 object DenormalisedTag{
 
-  implicit val tagFormat = Jsonx.formatCaseClassUseDefaults[DenormalisedTag]
+  implicit val tagFormat: OFormat[DenormalisedTag] = Jsonx.formatCaseClassUseDefaults[DenormalisedTag]
 
   def apply(t: Tag): DenormalisedTag = DenormalisedTag(
     id = t.id,

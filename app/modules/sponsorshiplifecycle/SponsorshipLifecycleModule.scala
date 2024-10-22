@@ -86,7 +86,7 @@ class SponsorshipLauncher(implicit ec: ExecutionContext) extends AbstractSchedul
 }
 
 class SponsorshipExpirer(implicit ec: ExecutionContext) extends AbstractScheduledService with Logging {
-  implicit val username = Some("Sponsorship expirer")
+  implicit val username: Some[String] = Some("Sponsorship expirer")
 
   override def runOneIteration(): Unit = try {
 
