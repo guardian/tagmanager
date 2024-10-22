@@ -36,7 +36,7 @@ case class ContributorInformation(
 
 object ContributorInformation {
 
-  implicit val contributorInformationFormat = Jsonx.formatCaseClass[ContributorInformation]
+  implicit val contributorInformationFormat: OFormat[ContributorInformation] = Jsonx.formatCaseClass[ContributorInformation]
 
   def apply(thriftContributorInformation: ThriftContributorInformation): ContributorInformation =
     ContributorInformation(

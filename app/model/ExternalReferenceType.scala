@@ -10,6 +10,7 @@ import play.api.libs.json.{Format, JsPath, JsValue, Json}
 import com.gu.tagmanagement.{Section => ThriftSection}
 
 import scala.util.control.NonFatal
+import play.api.libs.json.OFormat
 
 case class ExternalReferenceType (
                     typeName: String,
@@ -20,7 +21,7 @@ case class ExternalReferenceType (
 
 object ExternalReferenceType extends Logging {
 
-  implicit val sectionFormat = Jsonx.formatCaseClass[ExternalReferenceType]
+  implicit val sectionFormat: OFormat[ExternalReferenceType] = Jsonx.formatCaseClass[ExternalReferenceType]
 
   def fromItem(item: Item) = try{
     Json.parse(item.toJSON).as[ExternalReferenceType]

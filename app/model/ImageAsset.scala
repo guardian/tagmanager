@@ -3,6 +3,7 @@ package model
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import com.gu.tagmanagement.{ImageAsset => ThriftImageAsset}
+import play.api.libs.json.OFormat
 
 case class ImageAsset(imageUrl: String, width: Long, height: Long, mimeType: String) {
   def asThrift = ThriftImageAsset(imageUrl, width, height, mimeType)
@@ -15,7 +16,7 @@ case class ImageAsset(imageUrl: String, width: Long, height: Long, mimeType: Str
 }
 
 object ImageAsset {
-  implicit val imageAssetFormat = Jsonx.formatCaseClass[ImageAsset]
+  implicit val imageAssetFormat: OFormat[ImageAsset] = Jsonx.formatCaseClass[ImageAsset]
 
   def apply(thriftImageAsset: ThriftImageAsset): ImageAsset = ImageAsset(
     imageUrl = thriftImageAsset.imageUrl,

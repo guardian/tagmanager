@@ -24,7 +24,7 @@ case class PublicationInformation(
 
 object PublicationInformation {
 
-  implicit val publicationInformationFormat = Jsonx.formatCaseClassUseDefaults[PublicationInformation]
+  implicit val publicationInformationFormat: OFormat[PublicationInformation] = Jsonx.formatCaseClassUseDefaults[PublicationInformation]
 
   def apply(thriftPublicationInformation: ThriftPublicationInformation): PublicationInformation =
     PublicationInformation(

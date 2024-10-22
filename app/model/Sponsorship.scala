@@ -99,7 +99,7 @@ case class DenormalisedSponsorship (
 
 object DenormalisedSponsorship {
 
-  implicit val denormalisedSponsorshipFormat = Jsonx.formatCaseClass[DenormalisedSponsorship]
+  implicit val denormalisedSponsorshipFormat: OFormat[DenormalisedSponsorship] = Jsonx.formatCaseClass[DenormalisedSponsorship]
 
   def apply(s: Sponsorship): DenormalisedSponsorship = {
     new DenormalisedSponsorship(

@@ -17,6 +17,7 @@ import play.api.Logging
 import services.KinesisStreams
 
 import scala.concurrent.{Future, ExecutionContext}
+import play.api.libs.json.OFormat
 
 case class InlinePaidContentSponsorshipCommand(
                          validFrom: Option[DateTime],
@@ -53,7 +54,7 @@ case class InlinePaidContentSponsorshipCommand(
 }
 
 object InlinePaidContentSponsorshipCommand {
-  implicit val inlinePaidContentSponsorshipFormat = Jsonx.formatCaseClassUseDefaults[InlinePaidContentSponsorshipCommand]
+  implicit val inlinePaidContentSponsorshipFormat: OFormat[InlinePaidContentSponsorshipCommand] = Jsonx.formatCaseClassUseDefaults[InlinePaidContentSponsorshipCommand]
 }
 
 case class CreateTagCommand(
@@ -207,5 +208,5 @@ case class CreateTagCommand(
 
 object CreateTagCommand {
 
-  implicit val createTagCommandFormat = Jsonx.formatCaseClassUseDefaults[CreateTagCommand]
+  implicit val createTagCommandFormat: OFormat[CreateTagCommand] = Jsonx.formatCaseClassUseDefaults[CreateTagCommand]
 }

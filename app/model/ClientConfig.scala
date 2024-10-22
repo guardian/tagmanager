@@ -2,6 +2,7 @@ package model
 
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.Jsonx
+import play.api.libs.json.OFormat
 
 case class ClientConfig(username: String,
                         capiUrl: String,
@@ -15,5 +16,5 @@ case class ClientConfig(username: String,
                        )
 
 object ClientConfig {
-  implicit val clientConfigFormat = Jsonx.formatCaseClass[ClientConfig]
+  implicit val clientConfigFormat: OFormat[ClientConfig] = Jsonx.formatCaseClass[ClientConfig]
 }
