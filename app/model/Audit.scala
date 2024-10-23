@@ -5,7 +5,7 @@ import org.joda.time.DateTime
 import helpers.JodaDateTimeFormat._
 import play.api.Logging
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait Audit extends Logging {
   def user: String

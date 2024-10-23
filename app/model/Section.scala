@@ -12,6 +12,7 @@ import repositories.SponsorshipRepository
 
 import scala.util.control.NonFatal
 import scala.xml.Node
+import com.madgag.scala.collection.decorators._
 
 case class Section(
                     id: Long,
@@ -35,7 +36,7 @@ case class Section(
     path          = path,
     wordsForUrl   = wordsForUrl,
     pageId        = pageId,
-    editions      = editions.mapValues(_.asThift),
+    editions      = editions.mapV(_.asThift),
     discriminator = discriminator,
     isMicrosite   = isMicrosite,
     activeSponsorships = if (activeSponsorships.isEmpty) None else Some(activeSponsorships.flatMap {sid =>
@@ -78,7 +79,7 @@ object Section extends Logging {
       path          = thriftSection.path,
       wordsForUrl   = thriftSection.wordsForUrl,
       pageId        = thriftSection.pageId,
-      editions      = thriftSection.editions.mapValues(EditionalisedPage(_)).toMap,
+      editions      = thriftSection.editions.mapV(EditionalisedPage(_)),
       discriminator = thriftSection.discriminator,
       isMicrosite   = thriftSection.isMicrosite,
       activeSponsorships = thriftSection.activeSponsorships.map(_.map(_.id).toList).getOrElse(Nil)

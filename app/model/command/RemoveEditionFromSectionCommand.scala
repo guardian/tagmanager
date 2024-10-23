@@ -23,7 +23,7 @@ case class RemoveEditionFromSectionCommand(sectionId: Long, editionName: String)
 
     val pageId = try { PathManager.removePathForId(editionInfo.pageId) } catch { case p: PathRemoveFailed => PathNotFound}
 
-    val updatedEditions = section.editions.filterKeys(_.toUpperCase != editionName.toUpperCase)
+    val updatedEditions = section.editions.filterKeys(_.toUpperCase != editionName.toUpperCase).toMap
 
     val updatedSection = section.copy(
       editions = updatedEditions,

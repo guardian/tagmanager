@@ -3,7 +3,7 @@ package services
 import java.util.Properties
 
 import com.amazonaws.services.s3.model.GetObjectRequest
-import services.Config._
+
 
 import scala.jdk.CollectionConverters._
 
@@ -24,6 +24,7 @@ object Config extends AwsInstanceTags {
 }
 
 sealed trait Config {
+  import services.Config._
 
   private val remoteConfiguration: Map[String, String] = loadConfiguration
 
@@ -43,6 +44,8 @@ sealed trait Config {
   }
 
   object aws {
+
+
     lazy val stack = readTag("Stack") getOrElse "flexible"
     lazy val stage = readTag("Stage") getOrElse "DEV"
     lazy val app = readTag("App") getOrElse "tag-manager"

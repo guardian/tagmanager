@@ -7,7 +7,7 @@ import play.api.Logging
 import repositories.{TagLookupCache, SectionLookupCache}
 import services.{Config, KinesisConsumer}
 
-import scala.collection.convert.wrapAll._
+import scala.jdk.CollectionConverters._
 
 import com.google.common.util.concurrent.{ServiceManager, AbstractScheduledService}
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler

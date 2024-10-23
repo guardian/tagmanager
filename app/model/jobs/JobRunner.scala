@@ -1,6 +1,6 @@
 package model.jobs
 
-import scala.collection.convert.wrapAll._
+import scala.jdk.CollectionConverters._
 import com.google.common.util.concurrent.{AbstractScheduledService, ServiceManager}
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import play.api.inject.ApplicationLifecycle
