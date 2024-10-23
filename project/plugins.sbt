@@ -3,7 +3,7 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.5")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.4.4")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.3")
+addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.4")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.2")
 
