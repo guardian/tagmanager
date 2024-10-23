@@ -32,7 +32,7 @@ lazy val dependencies = Seq(
   "com.gu" %% "editorial-permissions-client" % "2.16.0",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
-  "com.squareup.okhttp3" % "okhttp" % "4.9.2",
+  "com.squareup.okhttp3" % "okhttp" % "4.9.3",
   "com.google.guava" % "guava" % "33.3.1-jre",
   "com.gu" %% "content-api-client-default" % "32.0.0",
   "com.gu" %% "tags-thrift-schema" % "2.8.4",
