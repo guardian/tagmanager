@@ -1,9 +1,9 @@
 package services
 
 import java.nio.ByteBuffer
-
-import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
+import com.amazonaws.auth.{DefaultAWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
@@ -16,6 +16,7 @@ import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.util.EC2MetadataUtils
 import com.twitter.scrooge.ThriftStruct
 import play.api.Logging
+import services.Dynamo.client
 
 import scala.jdk.CollectionConverters._
 
@@ -51,8 +52,16 @@ trait AwsInstanceTags {
 }
 
 object Dynamo {
-  lazy val client = AWS.region.createClient(classOf[AmazonDynamoDBClient], null, null)
-  lazy val dynamoDb = new DynamoDB(client)
+  lazy val client = AmazonDynamoDBClient
+    .builder()
+    .withCredentials(new DefaultAWSCredentialsProviderChain())
+
+  Config().aws.endpoint match {
+    case Some(endpoint) => client.withEndpointConfiguration(new EndpointConfiguration(endpoint, "eu-west-1"))
+    case None => client.withRegion(Regions.fromName(Config().aws.region))
+  }
+
+  lazy val dynamoDb = new DynamoDB(client.build())
 
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
   lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
@@ -72,7 +81,16 @@ object Dynamo {
 }
 
 object SQS {
-  lazy val SQSClient = AWS.region.createClient(classOf[AmazonSQSClient], null, null)
+  val sqsClientBuilder = AmazonSQSClient
+    .builder()
+    .withCredentials(new DefaultAWSCredentialsProviderChain())
+
+  Config().aws.endpoint match {
+    case Some(endpoint) => sqsClientBuilder.withEndpointConfiguration(new EndpointConfiguration(endpoint, "eu-west-1"))
+    case None => sqsClientBuilder.withRegion(Regions.fromName(Config().aws.region))
+  }
+
+  lazy val SQSClient = sqsClientBuilder.build()
 
   lazy val jobQueue = new SQSQueue(Config().jobQueueName)
 }

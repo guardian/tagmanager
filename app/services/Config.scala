@@ -50,6 +50,7 @@ sealed trait Config {
     lazy val stage = readTag("Stage") getOrElse "DEV"
     lazy val app = readTag("App") getOrElse "tag-manager"
     lazy val region = remoteConfiguration.getOrElse("aws.region", "eu-west-1")
+    lazy val endpoint = sys.env.get("AWS_ENDPOINT_URL")
   }
 
   private def loadConfiguration = {
