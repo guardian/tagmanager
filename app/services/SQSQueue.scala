@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import com.amazonaws.services.sqs.model._
 import play.api.Logging
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
