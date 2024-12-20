@@ -1,21 +1,21 @@
 package services
 
 import java.nio.ByteBuffer
-
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.services.ec2.AmazonEC2Client
+import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
 import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
-import com.amazonaws.services.kinesis.AmazonKinesisClient
-import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.sqs.AmazonSQSClient
+import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder
+import com.amazonaws.services.s3.{AmazonS3Client, AmazonS3ClientBuilder}
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder
 import com.amazonaws.util.EC2MetadataUtils
 import com.twitter.scrooge.ThriftStruct
 import play.api.Logging
+import services.AWS.region
 
 import scala.jdk.CollectionConverters._
 
@@ -23,14 +23,32 @@ object AWS {
 
   lazy val region = Region getRegion Regions.EU_WEST_1
 
-  lazy val EC2Client = region.createClient(classOf[AmazonEC2Client], null, null)
-  lazy val CloudWatch = region.createClient(classOf[AmazonCloudWatchAsyncClient], null, null)
-  lazy val Kinesis = region.createClient(classOf[AmazonKinesisClient], null, null)
-  lazy val S3Client = region.createClient(classOf[AmazonS3Client], null, null)
+  lazy val EC2Client = AmazonEC2ClientBuilder
+    .standard()
+    .withRegion(region.getName)
+    .build()
+  lazy val CloudWatch = AmazonCloudWatchAsyncClientBuilder
+    .standard()
+    .withRegion(region.getName)
+    .build()
+  lazy val Kinesis = AmazonKinesisClientBuilder
+    .standard()
+    .withRegion(region.getName)
+    .build()
+  lazy val S3Client = AmazonS3ClientBuilder
+    .standard()
+    .withRegion(region.getName)
+    .build()
 
-  private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map(new STSAssumeRoleSessionCredentialsProvider(_, "tagManager"))
+  private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map(
+    new STSAssumeRoleSessionCredentialsProvider.Builder(_, "tagManager").build()
+  )
 
-  lazy val frontendStaticFilesS3Client = region.createClient(classOf[AmazonS3Client], frontendCredentialsProvider.getOrElse(new ProfileCredentialsProvider("frontend")), null)
+  lazy val frontendStaticFilesS3Client = AmazonS3ClientBuilder
+    .standard()
+    .withCredentials(frontendCredentialsProvider.getOrElse(new ProfileCredentialsProvider("frontend")))
+    .withRegion(region.getName)
+    .build()
 }
 
 trait AwsInstanceTags {
@@ -51,7 +69,10 @@ trait AwsInstanceTags {
 }
 
 object Dynamo {
-  lazy val client = AWS.region.createClient(classOf[AmazonDynamoDBClient], null, null)
+  lazy val client = AmazonDynamoDBClientBuilder
+    .standard()
+    .withRegion(AWS.region.getName)
+    .build()
   lazy val dynamoDb = new DynamoDB(client)
 
   lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
@@ -72,7 +93,10 @@ object Dynamo {
 }
 
 object SQS {
-  lazy val SQSClient = AWS.region.createClient(classOf[AmazonSQSClient], null, null)
+  lazy val SQSClient = AmazonSQSClientBuilder
+    .standard()
+    .withRegion(region.getName)
+    .build()
 
   lazy val jobQueue = new SQSQueue(Config().jobQueueName)
 }

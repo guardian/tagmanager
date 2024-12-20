@@ -34,7 +34,7 @@ object ContentAPI extends Logging {
 
   def countOccurencesOfTagInContents(contentIds: List[String], apiTagId: String)(implicit ec: ExecutionContext): Int = {
     if (contentIds.nonEmpty) {
-      val builder = StringBuilder.newBuilder
+      val builder = new StringBuilder()
       var pageSize = 0
 
       var total = 0

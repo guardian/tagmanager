@@ -26,7 +26,7 @@ class ReadOnlyApi(
     val xmlTags = tags.get.sortBy(_.id).map(_.asExportedXml(sections))
 
     Ok(<tags>
-      {xmlTags.seq.map { x => x }}
+      {xmlTags.map { x => x }}
       </tags>)
   }
 
@@ -48,7 +48,7 @@ class ReadOnlyApi(
 
 
     Ok(<sections>
-      {xmlSections.seq.map { x => x }}
+      {xmlSections.map { x => x }}
     </sections>)
   }
 
