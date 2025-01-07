@@ -22,7 +22,7 @@ import services.{AWS, Config, FetchError, ImageMetadataService, InvalidImage}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class Support(
   val wsClient: WSClient,
