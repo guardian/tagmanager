@@ -31,12 +31,8 @@ jobs:
           cache: npm
           cache-dependency-path: 'package-lock.json'
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'corretto'
-          cache: 'sbt'
+      - name: Setup Scala
+        uses: guardian/setup-scala@v1
 
       - name: Install NPM dependencies
         run: npm ci
