@@ -17,7 +17,7 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsVersion = "1.12.403"
+lazy val awsVersion = "1.12.780"
 
 val pandaVersion = "7.0.0"
 lazy val dependencies = Seq(
@@ -27,7 +27,7 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-  "com.amazonaws" % "amazon-kinesis-client" % "1.14.10",
+  "com.amazonaws" % "amazon-kinesis-client" % "1.15.2",
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
