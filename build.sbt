@@ -4,7 +4,7 @@ name := "tag-manager"
 
 version := "1.0"
 
-lazy val scalaVer = "2.13.15"
+lazy val scalaVer = "2.13.16"
 
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
@@ -19,7 +19,7 @@ scalacOptions ++= Seq(
 
 lazy val awsVersion = "1.12.403"
 
-val pandaVersion = "7.0.0"
+val pandaVersion = "9.0.0"
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
@@ -45,7 +45,7 @@ lazy val dependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
   "org.apache.commons" % "commons-lang3" % "3.11",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
   "com.madgag" %% "scala-collection-plus" % "0.11"
 )
 
