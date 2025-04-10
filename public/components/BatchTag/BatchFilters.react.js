@@ -90,14 +90,24 @@ export default class BatchFilters extends React.Component {
     }
 
     addTag(tag) {
-      const tagPath = tag.type === 'ContentType' ? 'type/' + tag.slug : tag.path;
+      const prefixes = {
+        'ContentType': 'type/',
+        'Publication': 'publication/',
+      };
+
+      const tagPath = prefixes[tag.type] ? prefixes[tag.type] + tag.slug : tag.path;
       this.props.updateFilters(Object.assign({}, this.props.filters, {
         'tag': R.uniq(this.getTagArray().concat([tagPath])).join(',')
       }));
     }
 
     addExcludedTag(tag) {
-      const tagPath = tag.type === 'ContentType' ? '-type/' + tag.slug : '-' + tag.path;
+      const prefixes = {
+        'ContentType': 'type/',
+        'Publication': 'publication/',
+      };
+
+      const tagPath = '-' + prefixes[tag.type] ? prefixes[tag.type] + tag.slug : tag.path;
       this.props.updateFilters(Object.assign({}, this.props.filters, {
         'tag': R.uniq(this.getTagArray().concat([tagPath])).join(',')
       }));
