@@ -68,7 +68,12 @@ function buildSearch(searchString) {
 export function getByTag (tag, params) {
     const query = paramsObjectToQuery(params);
 
-    const tagPath = tag.type === 'ContentType' ? 'type/' + tag.slug : tag.path;
+    const prefixes = {
+        'ContentType': 'type/',
+        'Publication': 'publication/',
+    };
+
+    const tagPath = prefixes[tag.type] ? prefixes[tag.type] + tag.slug : tag.path;
 
     return Reqwest({
       url: getCapiUrl() + '&tag=' + tagPath  + '&' + query,
