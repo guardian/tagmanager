@@ -41,8 +41,19 @@ function clearErrorBar() {
     store.dispatch(clearError());
 }
 
+function onRouterUpdate() {
+  const domainMatch = /^.*\.(?<environment>local|code)\.dev-gutools\.co\.uk$|^.*\.gutools\.co\.uk$/
+      .exec(location.hostname);
+  if (domainMatch) {
+    const stage = (domainMatch.groups?.environment || "PROD");
+    const telemetryUrl = stage === "PROD" ? "user-telemetry.gutools.co.uk" : `user-telemetry.${stage}.dev-gutools.co.uk`
+    const image = new Image();
+    image.src = `https://${telemetryUrl}/guardian-tool-accessed?app=tag-manager&stage=${stage.toUpperCase()}&path=${window.location.pathname}`;
+  }
+}
+
 export const router = (
-  <Router history={browserHistory}>
+  <Router history={browserHistory} onUpdate={onRouterUpdate}>
     <Route path="/" component={ReactApp}>
       <Route name="tag" path="/tag/create" component={TagCreate} onEnter={requirePermission.bind(this, 'tag_edit')}/>
       <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
