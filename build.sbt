@@ -50,6 +50,7 @@ lazy val dependencies = Seq(
 )
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
+dependencyOverrides += "com.google.protobuf" % "protobuf-java" % "3.25.5"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
