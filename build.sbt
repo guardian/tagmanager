@@ -27,7 +27,7 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-  "com.amazonaws" % "amazon-kinesis-client" % "1.14.10",
+  "com.amazonaws" % "amazon-kinesis-client" % "1.15.2",
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
@@ -50,7 +50,6 @@ lazy val dependencies = Seq(
 )
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
-dependencyOverrides += "com.google.protobuf" % "protobuf-java" % "3.25.5"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
