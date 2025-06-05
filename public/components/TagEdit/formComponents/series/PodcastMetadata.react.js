@@ -109,6 +109,22 @@ export default class PodcastMetadata extends React.Component {
           }));
   }
 
+    updateEpisodicArtworkEnabled(e) {
+        const isEnabled = e.target.checked;
+
+        this.props.updateTag(R.merge(this.props.tag, {
+            podcastMetadata: isEnabled
+                ? R.merge(this.props.tag.podcastMetadata, { episodicArtworkEnabled: isEnabled })
+                : R.omit(['episodicArtworkEnabledFrom'], R.merge(this.props.tag.podcastMetadata, { episodicArtworkEnabled: isEnabled }))
+        }));
+    }
+
+  updateEpisodicArtworkEnabledFrom(e) {
+      this.props.updateTag(R.merge(this.props.tag, {
+          podcastMetadata: R.merge(this.props.tag.podcastMetadata, { episodicArtworkEnabledFrom: e.target.value })
+      }));
+  }
+
   renderMetadataForm() {
     if (!this.tagHasPodcast()) {
       return false;
@@ -217,6 +233,23 @@ export default class PodcastMetadata extends React.Component {
           label="Podcast Image"
           onChange={this.updateImage.bind(this)}
           tagEditable={this.props.tagEditable}/>
+        <div className="tag-edit__field">
+          <input type="checkbox"
+            onChange={this.updateEpisodicArtworkEnabled.bind(this)}
+            checked={this.props.tag.podcastMetadata.episodicArtworkEnabled || false}
+            disabled={!this.props.tagEditable} />
+          <label className="tag-edit__label">Enable Episodic Artwork</label>
+        </div>
+        {this.props.tag.podcastMetadata.episodicArtworkEnabled && (
+          <div className="tag-edit__field">
+            <label className="tag-edit__label">Enable Episodic Artwork Start Date</label>
+            <input type="date"
+              className="tag-edit__input"
+              value={(this.props.tag.podcastMetadata.episodicArtworkEnabledFrom || '').split('T')[0]}
+              onChange={this.updateEpisodicArtworkEnabledFrom.bind(this)}
+              disabled={!this.props.tagEditable} />
+          </div>
+        )}
       </div>
     );
   }
