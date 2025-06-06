@@ -238,11 +238,11 @@ export default class PodcastMetadata extends React.Component {
             onChange={this.updateEpisodicArtworkEnabled.bind(this)}
             checked={this.props.tag.podcastMetadata.episodicArtworkEnabled || false}
             disabled={!this.props.tagEditable} />
-          <label className="tag-edit__label">Enable Episodic Artwork</label>
+          <label className="tag-edit__label">Is episodic artwork enabled?</label>
         </div>
         {this.props.tag.podcastMetadata.episodicArtworkEnabled && (
           <div className="tag-edit__field">
-            <label className="tag-edit__label">Enable Episodic Artwork Start Date</label>
+            <label className="tag-edit__label">Start date for episodic artwork</label>
             <input type="date"
               className="tag-edit__input"
               value={(this.props.tag.podcastMetadata.episodicArtworkEnabledFrom || '').split('T')[0]}
