@@ -1,10 +1,13 @@
 package model
 
 import play.api.libs.json._
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.implicits.optionWithNull
 import com.gu.tagmanagement.{PodcastMetadata => ThriftPodcastMetadata, PodcastCategory => ThriftPodcastCategory}
+import org.joda.time.DateTime
 
 case class PodcastMetadata( linkUrl: String,
                             copyrightText: Option[String] = None,
@@ -19,24 +22,28 @@ case class PodcastMetadata( linkUrl: String,
                             googlePodcastsUrl: Option[String] = None,
                             spotifyUrl: Option[String] = None,
                             acastId: Option[String] = None,
-                            pocketCastsUrl: Option[String] = None
+                            pocketCastsUrl: Option[String] = None,
+                            episodicArtworkEnabled: Option[Boolean] = None,
+                            episodicArtworkEnabledFrom: Option[DateTime] = None
 ) {
 
   def asThrift = ThriftPodcastMetadata(
-    linkUrl =           linkUrl,
-    copyrightText =     copyrightText,
-    authorText =        authorText,
-    iTunesUrl =         iTunesUrl,
-    iTunesBlock =       iTunesBlock,
-    clean =             clean,
-    explicit =          explicit,
-    image =             image.map(_.asThrift),
-    categories =        categories.map((cat) => List(cat.asThrift)),
-    podcastType =       podcastType,
-    googlePodcastsUrl = googlePodcastsUrl,
-    spotifyUrl =        spotifyUrl,
-    acastId =           acastId,
-    pocketCastsUrl =    pocketCastsUrl
+    linkUrl =                    linkUrl,
+    copyrightText =              copyrightText,
+    authorText =                 authorText,
+    iTunesUrl =                  iTunesUrl,
+    iTunesBlock =                iTunesBlock,
+    clean =                      clean,
+    explicit =                   explicit,
+    image =                      image.map(_.asThrift),
+    categories =                 categories.map((cat) => List(cat.asThrift)),
+    podcastType =                podcastType,
+    googlePodcastsUrl =          googlePodcastsUrl,
+    spotifyUrl =                 spotifyUrl,
+    acastId =                    acastId,
+    pocketCastsUrl =             pocketCastsUrl,
+    episodicArtworkEnabled =     episodicArtworkEnabled,
+    episodicArtworkEnabledFrom = episodicArtworkEnabledFrom.map(_.getMillis)
   )
 
   def asExportedXml = {
@@ -54,6 +61,8 @@ case class PodcastMetadata( linkUrl: String,
     <image>{this.image.map(x => x.asExportedXml).getOrElse("")}</image>
     <categories>{this.categories.map(_.asExportedXml).getOrElse("")}</categories>
     <type>{this.podcastType.getOrElse("")}</type>
+    <episodicArtworkEnabled>{this.episodicArtworkEnabled}</episodicArtworkEnabled>
+    <episodicArtworkEnabledFrom>{this.episodicArtworkEnabledFrom.map(_.getMillis).getOrElse("")}</episodicArtworkEnabledFrom>
   }
 }
 
@@ -63,20 +72,22 @@ object PodcastMetadata {
 
   def apply(thriftPodcastMetadata: ThriftPodcastMetadata): PodcastMetadata =
     PodcastMetadata(
-      linkUrl =           thriftPodcastMetadata.linkUrl,
-      copyrightText =     thriftPodcastMetadata.copyrightText,
-      authorText =        thriftPodcastMetadata.authorText,
-      iTunesUrl =         thriftPodcastMetadata.iTunesUrl,
-      iTunesBlock =       thriftPodcastMetadata.iTunesBlock,
-      clean =             thriftPodcastMetadata.clean,
-      explicit =          thriftPodcastMetadata.explicit,
-      image =             thriftPodcastMetadata.image.map(Image(_)),
-      categories =        thriftPodcastMetadata.categories.map(x => PodcastCategory(x.head)),
-      podcastType =       thriftPodcastMetadata.podcastType,
-      googlePodcastsUrl = thriftPodcastMetadata.googlePodcastsUrl,
-      spotifyUrl =        thriftPodcastMetadata.spotifyUrl,
-      acastId =           thriftPodcastMetadata.acastId,
-      pocketCastsUrl =    thriftPodcastMetadata.pocketCastsUrl
+      linkUrl =                    thriftPodcastMetadata.linkUrl,
+      copyrightText =              thriftPodcastMetadata.copyrightText,
+      authorText =                 thriftPodcastMetadata.authorText,
+      iTunesUrl =                  thriftPodcastMetadata.iTunesUrl,
+      iTunesBlock =                thriftPodcastMetadata.iTunesBlock,
+      clean =                      thriftPodcastMetadata.clean,
+      explicit =                   thriftPodcastMetadata.explicit,
+      image =                      thriftPodcastMetadata.image.map(Image(_)),
+      categories =                 thriftPodcastMetadata.categories.map(x => PodcastCategory(x.head)),
+      podcastType =                thriftPodcastMetadata.podcastType,
+      googlePodcastsUrl =          thriftPodcastMetadata.googlePodcastsUrl,
+      spotifyUrl =                 thriftPodcastMetadata.spotifyUrl,
+      acastId =                    thriftPodcastMetadata.acastId,
+      pocketCastsUrl =             thriftPodcastMetadata.pocketCastsUrl,
+      episodicArtworkEnabled =     thriftPodcastMetadata.episodicArtworkEnabled,
+      episodicArtworkEnabledFrom = thriftPodcastMetadata.episodicArtworkEnabledFrom.map(new DateTime(_))
     )
 }
 
