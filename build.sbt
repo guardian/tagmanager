@@ -49,7 +49,7 @@ lazy val dependencies = Seq(
   "com.madgag" %% "scala-collection-plus" % "1.0.0"
 )
 
-dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
+dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.70"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
