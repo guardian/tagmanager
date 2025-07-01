@@ -1,5 +1,5 @@
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.5")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.8")
 
 addSbtPlugin("com.github.sbt" % "sbt-digest" % "2.1.0")
 
