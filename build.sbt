@@ -44,7 +44,7 @@ lazy val dependencies = Seq(
   "com.beachape" %% "enumeratum" % "1.5.15",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.2",
-  "org.apache.commons" % "commons-lang3" % "3.11",
+  "org.apache.commons" % "commons-lang3" % "3.17.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.4",
   "com.madgag" %% "scala-collection-plus" % "1.0.0"
 )
