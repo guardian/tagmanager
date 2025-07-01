@@ -32,24 +32,24 @@ lazy val dependencies = Seq(
   "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
-  "com.squareup.okhttp3" % "okhttp" % "4.9.2",
-  "com.google.guava" % "guava" % "18.0",
+  "com.squareup.okhttp3" % "okhttp" % "4.9.3",
+  "com.google.guava" % "guava" % "33.4.8-jre",
   "com.gu" %% "content-api-client-default" % "27.0.0",
   "com.gu" %% "tags-thrift-schema" % "2.8.5",
-  "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
-  "org.slf4j" % "slf4j-api" % "1.7.12",
-  "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
+  "net.logstash.logback" % "logstash-logback-encoder" % "7.4",
+  "org.slf4j" % "slf4j-api" % "1.7.36",
+  "org.slf4j" % "jcl-over-slf4j" % "1.7.36",
   "com.gu"  %% "panda-hmac-play_3-0" % pandaVersion,
   "com.gu" %% "content-api-client-aws" % "0.7.4",
-  "com.beachape" %% "enumeratum" % "1.5.13",
+  "com.beachape" %% "enumeratum" % "1.5.15",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "com.typesafe.play" %% "play-json-joda" % "2.8.1",
-  "org.apache.commons" % "commons-lang3" % "3.11",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
-  "com.madgag" %% "scala-collection-plus" % "0.11"
+  "com.typesafe.play" %% "play-json-joda" % "2.8.2",
+  "org.apache.commons" % "commons-lang3" % "3.17.0",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.4",
+  "com.madgag" %% "scala-collection-plus" % "1.0.0"
 )
 
-dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
+dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.70"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
