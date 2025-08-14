@@ -55,6 +55,6 @@ alongside the application which provides Hot Reloading. Changes you make to code
 Developing
 ==========
 
-The backend code used the standard scala play layout.
+The backend code used the standard Scala Play layout.
 
 The frontend components live in the public directory in root. Css is compiled from sass file in the style directory.
