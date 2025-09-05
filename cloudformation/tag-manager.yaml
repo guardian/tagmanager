@@ -336,6 +336,7 @@ Resources:
                 - "TLSv1.2"
             DomainName: !GetAtt TagManagerLoadBalancer.DNSName
             Id: !Ref 'TagManagerLoadBalancer'
+        DefaultRootObject: ""
         ViewerCertificate:
           AcmCertificateArn: !Sub '{{resolve:ssm:/${Stage}/flexible/tagmanager/cloudFrontCertificateArn}}'
           MinimumProtocolVersion: "TLSv1.2_2021"
