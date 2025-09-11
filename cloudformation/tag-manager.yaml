@@ -49,6 +49,10 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<String>
     Description: ARN of the kinesis stream for logging to ELK (logs.gutools)
     Default: /account/services/logging.stream
+  CloudfrontPrefixList:
+    Description: ID of the PrefixList that contains Cloudfront IP ranges
+    Type: String
+    Default: pl-4fa04526
 Conditions:
   IsProd: !Equals [!Ref Stage, PROD]
 Mappings:
@@ -247,13 +251,9 @@ Resources:
       VpcId: !Ref 'VpcId'
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
         FromPort: '443'
         ToPort: '443'
-        CidrIp: 0.0.0.0/0
+        SourcePrefixListId: !Ref 'CloudfrontPrefixList'
   TagManagerLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
