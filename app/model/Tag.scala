@@ -5,7 +5,7 @@ import play.api.Logging
 import play.api.libs.json._
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.Jsonx
-import com.gu.tagmanagement.{TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
+import com.gu.tagmanagement.{KeywordType, TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
 import helpers.XmlHelpers._
 import repositories.{SectionRepository, SponsorshipRepository}
 
@@ -42,6 +42,7 @@ case class Tag(
                 expired: Boolean = false,
                 adBlockingLevel: Option[BlockingLevel],
                 contributionBlockingLevel: Option[BlockingLevel],
+                keywordType: KeywordType = KeywordType.None, // Validate this is possible
                 var updatedAt: Long = 0L
 ) {
 
@@ -80,7 +81,8 @@ case class Tag(
     expired = expired,
     campaignInformation = campaignInformation.map(_.asThrift),
     adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
-    contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName))
+    contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
+    keywordType = Some(keywordType) // when we make this field required in the thrift, can we remove this Some() ?
   )
 
   // in this limited format for inCopy to consume
@@ -171,7 +173,8 @@ object Tag extends Logging {
       paidContentInformation = thriftTag.paidContentInformation.map(PaidContentInformation(_)),
       expired = thriftTag.expired,
       adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
-      contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name))
+      contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
+      keywordType = thriftTag.keywordType
     )
 }
 
@@ -206,7 +209,8 @@ case class DenormalisedTag (
   paidContentInformation: Option[PaidContentInformation] = None,
   expired: Boolean = false,
   adBlockingLevel: Option[BlockingLevel],
-  contributionBlockingLevel: Option[BlockingLevel]
+  contributionBlockingLevel: Option[BlockingLevel],
+  keywordType: KeywordType = KeywordType.None, // Should this be an option or is it OK to force a default here.
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
@@ -240,7 +244,8 @@ case class DenormalisedTag (
       paidContentInformation = paidContentInformation,
       expired = expired,
       adBlockingLevel = adBlockingLevel,
-      contributionBlockingLevel = contributionBlockingLevel
+      contributionBlockingLevel = contributionBlockingLevel,
+      keywordType = keywordType
     )
     (tag, sponsorship)
   }
@@ -279,6 +284,7 @@ object DenormalisedTag{
     paidContentInformation = t.paidContentInformation,
     expired = t.expired,
     adBlockingLevel = t.adBlockingLevel,
-    contributionBlockingLevel = t.contributionBlockingLevel
+    contributionBlockingLevel = t.contributionBlockingLevel,
+    keywordType = t.keywordType
   )
 }
