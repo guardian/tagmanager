@@ -14,7 +14,8 @@ const BLANK_TAG = {
   parents: [],
   isMicrosite: false,
   adBlockingLevel: 'NONE',
-  contributionBlockingLevel: 'NONE'
+  contributionBlockingLevel: 'NONE',
+    keywordType: undefined,
 };
 
 function requestTagCreate() {
