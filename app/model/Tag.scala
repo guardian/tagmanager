@@ -5,9 +5,9 @@ import play.api.Logging
 import play.api.libs.json._
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.Jsonx
-import com.gu.tagmanagement.{KeywordType, TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
+import com.gu.tagmanagement.{KeywordType => ThriftKeywordType, TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
 import helpers.XmlHelpers._
-import repositories.{SectionRepository, SponsorshipRepository}
+import repositories.{SponsorshipRepository}
 
 import scala.util.control.NonFatal
 import scala.xml.Node
@@ -42,7 +42,7 @@ case class Tag(
                 expired: Boolean = false,
                 adBlockingLevel: Option[BlockingLevel],
                 contributionBlockingLevel: Option[BlockingLevel],
-                keywordType: KeywordType = KeywordType.None, // Validate this is possible
+                keywordType: Option[KeywordType],
                 var updatedAt: Long = 0L
 ) {
 
@@ -82,7 +82,7 @@ case class Tag(
     campaignInformation = campaignInformation.map(_.asThrift),
     adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
     contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
-    keywordType = Some(keywordType) // when we make this field required in the thrift, can we remove this Some() ?
+    keywordType = keywordType.flatMap(keyword => ThriftKeywordType.valueOf(keyword.entryName)), // 1. should this be optional ? 2. is this the right pattern or should i add a read/writes for the enum?
   )
 
   // in this limited format for inCopy to consume
@@ -174,7 +174,7 @@ object Tag extends Logging {
       expired = thriftTag.expired,
       adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
       contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
-      keywordType = thriftTag.keywordType
+      keywordType = thriftTag.keywordType.map(tLevel => KeywordType.withName(tLevel.name))
     )
 }
 
@@ -210,7 +210,7 @@ case class DenormalisedTag (
   expired: Boolean = false,
   adBlockingLevel: Option[BlockingLevel],
   contributionBlockingLevel: Option[BlockingLevel],
-  keywordType: KeywordType = KeywordType.None, // Should this be an option or is it OK to force a default here.
+  keywordType: Option[KeywordType] = Some(KeywordType.NONE), // is it OK to force a default here or should it be NONE.
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
