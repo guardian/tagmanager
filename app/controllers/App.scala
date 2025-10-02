@@ -38,9 +38,8 @@ class App(
     val allTags = TagType.list.map(_.name)
     var permittedTags = ListBuffer[String]()
 
-    val allKeywordTypes = KeywordType.list.map(_.name)
     //TODO: add permissions for keyword types if required
-    // var permittedKeywords = ListBuffer[String]()
+    val allKeywordTypes = KeywordType.list.map(_.name)
 
     for (tag <- allTags) {
       TagTypePermissionMap(tag) match {
@@ -59,10 +58,10 @@ class App(
       capiKey = Config().capiKey,
       tagTypes = allTags,
       permittedTagTypes = permittedTags.toList,
-      permittedKeywordTypes = allKeywordTypes,
       permissions = userPermissions,
       reauthUrl = "/reauth",
-      tagSearchPageSize = Config().tagSearchPageSize
+      tagSearchPageSize = Config().tagSearchPageSize,
+      keywordTypes = allKeywordTypes,
     )
 
     val result = views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString())
