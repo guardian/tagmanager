@@ -118,7 +118,7 @@ function validateContributorInformation(tag) {
 }
 
 export function validateTag(tag) {
-  let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
+  let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type', 'keywordType'];
   let booleanFields = ['hidden', 'legallySensitive'];
 
   let additionalErrors = []; //Use this to store other validation errors
