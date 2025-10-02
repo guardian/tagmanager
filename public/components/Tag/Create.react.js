@@ -118,7 +118,7 @@ class TagCreate extends React.Component {
                 {this.props.tag.type  && (
                     <div className="tag-edit__input-group">
                      <label className="tag-edit__input-group__header">Keyword Type</label>
-                     <TypeSelect selectedType={this.props.tag.keywordType} types={this.props.config.permittedKeywordTypes} onChange={this.setKeywordType.bind(this)}/>
+                     <TypeSelect selectedType={this.props.tag.keywordType} types={this.props.config.keywordTypes} onChange={this.setKeywordType.bind(this)}/>
                     </div>
                 )}
                 {this.props.tag.type ? <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/> : false}
