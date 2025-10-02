@@ -91,6 +91,15 @@ class TagCreate extends React.Component {
       this.props.tagActions.populateEmptyTag(e.target.value);
     }
 
+    setKeywordType(e) {
+        this.updateTag(
+            Object.assign({}, this.props.tag, {
+                keywordType: e.target.value
+            })
+        );
+    }
+
+
     render () {
 
       if (!this.props.tag) {
@@ -105,7 +114,14 @@ class TagCreate extends React.Component {
                 <label className="tag-edit__input-group__header">Tag Type</label>
                 <TypeSelect selectedType={this.props.tag.type} types={this.props.config.permittedTagTypes} onChange={this.onUpdateType.bind(this)}/>
               </div>
-              {this.props.tag.type ? <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/> : false}
+
+                {this.props.tag.type  && (
+                    <div className="tag-edit__input-group">
+                     <label className="tag-edit__input-group__header">Keyword Type</label>
+                     <TypeSelect selectedType={this.props.tag.keywordType} types={this.props.config.permittedKeywordTypes} onChange={this.setKeywordType.bind(this)}/>
+                    </div>
+                )}
+                {this.props.tag.type ? <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.updateTag.bind(this)} tagEditable={this.props.tagEditable}/> : false}
               {this.props.tag.type ? <TagValidationErrors validations={this.generateValidationErrors()} /> : false }
             </div>
             <div className="tag__column"></div>
