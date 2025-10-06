@@ -16,7 +16,7 @@ import CommandError._
 import play.api.Logging
 import services.KinesisStreams
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.json.OFormat
 
 case class InlinePaidContentSponsorshipCommand(
@@ -83,7 +83,8 @@ case class CreateTagCommand(
                       paidContentInformation: Option[PaidContentInformation] = None,
                       createMicrosite: Boolean = false,
                       adBlockingLevel: Option[BlockingLevel] = None,
-                      contributionBlockingLevel: Option[BlockingLevel] = None
+                      contributionBlockingLevel: Option[BlockingLevel] = None,
+                           keywordType: Option[KeywordType] = None
                            ) extends Command with Logging {
 
   type T = Tag
@@ -178,7 +179,8 @@ case class CreateTagCommand(
       expired = createdSponsorship.map(_.status == "expired").getOrElse(false),
       updatedAt = new DateTime(DateTimeZone.UTC).getMillis,
       adBlockingLevel = adBlockingLevel,
-      contributionBlockingLevel = contributionBlockingLevel
+      contributionBlockingLevel = contributionBlockingLevel,
+      keywordType = keywordType,
     )
 
     val result = TagRepository.upsertTag(tag)
