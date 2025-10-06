@@ -119,7 +119,7 @@ class TagDisplay extends React.Component {
               </div>
                 <div className="tag-edit__input-group">
                     <label className="tag-edit__input-group__header">Keyword Type</label>
-                    <TypeSelect selectedType={this.props.tag.keywords} types={this.props.config.keywordTypes} forceDisabled={true}/>
+                    <TypeSelect selectedType={this.props.tag.keywords} types={this.props.config.keywordTypes} forceDisabled={false}/>
                 </div>
               <TagEdit tag={this.props.tag} sections={this.props.sections} updateTag={this.props.tagActions.updateTag} pathLocked={true} tagEditable={this.props.tagEditable}/>
               <TagValidationErrors validations={validateTag(this.props.tag)} />
