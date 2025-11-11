@@ -210,7 +210,7 @@ case class DenormalisedTag (
   expired: Boolean = false,
   adBlockingLevel: Option[BlockingLevel],
   contributionBlockingLevel: Option[BlockingLevel],
-  keywordType: Option[KeywordType] = Some(KeywordType.NONE), // is it OK to force a default here or should it be NONE.
+  keywordType: Option[KeywordType] = None,
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {

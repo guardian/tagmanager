@@ -22,8 +22,6 @@ object KeywordType extends Enum[KeywordType] {
 
   case object OTHER extends KeywordType
 
-  case object NONE extends KeywordType
-
 
   override def withName(name: String): KeywordType = {
     super.withName(name.toUpperCase)
@@ -41,7 +39,6 @@ object KeywordType extends Enum[KeywordType] {
         case KeywordType.WORK_OF_ART_OR_PRODUCT => JsSuccess(WORK_OF_ART_OR_PRODUCT)
         case KeywordType.PLACE => JsSuccess(PLACE)
         case KeywordType.OTHER => JsSuccess(OTHER)
-        case KeywordType.NONE => JsSuccess(NONE)
       }
     })
   }

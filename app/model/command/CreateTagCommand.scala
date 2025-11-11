@@ -84,7 +84,7 @@ case class CreateTagCommand(
                       createMicrosite: Boolean = false,
                       adBlockingLevel: Option[BlockingLevel] = None,
                       contributionBlockingLevel: Option[BlockingLevel] = None,
-                           keywordType: Option[KeywordType] = None
+                           keywordType: Option[KeywordType] = None,
                            ) extends Command with Logging {
 
   type T = Tag
