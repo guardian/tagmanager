@@ -15,7 +15,7 @@ export const KeywordSelect = ({updateTag, tag}) => {
                 <label className="tag-edit__input-group__header">Keyword Type</label>
                 <div className="tag-edit__field">
                     <select onChange={setKeywordType} value={tag.keywordType ?? ""}>
-                        <option value="">Select a keyword type...</option>
+                        <option></option>
                         {keywordTagTypes.map(keyword => {
                             const optionValue = keyword.value
                             return (
