@@ -118,13 +118,13 @@ function validateContributorInformation(tag) {
 }
 
 export function validateTag(tag) {
-  let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type', 'keywordType'];
+  let mandatoryFields = ['internalName', 'externalName', 'comparableValue', 'slug', 'type'];
   let booleanFields = ['hidden', 'legallySensitive'];
 
   let additionalErrors = []; //Use this to store other validation errors
 
   if (tag.type === tagTypes.topic.name) {
-    mandatoryFields = mandatoryFields.concat(['section']);
+    mandatoryFields = mandatoryFields.concat(['section', 'keywordType']);
   } else if (tag.type === tagTypes.series.name) {
     mandatoryFields = mandatoryFields.concat(['section']);
     additionalErrors = additionalErrors.concat(validatePodcast(tag));
