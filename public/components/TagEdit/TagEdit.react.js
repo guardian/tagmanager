@@ -6,7 +6,7 @@ import TagVisibility from './formComponents/TagVisibility.react';
 import TagAdBlocking from './formComponents/TagAdBlocking.react';
 import SectionSelect from '../utils/SectionSelect.react';
 
-import TopicCategories from './formComponents/topic/TopicCategories.js';
+import {KeywordSelect} from "./formComponents/topic/KeywordSelect.react";
 import PodcastMetadata from  './formComponents/series/PodcastMetadata.react';
 import ContributorInfoEdit from './formComponents/contributor/ContributorInfoEdit.react';
 import PublicationInfoEdit from './formComponents/publication/PublicationInfoEdit.react';
@@ -66,17 +66,12 @@ export default class TagEdit extends React.Component {
                 disabled={this.props.pathLocked || !this.props.tagEditable}
               />
           </div>
+            <KeywordSelect
+                {...this.props}
+            />
         </div>
       );
 
-      //TODO RE-ADD THIS COMPONENT:
-      //<div className="tag-edit__input-group" key="topic-category">
-      //   <label className="tag-edit__input-group__header">Category</label>
-      //     <TopicCategories
-      //       selectedCategories={this.props.tag.categories}
-      //       onChange={this.onUpdateCategory.bind(this)}
-      //       tagEditable={this.props.tagEditable}/>
-      // </div>
     }
 
     renderSeriesFields() {
