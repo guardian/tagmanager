@@ -82,7 +82,7 @@ case class Tag(
     campaignInformation = campaignInformation.map(_.asThrift),
     adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
     contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
-    keywordType = keywordType.flatMap(keyword => ThriftKeywordType.valueOf(keyword.entryName)), // 1. should this be optional ? 2. is this the right pattern or should i add a read/writes for the enum?
+    keywordType = keywordType.flatMap(keyword => ThriftKeywordType.valueOf(keyword.entryName)),
   )
 
   // in this limited format for inCopy to consume
