@@ -9,7 +9,9 @@ systems on relevant pages. Everyone loves tags.
 The tag manager allows the tags to be ... er ... managed
 
 ### Useful Links
+
 - [Explainer video on 'book tags'](https://drive.google.com/file/d/1eIG_OjIm__moIGzyA8l4aSUBZ0_9ciz5/view)
+- [Sam’s tag manager overview](https://drive.google.com/file/d/17y73s0nhe4gbBZtcEHb2VWJ98D1sVNPK/view?usp=sharing)
 
  
 Running
