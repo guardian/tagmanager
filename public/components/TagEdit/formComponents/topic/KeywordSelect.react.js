@@ -1,7 +1,7 @@
 import React from "react";
 import {keywordTagTypes} from "../../../../constants/keywordTagTypes";
 
-export const KeywordSelect = ({updateTag, tag}) => {
+export const KeywordTypeSelect = ({updateTag, tag}) => {
     const setKeywordType = (e) => {
         updateTag(
             Object.assign({}, tag, {
@@ -24,7 +24,6 @@ export const KeywordSelect = ({updateTag, tag}) => {
                             </option>
                         );
                     })}
-                    )
                 </select>
             </div>
         </div>
