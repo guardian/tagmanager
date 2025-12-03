@@ -82,7 +82,14 @@ case class Tag(
     campaignInformation = campaignInformation.map(_.asThrift),
     adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
     contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
-    keywordType = keywordType.flatMap(keyword => ThriftKeywordType.valueOf(keyword.entryName)),
+    keywordType = keywordType.map {
+      case KeywordType.PERSON => ThriftKeywordType.Person
+      case KeywordType.ORGANISATION => ThriftKeywordType.Organisation
+      case KeywordType.EVENT => ThriftKeywordType.Event
+      case KeywordType.WORK_OF_ART_OR_PRODUCT => ThriftKeywordType.WorkOfArtOrProduct
+      case KeywordType.PLACE => ThriftKeywordType.Place
+      case KeywordType.OTHER => ThriftKeywordType.Other
+    },
   )
 
   // in this limited format for inCopy to consume
