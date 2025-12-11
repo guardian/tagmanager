@@ -12,8 +12,7 @@ case class ClientConfig(username: String,
                         permittedTagTypes: List[String],
                         permissions: Map[String, Boolean],
                         reauthUrl: String,
-                        tagSearchPageSize: Int,
-                        keywordTypes: List[String],
+                        tagSearchPageSize: Int
                        )
 
 object ClientConfig {
