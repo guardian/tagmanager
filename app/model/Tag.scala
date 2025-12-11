@@ -5,9 +5,9 @@ import play.api.Logging
 import play.api.libs.json._
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.Jsonx
-import com.gu.tagmanagement.{TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
+import com.gu.tagmanagement.{KeywordType => ThriftKeywordType, TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
 import helpers.XmlHelpers._
-import repositories.{SectionRepository, SponsorshipRepository}
+import repositories.{SponsorshipRepository}
 
 import scala.util.control.NonFatal
 import scala.xml.Node
@@ -42,6 +42,7 @@ case class Tag(
                 expired: Boolean = false,
                 adBlockingLevel: Option[BlockingLevel],
                 contributionBlockingLevel: Option[BlockingLevel],
+                keywordType: Option[KeywordType],
                 var updatedAt: Long = 0L
 ) {
 
@@ -80,7 +81,15 @@ case class Tag(
     expired = expired,
     campaignInformation = campaignInformation.map(_.asThrift),
     adBlockingLevel = adBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
-    contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName))
+    contributionBlockingLevel = contributionBlockingLevel.flatMap(level => ThriftAdBlockingLevel.valueOf(level.entryName)),
+    keywordType = keywordType.map {
+      case KeywordType.PERSON => ThriftKeywordType.Person
+      case KeywordType.ORGANISATION => ThriftKeywordType.Organisation
+      case KeywordType.EVENT => ThriftKeywordType.Event
+      case KeywordType.WORK_OF_ART_OR_PRODUCT => ThriftKeywordType.WorkOfArtOrProduct
+      case KeywordType.PLACE => ThriftKeywordType.Place
+      case KeywordType.OTHER => ThriftKeywordType.Other
+    },
   )
 
   // in this limited format for inCopy to consume
@@ -171,7 +180,8 @@ object Tag extends Logging {
       paidContentInformation = thriftTag.paidContentInformation.map(PaidContentInformation(_)),
       expired = thriftTag.expired,
       adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
-      contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name))
+      contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
+      keywordType = thriftTag.keywordType.map(tLevel => KeywordType.withName(tLevel.name))
     )
 }
 
@@ -206,7 +216,8 @@ case class DenormalisedTag (
   paidContentInformation: Option[PaidContentInformation] = None,
   expired: Boolean = false,
   adBlockingLevel: Option[BlockingLevel],
-  contributionBlockingLevel: Option[BlockingLevel]
+  contributionBlockingLevel: Option[BlockingLevel],
+  keywordType: Option[KeywordType] = None,
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
@@ -240,7 +251,8 @@ case class DenormalisedTag (
       paidContentInformation = paidContentInformation,
       expired = expired,
       adBlockingLevel = adBlockingLevel,
-      contributionBlockingLevel = contributionBlockingLevel
+      contributionBlockingLevel = contributionBlockingLevel,
+      keywordType = keywordType
     )
     (tag, sponsorship)
   }
@@ -279,6 +291,7 @@ object DenormalisedTag{
     paidContentInformation = t.paidContentInformation,
     expired = t.expired,
     adBlockingLevel = t.adBlockingLevel,
-    contributionBlockingLevel = t.contributionBlockingLevel
+    contributionBlockingLevel = t.contributionBlockingLevel,
+    keywordType = t.keywordType
   )
 }
