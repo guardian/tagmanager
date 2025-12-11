@@ -124,7 +124,7 @@ export function validateTag(tag) {
   let additionalErrors = []; //Use this to store other validation errors
 
   if (tag.type === tagTypes.topic.name) {
-    mandatoryFields = mandatoryFields.concat(['section', 'keywordType']);
+    mandatoryFields = mandatoryFields.concat(['section']);
   } else if (tag.type === tagTypes.series.name) {
     mandatoryFields = mandatoryFields.concat(['section']);
     additionalErrors = additionalErrors.concat(validatePodcast(tag));

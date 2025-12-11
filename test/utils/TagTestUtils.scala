@@ -38,8 +38,7 @@ object TagTestUtils {
       paidContentInformation = Some(stubPaidContentInformation),
       adBlockingLevel = tAdBlockingLevel,
       contributionBlockingLevel = tContributionBlockingLevel,
-      updatedAt = tUpdatedAt,
-      keywordType = None,
+      updatedAt = tUpdatedAt
     )
   }
 
