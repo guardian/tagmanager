@@ -13,22 +13,22 @@ export const KeywordTypeSelect = ({updateTag, tag}) => {
 
     const keywordTypeTooltipHtml = `
         <p><strong>Person</strong><br/>
-        <span style="font-weight: normal;">Proper names of people, including fictional people, first names, last names, individual or family names, and unique nicknames. Individual artist names should be included, while band names should be organisation.</span></p>
+        <span style="font-weight: normal;">Names of people: real names or stage names</span></p>
         <br/>
         <p><strong>Organisation</strong><br/>
-        <span style="font-weight: normal;">Names of companies, government agencies, educational institutions, sports teams, political organisations, musical groups/bands, museums and galleries etc.</span></p>
+        <span style="font-weight: normal;">Organisations such as companies, institutions, political parties, sports teams, and bands</span></p>
         <br/>
         <p><strong>Event</strong><br/>
-        <span style="font-weight: normal;">Named wars, natural disasters, political events, conferences, summits, sporting or cultural events etc.</span></p>
+        <span style="font-weight: normal;">Specific events, such as named natural disasters, wars, sporting events, political events</span></p>
         <br/>
         <p><strong>Work of art or product</strong><br/>
-        <span style="font-weight: normal;">Titles of books, songs, films, TV programs and other creations. Also includes names of any product such as foods, vehicles, tech products, weapons etc.</span></p>
+        <span style="font-weight: normal;">Works of art (films, books etc.) or named products (e.g. iPhone, ChatGPT)</span></p>
         <br/>
         <p><strong>Place</strong><br/>
-        <span style="font-weight: normal;">Names of geopolitical entities (e.g. countries, cities, states, provinces etc.) and names of geographical locations (mountain ranges, coasts, planets, bodies of water, named regions (e.g. the Middle East)). Also includes names of human-made structures and buildings etc.</span></p>
+        <span style="font-weight: normal;">Named places: geopolitical and geographical locations, including structures and buildings</span></p>
         <br/>
         <p><strong>Other</strong><br/>
-        <span style="font-weight: normal;">Keyword tags that do not fit into any of the other categories. Includes more conceptual topics (e.g. education, healthcare), general subjects (e.g. human rights, diseases), and named entities outside the main categories (e.g. named animals).</span></p>
+        <span style="font-weight: normal;">General topics and concepts, or those that don't fit elsewhere (including named animals)</span></p>
         `;
 
     return (
