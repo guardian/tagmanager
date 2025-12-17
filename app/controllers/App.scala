@@ -4,10 +4,9 @@ import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model.ClientConfig
 import play.api.libs.json.Json
 import play.api.mvc.{BaseController, ControllerComponents}
-import repositories.{TagRepository, TagSearchCriteria}
 import play.api.Logging
 import services.Config
-import com.gu.tagmanagement.TagType
+import com.gu.tagmanagement.{KeywordType, TagType}
 import permissions._
 import play.api.libs.ws.WSClient
 
@@ -39,6 +38,9 @@ class App(
     val allTags = TagType.list.map(_.name)
     var permittedTags = ListBuffer[String]()
 
+    //TODO: add permissions for keyword types if required
+    val allKeywordTypes = KeywordType.list.map(_.name)
+
     for (tag <- allTags) {
       TagTypePermissionMap(tag) match {
         case Some(permissionDefinition) =>
@@ -58,7 +60,8 @@ class App(
       permittedTagTypes = permittedTags.toList,
       permissions = userPermissions,
       reauthUrl = "/reauth",
-      tagSearchPageSize = Config().tagSearchPageSize
+      tagSearchPageSize = Config().tagSearchPageSize,
+      keywordTypes = allKeywordTypes,
     )
 
     val result = views.html.Application.app("Tag Manager", jsLocation, Json.toJson(clientConfig).toString())
