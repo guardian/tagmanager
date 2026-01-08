@@ -121,7 +121,7 @@ object JobHelper {
       )
   }
 
-  def beginUpdateKeywordTypes(keywordTypeMappings: Map[Long, String])(implicit username: Option[String], ec: ExecutionContext) = {
+  def beginUpdateKeywordTypes(keywordTypeMappings: Map[String, String])(implicit username: Option[String], ec: ExecutionContext) = {
     JobRepository.addJob(
       Job(
         id = Sequences.jobId.getNextId,

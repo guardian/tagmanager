@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 case class UpdateKeywordTypeForAllTags(
-  keywordTypeMappings: Map[Long, String], // tagId -> keywordType string
+  keywordTypeMappings: Map[String, String], // tag path -> keywordType string
   username: Option[String] = None,
   `type`: String = UpdateKeywordTypeForAllTags.`type`,
   var stepStatus: String = StepStatus.ready,
@@ -28,14 +28,14 @@ case class UpdateKeywordTypeForAllTags(
 
     logger.info(s"Starting keyword type update for $totalCount tags")
 
-    keywordTypeMappings.foreach { case (tagId, keywordTypeStr) =>
-      TagRepository.getTag(tagId) match {
+    keywordTypeMappings.foreach { case (tagPath, keywordTypeStr) =>
+      TagLookupCache.allTags.get().find(_.path == tagPath) match {
         case Some(tag) =>
           val keywordType = try {
             Some(KeywordType.withName(keywordTypeStr))
           } catch {
             case _: NoSuchElementException =>
-              logger.warn(s"Invalid keyword type '$keywordTypeStr' for tag $tagId, skipping")
+              logger.warn(s"Invalid keyword type '$keywordTypeStr' for tag '$tagPath', skipping")
               None
           }
 
@@ -50,12 +50,12 @@ case class UpdateKeywordTypeForAllTags(
                 TagEvent(EventType.Update, saved.id, Some(saved.asThrift))
               )
               TagAuditRepository.upsertTagAudit(TagAudit.updated(saved))
-              logger.info(s"Updated keyword type for tag ${saved.id} (${saved.internalName}) to ${kt.entryName}")
+              logger.info(s"Updated keyword type for tag ${saved.id} (${saved.path}) to ${kt.entryName}")
             }
           }
 
         case None =>
-          logger.warn(s"Tag $tagId not found, skipping")
+          logger.warn(s"Tag with path '$tagPath' not found, skipping")
       }
 
       processedCount += 1
@@ -91,12 +91,12 @@ object UpdateKeywordTypeForAllTags {
       .flatMap { line =>
         val parts = line.trim.split(",").map(_.trim)
         if (parts.length >= 2) {
-          try {
-            val tagId = parts(0).toLong
-            val keywordType = parts(1)
-            Some(tagId -> keywordType)
-          } catch {
-            case _: NumberFormatException => None
+          val tagPath = parts(0)
+          val keywordType = parts(1)
+          if (tagPath.nonEmpty && keywordType.nonEmpty) {
+            Some(tagPath -> keywordType)
+          } else {
+            None
           }
         } else {
           None

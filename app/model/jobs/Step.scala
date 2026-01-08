@@ -124,21 +124,6 @@ object Step extends Logging {
 
   private val retryLimit = 10000
 
-  // Implicit format for Map[Long, String] used in UpdateKeywordTypeForAllTags
-  implicit val mapLongStringFormat: Format[Map[Long, String]] = new Format[Map[Long, String]] {
-    override def writes(m: Map[Long, String]): JsValue =
-      JsObject(m.map { case (k, v) => k.toString -> JsString(v) })
-
-    override def reads(json: JsValue): JsResult[Map[Long, String]] = json match {
-      case JsObject(fields) =>
-        try {
-          JsSuccess(fields.map { case (k, v) => k.toLong -> v.as[String] }.toMap)
-        } catch {
-          case _: NumberFormatException => JsError("Invalid map key - expected Long")
-        }
-      case _ => JsError("Expected JsObject for Map[Long, String]")
-    }
-  }
 
   // Keep all the serialization stuff in here just so it's in one place
   val addTagToContentFormat      = Jsonx.formatCaseClassUseDefaults[ModifyContentTags]
