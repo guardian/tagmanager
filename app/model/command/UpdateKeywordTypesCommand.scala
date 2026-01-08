@@ -5,7 +5,7 @@ import model.jobs.steps.UpdateKeywordTypeForAllTags
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class UpdateKeywordTypesCommand(keywordTypeMappings: Map[Long, String]) extends Command {
+case class UpdateKeywordTypesCommand(keywordTypeMappings: Map[String, String]) extends Command {
   override type T = Unit
 
   override def process()(implicit username: Option[String], ec: ExecutionContext): Future[Option[T]] = Future {

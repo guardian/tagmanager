@@ -11,7 +11,7 @@
         <p>Upload a CSV file to update the keywordType for multiple tags at once. This will create a background job to process all the updates.</p>
 
         <h2>CSV Format</h2>
-        <p>The CSV file should have two columns: <code>tagId</code> and <code>keywordType</code></p>
+        <p>The CSV file should have two columns: <code>path</code> and <code>keywordType</code></p>
         <p>Valid keywordType values are:</p>
         <ul>
             <li>PERSON</li>
@@ -24,10 +24,10 @@
 
         <h3>Example CSV:</h3>
         <pre>
-tagId,keywordType
-12345,PERSON
-67890,ORGANISATION
-11111,PLACE
+path,keywordType
+film/inside-out,WORK_OF_ART_OR_PRODUCT
+music/taylor-swift,PERSON
+business/mcdonalds,ORGANISATION
         </pre>
 
         <form method="post" enctype="multipart/form-data" action="/migration/keywordTypes">
