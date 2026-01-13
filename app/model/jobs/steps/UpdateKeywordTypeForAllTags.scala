@@ -93,9 +93,9 @@ object UpdateKeywordTypeForAllTags {
       .drop(1) // Skip header row
       .flatMap { line =>
         val parts = line.trim.split(",").map(_.trim)
-        if (parts.length >= 2) {
-          val tagPath = parts(0)
-          val keywordType = parts(1)
+        if (parts.length >= 4) {
+          val tagPath = parts(0)      // id column
+          val keywordType = parts(3)  // keywordType column
           if (tagPath.nonEmpty && keywordType.nonEmpty) {
             Some(tagPath -> keywordType)
           } else {
