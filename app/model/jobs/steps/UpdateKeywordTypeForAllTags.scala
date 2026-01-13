@@ -28,8 +28,11 @@ case class UpdateKeywordTypeForAllTags(
 
     logger.info(s"Starting keyword type update for $totalCount tags")
 
+    // Build a path -> tag lookup map once for efficiency
+    val tagsByPath: Map[String, model.Tag] = TagLookupCache.allTags.get().map(t => t.path -> t).toMap
+
     keywordTypeMappings.foreach { case (tagPath, keywordTypeStr) =>
-      TagLookupCache.allTags.get().find(_.path == tagPath) match {
+      tagsByPath.get(tagPath) match {
         case Some(tag) =>
           val keywordType = try {
             Some(KeywordType.withName(keywordTypeStr))
