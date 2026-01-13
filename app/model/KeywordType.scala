@@ -24,7 +24,11 @@ object KeywordType extends Enum[KeywordType] {
 
 
   override def withName(name: String): KeywordType = {
-    super.withName(name.toUpperCase)
+    val normalisedName = name.toUpperCase match {
+      case "WORKOFARTORPRODUCT" => "WORK_OF_ART_OR_PRODUCT"
+      case other => other
+    }
+    super.withName(normalisedName)
   }
 
   implicit val format: Format[KeywordType] = new Format[KeywordType] {
