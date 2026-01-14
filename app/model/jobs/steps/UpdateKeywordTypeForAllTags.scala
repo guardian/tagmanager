@@ -22,7 +22,9 @@ case class UpdateKeywordTypeForAllTags(
   var successCount: Int = 0,
   var skippedCount: Int = 0,
   var failedCount: Int = 0,
-  var totalCount: Int = 0
+  var totalCount: Int = 0,
+  var failedPaths: List[String] = List.empty,
+  var skippedPaths: List[String] = List.empty
 ) extends Step with Logging {
 
   private val BatchSize = 100
@@ -35,6 +37,8 @@ case class UpdateKeywordTypeForAllTags(
     successCount = 0
     skippedCount = 0
     failedCount = 0
+    failedPaths = List.empty
+    skippedPaths = List.empty
 
     logger.info(s"Starting keyword type update for $totalCount tags (batch size: $BatchSize, delay: ${BatchDelayMs}ms)")
 
@@ -61,7 +65,11 @@ case class UpdateKeywordTypeForAllTags(
       logger.info(s"Completed keyword type update. Total: $totalCount, Success: $successCount, Skipped: $skippedCount, Failed: $failedCount")
 
       if (failedCount > 0) {
-        logger.warn(s"$failedCount tags failed to update - check logs for details")
+        logger.warn(s"$failedCount tags failed to update. Failed paths: ${failedPaths.mkString(", ")}")
+      }
+
+      if (skippedCount > 0) {
+        logger.info(s"$skippedCount tags were skipped. Skipped paths: ${skippedPaths.mkString(", ")}")
       }
     } catch {
       case NonFatal(e) =>
@@ -78,6 +86,7 @@ case class UpdateKeywordTypeForAllTags(
         case NonFatal(e) =>
           logger.error(s"Unexpected error processing tag '$tagPath': ${e.getMessage}", e)
           failedCount += 1
+          failedPaths = failedPaths :+ tagPath
       }
       processedCount += 1
     }
@@ -113,14 +122,17 @@ case class UpdateKeywordTypeForAllTags(
               case None =>
                 logger.error(s"Failed to upsert tag '$tagPath'")
                 failedCount += 1
+                failedPaths = failedPaths :+ tagPath
             }
           case None =>
             skippedCount += 1
+            skippedPaths = skippedPaths :+ tagPath
         }
 
       case None =>
         logger.warn(s"Tag with path '$tagPath' not found, skipping")
         skippedCount += 1
+        skippedPaths = skippedPaths :+ tagPath
     }
   }
 
