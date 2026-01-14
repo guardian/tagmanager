@@ -1,0 +1,45 @@
+@()
+
+<html>
+
+    <head>
+        <title>TagManager - Update Keyword Types</title>
+    </head>
+
+    <body>
+        <h1>Update Keyword Types for Tags</h1>
+        <p>Upload a CSV file to update the keywordType for multiple tags at once. This will create a background job to process all the updates.</p>
+
+        <h2>CSV Format</h2>
+        <p>The CSV file should have four columns, but only <code>id</code> and <code>keywordType</code> are used.</p>
+        <p>Valid keywordType values are:</p>
+        <ul>
+            <li>PERSON</li>
+            <li>ORGANISATION</li>
+            <li>EVENT</li>
+            <li>WORK_OF_ART_OR_PRODUCT</li>
+            <li>PLACE</li>
+            <li>OTHER</li>
+        </ul>
+
+        <h3>Example CSV:</h3>
+        <pre>
+id,webTitle,internalName,keywordType
+education/ravensbournecollege,Ravensbourne,Ravensbourne College,PLACE
+sport/nhl,NHL,NHL,ORGANISATION
+sport/nick-kyrgios,Nick Kyrgios,Nick Kyrgios,PERSON
+sport/olympic-torch,Olympic torch,Olympic torch,OTHER
+stage/a-taste-of-honey,A Taste of Honey,A Taste of Honey,WORK_OF_ART_OR_PRODUCT
+stage/adelaide-fringe-2015,Adelaide fringe 2015,Adelaide fringe 2015,EVENT
+        </pre>
+
+        <form method="post" enctype="multipart/form-data" action="/migration/keywordTypes">
+            <label>CSV file: <input type="file" name="csvFile" accept=".csv"/></label><br /><br />
+            <input type="submit" value="Upload and Start Job" name="submit"/>
+        </form>
+
+        <p><strong>Note:</strong> After submitting, check the <a href="/status">status page</a> to monitor job progress.</p>
+    </body>
+
+</html>
+

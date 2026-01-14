@@ -134,5 +134,7 @@ GET            /migration/moveToSections                               controlle
 GET            /migration/flattenSponsoredMicrosite/:sponsId           controllers.Migration.flattenSponsoredMicrosite(sponsId: Long)
 GET            /migration/addMissingPaidContentTypes                   controllers.Migration.addMissingPaidContentTypes()
 GET            /migration/dudupeActiveSponsorships                     controllers.Migration.dudupeActiveSponsorships()
+GET            /migration/keywordTypes                                 controllers.Migration.showKeywordTypeUploadForm()
+POST           /migration/keywordTypes                                 controllers.Migration.updateKeywordTypes()
 
 
