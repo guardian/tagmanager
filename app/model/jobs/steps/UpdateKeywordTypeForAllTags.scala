@@ -9,6 +9,7 @@ import services.KinesisStreams
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
 
 case class UpdateKeywordTypeForAllTags(
   keywordTypeMappings: Map[String, String], // tag path -> keywordType string
@@ -18,57 +19,109 @@ case class UpdateKeywordTypeForAllTags(
   var stepMessage: String = "Waiting",
   var attempts: Int = 0,
   var processedCount: Int = 0,
+  var successCount: Int = 0,
+  var skippedCount: Int = 0,
+  var failedCount: Int = 0,
   var totalCount: Int = 0
 ) extends Step with Logging {
+
+  private val BatchSize = 100
+  private val BatchDelayMs = 500
 
   override def process(implicit ec: ExecutionContext): Unit = {
     implicit val un: Option[String] = username
     totalCount = keywordTypeMappings.size
     processedCount = 0
+    successCount = 0
+    skippedCount = 0
+    failedCount = 0
 
-    logger.info(s"Starting keyword type update for $totalCount tags")
+    logger.info(s"Starting keyword type update for $totalCount tags (batch size: $BatchSize, delay: ${BatchDelayMs}ms)")
 
     // Build a path -> tag lookup map once for efficiency
-    val tagsByPath: Map[String, model.Tag] = TagLookupCache.allTags.get().map(t => t.path -> t).toMap
+    val allTags = Option(TagLookupCache.allTags.get()).getOrElse {
+      throw new IllegalStateException("Tag cache not initialized - cannot proceed with keyword type update")
+    }
+    val tagsByPath: Map[String, model.Tag] = allTags.map(t => t.path -> t).toMap
+    logger.info(s"Loaded ${tagsByPath.size} tags from cache for lookup")
 
-    keywordTypeMappings.foreach { case (tagPath, keywordTypeStr) =>
-      tagsByPath.get(tagPath) match {
-        case Some(tag) =>
-          val keywordType = try {
-            Some(KeywordType.withName(keywordTypeStr))
-          } catch {
-            case _: NoSuchElementException =>
-              logger.warn(s"Invalid keyword type '$keywordTypeStr' for tag '$tagPath', skipping")
-              None
-          }
+    try {
+      // Process in batches to avoid overwhelming the system
+      keywordTypeMappings.grouped(BatchSize).foreach { batch =>
+        processBatch(batch, tagsByPath)
 
-          keywordType.foreach { kt =>
+        logger.info(s"Progress: $processedCount/$totalCount (success: $successCount, skipped: $skippedCount, failed: $failedCount)")
+
+        // Delay between batches to respect Kinesis rate limits
+        if (processedCount < totalCount) {
+          Thread.sleep(BatchDelayMs)
+        }
+      }
+
+      logger.info(s"Completed keyword type update. Total: $totalCount, Success: $successCount, Skipped: $skippedCount, Failed: $failedCount")
+
+      if (failedCount > 0) {
+        logger.warn(s"$failedCount tags failed to update - check logs for details")
+      }
+    } catch {
+      case NonFatal(e) =>
+        logger.error(s"Keyword type update failed at $processedCount/$totalCount", e)
+        throw e
+    }
+  }
+
+  private def processBatch(batch: Map[String, String], tagsByPath: Map[String, model.Tag])(implicit username: Option[String]): Unit = {
+    batch.foreach { case (tagPath, keywordTypeStr) =>
+      try {
+        processTag(tagPath, keywordTypeStr, tagsByPath)
+      } catch {
+        case NonFatal(e) =>
+          logger.error(s"Unexpected error processing tag '$tagPath': ${e.getMessage}", e)
+          failedCount += 1
+      }
+      processedCount += 1
+    }
+  }
+
+  private def processTag(tagPath: String, keywordTypeStr: String, tagsByPath: Map[String, model.Tag])(implicit username: Option[String]): Unit = {
+    tagsByPath.get(tagPath) match {
+      case Some(tag) =>
+        val keywordType = try {
+          Some(KeywordType.withName(keywordTypeStr))
+        } catch {
+          case _: NoSuchElementException =>
+            logger.warn(s"Invalid keyword type '$keywordTypeStr' for tag '$tagPath', skipping")
+            None
+        }
+
+        keywordType match {
+          case Some(kt) =>
             val updatedTag = tag.copy(keywordType = Some(kt))
             updatedTag.updatedAt = System.currentTimeMillis()
 
-            TagRepository.upsertTag(updatedTag).foreach { saved =>
-              TagLookupCache.insertTag(saved)
-              KinesisStreams.tagUpdateStream.publishUpdate(
-                saved.id.toString,
-                TagEvent(EventType.Update, saved.id, Some(saved.asThrift))
-              )
-              TagAuditRepository.upsertTagAudit(TagAudit.updated(saved))
-              logger.info(s"Updated keyword type for tag ${saved.id} (${saved.path}) to ${kt.entryName}")
+            val result = TagRepository.upsertTag(updatedTag)
+            result match {
+              case Some(saved) =>
+                TagLookupCache.insertTag(saved)
+                KinesisStreams.tagUpdateStream.publishUpdate(
+                  saved.id.toString,
+                  TagEvent(EventType.Update, saved.id, Some(saved.asThrift))
+                )
+                TagAuditRepository.upsertTagAudit(TagAudit.updated(saved))
+                logger.debug(s"Updated keyword type for tag ${saved.id} (${saved.path}) to ${kt.entryName}")
+                successCount += 1
+              case None =>
+                logger.error(s"Failed to upsert tag '$tagPath'")
+                failedCount += 1
             }
-          }
+          case None =>
+            skippedCount += 1
+        }
 
-        case None =>
-          logger.warn(s"Tag with path '$tagPath' not found, skipping")
-      }
-
-      processedCount += 1
-      if (processedCount % 100 == 0) {
-        logger.info(s"Processed $processedCount / $totalCount tags")
-        Thread.sleep(100) // Small delay to avoid overwhelming the system
-      }
+      case None =>
+        logger.warn(s"Tag with path '$tagPath' not found, skipping")
+        skippedCount += 1
     }
-
-    logger.info(s"Completed keyword type update for $processedCount tags")
   }
 
   override def waitDuration: Option[Duration] = None
@@ -88,11 +141,14 @@ object UpdateKeywordTypeForAllTags {
   val `type` = "update-keyword-type-for-all-tags"
 
   def fromCsv(csvContent: String): UpdateKeywordTypeForAllTags = {
-    val mappings = csvContent
-      .split("\n")
-      .drop(1) // Skip header row
-      .flatMap { line =>
-        val parts = line.trim.split(",").map(_.trim)
+    val lines = csvContent.linesIterator.drop(1) // Skip header row, use iterator for efficiency
+
+    val mappings = lines.flatMap { line =>
+      val trimmedLine = line.trim
+      if (trimmedLine.isEmpty) {
+        None
+      } else {
+        val parts = trimmedLine.split(",").map(_.trim)
         if (parts.length >= 4) {
           val tagPath = parts(0)      // id column
           val keywordType = parts(3)  // keywordType column
@@ -105,7 +161,7 @@ object UpdateKeywordTypeForAllTags {
           None
         }
       }
-      .toMap
+    }.toMap
 
     UpdateKeywordTypeForAllTags(keywordTypeMappings = mappings)
   }
