@@ -11,7 +11,8 @@ resolvers ++= Resolver.sonatypeOssRepos("releases")
 scalacOptions ++= Seq(
   "-quickfix:any",
   "-release:11",
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-unchecked",
   "-deprecation",
   "-feature"
@@ -19,7 +20,7 @@ scalacOptions ++= Seq(
 
 lazy val awsVersion = "1.12.403"
 
-val pandaVersion = "9.0.0"
+val pandaVersion = "15.0.0"
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
@@ -34,13 +35,13 @@ lazy val dependencies = Seq(
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client-default" % "27.0.0",
+  "com.gu" %% "content-api-client-default" % "40.0.0",
   "com.gu" %% "tags-thrift-schema" % "2.8.5",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
-  "com.gu"  %% "panda-hmac-play_3-0" % pandaVersion,
-  "com.gu" %% "content-api-client-aws" % "0.7.4",
+  "com.gu" %% "panda-hmac-play_3-0" % pandaVersion,
+  "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
@@ -51,33 +52,36 @@ lazy val dependencies = Seq(
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
+lazy val root = (project in file("."))
+  .enablePlugins(
+    PlayScala,
+    SbtWeb,
+    JDebPackaging,
+    SystemdPlugin,
+    BuildInfoPlugin
+  )
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
     playDefaultPort := 8247,
     Universal / name := normalizedName.value,
     topLevelDirectory := Some(normalizedName.value),
-    Universal / javaOptions ++= Seq(
-      "-Dpidfile.path=/dev/null"
-    ),
-
+    Universal / javaOptions ++= Seq("-Dpidfile.path=/dev/null"),
     debianPackageDependencies := Seq("java11-runtime-headless"),
     maintainer := "digital tools team <digitalcms.dev@guardian.co.uk>",
     packageSummary := "tag manager",
     packageDescription := """manage tags""",
-
     Compile / doc := (target.value / "none"),
     scalaVersion := scalaVer,
     ThisBuild / scalaVersion := scalaVer,
     libraryDependencies ++= dependencies,
     buildInfoKeys := Seq(
       name,
-      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
+      BuildInfoKey
+        .sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
       "gitCommitId" -> Option(System.getenv("GITHUB_SHA")).getOrElse("Unknown")
     ),
     buildInfoPackage := "com.gu.tagmanager",
     buildInfoOptions := Seq(BuildInfoOption.ToJson),
-
     gzip / includeFilter := "*.html" || "*.css" || "*.js",
     pipelineStages := Seq(digest, gzip),
   )
