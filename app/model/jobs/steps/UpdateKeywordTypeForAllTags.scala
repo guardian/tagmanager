@@ -9,6 +9,7 @@ import services.KinesisStreams
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.util.Try
 import scala.util.control.NonFatal
 
 case class UpdateKeywordTypeForAllTags(
@@ -92,49 +93,40 @@ case class UpdateKeywordTypeForAllTags(
     }
   }
 
-  private def processTag(tagPath: String, keywordTypeStr: String, tagsByPath: Map[String, model.Tag])(implicit username: Option[String]): Unit = {
-    tagsByPath.get(tagPath) match {
-      case Some(tag) =>
-        val keywordType = try {
-          Some(KeywordType.withName(keywordTypeStr))
-        } catch {
-          case _: NoSuchElementException =>
-            logger.warn(s"Invalid keyword type '$keywordTypeStr' for tag '$tagPath', skipping")
-            None
-        }
-
-        keywordType match {
-          case Some(kt) =>
-            val updatedTag = tag.copy(keywordType = Some(kt))
-            updatedTag.updatedAt = System.currentTimeMillis()
-
-            val result = TagRepository.upsertTag(updatedTag)
-            result match {
-              case Some(saved) =>
-                TagLookupCache.insertTag(saved)
-                KinesisStreams.tagUpdateStream.publishUpdate(
-                  saved.id.toString,
-                  TagEvent(EventType.Update, saved.id, Some(saved.asThrift))
-                )
-                TagAuditRepository.upsertTagAudit(TagAudit.updated(saved))
-                logger.debug(s"Updated keyword type for tag ${saved.id} (${saved.path}) to ${kt.entryName}")
-                successCount += 1
-              case None =>
-                logger.error(s"Failed to upsert tag '$tagPath'")
-                failedCount += 1
-                failedPaths = failedPaths :+ tagPath
-            }
-          case None =>
-            skippedCount += 1
-            skippedPaths = skippedPaths :+ tagPath
-        }
-
-      case None =>
-        logger.warn(s"Tag with path '$tagPath' not found, skipping")
-        skippedCount += 1
-        skippedPaths = skippedPaths :+ tagPath
-    }
+  private def skipPath(tagPath: String, message: String): Unit = {
+    logger.warn(message)
+    skippedCount += 1
+    skippedPaths = skippedPaths :+ tagPath
   }
+
+  private def failPath(tagPath: String): Unit = {
+    logger.error(s"Failed to upsert tag '$tagPath'")
+    failedCount += 1
+    failedPaths = failedPaths :+ tagPath
+  }
+
+  private def processTag(tagPath: String, keywordTypeStr: String, tagsByPath: Map[String, model.Tag])(implicit username: Option[String]): Unit =
+    for {
+      tag <- tagsByPath.get(tagPath).toRight().left.map { _ =>
+        skipPath(tagPath, s"Tag with path '$tagPath' not found, skipping")
+      }
+      keywordType <- Try(KeywordType.withName(keywordTypeStr)).toEither.left.map { _ =>
+        skipPath(tagPath, s"Invalid keyword type '$keywordTypeStr' for tag '$tagPath', skipping")
+      }
+      updatedTag = tag.copy(keywordType = Some(keywordType), updatedAt = System.currentTimeMillis())
+      result <- TagRepository.upsertTag(updatedTag).toRight().left.map { _ =>
+        failPath(tagPath)
+      }
+    } yield {
+      TagLookupCache.insertTag(result)
+      KinesisStreams.tagUpdateStream.publishUpdate(
+        result.id.toString,
+        TagEvent(EventType.Update, result.id, Some(result.asThrift))
+      )
+      TagAuditRepository.upsertTagAudit(TagAudit.updated(result))
+      logger.info(s"Updated keyword type for tag ${result.id} (${result.path}) to ${keywordType.entryName}")
+      successCount += 1
+    }
 
   override def waitDuration: Option[Duration] = None
 
