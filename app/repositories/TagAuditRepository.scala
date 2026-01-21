@@ -24,7 +24,9 @@ object TagAuditRepository {
     Dynamo.tagAuditTable.getIndex("operation-date-index")
       .query("operation", operation, new RangeKeyCondition("date").ge(from))
       .asScala
-      .map(TagAudit.fromItem).toList
+      .map(TagAudit.fromItem)
+      .filterNot(audit => audit.user == "simon.byford@guardian.co.uk")
+      .toList
   }
 
   def getAuditsOfTagOperationsSince(operation: String, since: Long): List[TagAudit] = {
