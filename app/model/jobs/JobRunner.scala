@@ -92,7 +92,7 @@ class JobRunner @Inject() (lifecycle: ApplicationLifecycle)(implicit ec: Executi
 
 object JobRunner {
   val nodeId = InetAddress.getLocalHost().toString() // EC2 machines have a single eth0 so this should work?
-  val lockTimeOutMillis = 1000 * 60 * 5
+  val lockTimeOutMillis = 1000 * 60 * 30
   val cleanUpMillis = 1000 * 60 * 60 * 24
 }
 
