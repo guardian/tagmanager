@@ -121,5 +121,16 @@ object JobHelper {
       )
   }
 
+  def beginUpdateKeywordTypes(keywordTypeMappings: Map[String, String])(implicit username: Option[String], ec: ExecutionContext) = {
+    JobRepository.addJob(
+      Job(
+        id = Sequences.jobId.getNextId,
+        title = s"Updating keyword types for ${keywordTypeMappings.size} tags",
+        createdBy = username,
+        steps = List(UpdateKeywordTypeForAllTags(keywordTypeMappings, username))
+      )
+    )
+  }
+
   private def removeTagSteps(tag: Tag)(implicit username: Option[String]) = List(RemoveTagPath(tag), RemoveTagFromCapi(tag), RemoveTag(tag, username))
 }

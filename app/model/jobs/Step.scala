@@ -124,6 +124,7 @@ object Step extends Logging {
 
   private val retryLimit = 10000
 
+
   // Keep all the serialization stuff in here just so it's in one place
   val addTagToContentFormat      = Jsonx.formatCaseClassUseDefaults[ModifyContentTags]
   val mergeTagForContentFormat   = Jsonx.formatCaseClassUseDefaults[MergeTagForContent]
@@ -134,6 +135,7 @@ object Step extends Logging {
   val removeTagFromCapiFormat    = Jsonx.formatCaseClassUseDefaults[RemoveTagFromCapi]
   val removeTagFromContentFormat = Jsonx.formatCaseClassUseDefaults[RemoveTagFromContent]
   val removeTagPathFormat        = Jsonx.formatCaseClassUseDefaults[RemoveTagPath]
+  val updateKeywordTypeFormat    = Jsonx.formatCaseClassUseDefaults[UpdateKeywordTypeForAllTags]
 
   val stepWrites = new Writes[Step] {
     override def writes(step: Step): JsValue = {
@@ -147,6 +149,7 @@ object Step extends Logging {
         case s: RemoveTagFromCapi    => removeTagFromCapiFormat.writes(s)
         case s: RemoveTagFromContent => removeTagFromContentFormat.writes(s)
         case s: RemoveTagPath        => removeTagPathFormat.writes(s)
+        case s: UpdateKeywordTypeForAllTags => updateKeywordTypeFormat.writes(s)
         case other => {
           logger.warn(s"Attempted to serialize unknown step type ${other.getClass}")
           throw new UnsupportedOperationException(s"unable to serialize step of type ${other.getClass}")
@@ -167,6 +170,7 @@ object Step extends Logging {
         case JsString(RemoveTagFromCapi.`type`)    => removeTagFromCapiFormat.reads(json)
         case JsString(RemoveTagFromContent.`type`) => removeTagFromContentFormat.reads(json)
         case JsString(RemoveTagPath.`type`)        => removeTagPathFormat.reads(json)
+        case JsString(UpdateKeywordTypeForAllTags.`type`) => updateKeywordTypeFormat.reads(json)
         case _ => JsError("unexpected step type value")
       }
     }

@@ -2,7 +2,7 @@ package controllers
 
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.tagmanagement.{EventType, TagEvent}
-import model.command.FlexTagReindexCommand
+import model.command.{FlexTagReindexCommand, UpdateKeywordTypesCommand}
 import model.{PaidContentInformation, Sponsorship, TagAudit}
 import permissions.TriggerMigrationPermissionsCheck
 import play.api.Logging
@@ -169,6 +169,28 @@ class Migration(
     }
 
     Ok(s"removed ${tagsWithDuplicatSpons.length} dupes")
+  }
+
+  def showKeywordTypeUploadForm = (APIAuthAction andThen TriggerMigrationPermissionsCheck()) {
+    Ok(views.html.Application.migration.keywordTypeUploadForm())
+  }
+
+  def updateKeywordTypes = APIAuthAction(parse.multipartFormData) { req =>
+    implicit val username: Option[String] = Some(req.user.email)
+
+    req.body.file("csvFile").map { csvFile =>
+      val csvContent = Source.fromFile(csvFile.ref.path.toFile, "UTF-8").getLines().mkString("\n")
+
+      val command = UpdateKeywordTypesCommand.fromCsv(csvContent)
+      val mappingCount = command.keywordTypeMappings.size
+
+      if (mappingCount == 0) {
+        BadRequest("No valid mappings found in CSV file. Expected format: tagId,keywordType")
+      } else {
+        command.process()
+        Ok(s"Started job to update keyword types for $mappingCount tags. Check the status page for progress.")
+      }
+    }.getOrElse(BadRequest("Unable to read CSV file"))
   }
 
 }
