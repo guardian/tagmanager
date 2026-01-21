@@ -19,7 +19,7 @@ scalacOptions ++= Seq(
 
 lazy val awsVersion = "1.12.403"
 
-val pandaVersion = "9.0.0"
+val pandaVersion = "9.0.2"
 lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
@@ -29,18 +29,18 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
   "com.amazonaws" % "amazon-kinesis-client" % "1.15.3",
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
-  "com.gu" %% "editorial-permissions-client" % "2.15",
+  "com.gu" %% "editorial-permissions-client" % "2.16.0",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client-default" % "27.0.0",
+  "com.gu" %% "content-api-client-default" % "41.0.0",
   "com.gu" %% "tags-thrift-schema" % "2.8.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac-play_3-0" % pandaVersion,
-  "com.gu" %% "content-api-client-aws" % "0.7.4",
+  "com.gu" %% "content-api-client-aws" % "0.7.6",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
