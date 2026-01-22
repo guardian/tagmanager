@@ -3,12 +3,15 @@ package model.jobs.steps
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.{KeywordType, TagAudit}
 import model.jobs.{Step, StepStatus}
+import org.apache.commons.csv.{CSVFormat, CSVParser}
 import play.api.Logging
 import repositories.{TagAuditRepository, TagLookupCache, TagRepository}
 import services.KinesisStreams
 
+import java.io.StringReader
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -144,30 +147,30 @@ case class UpdateKeywordTypeForAllTags(
 object UpdateKeywordTypeForAllTags {
   val `type` = "update-keyword-type-for-all-tags"
 
-  def fromCsv(csvContent: String): UpdateKeywordTypeForAllTags = {
-    val lines = csvContent.linesIterator.drop(1) // Skip header row, use iterator for efficiency
+  def fromCsv(csvContent: String, username: Option[String] = None): UpdateKeywordTypeForAllTags = {
+    val format = CSVFormat.DEFAULT.builder()
+      .setHeader()
+      .setSkipHeaderRecord(true)
+      .build()
 
-    val mappings = lines.flatMap { line =>
-      val trimmedLine = line.trim
-      if (trimmedLine.isEmpty) {
-        None
-      } else {
-        val parts = trimmedLine.split(",").map(_.trim)
-        if (parts.length >= 4) {
-          val tagPath = parts(0)      // id column
-          val keywordType = parts(3)  // keywordType column
-          if (tagPath.nonEmpty && keywordType.nonEmpty) {
-            Some(tagPath -> keywordType)
-          } else {
-            None
-          }
+    val reader = new StringReader(csvContent)
+    val parser = CSVParser.parse(reader, format)
+
+    try {
+      val mappings = parser.getRecords.asScala.flatMap { record =>
+        val tagPath = record.get("id").trim
+        val keywordType = record.get("keywordType").trim
+        if (tagPath.nonEmpty && keywordType.nonEmpty) {
+          Some(tagPath -> keywordType)
         } else {
           None
         }
-      }
-    }.toMap
+      }.toMap
 
-    UpdateKeywordTypeForAllTags(keywordTypeMappings = mappings)
+      UpdateKeywordTypeForAllTags(keywordTypeMappings = mappings, username = username)
+    } finally {
+      parser.close()
+    }
   }
 }
 
