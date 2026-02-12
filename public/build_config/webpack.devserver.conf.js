@@ -55,20 +55,11 @@ module.exports = {
                 loaders: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
-              test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/,
-              use: [{loader: "url-loader", options: {mimetype: 'application/font-woff'}}]
-            },
-            {
-              test: /\.(ttf|eot|svg|gif)(\?v=[0-9].[0-9].[0-9])?$/,
-              use: [
-                {
-                  loader: 'file-loader',
-                  options: {
-                    name: '[name].[ext]',
-                    outputPath: 'fonts/'
-                  }
+                test: /\.(woff2?|ttf|eot|svg|gif)?(\?v=[0-9].[0-9].[0-9])?$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[name][ext]'
                 }
-              ]
             }
           ]
     },

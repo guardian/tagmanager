@@ -14,7 +14,6 @@
     "babel-loader": "^8.2.5",
     "css-loader": "^3.6.0",
     "expose-loader": "^4.1.0",
-    "file-loader": "^6.2.0",
     "lodash.debounce": "^3.1.1",
     "lodash.startcase": "^4.4.0",
     "moment": "^2.29.4",
@@ -39,7 +38,6 @@
     "sass-loader": "^8.0.2",
     "style-loader": "^2.0.0",
     "svg-sprite": "^2.0.2",
-    "url-loader": "^0.5.7",
     "webpack": "^5.84.0"
   },
   "devDependencies": {
