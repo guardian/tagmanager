@@ -22,7 +22,7 @@ lazy val awsSdk2Version = "2.42.5"
 
 val pandaVersion = "16.0.1"
 lazy val dependencies = Seq(
-  // AWS SDK 1 - DynamoDB and Kinesis (to be updated separately)
+  // AWS SDK 1 - DynamoDB (to be updated separately)
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdk1Version,
   // AWS SDK 2.x
   "software.amazon.awssdk" % "ec2" % awsSdk2Version,
