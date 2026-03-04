@@ -1,32 +1,45 @@
 package services
 
 import java.nio.ByteBuffer
-import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
+
+// AWS SDK 1.x - kept for DynamoDB, Kinesis, CloudWatch (to be migrated in separate branches)
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
-import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
 import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder
-import com.amazonaws.services.s3.{AmazonS3Client, AmazonS3ClientBuilder}
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder
 import com.amazonaws.util.EC2MetadataUtils
+
+// AWS SDK 2.x - migrated services
+import software.amazon.awssdk.auth.credentials.{ProfileCredentialsProvider => SdkV2ProfileCredentialsProvider}
+import software.amazon.awssdk.regions.{Region => SdkV2Region}
+import software.amazon.awssdk.services.ec2.Ec2Client
+import software.amazon.awssdk.services.ec2.model.{DescribeTagsRequest, Filter}
+import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sts.StsClient
+import software.amazon.awssdk.services.sts.model.AssumeRoleRequest
+import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
+
 import com.twitter.scrooge.ThriftStruct
 import play.api.Logging
-import services.AWS.region
 
 import scala.jdk.CollectionConverters._
 
 object AWS {
 
+  // SDK 1.x region (kept for DynamoDB, Kinesis, CloudWatch)
   lazy val region = Region getRegion Regions.EU_WEST_1
 
-  lazy val EC2Client = AmazonEC2ClientBuilder
-    .standard()
-    .withRegion(region.getName)
+  // SDK 2.x region
+  lazy val regionV2 = SdkV2Region.EU_WEST_1
+
+  // SDK 2.x clients
+  lazy val EC2Client = Ec2Client.builder()
+    .region(regionV2)
     .build()
+
+  // SDK 1.x clients (to be migrated in separate branches)
   lazy val CloudWatch = AmazonCloudWatchAsyncClientBuilder
     .standard()
     .withRegion(region.getName)
@@ -35,19 +48,25 @@ object AWS {
     .standard()
     .withRegion(region.getName)
     .build()
-  lazy val S3Client = AmazonS3ClientBuilder
-    .standard()
-    .withRegion(region.getName)
+
+  // SDK 2.x S3 client
+  lazy val s3Client: S3Client = S3Client.builder()
+    .region(regionV2)
     .build()
 
-  private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map(
-    new STSAssumeRoleSessionCredentialsProvider.Builder(_, "tagManager").build()
-  )
+  private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map { role =>
+    StsAssumeRoleCredentialsProvider.builder()
+      .stsClient(StsClient.builder().region(regionV2).build())
+      .refreshRequest(AssumeRoleRequest.builder()
+        .roleArn(role)
+        .roleSessionName("tagManager")
+        .build())
+      .build()
+  }
 
-  lazy val frontendStaticFilesS3Client = AmazonS3ClientBuilder
-    .standard()
-    .withCredentials(frontendCredentialsProvider.getOrElse(new ProfileCredentialsProvider("frontend")))
-    .withRegion(region.getName)
+  lazy val frontendStaticFilesS3Client = S3Client.builder()
+    .credentialsProvider(frontendCredentialsProvider.getOrElse(SdkV2ProfileCredentialsProvider.create("frontend")))
+    .region(regionV2)
     .build()
 }
 
@@ -57,13 +76,15 @@ trait AwsInstanceTags {
   def readTag(tagName: String) = {
     instanceId.flatMap { id =>
       val tagsResult = AWS.EC2Client.describeTags(
-        new DescribeTagsRequest().withFilters(
-          new Filter("resource-type").withValues("instance"),
-          new Filter("resource-id").withValues(id),
-          new Filter("key").withValues(tagName)
-        )
+        DescribeTagsRequest.builder()
+          .filters(
+            Filter.builder().name("resource-type").values("instance").build(),
+            Filter.builder().name("resource-id").values(id).build(),
+            Filter.builder().name("key").values(tagName).build()
+          )
+          .build()
       )
-      tagsResult.getTags.asScala.find(_.getKey == tagName).map(_.getValue)
+      tagsResult.tags().asScala.find(_.key() == tagName).map(_.value())
     }
   }
 }
@@ -93,9 +114,8 @@ object Dynamo {
 }
 
 object SQS {
-  lazy val SQSClient = AmazonSQSClientBuilder
-    .standard()
-    .withRegion(region.getName)
+  lazy val SQSClient = SqsClient.builder()
+    .region(AWS.regionV2)
     .build()
 
   lazy val jobQueue = new SQSQueue(Config().jobQueueName)

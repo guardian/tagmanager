@@ -17,17 +17,20 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsVersion = "1.12.403"
+lazy val awsSdk1Version = "1.12.403"
+lazy val awsSdk2Version = "2.42.5"
 
-val pandaVersion = "9.0.0"
+val pandaVersion = "16.0.1"
 lazy val dependencies = Seq(
-  "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
+  // AWS SDK 1.x - DynamoDB and Kinesis (to be migrated in separate branches)
+  "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdk1Version,
+  "com.amazonaws" % "aws-java-sdk-kinesis" % awsSdk1Version,
   "com.amazonaws" % "amazon-kinesis-client" % "1.15.3",
+  // AWS SDK 2.x - Phase 1 migration
+  "software.amazon.awssdk" % "ec2" % awsSdk2Version,
+  "software.amazon.awssdk" % "s3" % awsSdk2Version,
+  "software.amazon.awssdk" % "sqs" % awsSdk2Version,
+  "software.amazon.awssdk" % "sts" % awsSdk2Version,
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
@@ -40,7 +43,7 @@ lazy val dependencies = Seq(
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac-play_3-0" % pandaVersion,
-  "com.gu" %% "content-api-client-aws" % "0.7.4",
+  "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
