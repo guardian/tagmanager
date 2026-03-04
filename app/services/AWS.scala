@@ -2,19 +2,23 @@ package services
 
 import java.nio.ByteBuffer
 
-// AWS SDK 1.x - kept for DynamoDB, Kinesis, CloudWatch (to be migrated in separate branches)
+// AWS SDK 1.x - kept for DynamoDB (to be migrated in separate branch)
 import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder
 import com.amazonaws.util.EC2MetadataUtils
 
-// AWS SDK 2.x - migrated services
+// AWS SDK 2.x
 import software.amazon.awssdk.auth.credentials.{ProfileCredentialsProvider => SdkV2ProfileCredentialsProvider}
+import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.regions.{Region => SdkV2Region}
 import software.amazon.awssdk.services.ec2.Ec2Client
 import software.amazon.awssdk.services.ec2.model.{DescribeTagsRequest, Filter}
+import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
+import software.amazon.awssdk.services.kinesis.KinesisClient
+import software.amazon.awssdk.services.kinesis.KinesisAsyncClient
+import software.amazon.awssdk.services.kinesis.model.PutRecordRequest
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.sqs.SqsClient
 import software.amazon.awssdk.services.sts.StsClient
@@ -28,7 +32,7 @@ import scala.jdk.CollectionConverters._
 
 object AWS {
 
-  // SDK 1.x region (kept for DynamoDB, Kinesis, CloudWatch)
+  // SDK 1.x region (kept for DynamoDB)
   lazy val region = Region getRegion Regions.EU_WEST_1
 
   // SDK 2.x region
@@ -39,14 +43,21 @@ object AWS {
     .region(regionV2)
     .build()
 
-  // SDK 1.x clients (to be migrated in separate branches)
-  lazy val CloudWatch = AmazonCloudWatchAsyncClientBuilder
-    .standard()
-    .withRegion(region.getName)
+  lazy val Kinesis = KinesisClient.builder()
+    .region(regionV2)
     .build()
-  lazy val Kinesis = AmazonKinesisClientBuilder
-    .standard()
-    .withRegion(region.getName)
+
+  // Async clients for Kinesis Consumer Library
+  lazy val kinesisAsyncClient: KinesisAsyncClient = KinesisAsyncClient.builder()
+    .region(regionV2)
+    .build()
+
+  lazy val dynamoDbAsyncClient: DynamoDbAsyncClient = DynamoDbAsyncClient.builder()
+    .region(regionV2)
+    .build()
+
+  lazy val cloudWatchAsyncClient: CloudWatchAsyncClient = CloudWatchAsyncClient.builder()
+    .region(regionV2)
     .build()
 
   // SDK 2.x S3 client
@@ -138,7 +149,13 @@ class KinesisStreamProducer(streamName: String, requireCompressionByte: Boolean 
   }
 
   def publishUpdate(key: String, dataBuffer: ByteBuffer): Unit = {
-    AWS.Kinesis.putRecord(streamName, dataBuffer, key)
+    AWS.Kinesis.putRecord(
+      PutRecordRequest.builder()
+        .streamName(streamName)
+        .data(SdkBytes.fromByteBuffer(dataBuffer))
+        .partitionKey(key)
+        .build()
+    )
   }
 }
 
