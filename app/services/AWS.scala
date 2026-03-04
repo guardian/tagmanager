@@ -74,7 +74,6 @@ object AWS {
         .build())
       .build()
   }
-
   lazy val frontendStaticFilesS3Client = S3Client.builder()
     .credentialsProvider(frontendCredentialsProvider.getOrElse(SdkV2ProfileCredentialsProvider.create("frontend")))
     .region(regionV2)
