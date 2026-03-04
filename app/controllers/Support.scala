@@ -2,9 +2,11 @@ package controllers
 
 import java.io.File
 import java.net.URI
+import java.nio.file.Paths
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-import com.amazonaws.services.s3.model._
+import software.amazon.awssdk.core.sync.RequestBody
+import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model.command.CommandError._
 import model.command.{ExpireSectionContentCommand, UnexpireSectionContentCommand, UpdateTagCommand}
@@ -84,12 +86,15 @@ class Support(
         val dateSlug = new DateTime().toString("dd/MMM/yyyy")
         val logoPath = s"commercial/sponsor/${dateSlug}/${UUID.randomUUID}-${filename}"
         val contentType = req.contentType
-        val objectMetadata = new ObjectMetadata()
-        contentType.foreach(objectMetadata.setContentType(_))
+
+        val putRequestBuilder = PutObjectRequest.builder()
+          .bucket("static-theguardian-com")
+          .key(logoPath)
+        contentType.foreach(ct => putRequestBuilder.contentType(ct))
 
         AWS.frontendStaticFilesS3Client.putObject(
-          new PutObjectRequest("static-theguardian-com", logoPath, file)
-            .withMetadata(objectMetadata)
+          putRequestBuilder.build(),
+          RequestBody.fromFile(file)
         )
 
         val uploadedImageUrl = s"https://static.theguardian.com/${logoPath}"
