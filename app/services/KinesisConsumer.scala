@@ -1,13 +1,14 @@
 package services
 
 import java.nio.ByteBuffer
+import java.util.UUID
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
-import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.{IRecordProcessor, IRecordProcessorFactory}
-import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{InitialPositionInStream, KinesisClientLibConfiguration, ShutdownReason, Worker}
-import com.amazonaws.services.kinesis.clientlibrary.types.{InitializationInput, ProcessRecordsInput, ShutdownInput}
-import com.amazonaws.services.kinesis.metrics.interfaces.MetricsLevel
-import com.amazonaws.services.kinesis.model.Record
+import software.amazon.kinesis.common.ConfigsBuilder
+import software.amazon.kinesis.coordinator.Scheduler
+import software.amazon.kinesis.lifecycle.events._
+import software.amazon.kinesis.processor.{ShardRecordProcessor, ShardRecordProcessorFactory}
+import software.amazon.kinesis.retrieval.KinesisClientRecord
+import software.amazon.kinesis.retrieval.polling.PollingConfig
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
 import org.apache.thrift.protocol.{TCompactProtocol, TProtocol}
 import org.apache.thrift.transport.TIOStreamTransport
@@ -16,70 +17,88 @@ import play.api.Logging
 import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.language.implicitConversions
 
 class KinesisConsumer(streamName: String, appName: String, processor: KinesisStreamRecordProcessor) extends Logging {
 
   logger.info(s"Creating Kinesis Consumer for (streamName: $streamName, appName: $appName)")
 
-  val kinesisClientLibConfiguration =
-    new KinesisClientLibConfiguration(appName, streamName,
-      new DefaultAWSCredentialsProviderChain,
-      s"$appName-worker")
+  private val configsBuilder = new ConfigsBuilder(
+    streamName,
+    appName,
+    AWS.kinesisAsyncClient,
+    AWS.dynamoDbAsyncClient,
+    AWS.cloudWatchAsyncClient,
+    s"$appName-worker-${UUID.randomUUID()}",
+    new KinesisProcessorConsumerFactory(appName, processor)
+  )
 
-  kinesisClientLibConfiguration
-    .withRegionName(AWS.region.getName)
-    .withMetricsLevel(MetricsLevel.NONE)
-    .withInitialPositionInStream(InitialPositionInStream.LATEST)
+  private val retrievalConfig = configsBuilder.retrievalConfig()
+    .retrievalSpecificConfig(new PollingConfig(streamName, AWS.kinesisAsyncClient))
 
-  val worker = new Worker.Builder()
-    .recordProcessorFactory(new KinesisProcessorConsumerFactory(appName, processor))
-    .config(kinesisClientLibConfiguration)
-    .build()
+  private val scheduler = new Scheduler(
+    configsBuilder.checkpointConfig(),
+    configsBuilder.coordinatorConfig(),
+    configsBuilder.leaseManagementConfig(),
+    configsBuilder.lifecycleConfig(),
+    configsBuilder.metricsConfig(),
+    configsBuilder.processorConfig(),
+    retrievalConfig
+  )
 
-  def start(): Unit = { Future{ worker.run() } }
-  def stop(): Unit = { worker.shutdown() }
-}
-
-class KinesisProcessorConsumerFactory(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessorFactory {
-  override def createProcessor(): IRecordProcessor = new KinesisProcessorConsumer(appName, processor)
-}
-
-class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordProcessor) extends IRecordProcessor with Logging {
-
-
-  override def shutdown(shutdownInput: ShutdownInput): Unit = {
-    shutdownInput.getShutdownReason match {
-      case ShutdownReason.TERMINATE => {
-        logger.info(s"terminating $appName consumer")
-        //shutdownInput.getCheckpointer.checkpoint
-      }
-      case _ => logger.info(s"shutting down $appName consumer reason = ${shutdownInput.getShutdownReason}")
-    }
+  def start(): Unit = { Future { scheduler.run() } }
+  def stop(): Unit = {
+    Future { scheduler.shutdown() }
   }
+}
+
+class KinesisProcessorConsumerFactory(appName: String, processor: KinesisStreamRecordProcessor) extends ShardRecordProcessorFactory {
+  override def shardRecordProcessor(): ShardRecordProcessor = new KinesisProcessorConsumer(appName, processor)
+}
+
+class KinesisProcessorConsumer(appName: String, processor: KinesisStreamRecordProcessor) extends ShardRecordProcessor with Logging {
 
   override def initialize(initializationInput: InitializationInput): Unit = {
-    logger.info(s"$appName consumer started for shard ${initializationInput.getShardId}")
+    logger.info(s"$appName consumer started for shard ${initializationInput.shardId()}")
   }
 
   override def processRecords(processRecordsInput: ProcessRecordsInput): Unit = {
-
-    processRecordsInput.getRecords.asScala foreach { record =>
+    processRecordsInput.records().asScala.foreach { record =>
       processor.process(record)
     }
+  }
 
+  override def leaseLost(leaseLostInput: LeaseLostInput): Unit = {
+    logger.info(s"$appName consumer lease lost")
+  }
+
+  override def shardEnded(shardEndedInput: ShardEndedInput): Unit = {
+    logger.info(s"$appName consumer shard ended")
+    try {
+      shardEndedInput.checkpointer().checkpoint()
+    } catch {
+      case e: Exception => logger.error(s"Error checkpointing at shard end", e)
+    }
+  }
+
+  override def shutdownRequested(shutdownRequestedInput: ShutdownRequestedInput): Unit = {
+    logger.info(s"$appName consumer shutdown requested")
+    try {
+      shutdownRequestedInput.checkpointer().checkpoint()
+    } catch {
+      case e: Exception => logger.error(s"Error checkpointing at shutdown", e)
+    }
   }
 }
 
 trait KinesisStreamRecordProcessor {
-  def process(record: Record): Unit
+  def process(record: KinesisClientRecord): Unit
 }
 
 object KinesisRecordPayloadConversions {
 
-  def kinesisRecordAsThriftCompactProtocol(rec: Record, stripCompressionByte: Boolean = false): TProtocol = {
+  def kinesisRecordAsThriftCompactProtocol(rec: KinesisClientRecord, stripCompressionByte: Boolean = false): TProtocol = {
 
-    val data: ByteBuffer = rec.getData
+    val data: ByteBuffer = rec.data()
     val bytes = if (stripCompressionByte) ByteBuffer.wrap(data.array().tail) else data
 
     val bbis = new ByteBufferBackedInputStream(bytes)
