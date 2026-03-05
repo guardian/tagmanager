@@ -1,11 +1,12 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import org.joda.time.DateTime
 import helpers.JodaDateTimeFormat._
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
+import services.DynamoJsonConversions
 
 import scala.util.control.NonFatal
 
@@ -22,7 +23,7 @@ case class PillarAudit(
   override def resourceId = Some(pillarId.toString)
   override def message = None
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 }
 
 object PillarAudit extends Logging {
@@ -36,11 +37,11 @@ object PillarAudit extends Logging {
       (JsPath \ "pillar").format[Pillar]
     )(PillarAudit.apply, unlift(PillarAudit.unapply))
 
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[PillarAudit]
+  def fromItem(item: EnhancedDocument): PillarAudit = try {
+    Json.parse(item.toJson()).as[PillarAudit]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load pillar Audit ${item.toJSON}", e)
+      logger.error(s"failed to load pillar Audit ${item.toJson()}", e)
       throw e
     }
   }

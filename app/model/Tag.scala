@@ -1,6 +1,6 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import play.api.Logging
 import play.api.libs.json._
 import ai.x.play.json.Encoders.encoder
@@ -8,6 +8,7 @@ import ai.x.play.json.Jsonx
 import com.gu.tagmanagement.{KeywordType => ThriftKeywordType, TagReindexBatch, TagType, BlockingLevel => ThriftAdBlockingLevel, Tag => ThriftTag}
 import helpers.XmlHelpers._
 import repositories.{SponsorshipRepository}
+import services.DynamoJsonConversions
 
 import scala.util.control.NonFatal
 import scala.xml.Node
@@ -47,7 +48,7 @@ case class Tag(
                 var updatedAt: Long = 0L
 ) {
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 
   def asThrift = ThriftTag(
     id                = id,
@@ -134,11 +135,11 @@ object Tag extends Logging {
 
   implicit val tagFormat: Format[Tag] = Jsonx.formatCaseClassUseDefaults[Tag]
 
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[Tag]
+  def fromItem(item: EnhancedDocument): Tag = try {
+    Json.parse(item.toJson()).as[Tag]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load tag ${item.toJSON}", e)
+      logger.error(s"failed to load tag ${item.toJson()}", e)
       throw e
     }
   }

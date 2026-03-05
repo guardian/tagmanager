@@ -1,14 +1,15 @@
 package model;
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import play.api.libs.json._
 import play.api.Logging
+import services.DynamoJsonConversions
 import scala.util.control.NonFatal
 
 case class ReindexProgress(`type`: String, status: String, docsSent: Int, docsExpected: Int) {
-  def toItem() = Item.fromJSON(Json.toJson(this).toString())
+  def toItem(): EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
   def toCapiForm() = CapiReindexProgress(status, docsSent, docsExpected)
 }
 
@@ -25,11 +26,11 @@ object ReindexProgress extends Logging {
   implicit val reindexProgressFormat: Format[ReindexProgress] = Jsonx.formatCaseClassUseDefaults[ReindexProgress]
 
   def fromJson(json: JsValue) = json.as[Tag]
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[ReindexProgress]
+  def fromItem(item: EnhancedDocument): ReindexProgress = try {
+    Json.parse(item.toJson()).as[ReindexProgress]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load reindex progress ${item.toJSON}")
+      logger.error(s"failed to load reindex progress ${item.toJson()}")
       throw e
     }
   }
@@ -85,7 +86,7 @@ object ReindexProgress extends Logging {
 
 // Version of the reindex progress without the type string
 case class CapiReindexProgress(status: String, documentsIndexed: Int, documentsExpected: Int) {
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
   def toJson = Json.toJson(this)
 }
 

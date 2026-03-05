@@ -1,6 +1,6 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.implicits.optionWithNull
@@ -23,10 +23,10 @@ object ExternalReferenceType extends Logging {
 
   implicit val sectionFormat: OFormat[ExternalReferenceType] = Jsonx.formatCaseClass[ExternalReferenceType]
 
-  def fromItem(item: Item) = try{
-    Json.parse(item.toJSON).as[ExternalReferenceType]
+  def fromItem(item: EnhancedDocument): ExternalReferenceType = try{
+    Json.parse(item.toJson()).as[ExternalReferenceType]
   } catch {
-    case NonFatal(e) => logger.error(s"failed to load external reference type ${item.toJSON}", e); throw e
+    case NonFatal(e) => logger.error(s"failed to load external reference type ${item.toJson()}", e); throw e
   }
 
   def fromJson(json: JsValue) = json.as[ExternalReferenceType]

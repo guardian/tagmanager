@@ -1,6 +1,6 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import ai.x.play.json.implicits.optionWithNull
@@ -10,6 +10,7 @@ import play.api.Logging
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import repositories.{SectionRepository, TagRepository, TagLookupCache}
+import services.DynamoJsonConversions
 import com.gu.tagmanagement.{Sponsorship => ThriftSponsorship, SponsorshipTargeting => ThriftSponsorshipTargeting, SponsorshipType, SponsorshipPackage}
 
 import scala.util.control.NonFatal
@@ -43,7 +44,7 @@ case class Sponsorship (
   targeting: Option[SponsorshipTargeting]) {
 
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 
   private def sponsorshipPackageAsThrift(s: String) = SponsorshipPackage.valueOf(
     s.replace("-", "") // convert us-exclusive to usexclusive
@@ -70,11 +71,11 @@ object Sponsorship extends Logging {
 
   def fromJson(json: JsValue) = json.as[Sponsorship]
 
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[Sponsorship]
+  def fromItem(item: EnhancedDocument): Sponsorship = try {
+    Json.parse(item.toJson()).as[Sponsorship]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load sponsorship ${item.toJSON}", e)
+      logger.error(s"failed to load sponsorship ${item.toJson()}", e)
       throw e
     }
   }

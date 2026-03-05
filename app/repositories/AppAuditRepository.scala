@@ -1,6 +1,7 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
+import software.amazon.awssdk.services.dynamodb.model._
 import model.AppAudit
 import org.joda.time.{Duration, ReadableDuration, DateTime}
 import services.Dynamo
@@ -15,9 +16,19 @@ object AppAuditRepository {
 
   def getRecentAuditOfOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[AppAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
-    Dynamo.appAuditTable.getIndex("operation-date-index")
-      .query("operation", operation, new RangeKeyCondition("date").ge(from))
-      .asScala
-      .map(AppAudit.fromItem).toList
+
+    val request = QueryRequest.builder()
+      .tableName(Dynamo.appAuditTable.tableName)
+      .indexName("operation-date-index")
+      .keyConditionExpression("#op = :operation AND #dt >= :from")
+      .expressionAttributeNames(Map("#op" -> "operation", "#dt" -> "date").asJava)
+      .expressionAttributeValues(Map(
+        ":operation" -> AttributeValue.builder().s(operation).build(),
+        ":from" -> AttributeValue.builder().n(from.toString).build()
+      ).asJava)
+      .build()
+
+    val response = Dynamo.client.query(request)
+    response.items().asScala.map(item => AppAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item))).toList
   }
 }

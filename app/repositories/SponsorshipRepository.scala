@@ -1,7 +1,6 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec
-import com.amazonaws.services.dynamodbv2.document.{PrimaryKey, ScanFilter}
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import model.Sponsorship
 import org.joda.time.DateTime
 import services.Dynamo
@@ -11,10 +10,7 @@ import scala.jdk.CollectionConverters._
 
 object SponsorshipRepository {
   def getSponsorship(id: Long) = {
-    val getItemSpec = new GetItemSpec()
-      .withPrimaryKey(new PrimaryKey("id", id))
-      .withConsistentRead(true)
-    Option(Dynamo.sponsorshipTable.getItem(getItemSpec)).map(Sponsorship.fromItem)
+    Dynamo.sponsorshipTable.getItemConsistent("id", id).map(Sponsorship.fromItem)
   }
 
   def updateSponsorship(sponsorship: Sponsorship) = {
@@ -26,55 +22,35 @@ object SponsorshipRepository {
     }
   }
 
-  def loadAllSponsorships = Dynamo.sponsorshipTable.scan().asScala.map(Sponsorship.fromItem)
+  def loadAllSponsorships = Dynamo.sponsorshipTable.scan().map(Sponsorship.fromItem)
 
   def searchSponsorships(criteria: SponsorshipSearchCriteria) = {
-    val filters = criteria.asFilters
-    if (filters.isEmpty) {
-      Dynamo.sponsorshipTable.scan().asScala.map(Sponsorship.fromItem).toList
-    } else {
-      Dynamo.sponsorshipTable.scan(filters: _*).asScala.map(Sponsorship.fromItem).toList
-    }
+    val all = loadAllSponsorships.toList
+    criteria.filter(all)
   }
 
   def getSponsorshipsToActivate: List[Sponsorship] = {
     val now = new DateTime().getMillis
-    val withEnd = Dynamo.sponsorshipTable.scan(
-      new ScanFilter("validFrom").lt(now),
-      new ScanFilter("validTo").gt(now),
-      new ScanFilter("status").ne("active")
-    ).asScala.map(Sponsorship.fromItem).toList
-
-    val withoutEnd = Dynamo.sponsorshipTable.scan(
-      new ScanFilter("validFrom").lt(now),
-      new ScanFilter("validTo").notExist(),
-      new ScanFilter("status").ne("active")
-    ).asScala.map(Sponsorship.fromItem).toList
-
-    val withoutStartAndNotEnded = Dynamo.sponsorshipTable.scan(
-      new ScanFilter("validFrom").notExist(),
-      new ScanFilter("validTo").gt(now),
-      new ScanFilter("status").ne("active")
-    ).asScala.map(Sponsorship.fromItem).toList
-
-    val alwaysActive = Dynamo.sponsorshipTable.scan(
-      new ScanFilter("validFrom").notExist(),
-      new ScanFilter("validTo").notExist(),
-      new ScanFilter("status").ne("active")
-    ).asScala.map(Sponsorship.fromItem).toList
-
-    withEnd ::: withoutEnd ::: withoutStartAndNotEnded ::: alwaysActive
+    loadAllSponsorships.filter { s =>
+      s.status != "active" && (
+        // Has start and end, and we're in between
+        (s.validFrom.exists(_.getMillis < now) && s.validTo.exists(_.getMillis > now)) ||
+        // Has start but no end
+        (s.validFrom.exists(_.getMillis < now) && s.validTo.isEmpty) ||
+        // No start but has end that hasn't passed
+        (s.validFrom.isEmpty && s.validTo.exists(_.getMillis > now)) ||
+        // No start and no end (always active)
+        (s.validFrom.isEmpty && s.validTo.isEmpty)
+      )
+    }.toList
   }
 
   def getSponsorshipsToExpire: List[Sponsorship] = {
     val now = new DateTime().getMillis
-
-    Dynamo.sponsorshipTable.scan(
-      new ScanFilter("validTo").lt(now),
-      new ScanFilter("status").eq("active")
-    ).asScala.map(Sponsorship.fromItem).toList
+    loadAllSponsorships.filter { s =>
+      s.status == "active" && s.validTo.exists(_.getMillis < now)
+    }.toList
   }
-
 }
 
 case class SponsorshipSearchCriteria(
@@ -85,40 +61,35 @@ case class SponsorshipSearchCriteria(
   sectionId: Option[Long] = None
 ) {
 
-  def optionalise(s: Option[String]) = s.map(_.trim) match {
-    case Some("") => None
-    case o => o
+  def filter(sponsorships: List[Sponsorship]): List[Sponsorship] = {
+    sponsorships
+      .filter(s => q.forall(query => s.sponsorName.toLowerCase.startsWith(query.toLowerCase.trim)))
+      .filter(s => typeFilter(s))
+      .filter(s => statusFilter(s))
+      .filter(s => tagId.forall(id => s.tags.exists(_.contains(id))))
+      .filter(s => sectionId.forall(id => s.sections.exists(_.contains(id))))
   }
 
-  def asFilters = {
-    Seq() ++
-      optionalise(q).map{query => new ScanFilter("sponsorName").beginsWith(query)} ++
-      typeFilter ++
-      statusFilter ++
-      tagFilter ++
-      sectionFilter
+  private def typeFilter(s: Sponsorship): Boolean = {
+    `type` match {
+      case None | Some("all") => true
+      case Some(t) => s.sponsorshipType == t
+    }
   }
 
-  private def tagFilter: Option[ScanFilter] = tagId map (new ScanFilter("tags").contains(_))
-
-  private def sectionFilter: Option[ScanFilter] = sectionId map (new ScanFilter("sections").contains(_))
-
-  private def typeFilter: Option[ScanFilter] = {
-    `type`.flatMap( _ match {
-      case "all" => None
-      case s => Some(new ScanFilter("sponsorshipType").eq(s))
-    })
-  }
-
-  private def statusFilter: Option[ScanFilter] = {
+  private def statusFilter(s: Sponsorship): Boolean = {
     val now = new DateTime()
-    status.flatMap( _ match {
-      case "all" => None
-      case "expiringSoon" => Some(new ScanFilter("validTo").between(now.getMillis, now.plusDays(5).getMillis))
-      case "expiredRecently" => Some(new ScanFilter("validTo").between(now.minusDays(5).getMillis, now.getMillis))
-      case "launchingSoon" => Some(new ScanFilter("validFrom").between(now.getMillis, now.plusDays(5).getMillis))
-      case "launchedRecently" => Some(new ScanFilter("validFrom").between(now.minusDays(5).getMillis, now.getMillis))
-      case s => Some(new ScanFilter("status").eq(s))
-    })
+    status match {
+      case None | Some("all") => true
+      case Some("expiringSoon") =>
+        s.validTo.exists(v => v.getMillis >= now.getMillis && v.getMillis <= now.plusDays(5).getMillis)
+      case Some("expiredRecently") =>
+        s.validTo.exists(v => v.getMillis >= now.minusDays(5).getMillis && v.getMillis <= now.getMillis)
+      case Some("launchingSoon") =>
+        s.validFrom.exists(v => v.getMillis >= now.getMillis && v.getMillis <= now.plusDays(5).getMillis)
+      case Some("launchedRecently") =>
+        s.validFrom.exists(v => v.getMillis >= now.minusDays(5).getMillis && v.getMillis <= now.getMillis)
+      case Some(st) => s.status == st
+    }
   }
 }

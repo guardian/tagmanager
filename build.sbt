@@ -17,20 +17,19 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsSdk1Version = "1.12.403"
 lazy val awsSdk2Version = "2.42.5"
 
 val pandaVersion = "16.0.1"
 lazy val dependencies = Seq(
-  // AWS SDK 1 - DynamoDB (to be updated separately)
-  "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdk1Version,
-  // AWS SDK 2.x
   "software.amazon.awssdk" % "ec2" % awsSdk2Version,
   "software.amazon.awssdk" % "s3" % awsSdk2Version,
   "software.amazon.awssdk" % "sqs" % awsSdk2Version,
   "software.amazon.awssdk" % "sts" % awsSdk2Version,
   "software.amazon.awssdk" % "kinesis" % awsSdk2Version,
   "software.amazon.awssdk" % "cloudwatch" % awsSdk2Version,
+  "software.amazon.awssdk" % "dynamodb" % awsSdk2Version,
+  "software.amazon.awssdk" % "dynamodb-enhanced" % awsSdk2Version,
+  "software.amazon.awssdk" % "imds" % awsSdk2Version,
   "software.amazon.kinesis" % "amazon-kinesis-client" % "3.4.1",
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "2.15",

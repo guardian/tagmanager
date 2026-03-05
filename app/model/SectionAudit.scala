@@ -1,11 +1,12 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import org.joda.time.DateTime
 import helpers.JodaDateTimeFormat._
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
+import services.DynamoJsonConversions
 
 import scala.util.control.NonFatal
 
@@ -22,7 +23,7 @@ case class SectionAudit(
   override def resourceId = Some(sectionId.toString)
   override def message = None
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 }
 
 object SectionAudit extends Logging {
@@ -36,11 +37,11 @@ object SectionAudit extends Logging {
       (JsPath \ "sectionSummary").format[SectionSummary]
     )(SectionAudit.apply, unlift(SectionAudit.unapply))
 
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[SectionAudit]
+  def fromItem(item: EnhancedDocument): SectionAudit = try {
+    Json.parse(item.toJson()).as[SectionAudit]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load section Audit ${item.toJSON}", e)
+      logger.error(s"failed to load section Audit ${item.toJson()}", e)
       throw e
     }
   }
