@@ -40,7 +40,7 @@ lazy val dependencies = Seq(
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
   "com.gu"  %% "panda-hmac-play_3-0" % pandaVersion,
-  "com.gu" %% "content-api-client-aws" % "0.7.4",
+  "com.gu" %% "content-api-client-aws" % "0.7.7-PREVIEW.vbupdate-aws-sdk-v2.2025-10-13T1851.2761fd0f",
   "com.beachape" %% "enumeratum" % "1.5.13",
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
