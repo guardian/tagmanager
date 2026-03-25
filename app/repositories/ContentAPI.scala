@@ -1,23 +1,19 @@
 package repositories
 
 import java.net.URI
-
 import software.amazon.awssdk.auth.credentials.{AwsCredentialsProvider, AwsCredentialsProviderChain, ProfileCredentialsProvider}
-import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sts.StsClient
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.contentapi.client.model._
 import play.api.Logging
-import services.Config
+import services.{AWS, Config}
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scala.util.{Failure, Success, Try}
-
 
 object ContentAPI extends Logging {
 
@@ -28,7 +24,7 @@ object ContentAPI extends Logging {
       .credentialsProviders(
         ProfileCredentialsProvider.create("capi"),
         StsAssumeRoleCredentialsProvider.builder()
-          .stsClient(StsClient.builder().region(Region.EU_WEST_1).build())
+          .stsClient(StsClient.builder().region(AWS.regionV2).build())
           .refreshRequest(AssumeRoleRequest.builder()
             .roleArn(Config().capiPreviewRole)
             .roleSessionName("capi")

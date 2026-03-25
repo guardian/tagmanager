@@ -2,7 +2,7 @@ package services
 
 import java.nio.ByteBuffer
 
-// AWS SDK 1 - kept for DynamoDB, Kinesis, CloudWatch (to be migrated in separate branches)
+// AWS SDK 1 - kept for DynamoDB, Kinesis, CloudWatch (to be migrated in future PRs)
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder

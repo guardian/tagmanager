@@ -87,13 +87,14 @@ class Support(
         val logoPath = s"commercial/sponsor/${dateSlug}/${UUID.randomUUID}-${filename}"
         val contentType = req.contentType
 
-        val putRequestBuilder = PutObjectRequest.builder()
+        val putRequest = PutObjectRequest.builder()
           .bucket("static-theguardian-com")
           .key(logoPath)
-        contentType.foreach(ct => putRequestBuilder.contentType(ct))
+          .contentType(contentType.orNull)
+          .build()
 
         AWS.frontendStaticFilesS3Client.putObject(
-          putRequestBuilder.build(),
+          putRequest,
           RequestBody.fromFile(file)
         )
 
