@@ -18,7 +18,7 @@ scalacOptions ++= Seq(
 )
 
 lazy val awsSdk1Version = "1.12.797"
-lazy val awsSdk2Version = "2.42.5"
+lazy val awsSdk2Version = "2.42.16"
 
 val pandaVersion = "16.0.1"
 lazy val dependencies = Seq(
