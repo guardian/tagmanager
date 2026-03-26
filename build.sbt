@@ -32,7 +32,7 @@ lazy val dependencies = Seq(
   "software.amazon.awssdk" % "sqs" % awsSdk2Version,
   "software.amazon.awssdk" % "sts" % awsSdk2Version,
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
-  "com.gu" %% "editorial-permissions-client" % "2.15",
+  "com.gu" %% "editorial-permissions-client" % "2.16.0",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
