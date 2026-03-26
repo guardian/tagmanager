@@ -1,30 +1,37 @@
 package repositories
 
 import java.net.URI
-
-import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import software.amazon.awssdk.auth.credentials.{AwsCredentialsProvider, AwsCredentialsProviderChain, ProfileCredentialsProvider}
+import software.amazon.awssdk.services.sts.StsClient
+import software.amazon.awssdk.services.sts.model.AssumeRoleRequest
+import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.contentapi.client.model._
 import play.api.Logging
-import services.Config
+import services.{AWS, Config}
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scala.util.{Failure, Success, Try}
-
 
 object ContentAPI extends Logging {
 
   private val previewApiClient = new DraftContentApiClass(Config().capiKey, Config().capiPreviewIAMUrl)
 
-  val capiPreviewCredentials: AWSCredentialsProvider = {
-    new AWSCredentialsProviderChain(
-      new ProfileCredentialsProvider("capi"),
-      new STSAssumeRoleSessionCredentialsProvider.Builder(Config().capiPreviewRole, "capi").build()
-    )
+  val capiPreviewCredentials: AwsCredentialsProvider = {
+    AwsCredentialsProviderChain.builder()
+      .credentialsProviders(
+        ProfileCredentialsProvider.create("capi"),
+        StsAssumeRoleCredentialsProvider.builder()
+          .stsClient(StsClient.builder().region(AWS.regionV2).build())
+          .refreshRequest(AssumeRoleRequest.builder()
+            .roleArn(Config().capiPreviewRole)
+            .roleSessionName("capi")
+            .build())
+          .build()
+      )
+      .build()
   }
 
   val signer = new IAMSigner(

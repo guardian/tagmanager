@@ -1,10 +1,7 @@
 package services
 
 import java.util.Properties
-
-import com.amazonaws.services.s3.model.GetObjectRequest
-
-
+import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import scala.jdk.CollectionConverters._
 
 
@@ -57,12 +54,11 @@ sealed trait Config {
     val bucketName = s"guconf-${aws.stack}"
 
     def loadPropertiesFromS3(propertiesKey: String, props: Properties): Unit = {
-      val s3Properties = AWS.S3Client.getObject(new GetObjectRequest(bucketName, propertiesKey))
-      val propertyInputStream = s3Properties.getObjectContent
+      val s3Properties = AWS.s3Client.getObject(GetObjectRequest.builder().bucket(bucketName).key(propertiesKey).build())
       try {
-        props.load(propertyInputStream)
+        props.load(s3Properties)
       } finally {
-        try {propertyInputStream.close()} catch {case _: Throwable => /*ignore*/}
+        try {s3Properties.close()} catch {case _: Throwable => /*ignore*/}
       }
     }
 

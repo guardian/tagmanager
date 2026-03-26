@@ -32,7 +32,7 @@ class AppComponents(context: Context, config: Config)
   val panDomainSettings = PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
     system = config.pandaSystemIdentifier,
-    S3BucketLoader.forAwsSdkV1(AWS.S3Client, "pan-domain-auth-settings")
+    S3BucketLoader.forAwsSdkV2(AWS.s3Client, "pan-domain-auth-settings")
   )
 
   lazy val router: Router = new Routes(
