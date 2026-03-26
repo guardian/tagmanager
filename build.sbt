@@ -17,7 +17,7 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsSdk1Version = "1.12.403"
+lazy val awsSdk1Version = "1.12.797"
 lazy val awsSdk2Version = "2.42.5"
 
 val pandaVersion = "16.0.1"
