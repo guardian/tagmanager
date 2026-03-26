@@ -20,7 +20,7 @@ scalacOptions ++= Seq(
 lazy val awsSdk1Version = "1.12.403"
 lazy val awsSdk2Version = "2.42.5"
 
-val pandaVersion = "16.0.1"
+val pandaVersion = "17.0.0"
 lazy val dependencies = Seq(
   // AWS SDK 1 - DynamoDB and Kinesis (to be updated separately)
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdk1Version,
