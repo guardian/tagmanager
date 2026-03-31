@@ -4,7 +4,7 @@ import tagManagerApi from '../util/tagManagerApi';
 import TagsList from './TagList/TagList.react';
 import PageNavigator from './utils/PageNavigator.react';
 import {hasPermission} from '../util/verifyPermission'
-import ReactTooltip from 'react-tooltip'
+import { Tooltip } from 'react-tooltip'
 
 const searchFields = {
   'Internal Name': 'internalName',
@@ -118,7 +118,7 @@ export class TagSearch extends React.Component {
 
         return (
             <div className="tag-search">
-                <ReactTooltip multiline={true} />
+                <Tooltip id="tag-search-tooltip" />
                 <div className="tag-search__filters">
                     <div className="tag-search__filters__group">
                         <label>Search</label>
@@ -137,7 +137,8 @@ export class TagSearch extends React.Component {
                                 false
                                 :
                                 <i className="i-info-grey"
-                                   data-tip='You do not have permission to create tags.<br/>If you think this is a mistake please contact central production'>
+                                   data-tooltip-id="tag-search-tooltip"
+                                   data-tooltip-html='You do not have permission to create tags.<br/>If you think this is a mistake please contact central production'>
                                 </i>
                         }
                     </div>

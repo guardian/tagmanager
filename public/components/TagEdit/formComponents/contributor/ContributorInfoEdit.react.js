@@ -1,7 +1,7 @@
 
 import React from 'react';
 import R from 'ramda';
-import ReactTooltip from 'react-tooltip'
+import { Tooltip } from 'react-tooltip'
 
 import TagImageEdit from '../TagImageEdit.react';
 
@@ -77,7 +77,8 @@ export default class ContributorInfoEdit extends React.Component {
           <div className="tag-edit__input-block">
             <label className="tag-edit__label-inline">Last name
              <i className="i-info-grey"
-                data-tip="Although the only mandatory field is 'Last name',<br/> always fill both fields when possible.<br/> If a single name/organisation/identifier is provided,<br/> only fill 'Last name'">
+                data-tooltip-id="contributor-info-tooltip"
+                data-tooltip-html="Although the only mandatory field is 'Last name',<br/> always fill both fields when possible.<br/> If a single name/organisation/identifier is provided,<br/> only fill 'Last name'">
              </i>
             </label>
             <input type="text"
@@ -122,7 +123,7 @@ export default class ContributorInfoEdit extends React.Component {
           label="Large Byline Image"
           onChange={this.updateLargeBylineImage.bind(this)}
           tagEditable={this.props.tagEditable}/>
-        <ReactTooltip multiline={true} />
+        <Tooltip id="contributor-info-tooltip" />
       </div>
     );
   }
