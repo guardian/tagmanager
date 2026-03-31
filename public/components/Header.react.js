@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { NavLink } from 'react-router-dom';
 
 export default class Header extends React.Component {
 
@@ -41,11 +41,14 @@ class HeaderMenuItem extends React.Component {
 
   render() {
     return (
-      <Link
+      <NavLink
         to={this.props.to}
-        activeClassName="links__item--active"
-        className="links__item top-toolbar__item--highlight"
-      >{this.props.children}</Link>
+        className={({ isActive }) =>
+          isActive
+            ? 'links__item top-toolbar__item--highlight links__item--active'
+            : 'links__item top-toolbar__item--highlight'
+        }
+      >{this.props.children}</NavLink>
     )
   }
 }

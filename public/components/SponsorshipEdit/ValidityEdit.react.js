@@ -1,10 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import momentLocalizer from 'react-widgets-moment';
-
-momentLocalizer(moment);
+import DateTimePicker from 'react-widgets/DateTimePicker';
+import 'react-widgets/styles.css';
 
 export default class ValidityEdit extends React.Component {
 

@@ -2,8 +2,8 @@ import React from 'react';
 import R from 'ramda';
 import moment from 'moment';
 
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import momentLocalizer from 'react-widgets-moment';
+import DateTimePicker from 'react-widgets/DateTimePicker';
+import 'react-widgets/styles.css';
 
 import {allowedEditions} from '../../constants/allowedEditions';
 import SectionSelect from '../utils/SectionSelect.react';

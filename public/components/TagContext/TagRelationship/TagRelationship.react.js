@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router';
+import { Link } from 'react-router-dom';
 import R from 'ramda';
 import tagManagerApi from '../../../util/tagManagerApi';
 import AddTagToContext from './AddRelationship.react';

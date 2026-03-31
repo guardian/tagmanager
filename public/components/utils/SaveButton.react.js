@@ -1,5 +1,5 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {saveState} from "../../reducers/rootReducer"
 import ProgressSpinner from "../utils/ProgressSpinner.react"
 
@@ -41,9 +41,13 @@ export default class SaveButton extends React.Component {
 
     render () {
       return (
-        <CSSTransitionGroup transitionName="save-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-          {this.renderButtons()}
-        </CSSTransitionGroup>
+      <TransitionGroup>
+        {!this.props.isHidden && (
+          <CSSTransition key="save-button" classNames="save-transition" timeout={{ enter: 500, exit: 500 }}>
+            {this.renderButtons()}
+          </CSSTransition>
+        )}
+      </TransitionGroup>
       );
     }
 }

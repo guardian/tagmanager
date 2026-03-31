@@ -5,10 +5,8 @@ import R from 'ramda';
 import TagSelect from '../utils/TagSelect';
 import SectionSelect from '../utils/SectionSelect.react';
 
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import DateTimePickerCSS from 'react-widgets/dist/css/react-widgets.css';
-import momentLocalizer from 'react-widgets-moment';
-momentLocalizer(moment);
+import DateTimePicker from 'react-widgets/DateTimePicker';
+import 'react-widgets/styles.css';
 
 const CAPI_DATE_FORMAT = 'YYYY-MM-DD';
 

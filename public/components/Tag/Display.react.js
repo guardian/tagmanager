@@ -1,3 +1,5 @@
+import {getStore} from '../../util/storeAccessor';
+import {clearError} from '../../actions/UIActions/clearError';
 import React from 'react';
 import TagEdit from '../TagEdit/TagEdit.react';
 import TagContext from '../TagContext/TagContext.react';
@@ -32,6 +34,10 @@ class TagDisplay extends React.Component {
       if (!this.props.referenceTypes || !this.props.referenceTypes.length) {
         this.props.referenceTypeActions.getReferenceTypes();
       }
+    }
+
+    componentWillUnmount() {
+      getStore().dispatch(clearError());
     }
 
     UNSAFE_componentWillReceiveProps(props) {
