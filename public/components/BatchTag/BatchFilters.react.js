@@ -5,7 +5,7 @@ import R from 'ramda';
 import TagSelect from '../utils/TagSelect';
 import SectionSelect from '../utils/SectionSelect.react';
 
-import DateTimePicker from 'react-widgets/DateTimePicker';
+import DatePicker from 'react-widgets/DatePicker';
 import 'react-widgets/styles.css';
 
 const CAPI_DATE_FORMAT = 'YYYY-MM-DD';
@@ -171,13 +171,13 @@ export default class BatchFilters extends React.Component {
 
                 <div className="batch-filters__custom-date">
                   <span className="batch-filters__label">From:</span>
-                  <DateTimePicker
+                  <DatePicker
                     format={"DD/MM/YYYY"}
                     time={false}
                     value={ this.props.filters['from-date'] ? new Date(this.props.filters['from-date']) : null}
                     onChange={this.setFromDate.bind(this)}/>
                   <span className="batch-filters__label">To:</span>
-                    <DateTimePicker
+                    <DatePicker
                       format={"DD/MM/YYYY"}
                       time={false}
                       value={ this.props.filters['to-date'] ? new Date(this.props.filters['to-date']) : null}

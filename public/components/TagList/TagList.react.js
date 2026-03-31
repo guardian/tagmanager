@@ -1,6 +1,6 @@
 import React from 'react';
 import * as tagTypes from '../../constants/tagTypes';
-import { browserHistory } from '../util/navigate';
+import { browserHistory } from '../../util/navigate';
 
 export default class TagList extends React.Component {
 

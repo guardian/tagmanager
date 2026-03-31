@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import DateTimePicker from 'react-widgets/DateTimePicker';
+import DatePicker from 'react-widgets/DatePicker';
 import 'react-widgets/styles.css';
 
 export default class ValidityEdit extends React.Component {
@@ -34,7 +34,7 @@ export default class ValidityEdit extends React.Component {
 
         <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">From</label>
-          <DateTimePicker
+          <DatePicker
             format={"DD/MM/YYYY HH:mm"}
             value={ this.props.sponsorship.validFrom ? new Date(this.props.sponsorship.validFrom) : null}
             onChange={this.setValidFrom.bind(this)}/>
@@ -42,7 +42,7 @@ export default class ValidityEdit extends React.Component {
 
         <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">To</label>
-          <DateTimePicker
+          <DatePicker
             format={"DD/MM/YYYY HH:mm"}
             value={ this.props.sponsorship.validTo ? new Date(this.props.sponsorship.validTo) : null}
             onChange={this.setValidTo.bind(this)}/>
