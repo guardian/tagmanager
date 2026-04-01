@@ -1,6 +1,6 @@
 package modules.clustersync
 
-import software.amazon.kinesis.retrieval.KinesisClientRecord
+import com.amazonaws.services.kinesis.model.Record
 import com.gu.tagmanagement.{EventType, TagEvent}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -17,9 +17,7 @@ class TagEventDeserialiserTest extends AnyFlatSpec with Matchers  {
 
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(tagUpdateEvent, true)
 
-    val testRecordWithCompression = KinesisClientRecord.builder()
-      .data(ByteBuffer.wrap(thriftKinesisEvent))
-      .build()
+    val testRecordWithCompression = new Record().withData(ByteBuffer.wrap(thriftKinesisEvent))
 
     TagEventDeserialiser.deserialise(testRecordWithCompression) shouldBe Success(tagUpdateEvent)
 

@@ -1,6 +1,6 @@
 package modules.clustersync
 
-import software.amazon.kinesis.retrieval.KinesisClientRecord
+import com.amazonaws.services.kinesis.model.Record
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.BlockingLevel
 import org.scalatest.flatspec.AnyFlatSpec
@@ -37,13 +37,13 @@ class TagSyncUpdateProcessorTest extends AnyFlatSpec with Matchers {
     })
   }
 
-  private def createKinesisTagUpdateEventRecord(tag: model.Tag): KinesisClientRecord = {
+  private def createKinesisTagUpdateEventRecord(tag: model.Tag) = {
     val thriftTag = tag.asThrift
     val tagUpdateEvent = TagEvent(EventType.Update, 1L, Some(thriftTag))
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(tagUpdateEvent, true)
-    KinesisClientRecord.builder()
-      .data(ByteBuffer.wrap(thriftKinesisEvent))
-      .build()
+    new Record()
+      .withData(ByteBuffer.wrap(thriftKinesisEvent))
+
   }
 
 }
