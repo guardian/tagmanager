@@ -11,10 +11,10 @@ export default class Header extends React.Component {
         return (
             <header className="top-toolbar">
                 <div className="top-toolbar-background"/>
-                <Link to="/" className="home-logo">
+                <NavLink to="/" className="home-logo">
                     <span className="home-logo__text-large">Tags</span>
                     <span className="home-logo__text-small">home</span>
-                </Link>
+                </NavLink>
 
                 <div className="header__children">
                     <nav className="links">
