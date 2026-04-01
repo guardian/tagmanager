@@ -36,6 +36,7 @@ export default class ValidityEdit extends React.Component {
           <label className="tag-edit__input-group__header">From</label>
           <DatePicker
             format={"DD/MM/YYYY HH:mm"}
+            includeTime={true}
             value={ this.props.sponsorship.validFrom ? new Date(this.props.sponsorship.validFrom) : null}
             onChange={this.setValidFrom.bind(this)}/>
         </div>
@@ -44,6 +45,7 @@ export default class ValidityEdit extends React.Component {
           <label className="tag-edit__input-group__header">To</label>
           <DatePicker
             format={"DD/MM/YYYY HH:mm"}
+            includeTime={true}
             value={ this.props.sponsorship.validTo ? new Date(this.props.sponsorship.validTo) : null}
             onChange={this.setValidTo.bind(this)}/>
         </div>

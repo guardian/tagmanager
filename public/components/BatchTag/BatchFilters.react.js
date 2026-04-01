@@ -173,13 +173,11 @@ export default class BatchFilters extends React.Component {
                   <span className="batch-filters__label">From:</span>
                   <DatePicker
                     format={"DD/MM/YYYY"}
-                    time={false}
                     value={ this.props.filters['from-date'] ? new Date(this.props.filters['from-date']) : null}
                     onChange={this.setFromDate.bind(this)}/>
                   <span className="batch-filters__label">To:</span>
                     <DatePicker
                       format={"DD/MM/YYYY"}
-                      time={false}
                       value={ this.props.filters['to-date'] ? new Date(this.props.filters['to-date']) : null}
                       onChange={this.setToDate.bind(this)}/>
                 </div>

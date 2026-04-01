@@ -253,6 +253,7 @@ export default class TargetingEdit extends React.Component {
           <label className="tag-edit__input-group__header">Only show for content published after</label>
           <DatePicker
             format={"DD/MM/YYYY HH:mm"}
+            includeTime={true}
             value={this.publishedSince()}
             onChange={this.setPublishedSince.bind(this)}/>
         </div>
