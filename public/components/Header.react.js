@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { NavLink } from 'react-router-dom';
 
 export default class Header extends React.Component {
 
@@ -11,10 +11,10 @@ export default class Header extends React.Component {
         return (
             <header className="top-toolbar">
                 <div className="top-toolbar-background"/>
-                <Link to="/" className="home-logo">
+                <NavLink to="/" className="home-logo">
                     <span className="home-logo__text-large">Tags</span>
                     <span className="home-logo__text-small">home</span>
-                </Link>
+                </NavLink>
 
                 <div className="header__children">
                     <nav className="links">
@@ -41,11 +41,14 @@ class HeaderMenuItem extends React.Component {
 
   render() {
     return (
-      <Link
+      <NavLink
         to={this.props.to}
-        activeClassName="links__item--active"
-        className="links__item top-toolbar__item--highlight"
-      >{this.props.children}</Link>
+        className={({ isActive }) =>
+          isActive
+            ? 'links__item top-toolbar__item--highlight links__item--active'
+            : 'links__item top-toolbar__item--highlight'
+        }
+      >{this.props.children}</NavLink>
     )
   }
 }

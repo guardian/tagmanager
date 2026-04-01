@@ -1,5 +1,5 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 export default class TagValidation extends React.Component {
 
@@ -9,7 +9,7 @@ export default class TagValidation extends React.Component {
 
   renderValidationResult(validation) {
     return (
-      <div className="tag-validation__result" key={validation.message}>
+      <div className="tag-validation__result">
         <i className="tag-validation__result__dot"/><span className="tag-validation__result__message">{validation.message}</span>
       </div>
     );
@@ -23,9 +23,13 @@ export default class TagValidation extends React.Component {
     return (
       <div className="tag-validation">
         <div className="tag-validation__header">Validation</div>
-        <CSSTransitionGroup transitionName="validation-transition" transitionEnter={false} transitionLeaveTimeout={500}>
-          {this.props.validations.map(this.renderValidationResult, this)}
-        </CSSTransitionGroup>
+        <TransitionGroup>
+          {this.props.validations.map(validation => 
+            <CSSTransition key={validation.message}classNames="validation-transition" timeout={{ enter: 0, exit: 500 }}>
+               { this.renderValidationResult(validation) }
+            </CSSTransition>
+          )}
+        </TransitionGroup>
       </div>
     );
   }

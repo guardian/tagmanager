@@ -1,7 +1,7 @@
 import React from 'react';
-import {Link} from 'react-router';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../util/navigate';
 
 export default class SponsorshipList extends React.Component {
 

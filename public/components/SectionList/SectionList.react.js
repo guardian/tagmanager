@@ -1,6 +1,6 @@
 import React from 'react';
-import {Link} from 'react-router';
-import { browserHistory } from 'react-router'
+import { Link } from 'react-router-dom';
+import { browserHistory } from '../../util/navigate';
 
 
 class SectionList extends React.Component {
@@ -10,7 +10,7 @@ class SectionList extends React.Component {
     }
 
     onSectionClick(section) {
-      const path = this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id;
+      const path = this.props.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id;
       browserHistory.push(path);
     }
 
@@ -28,7 +28,7 @@ class SectionList extends React.Component {
       };
 
       return (
-        <a key={section.id}  href={this.props.route.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id} onClick={sectionClickHandler}>
+        <a key={section.id}  href={this.props.isMicrositeView ? '/microsite/' + section.id : '/section/' + section.id} onClick={sectionClickHandler}>
           <div className="sectionlist__table__row" onClick={sectionClickHandler}>
             <div className="sectionlist__table__sectionName">{section.name}</div>
             <div className="sectionlist__table__sectionPath">{section.path}</div>
@@ -46,12 +46,12 @@ class SectionList extends React.Component {
         );
       }
 
-      const sections = this.props.route.isMicrositeView ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
+      const sections = this.props.isMicrositeView ? this.props.sections.filter(sec => sec.isMicrosite === true) : this.props.sections.filter(sec => sec.isMicrosite === false);
 
       return (
         <div className="sectionlist">
           <div className="tag-search__filters">
-            {this.props.route.isMicrositeView ?
+            {this.props.isMicrositeView ?
               <Link className="tag-search__create tag-search__create-button" to="/microsite/create">Create a new Microsite</Link> :
               <Link className="tag-search__create tag-search__create-button" to="/section/create">Create a new Section</Link>
             }
