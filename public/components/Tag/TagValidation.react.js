@@ -24,9 +24,11 @@ export default class TagValidation extends React.Component {
       <div className="tag-validation">
         <div className="tag-validation__header">Validation</div>
         <TransitionGroup>
-          <CSSTransition classNames="validation-transition" timeout={{ enter: 0, exit: 500 }}>
-            {this.props.validations.map(this.renderValidationResult, this)}
-          </CSSTransition>
+          {this.props.validations.map(validation => 
+            <CSSTransition classNames="validation-transition" timeout={{ enter: 0, exit: 500 }}>
+               { this.renderValidationResult(validation) }
+            </CSSTransition>
+          )}
         </TransitionGroup>
       </div>
     );
