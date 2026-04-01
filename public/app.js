@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 
@@ -31,9 +31,9 @@ store.dispatch({
   receivedAt: Date.now()
 });
 
-const root = createRoot(document.getElementById('react-mount'));
-root.render(
+ReactDOM.render(
   <Provider store={store}>
     <RouterProvider router={router} />
-  </Provider>
+  </Provider>,
+  document.getElementById('react-mount')
 );
