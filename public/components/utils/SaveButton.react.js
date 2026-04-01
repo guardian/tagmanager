@@ -22,10 +22,6 @@ export default class SaveButton extends React.Component {
     }
 
     renderButtons() {
-      if (this.props.isHidden) {
-        return false;
-      }
-
       return (
         <div className="save">
           <div className="save__button clickable-icon" onClick={this.props.onSaveClick}>
@@ -42,11 +38,11 @@ export default class SaveButton extends React.Component {
     render () {
       return (
       <TransitionGroup>
-        {!this.props.isHidden && (
+        {!this.props.isHidden &&
           <CSSTransition key="save-button" classNames="save-transition" timeout={{ enter: 500, exit: 500 }}>
             {this.renderButtons()}
           </CSSTransition>
-        )}
+        }
       </TransitionGroup>
       );
     }
