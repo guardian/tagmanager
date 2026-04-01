@@ -24,14 +24,13 @@ val pandaVersion = "16.0.1"
 lazy val dependencies = Seq(
   // AWS SDK 1 - DynamoDB and Kinesis (to be updated separately)
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdk1Version,
-  // AWS SDK 2.x
+  "com.amazonaws" % "aws-java-sdk-kinesis" % awsSdk1Version,
+  "com.amazonaws" % "amazon-kinesis-client" % "1.15.3",
+  // AWS SDK 2
   "software.amazon.awssdk" % "ec2" % awsSdk2Version,
   "software.amazon.awssdk" % "s3" % awsSdk2Version,
   "software.amazon.awssdk" % "sqs" % awsSdk2Version,
   "software.amazon.awssdk" % "sts" % awsSdk2Version,
-  "software.amazon.awssdk" % "kinesis" % awsSdk2Version,
-  "software.amazon.awssdk" % "cloudwatch" % awsSdk2Version,
-  "software.amazon.kinesis" % "amazon-kinesis-client" % "3.4.1",
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "2.15",
   ws, // for panda
