@@ -99,7 +99,11 @@ object KinesisRecordPayloadConversions {
   def kinesisRecordAsThriftCompactProtocol(rec: KinesisClientRecord, stripCompressionByte: Boolean = false): TProtocol = {
 
     val data: ByteBuffer = rec.data()
-    val bytes = if (stripCompressionByte) ByteBuffer.wrap(data.array().tail) else data
+    val bytes = if (stripCompressionByte) {
+      val remaining = new Array[Byte](data.remaining())
+      data.duplicate().get(remaining)
+      ByteBuffer.wrap(remaining.tail)
+    } else data
 
     val bbis = new ByteBufferBackedInputStream(bytes)
     val transport = new TIOStreamTransport(bbis)
