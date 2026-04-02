@@ -20,7 +20,7 @@ scalacOptions ++= Seq(
 lazy val awsSdk1Version = "1.12.403"
 lazy val awsSdk2Version = "2.42.5"
 
-val pandaVersion = "16.0.1"
+val pandaVersion = "17.0.0"
 lazy val dependencies = Seq(
   // AWS SDK 1 - DynamoDB and Kinesis (to be updated separately)
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSdk1Version,
@@ -32,12 +32,12 @@ lazy val dependencies = Seq(
   "software.amazon.awssdk" % "sqs" % awsSdk2Version,
   "software.amazon.awssdk" % "sts" % awsSdk2Version,
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
-  "com.gu" %% "editorial-permissions-client" % "2.15",
+  "com.gu" %% "editorial-permissions-client" % "2.16.0",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client-default" % "27.0.0",
+  "com.gu" %% "content-api-client-default" % "41.2.0",
   "com.gu" %% "tags-thrift-schema" % "2.8.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
