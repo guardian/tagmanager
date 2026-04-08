@@ -161,6 +161,7 @@ object Tag extends Logging {
       externalName      = thriftTag.externalName,
       slug              = thriftTag.slug,
       hidden            = thriftTag.hidden,
+      deprecated        = false, // TO DO - the thrift model need to be updated
       legallySensitive  = thriftTag.legallySensitive,
       comparableValue   = thriftTag.comparableValue,
       section           = thriftTag.section,
