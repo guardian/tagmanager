@@ -2,12 +2,6 @@ package model
 import play.api.libs.json._
 import repositories.SectionRepository
 
-/* Flex expects the old api so this essentially mimics the old functionality
- * by adding a SectionEntity and TagEntity. It does mean that some of the new
- * data about tags and sections is missing but this can be rectified by altering
- * flex.
- */
-
 case class TagEntity(
   id: Long,
   `type`: String,
