@@ -18,6 +18,12 @@ export default class TagVisibilityEdit extends React.Component {
     }));
   }
 
+  toggleDeprecated(e) {
+    this.props.updateTag(Object.assign({}, this.props.tag, {
+      deprecated: !this.props.tag.deprecated
+    }));
+  }
+
   render () {
     if (!this.props.tag) {
       return false;
@@ -39,6 +45,13 @@ export default class TagVisibilityEdit extends React.Component {
             checked={this.props.tag.legallySensitive || false}
             disabled={!this.props.tagEditable}/>
           <label className="tag-edit__label"> Legally Sensitive</label>
+        </div>
+        <div className="tag-edit__field">
+          <input type="checkbox"
+            onChange={this.toggleDeprecated.bind(this)}
+            checked={this.props.tag.deprecated || false}
+            disabled={!this.props.tagEditable}/>
+          <label className="tag-edit__label"> Do Not Use</label>
         </div>
       </div>
     );
