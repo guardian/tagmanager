@@ -58,6 +58,7 @@ case class Tag(
     externalName      = externalName,
     slug              = slug,
     hidden            = hidden,
+    deprecated        = Some(deprecated), // "deprecated" is optional in thrift as older tags will not have it set
     legallySensitive  = legallySensitive,
     comparableValue   = comparableValue,
     section           = section,
@@ -161,7 +162,7 @@ object Tag extends Logging {
       externalName      = thriftTag.externalName,
       slug              = thriftTag.slug,
       hidden            = thriftTag.hidden,
-      deprecated        = false, // TO DO - the thrift model need to be updated
+      deprecated        = thriftTag.deprecated.getOrElse(false), // "deprecated" is optional in thrift as older tags will not have it set
       legallySensitive  = thriftTag.legallySensitive,
       comparableValue   = thriftTag.comparableValue,
       section           = thriftTag.section,
