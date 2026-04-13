@@ -2,12 +2,6 @@ package model
 import play.api.libs.json._
 import repositories.SectionRepository
 
-/* Flex expects the old api so this essentially mimics the old functionality
- * by adding a SectionEntity and TagEntity. It does mean that some of the new
- * data about tags and sections is missing but this can be rectified by altering
- * flex.
- */
-
 case class TagEntity(
   id: Long,
   `type`: String,
@@ -22,6 +16,7 @@ case class TagEntity(
   adBlockingLevel: Option[BlockingLevel],
   contributionBlockingLevel: Option[BlockingLevel],
   contributorInformation: Option[ContributorInformation] = None,
+  deprecated: Boolean,
 )
 
 object TagEntity {
@@ -56,7 +51,8 @@ object TagEntity {
         subtype,
         tag.adBlockingLevel,
         tag.contributionBlockingLevel,
-        tag.contributorInformation
+        tag.contributorInformation,
+        tag.deprecated,
       )
   }
 
@@ -84,7 +80,8 @@ object TagEntity {
       "parents" -> JsArray(te.parents.map(Json.toJson(_)).toSeq),
       "externalReferences" -> JsArray(te.references.map(Json.toJson(_))),
       "path" -> JsString(te.path),
-      "contributorInformation" -> Json.toJson(te.contributorInformation)
+      "contributorInformation" -> Json.toJson(te.contributorInformation),
+      "deprecated" -> JsBoolean(te.deprecated)
     ) ++ te.subType.map("subType" -> JsString(_))
       ++ te.adBlockingLevel.map(level => "adBlockingLevel" -> JsString(level.entryName))
       ++ te.contributionBlockingLevel.map(level => "contributionBlockingLevel" -> JsString(level.entryName))
