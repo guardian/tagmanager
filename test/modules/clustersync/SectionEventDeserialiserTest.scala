@@ -1,6 +1,6 @@
 package modules.clustersync
 
-import com.amazonaws.services.kinesis.model.Record
+import software.amazon.kinesis.retrieval.KinesisClientRecord
 import com.gu.tagmanagement.{EventType, SectionEvent}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -17,7 +17,9 @@ class SectionEventDeserialiserTest extends AnyFlatSpec with Matchers {
 
     val thriftKinesisEvent: Array[Byte] = ThriftSerializer.serializeToBytes(sectionUpdateEvent, true)
 
-    val testRecordWithCompression = new Record().withData(ByteBuffer.wrap(thriftKinesisEvent))
+    val testRecordWithCompression = KinesisClientRecord.builder()
+      .data(ByteBuffer.wrap(thriftKinesisEvent))
+      .build()
 
     SectionEventDeserialiser.deserialise(testRecordWithCompression) shouldBe Success(sectionUpdateEvent)
 

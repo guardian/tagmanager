@@ -1,6 +1,6 @@
 package modules.clustersync
 
-import com.amazonaws.services.kinesis.model.Record
+import software.amazon.kinesis.retrieval.KinesisClientRecord
 import com.gu.tagmanagement.{EventType, TagEvent}
 import model.Tag
 import play.api.Logging
@@ -25,7 +25,7 @@ object TagEventDeserialiser {
    * the latest thrift serialisation library that we use here is nat handling that additional byte
    * so we decided to explicitly strip it while reading the feed back from Kinesis
    * */
-  def deserialise(record: Record): Try[TagEvent] = {
+  def deserialise(record: KinesisClientRecord): Try[TagEvent] = {
     val tProto = kinesisRecordAsThriftCompactProtocol(record, stripCompressionByte = true)
     Try(TagEvent.decode(tProto))
   }
@@ -34,7 +34,7 @@ object TagEventDeserialiser {
 
 object TagSyncUpdateProcessor extends KinesisStreamRecordProcessor with Logging {
 
-  override def process(record: Record): Unit = {
+  override def process(record: KinesisClientRecord): Unit = {
     logger.info(s"Kinesis consumer receives record \n $record")
     TagEventDeserialiser.deserialise(record) match {
       case Success(tagEvent) => updateTagsLookupCache(tagEvent)
