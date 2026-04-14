@@ -1,6 +1,6 @@
 import React from "react";
 import {keywordTagTypes} from "../../../../constants/keywordTagTypes";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 
 export const KeywordTypeSelect = ({updateTag, tag}) => {
     const setKeywordType = (e) => {
@@ -36,13 +36,13 @@ export const KeywordTypeSelect = ({updateTag, tag}) => {
             <label className="tag-edit__input-group__header">
                 Keyword Type
                 <span
-                    data-tip={keywordTypeTooltipHtml}
-                    data-html={true}
-                    data-place="right"
+                    data-tooltip-id="keyword-select-tooltip"
+                    data-tooltip-html={keywordTypeTooltipHtml}
+                    data-tooltip-place="right"
                 >
                     <i className="i-info-grey"/>
                 </span>
-                <ReactTooltip html={true} />
+                <Tooltip id="keyword-select-tooltip" />
             </label>
             <div className="tag-edit__field">
                 <select onChange={setKeywordType} value={tag.keywordType ?? ""}>

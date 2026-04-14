@@ -1,5 +1,15 @@
 import React from 'react';
-import Dropzone from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
+
+function DropzoneArea({ onDrop, style }) {
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: false, accept: { 'image/*': [] } });
+  return (
+    <div {...getRootProps()} style={style}>
+      <input {...getInputProps()} />
+      <div>Drop a logo here, or click to select file.</div>
+    </div>
+  );
+}
 
 const dropzoneStyles = {
   height: "180px", 
@@ -79,9 +89,7 @@ export default class SponsorLogo extends React.Component {
     if (!this.props.logo) {
       return (
         <div className="tag-edit__field">
-          <Dropzone onDrop={this.onDrop.bind(this)} multiple={false} style={dropzoneStyles} >
-            <div>Drop a logo here, or click to select file.</div>
-          </Dropzone>
+          <DropzoneArea onDrop={this.onDrop.bind(this)} style={dropzoneStyles} />
           {this.errorDiv()}
         </div>
       );

@@ -1,82 +1,73 @@
 import React from 'react';
-import {Router, Route, IndexRoute, browserHistory} from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { hasPermission } from './util/verifyPermission';
+import { withParams } from './util/withParams';
 
-import {getStore} from './util/storeAccessor';
-import {clearError} from './actions/UIActions/clearError';
-import {hasPermission} from './util/verifyPermission';
-
-import ReactApp     from './components/ReactApp.react';
-import BatchTag     from './components/BatchTag.react';
-import MergeTag     from './components/MergeTag.react';
+import ReactApp       from './components/ReactApp.react';
+import BatchTag       from './components/BatchTag.react';
+import MergeTag       from './components/MergeTag.react';
 import MappingManager from './components/MappingManager.react';
-import Status       from './components/Status.react';
-import Audit        from './components/Audit.react';
-import Unauthorised from './components/Unauthorised.react';
+import Status         from './components/Status.react';
+import Audit          from './components/Audit.react';
+import Unauthorised   from './components/Unauthorised.react';
 
-import TagCreate    from './components/Tag/Create.react';
-import TagDisplay   from './components/Tag/Display.react';
-import TagSearch    from './components/TagSearch.react';
+import TagCreate  from './components/Tag/Create.react';
+import TagDisplay from './components/Tag/Display.react';
+import TagSearch  from './components/TagSearch.react';
 
-import SectionList from './components/SectionList/SectionList.react';
+import SectionList    from './components/SectionList/SectionList.react';
 import SectionDisplay from './components/Section/Display';
-import SectionCreate from './components/Section/Create';
+import SectionCreate  from './components/Section/Create';
 
-import PillarList from './components/Pillar/PillarList.react';
+import PillarList    from './components/Pillar/PillarList.react';
 import PillarDisplay from './components/Pillar/Display.react';
-import PillarCreate from './components/Pillar/Create.react';
+import PillarCreate  from './components/Pillar/Create.react';
 
-import SponsorshipSearch from './components/SponsorshipSearch.react';
+import SponsorshipSearch  from './components/SponsorshipSearch.react';
 import SponsorshipDisplay from './components/Sponsorship/Display';
-import SponsorshipCreate from './components/Sponsorship/Create';
+import SponsorshipCreate  from './components/Sponsorship/Create';
 import SpreadsheetBuilder from './components/Spreadsheet/SpreadsheetBuilder.react';
 
-function requirePermission(permissionName, nextState, replaceState) {
-  if (!hasPermission(permissionName)) {
-    replaceState(null, '/unauthorised');
+// Wrap class components that need URL params via this.props.routeParams
+const TagDisplayWithParams         = withParams(TagDisplay);
+const SectionDisplayWithParams     = withParams(SectionDisplay);
+const PillarDisplayWithParams      = withParams(PillarDisplay);
+const SponsorshipDisplayWithParams = withParams(SponsorshipDisplay);
+
+function ProtectedRoute({ permission, children }) {
+  if (!hasPermission(permission)) {
+    return <Navigate to="/unauthorised" replace />;
   }
+  return children;
 }
 
-function clearErrorBar() {
-    const store = getStore();
-    store.dispatch(clearError());
-}
-
-function onRouterUpdate() {
-  const domainMatch = /^.*\.(?<environment>local|code)\.dev-gutools\.co\.uk$|^.*\.gutools\.co\.uk$/
-      .exec(location.hostname);
-  if (domainMatch) {
-    const stage = (domainMatch.groups?.environment || "PROD");
-    const telemetryUrl = stage === "PROD" ? "user-telemetry.gutools.co.uk" : `user-telemetry.${stage}.dev-gutools.co.uk`
-    const image = new Image();
-    image.src = `https://${telemetryUrl}/guardian-tool-accessed?app=tag-manager&stage=${stage.toUpperCase()}&path=${window.location.pathname}`;
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <ReactApp />,
+    children: [
+      { index: true, element: <TagSearch /> },
+      { path: 'tag/create', element: <ProtectedRoute permission="tag_edit"><TagCreate /></ProtectedRoute> },
+      { path: 'tag/:tagId', element: <TagDisplayWithParams /> },
+      { path: 'batch',      element: <BatchTag /> },
+      { path: 'mapping',    element: <MappingManager /> },
+      { path: 'merge',      element: <ProtectedRoute permission="tag_admin"><MergeTag /></ProtectedRoute> },
+      { path: 'audit',      element: <Audit /> },
+      { path: 'status',     element: <Status /> },
+      { path: 'section',            element: <ProtectedRoute permission="tag_admin"><SectionList /></ProtectedRoute> },
+      { path: 'section/create',     element: <ProtectedRoute permission="tag_admin"><SectionCreate /></ProtectedRoute> },
+      { path: 'section/:sectionId', element: <ProtectedRoute permission="tag_admin"><SectionDisplayWithParams /></ProtectedRoute> },
+      { path: 'sponsorship',                element: <ProtectedRoute permission="commercial_tags"><SponsorshipSearch /></ProtectedRoute> },
+      { path: 'sponsorship/create',         element: <ProtectedRoute permission="commercial_tags"><SponsorshipCreate /></ProtectedRoute> },
+      { path: 'sponsorship/:sponsorshipId', element: <ProtectedRoute permission="commercial_tags"><SponsorshipDisplayWithParams /></ProtectedRoute> },
+      { path: 'pillar',           element: <ProtectedRoute permission="tag_admin"><PillarList /></ProtectedRoute> },
+      { path: 'pillar/create',    element: <ProtectedRoute permission="tag_admin"><PillarCreate /></ProtectedRoute> },
+      { path: 'pillar/:pillarId', element: <ProtectedRoute permission="tag_admin"><PillarDisplayWithParams /></ProtectedRoute> },
+      { path: 'microsite',            element: <SectionList isMicrositeView={true} /> },
+      { path: 'microsite/create',     element: <SectionCreate isMicrositeView={true} /> },
+      { path: 'microsite/:sectionId', element: <SectionDisplayWithParams isMicrositeView={true} /> },
+      { path: 'spreadsheets', element: <SpreadsheetBuilder /> },
+      { path: 'unauthorised',  element: <Unauthorised /> },
+    ]
   }
-}
-
-export const router = (
-  <Router history={browserHistory} onUpdate={onRouterUpdate}>
-    <Route path="/" component={ReactApp}>
-      <Route name="tag" path="/tag/create" component={TagCreate} onEnter={requirePermission.bind(this, 'tag_edit')}/>
-      <Route name="tagCreate" path="/tag/:tagId" component={TagDisplay} onLeave={clearErrorBar.bind(this)} />
-      <Route name="batch" path="/batch" component={BatchTag}/>
-      <Route name="mapping" path="/mapping" component={MappingManager} />
-      <Route name="merge" path="/merge" component={MergeTag} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="audit" path="/audit" component={Audit} />
-      <Route name="status" path="/status" component={Status} />
-      <Route name="sectionList" path="/section" component={SectionList} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="sectionCreate" path="/section/create" component={SectionCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="sectionEdit" path="/section/:sectionId" component={SectionDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="sponsorshipSearch" path="/sponsorship" component={SponsorshipSearch} onEnter={requirePermission.bind(this, 'commercial_tags')} />
-      <Route name="sponsorshipCreate" path="/sponsorship/create" component={SponsorshipCreate} onEnter={requirePermission.bind(this, 'commercial_tags')} />
-      <Route name="sponsorshipEdit" path="/sponsorship/:sponsorshipId" component={SponsorshipDisplay} onEnter={requirePermission.bind(this, 'commercial_tags')}/>
-      <Route name="pillarList" path="/pillar" component={PillarList} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="pillarCreate" path="/pillar/create" component={PillarCreate} onEnter={requirePermission.bind(this, 'tag_admin')} />
-      <Route name="pillarEdit" path="/pillar/:pillarId" component={PillarDisplay} onEnter={requirePermission.bind(this, 'tag_admin')}/>
-      <Route name="micrositeList" path="/microsite" component={SectionList} isMicrositeView={true}/>
-      <Route name="micrositeCreate" path="/microsite/create" component={SectionCreate} isMicrositeView={true}/>
-      <Route name="micrositeEdit" path="/microsite/:sectionId" component={SectionDisplay} isMicrositeView={true} />
-      <Route name="spreadsheetBuilder" path="/spreadsheets" component={SpreadsheetBuilder}  />
-      <Route name="unauthorised" path="/unauthorised" component={Unauthorised} />
-      <IndexRoute component={TagSearch}/>
-    </Route>
-  </Router>
-)
+]);

@@ -2,8 +2,8 @@ import React from 'react';
 import R from 'ramda';
 import moment from 'moment';
 
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import momentLocalizer from 'react-widgets-moment';
+import DatePicker from 'react-widgets/DatePicker';
+import 'react-widgets/styles.css';
 
 import {allowedEditions} from '../../constants/allowedEditions';
 import SectionSelect from '../utils/SectionSelect.react';
@@ -251,8 +251,9 @@ export default class TargetingEdit extends React.Component {
 
         <div className="tag-edit__field" >
           <label className="tag-edit__input-group__header">Only show for content published after</label>
-          <DateTimePicker
+          <DatePicker
             format={"DD/MM/YYYY HH:mm"}
+            includeTime={true}
             value={this.publishedSince()}
             onChange={this.setPublishedSince.bind(this)}/>
         </div>

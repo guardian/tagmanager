@@ -15,7 +15,7 @@ class SectionCreate extends React.Component {
     }
 
     componentDidMount() {
-      this.props.sectionActions.populateEmptySection(this.props.route.isMicrositeView);
+      this.props.sectionActions.populateEmptySection(this.props.isMicrositeView);
     }
 
     isSectionDirty() {
@@ -23,7 +23,7 @@ class SectionCreate extends React.Component {
     }
 
     resetSection() {
-      this.props.sectionActions.populateEmptySection(this.props.route.isMicrositeView);
+      this.props.sectionActions.populateEmptySection(this.props.isMicrositeView);
     }
 
     saveSection() {

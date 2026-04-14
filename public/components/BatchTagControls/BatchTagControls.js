@@ -1,8 +1,8 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import TagSelect from '../utils/TagSelect';
 import tagManagerApi from '../../util/tagManagerApi';
-import { browserHistory } from 'react-router'
+import { browserHistory } from '../../util/navigate';
 
 export default class BatchTagControls extends React.Component {
     constructor(props) {
@@ -173,14 +173,16 @@ export default class BatchTagControls extends React.Component {
 
       const {toAddToTop, toAddToBottom, toRemove} = this.state;
       return (
-        <CSSTransitionGroup transitionName="batch-status-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-          <div className="batch-status__container">
-            <div className="batch-status">
-              {this.renderMode()}
+        <TransitionGroup>
+          <CSSTransition key="batch-status" classNames="batch-status-transition" timeout={{ enter: 500, exit: 500 }}>
+            <div className="batch-status__container">
+              <div className="batch-status">
+                {this.renderMode()}
+              </div>
+              {toAddToTop.length + toAddToBottom.length + toRemove.length > 0 ? this.renderBasket() : false}
             </div>
-            {toAddToTop.length + toAddToBottom.length + toRemove.length > 0 ? this.renderBasket() : false}
-          </div>
-        </CSSTransitionGroup>
+          </CSSTransition>
+        </TransitionGroup>
       );
     }
 }

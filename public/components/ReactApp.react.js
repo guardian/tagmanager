@@ -1,5 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header.react';
+
+function onRouterUpdate() {
+  const domainMatch = /^.*\.(?<environment>local|code)\.dev-gutools\.co\.uk$|^.*\.gutools\.co\.uk$/
+      .exec(location.hostname);
+  if (domainMatch) {
+    const stage = (domainMatch.groups?.environment || "PROD");
+    const telemetryUrl = stage === "PROD" ? "user-telemetry.gutools.co.uk" : `user-telemetry.${stage}.dev-gutools.co.uk`;
+    const image = new Image();
+    image.src = `https://${telemetryUrl}/guardian-tool-accessed?app=tag-manager&stage=${stage.toUpperCase()}&path=${window.location.pathname}`;
+  }
+}
+
+function RouteChangeTracker() {
+  const location = useLocation();
+  useEffect(() => { onRouterUpdate(); }, [location]);
+  return null;
+}
 
 class ReactApp extends React.Component {
 
@@ -31,10 +49,11 @@ class ReactApp extends React.Component {
     render () {
         return (
             <div className="wrapper">
+                <RouteChangeTracker />
                 {this.renderErrorBar()}
                 <Header />
                 <div className="editor">
-                    {this.props.children}
+                    <Outlet />
                 </div>
             </div>
         );

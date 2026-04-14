@@ -2,7 +2,7 @@ import React from 'react';
 import {allowedAuditReports} from '../constants/allowedAuditReports';
 import tagManagerApi from '../util/tagManagerApi';
 import moment from 'moment';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 
 const reportSubjects = ['tag', 'section'];
 
@@ -44,7 +44,7 @@ export default class Audit extends React.Component {
           <td>{logItem.operation}</td>
           <td>{logItem.description}</td>
           <td>{logItem.user}</td>
-          <td className="taglist__results-info" data-tip={summary}><i className="i-info-grey" /></td>
+          <td className="taglist__results-info" data-tooltip-id="audit-tooltip" data-tooltip-html={summary}><i className="i-info-grey" /></td>
         </tr>
       );
     }
@@ -120,7 +120,7 @@ export default class Audit extends React.Component {
             }, this)}
           </div>
           {this.renderTable()}
-          <ReactTooltip multiline={true} place="right" effect="solid"/>
+          <Tooltip id="audit-tooltip" place="right" />
         </div>
 
       );

@@ -1,3 +1,4 @@
+import {getStore} from '../../util/storeAccessor';
 import React from 'react';
 import TagEdit from '../TagEdit/TagEdit.react';
 import TagContext from '../TagContext/TagContext.react';
@@ -32,6 +33,10 @@ class TagDisplay extends React.Component {
       if (!this.props.referenceTypes || !this.props.referenceTypes.length) {
         this.props.referenceTypeActions.getReferenceTypes();
       }
+    }
+
+    componentWillUnmount() {
+      this.props.uiActions.clearError();
     }
 
     UNSAFE_componentWillReceiveProps(props) {
@@ -147,6 +152,7 @@ import * as saveTag from '../../actions/TagActions/saveTag';
 import * as deleteTag from '../../actions/TagActions/deleteTag';
 import * as getSections from '../../actions/SectionsActions/getSections';
 import * as getReferenceTypes from '../../actions/ReferenceTypeActions/getReferenceTypes';
+import * as clearError from '../../actions/UIActions/clearError';
 
 function mapStateToProps(state) {
   return {
@@ -163,7 +169,8 @@ function mapDispatchToProps(dispatch) {
   return {
     tagActions: bindActionCreators(Object.assign({}, getTag, updateTag, saveTag, deleteTag), dispatch),
     sectionActions: bindActionCreators(Object.assign({}, getSections), dispatch),
-    referenceTypeActions: bindActionCreators(Object.assign({}, getReferenceTypes), dispatch)
+    referenceTypeActions: bindActionCreators(Object.assign({}, getReferenceTypes), dispatch),
+    uiActions: bindActionCreators(Object.assign({}, clearError), dispatch)
   };
 }
 
