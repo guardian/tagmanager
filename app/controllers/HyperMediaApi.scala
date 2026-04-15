@@ -57,7 +57,8 @@ class HyperMediaApi(
         internalName = req.getQueryString("internalName"),
         externalName = req.getQueryString("externalName"),
         referenceToken = req.getQueryString("externalReferenceToken"),
-        subType = req.getQueryString("subType")
+        subType = req.getQueryString("subType"),
+        deprecated = req.getQueryString("deprecated")
       )
 
       val limit = req.getQueryString("limit").getOrElse("25").toInt

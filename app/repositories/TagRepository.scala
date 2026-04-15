@@ -51,7 +51,8 @@ case class TagSearchCriteria(
   referenceToken: Option[String] = None,
   searchField: Option[String] = None,
   subType: Option[String] = None,
-  hasFields: Option[List[String]] = None
+  hasFields: Option[List[String]] = None,
+  deprecated: Option[String] = None,
 ) extends Logging {
 
   type TagFilter = (List[Tag]) => List[Tag]
@@ -65,7 +66,8 @@ case class TagSearchCriteria(
     referenceType.map(v => referenceTypeFilter(v.toLowerCase) _) ++
     referenceToken.map(v => referenceTokenFilter(v.toLowerCase) _) ++
     subType.map(v => subTypeFilter(v.toLowerCase) _) ++
-    hasFields.map(v => hasFieldsFilter(v.map(_.toLowerCase)) _)
+    hasFields.map(v => hasFieldsFilter(v.map(_.toLowerCase)) _) ++
+    deprecated.map(v => deprecatedFilter(v.toLowerCase) _)
 
   def execute(tags: List[Tag]): List[Tag] = {
     filters.foldLeft(tags){ case(ts, filter) => filter(ts) }
@@ -160,6 +162,11 @@ case class TagSearchCriteria(
     ).getOrElse(false)
   }
 
+  private def deprecatedFilter(value: String)(tags: List[Tag]) = normalize(value) match {
+    case "true" => tags.filter { t => t.deprecated }
+    case "false" => tags.filter { t => !t.deprecated }
+    case _ => tags
+  }
 
   def asFilters = {
     Seq() ++
