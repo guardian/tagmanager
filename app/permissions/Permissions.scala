@@ -1,8 +1,7 @@
 package permissions
 
-import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
 import com.gu.permissions.{PermissionDefinition, PermissionsConfig, PermissionsProvider}
-import services.Config
+import services.{AWS, Config}
 import com.madgag.scala.collection.decorators._
 
 object Permissions {
@@ -20,9 +19,7 @@ object Permissions {
     "commercial_tags" -> CommercialTags,
   )
 
-  private val credentials: AWSCredentialsProvider = new DefaultAWSCredentialsProviderChain()
-
-  private val permissions: PermissionsProvider = PermissionsProvider(PermissionsConfig(Config().permissionsStage, Config().aws.region, credentials))
+  private val permissions: PermissionsProvider = PermissionsProvider(PermissionsConfig(Config().permissionsStage, Config().aws.region, awsCredentials = AWS.credentialsProvider))
 
   def testUser(permission: PermissionDefinition)(email: String): Boolean = {
     println("Permissions for: " + email)

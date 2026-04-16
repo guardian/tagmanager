@@ -1,7 +1,8 @@
 package services
 
-import java.nio.ByteBuffer
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider
 
+import java.nio.ByteBuffer
 import software.amazon.awssdk.imds.Ec2MetadataClient
 
 // AWS SDK 2 - migrated services
@@ -71,6 +72,11 @@ object AWS {
   lazy val frontendStaticFilesS3Client = S3Client.builder()
     .credentialsProvider(frontendCredentialsProvider.getOrElse(SdkV2ProfileCredentialsProvider.create("frontend")))
     .region(regionV2)
+    .build()
+
+  lazy val credentialsProvider = DefaultCredentialsProvider
+    .builder()
+    .profileName("composer")
     .build()
 }
 
