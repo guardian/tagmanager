@@ -19,7 +19,7 @@ object Permissions {
     "commercial_tags" -> CommercialTags,
   )
 
-  private val permissions: PermissionsProvider = PermissionsProvider(PermissionsConfig(Config().permissionsStage, Config().aws.region, awsCredentials = AWS.credentialsProvider))
+  private val permissions: PermissionsProvider = PermissionsProvider(PermissionsConfig(Config().permissionsStage, Config().aws.region, AWS.credentialsProvider))
 
   def testUser(permission: PermissionDefinition)(email: String): Boolean = {
     println("Permissions for: " + email)

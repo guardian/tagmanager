@@ -4,8 +4,6 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider
 
 import java.nio.ByteBuffer
 import software.amazon.awssdk.imds.Ec2MetadataClient
-
-// AWS SDK 2 - migrated services
 import software.amazon.awssdk.auth.credentials.{ProfileCredentialsProvider => SdkV2ProfileCredentialsProvider}
 import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.regions.{Region => SdkV2Region}
@@ -30,10 +28,8 @@ import scala.jdk.CollectionConverters._
 
 object AWS {
 
-  // SDK 2 region
   lazy val regionV2 = SdkV2Region.EU_WEST_1
 
-  // SDK 2 EC2 client
   lazy val EC2Client = Ec2Client.builder()
     .region(regionV2)
     .build()
@@ -55,7 +51,6 @@ object AWS {
     .region(regionV2)
     .build()
 
-  // SDK 2 S3 client
   lazy val s3Client: S3Client = S3Client.builder()
     .region(regionV2)
     .build()

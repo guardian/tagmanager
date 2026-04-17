@@ -109,7 +109,6 @@ object JobRepository {
   }
 
   def findJobsForTag(tagId: Long): List[Job] = {
-    // Filter in memory - scan all and filter
     loadAllJobs.filter(_.tagIds.contains(tagId))
   }
 }
