@@ -74,7 +74,8 @@ class TagManagementApi(
       searchField = req.getQueryString("searchField"),
       types = req.getQueryString("types").map(_.split(",").toList.map(_.trim())),
       referenceType = req.getQueryString("referenceType"),
-      hasFields = req.getQueryString("hasFields").map(_.split(",").toList.map(_.trim()))
+      hasFields = req.getQueryString("hasFields").map(_.split(",").toList.map(_.trim())),
+      deprecated = req.getQueryString("deprecated"),
     )
 
     val orderBy = req.getQueryString("orderBy").getOrElse("internalName")
