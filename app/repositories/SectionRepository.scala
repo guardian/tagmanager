@@ -1,6 +1,6 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import model.Section
 import play.api.libs.json.JsValue
 import services.Dynamo
@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 object SectionRepository {
   def getSection(id: Long) = {
-    Option(Dynamo.sectionTable.getItem("id", id)).map(Section.fromItem)
+    Dynamo.sectionTable.getItem("id", id).map(Section.fromItem)
   }
 
   def updateSection(section: Section) = {
@@ -22,9 +22,9 @@ object SectionRepository {
     }
   }
 
-  def loadAllSections = Dynamo.sectionTable.scan().asScala.map(Section.fromItem)
+  def loadAllSections: List[Section] = Dynamo.sectionTable.scan().map(Section.fromItem).toList
 
-  def count = Dynamo.sectionTable.scan().asScala.count(_ => true)
+  def count = Dynamo.sectionTable.scan().size
 
 }
 

@@ -191,7 +191,7 @@ case class CreateTagCommand(
 
     val tagUpdateEvent = TagEvent(EventType.Update, tag.id, Some(thriftTag))
 
-    logger.info(s"Kiniesis producer publish tag-update event, tagEvent type: ${tagUpdateEvent.eventType}")
+    logger.info(s"Kinesis producer publish tag-update event, tagEvent type: ${tagUpdateEvent.eventType}")
 
     KinesisStreams.tagUpdateStream.publishUpdate(tag.id.toString, tagUpdateEvent)
 

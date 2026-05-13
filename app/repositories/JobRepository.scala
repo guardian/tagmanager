@@ -1,37 +1,37 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document._
-import com.amazonaws.services.dynamodbv2.document.spec._
-import com.amazonaws.services.dynamodbv2.document.utils._
-import com.amazonaws.services.dynamodbv2.model._
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
+import software.amazon.awssdk.services.dynamodb.model._
 import model.Section
 import model.jobs.{Job, JobStatus}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import scala.util.control.NonFatal
-import services.Dynamo
+import services.{Dynamo, DynamoJsonConversions}
 
 import scala.jdk.CollectionConverters._
 
 
 object JobRepository {
   def getJob(id: Long) = {
-    Option(Dynamo.jobTable.getItem("id", id)).map(Job.fromItem)
+    Dynamo.jobTable.getItem("id", id).map(Job.fromItem)
   }
 
   def lock(job: Job, nodeId: String, currentTime: Long, lockBreakTime: Long): Option[Job] = {
-    val updateItemSpec = new UpdateItemSpec()
-      .withPrimaryKey("id", job.id)
-      .withReturnValues(ReturnValue.ALL_NEW)
-      .withUpdateExpression("SET ownedBy = :newOwner, lockedAt = :lockedAt, jobStatus = :ownedStatus")
-      .withConditionExpression("(attribute_not_exists(ownedBy) AND jobStatus <> :ownedStatus) OR (attribute_exists(ownedBy) AND lockedAt < :lockBreakTime)")
-      .withValueMap(new ValueMap()
-        .withString(":newOwner", nodeId)
-        .withLong(":lockedAt", currentTime)
-        .withLong(":lockBreakTime", lockBreakTime)
-        .withString(":ownedStatus", JobStatus.owned))
-
     try {
-      Some(Job.fromItem(Dynamo.jobTable.updateItem(updateItemSpec).getItem()))
+      val response = Dynamo.jobTable.updateItem(
+        key = Map("id" -> AttributeValue.builder().n(job.id.toString).build()),
+        updateExpression = "SET ownedBy = :newOwner, lockedAt = :lockedAt, jobStatus = :ownedStatus",
+        expressionAttributeValues = Map(
+          ":newOwner" -> AttributeValue.builder().s(nodeId).build(),
+          ":lockedAt" -> AttributeValue.builder().n(currentTime.toString).build(),
+          ":lockBreakTime" -> AttributeValue.builder().n(lockBreakTime.toString).build(),
+          ":ownedStatus" -> AttributeValue.builder().s(JobStatus.owned).build()
+        ),
+        conditionExpression = Some("(attribute_not_exists(ownedBy) AND jobStatus <> :ownedStatus) OR (attribute_exists(ownedBy) AND lockedAt < :lockBreakTime)")
+      )
+      if (response.hasAttributes) {
+        Some(Job.fromItem(EnhancedDocument.fromAttributeValueMap(response.attributes())))
+      } else None
     } catch {
       case NonFatal(e) => {
         println(e) // Someone else got here first
@@ -47,16 +47,16 @@ object JobRepository {
       job.jobStatus
     }
 
-    val updateItemSpec = new UpdateItemSpec()
-      .withPrimaryKey("id", job.id)
-      .withUpdateExpression("REMOVE ownedBy SET jobStatus = :status")
-      .withConditionExpression("ownedBy = :currentOwner")
-      .withValueMap(new ValueMap()
-        .withString(":currentOwner", nodeId)
-        .withString(":status", status))
-
     try {
-      Dynamo.jobTable.updateItem(updateItemSpec)
+      Dynamo.jobTable.updateItem(
+        key = Map("id" -> AttributeValue.builder().n(job.id.toString).build()),
+        updateExpression = "REMOVE ownedBy SET jobStatus = :status",
+        expressionAttributeValues = Map(
+          ":currentOwner" -> AttributeValue.builder().s(nodeId).build(),
+          ":status" -> AttributeValue.builder().s(status).build()
+        ),
+        conditionExpression = Some("ownedBy = :currentOwner")
+      )
     } catch {
       case NonFatal(e) => {
         println(e) // Should only happen if someone stole our lock, at which point we can't really do anything
@@ -65,19 +65,19 @@ object JobRepository {
   }
 
   def addJob(job: Job) = {
-    Dynamo.jobTable.putItem(job.toItem)
+    Dynamo.jobTable.putItem(DynamoJsonConversions.jsonToDocument(Json.toJson(job)))
   }
 
   /** You can only modify a job if you own it */
   def upsertJobIfOwned(job: Job, nodeId: String) = {
-    val putItemSpec = new PutItemSpec()
-      .withItem(job.toItem)
-      .withConditionExpression("ownedBy = :currentOwner")
-      .withValueMap(new ValueMap()
-        .withString(":currentOwner", nodeId))
-
     try {
-      Dynamo.jobTable.putItem(putItemSpec)
+      val request = PutItemRequest.builder()
+        .tableName(Dynamo.jobTable.tableName)
+        .item(DynamoJsonConversions.jsonToDocument(Json.toJson(job)).toMap)
+        .conditionExpression("ownedBy = :currentOwner")
+        .expressionAttributeValues(Map(":currentOwner" -> AttributeValue.builder().s(nodeId).build()).asJava)
+        .build()
+      Dynamo.client.putItem(request)
     } catch {
       case NonFatal(e) => {
         println(e) // Should only happen if someone stole our lock, at which point we can't really do anything
@@ -87,22 +87,28 @@ object JobRepository {
 
   /** Delete a job if it's in a terminal state: complete, failed or rolled back */
   def deleteIfTerminal(id: Long) = {
-    val deleteItemSpec = new DeleteItemSpec()
-      .withPrimaryKey("id", id)
-      .withConditionExpression("jobStatus = :complete OR jobStatus = :failed OR jobStatus = :rolledback")
-      .withValueMap(new ValueMap()
-        .withString(":complete", JobStatus.complete)
-        .withString(":rolledback", JobStatus.rolledback)
-        .withString(":failed", JobStatus.failed))
-
-    Dynamo.jobTable.deleteItem(deleteItemSpec)
+    try {
+      val request = DeleteItemRequest.builder()
+        .tableName(Dynamo.jobTable.tableName)
+        .key(Map("id" -> AttributeValue.builder().n(id.toString).build()).asJava)
+        .conditionExpression("jobStatus = :complete OR jobStatus = :failed OR jobStatus = :rolledback")
+        .expressionAttributeValues(Map(
+          ":complete" -> AttributeValue.builder().s(JobStatus.complete).build(),
+          ":rolledback" -> AttributeValue.builder().s(JobStatus.rolledback).build(),
+          ":failed" -> AttributeValue.builder().s(JobStatus.failed).build()
+        ).asJava)
+        .build()
+      Dynamo.client.deleteItem(request)
+    } catch {
+      case _: ConditionalCheckFailedException => // Expected if job not in terminal state
+    }
   }
 
   def loadAllJobs = {
-    Dynamo.jobTable.scan().asScala.map(Job.fromItem(_)).toList
+    Dynamo.jobTable.scan().map(Job.fromItem).toList
   }
 
   def findJobsForTag(tagId: Long): List[Job] = {
-    Dynamo.jobTable.scan(new ScanFilter("tagIds").contains(tagId)).asScala.map(Job.fromItem).toList
+    loadAllJobs.filter(_.tagIds.contains(tagId))
   }
 }

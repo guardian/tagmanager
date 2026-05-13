@@ -58,21 +58,21 @@ object ReindexProgressRepository {
   // Read
   def getTagReindexProgress(implicit ec: ExecutionContext): Future[Option[ReindexProgress]] = {
     Future{
-      Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.TagTypeName))
+      Dynamo.reindexProgressTable.getItemByStringKey("type", ReindexProgress.TagTypeName)
         .map(ReindexProgress.fromItem)
     }
   }
 
   def getSectionReindexProgress(implicit ec: ExecutionContext): Future[Option[ReindexProgress]] = {
     Future{
-      Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.SectionTypeName))
+      Dynamo.reindexProgressTable.getItemByStringKey("type", ReindexProgress.SectionTypeName)
         .map(ReindexProgress.fromItem)
     }
   }
 
   def getPillarReindexProgress(implicit ec: ExecutionContext): Future[Option[ReindexProgress]] = {
     Future{
-      Option(Dynamo.reindexProgressTable.getItem("type", ReindexProgress.PillarTypeName))
+      Dynamo.reindexProgressTable.getItemByStringKey("type", ReindexProgress.PillarTypeName)
         .map(ReindexProgress.fromItem)
     }
   }

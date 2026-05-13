@@ -1,11 +1,12 @@
 package model;
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import org.joda.time.DateTime
 import helpers.JodaDateTimeFormat._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, JsPath, Format}
 import play.api.Logging
+import services.DynamoJsonConversions
 import scala.util.control.NonFatal
 
 case class AppAudit(action: String, date: DateTime, user: String, description: String) extends Audit {
@@ -14,7 +15,7 @@ case class AppAudit(action: String, date: DateTime, user: String, description: S
   override def resourceId = None
   override def message = None
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 }
 
 object AppAudit extends Logging {
@@ -25,11 +26,11 @@ object AppAudit extends Logging {
       (JsPath \ "description").format[String]
     )(AppAudit.apply, unlift(AppAudit.unapply))
 
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[AppAudit]
+  def fromItem(item: EnhancedDocument): AppAudit = try {
+    Json.parse(item.toJson()).as[AppAudit]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load app Audit ${item.toJSON}", e)
+      logger.error(s"failed to load app Audit ${item.toJson()}", e)
       throw e
     }
   }

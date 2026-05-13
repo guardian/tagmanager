@@ -1,13 +1,11 @@
 package modules.clustersync
 
-import com.amazonaws.services.dynamodbv2.document.Item
-import com.amazonaws.services.dynamodbv2.document.spec.{PutItemSpec, UpdateItemSpec}
-import com.amazonaws.services.dynamodbv2.document.utils.{NameMap, ValueMap}
-import com.amazonaws.services.dynamodbv2.model.{ConditionalCheckFailedException, ReturnValue}
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
+import software.amazon.awssdk.services.dynamodb.model._
 import org.joda.time.DateTime
 import helpers.JodaDateTimeFormat._
 import play.api.Logging
-import services.Dynamo
+import services.{Dynamo, DynamoJsonConversions}
 
 import scala.jdk.CollectionConverters._
 
@@ -44,26 +42,26 @@ object NodeStatusRepository extends Logging {
   }
 
   def heartbeat(nodeStatus: NodeStatus): NodeStatus = {
-
     val heartbeatMillis = System.currentTimeMillis
 
-    val updateParams = new ValueMap().withLong(":next", heartbeatMillis)
+    val expressionAttrValues = scala.collection.mutable.Map[String, AttributeValue](
+      ":next" -> AttributeValue.builder().n(heartbeatMillis.toString).build()
+    )
 
     nodeStatus.heartbeat match {
-      case Some(dt) => updateParams.withLong(":current", dt.getMillis)
-      case None => updateParams.withNull(":current")
+      case Some(dt) => expressionAttrValues += (":current" -> AttributeValue.builder().n(dt.getMillis.toString).build())
+      case None => expressionAttrValues += (":current" -> AttributeValue.builder().nul(true).build())
     }
 
-    val heartbeatUpdate = new UpdateItemSpec()
-      .withPrimaryKey("nodeId", nodeStatus.nodeId)
-      .withUpdateExpression("set #h = :next")
-      .withConditionExpression("#h = :current")
-      .withNameMap(new NameMap().`with`("#h", "heartbeat"))
-      .withValueMap(updateParams)
-      .withReturnValues(ReturnValue.ALL_NEW)
-
     try {
-      NodeStatus.fromItem( Dynamo.clusterStatusTable.updateItem(heartbeatUpdate).getItem )
+      val response = Dynamo.clusterStatusTable.updateItem(
+        key = Map("nodeId" -> AttributeValue.builder().n(nodeStatus.nodeId.toString).build()),
+        updateExpression = "set #h = :next",
+        expressionAttributeNames = Map("#h" -> "heartbeat"),
+        expressionAttributeValues = expressionAttrValues.toMap,
+        conditionExpression = Some("#h = :current")
+      )
+      NodeStatus.fromAttributeMap(response.attributes())
     } catch {
       case e: ConditionalCheckFailedException => {
         logger.warn("heartbeat failed", e)
@@ -73,15 +71,19 @@ object NodeStatusRepository extends Logging {
   }
 
   private def registerNewNode(nodeId: Long): NodeStatus = {
-
-    val item = new Item().withLong("nodeId", nodeId).withLong("heartbeat", System.currentTimeMillis)
-    val nodeRegistrationPut = new PutItemSpec()
-      .withItem(item)
-      .withConditionExpression("attribute_not_exists(nodeId)")
+    val item = Map(
+      "nodeId" -> AttributeValue.builder().n(nodeId.toString).build(),
+      "heartbeat" -> AttributeValue.builder().n(System.currentTimeMillis.toString).build()
+    )
 
     try {
-      Dynamo.clusterStatusTable.putItem(nodeRegistrationPut)
-      NodeStatus.fromItem(item)
+      val request = PutItemRequest.builder()
+        .tableName(Dynamo.clusterStatusTable.tableName)
+        .item(item.asJava)
+        .conditionExpression("attribute_not_exists(nodeId)")
+        .build()
+      Dynamo.client.putItem(request)
+      NodeStatus(nodeId, Some(new DateTime(System.currentTimeMillis)))
     } catch {
       case e: ConditionalCheckFailedException => {
         logger.warn("node registration failed", e)
@@ -91,21 +93,19 @@ object NodeStatusRepository extends Logging {
   }
 
   def deregister(nodeStatus: NodeStatus): Unit = {
-
     logger.info(s"deregistering as node ${nodeStatus.nodeId}")
 
-    val heartbeatUpdate = new UpdateItemSpec()
-      .withPrimaryKey("nodeId", nodeStatus.nodeId)
-      .withUpdateExpression("set #h = :next")
-      .withConditionExpression("#h = :current")
-      .withNameMap(new NameMap().`with`("#h", "heartbeat"))
-      .withValueMap(
-        new ValueMap().withNull(":next").withLong(":current", nodeStatus.heartbeat.get.getMillis)
-      )
-      .withReturnValues(ReturnValue.ALL_NEW)
-
     try {
-      Dynamo.clusterStatusTable.updateItem(heartbeatUpdate)
+      Dynamo.clusterStatusTable.updateItem(
+        key = Map("nodeId" -> AttributeValue.builder().n(nodeStatus.nodeId.toString).build()),
+        updateExpression = "set #h = :next",
+        expressionAttributeNames = Map("#h" -> "heartbeat"),
+        expressionAttributeValues = Map(
+          ":next" -> AttributeValue.builder().nul(true).build(),
+          ":current" -> AttributeValue.builder().n(nodeStatus.heartbeat.get.getMillis.toString).build()
+        ),
+        conditionExpression = Some("#h = :current")
+      )
     } catch {
       case e: ConditionalCheckFailedException => {
         logger.warn("heartbeat failed", e)
@@ -114,18 +114,26 @@ object NodeStatusRepository extends Logging {
     }
   }
 
-  def getCurrentState = Dynamo.clusterStatusTable.scan().asScala.map(NodeStatus.fromItem).toList
-
+  def getCurrentState = Dynamo.clusterStatusTable.scan().map(NodeStatus.fromDocument).toList
 }
 
 case class NodeStatus(nodeId: Long, heartbeat: Option[DateTime])
 
 object NodeStatus {
-  def fromItem(item: Item) = {
-    val heartbeatLong = if(item.isNull("heartbeat")) None else Option(item.getLong("heartbeat"))
+  def fromDocument(doc: EnhancedDocument): NodeStatus = {
+    val heartbeatLong = if(doc.isNull("heartbeat")) None else Option(doc.getNumber("heartbeat").longValue())
     NodeStatus(
-      nodeId = item.getLong("nodeId"),
+      nodeId = doc.getNumber("nodeId").longValue(),
       heartbeat = heartbeatLong.map(new DateTime(_))
     )
+  }
+
+  def fromAttributeMap(attrs: java.util.Map[String, AttributeValue]): NodeStatus = {
+    val nodeId = attrs.get("nodeId").n().toLong
+    val heartbeat = Option(attrs.get("heartbeat"))
+      .filterNot(_.nul() != null && attrs.get("heartbeat").nul())
+      .map(_.n().toLong)
+      .map(new DateTime(_))
+    NodeStatus(nodeId, heartbeat)
   }
 }

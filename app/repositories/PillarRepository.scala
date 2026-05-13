@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 object PillarRepository extends Logging {
   def getPillar(id: Long): Option[Pillar] = {
-    Option(Dynamo.pillarTable.getItem("id", id)).map(Pillar.fromItem)
+    Dynamo.pillarTable.getItem("id", id).map(Pillar.fromItem)
   }
 
   def updatePillar(pillar: Pillar): Option[Pillar] = {
@@ -33,7 +33,7 @@ object PillarRepository extends Logging {
     }
   }
 
-  def loadAllPillars: Iterable[Pillar] = Dynamo.pillarTable.scan().asScala.map(Pillar.fromItem)
+  def loadAllPillars: Iterable[Pillar] = Dynamo.pillarTable.scan().map(Pillar.fromItem).toList
 
-  def count = Dynamo.pillarTable.scan().asScala.count(_ => true)
+  def count = Dynamo.pillarTable.scan().size
 }

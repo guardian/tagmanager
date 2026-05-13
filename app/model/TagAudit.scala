@@ -1,6 +1,6 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import com.gu.pandomainauth.model.User
 import helpers.JodaDateTimeFormat._
 import org.joda.time.DateTime
@@ -8,6 +8,7 @@ import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
 import repositories.SectionRepository
+import services.DynamoJsonConversions
 
 import scala.util.control.NonFatal
 
@@ -25,7 +26,7 @@ case class TagAudit(
   override def resourceId = Some(tagId.toString)
   override def message = Some(s"$description - Tag 1: ${tagSummary.toString} Tag 2: ${secondaryTagSummary.toString}")
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 }
 
 object TagAudit extends Logging {
@@ -40,11 +41,11 @@ object TagAudit extends Logging {
       (JsPath \ "secondaryTagSummary").formatNullable[TagSummary]
     )(TagAudit.apply, unlift(TagAudit.unapply))
 
-  def fromItem(item: Item) = try {
-    Json.parse(item.toJSON).as[TagAudit]
+  def fromItem(item: EnhancedDocument): TagAudit = try {
+    Json.parse(item.toJson()).as[TagAudit]
   } catch {
     case NonFatal(e) => {
-      logger.error(s"failed to load tag Audit ${item.toJSON}", e)
+      logger.error(s"failed to load tag Audit ${item.toJson()}", e)
       throw e
     }
   }

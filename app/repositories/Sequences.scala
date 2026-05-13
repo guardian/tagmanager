@@ -1,9 +1,10 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
-import com.amazonaws.services.dynamodbv2.document.{AttributeUpdate, Item, Table}
-import com.amazonaws.services.dynamodbv2.model.ReturnValue
-import services.Dynamo
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
+import software.amazon.awssdk.services.dynamodb.model._
+import services.{Dynamo, DynamoTable, DynamoJsonConversions}
+
+import scala.jdk.CollectionConverters._
 
 
 object Sequences {
@@ -16,22 +17,29 @@ object Sequences {
 
 }
 
-class DynamoSequence(sequenceTable: Table, sequenceName: String) {
+class DynamoSequence(sequenceTable: DynamoTable, sequenceName: String) {
   def getNextId: Long = {
-    val incResult = sequenceTable.updateItem(
-      new UpdateItemSpec().withPrimaryKey("sequenceName", sequenceName)
-        .withAttributeUpdate(new AttributeUpdate("value").addNumeric(1))
-        .withReturnValues(ReturnValue.ALL_NEW)
+    val response = sequenceTable.updateItem(
+      key = Map("sequenceName" -> AttributeValue.builder().s(sequenceName).build()),
+      updateExpression = "ADD #v :inc",
+      expressionAttributeNames = Map("#v" -> "value"),
+      expressionAttributeValues = Map(":inc" -> AttributeValue.builder().n("1").build())
     )
-    incResult.getItem.getLong("value")
+    response.attributes().get("value").n().toLong
   }
 
   // debug methods
   def getCurrentId: Long = {
-    Dynamo.sequenceTable.getItem("sequenceName", sequenceName).getLong("value")
+    sequenceTable.getItemByStringKey("sequenceName", sequenceName)
+      .map(_.getNumber("value").longValue())
+      .getOrElse(0L)
   }
 
   def setCurrentId(v: Long): Unit = {
-    Dynamo.sequenceTable.putItem(new Item().withString("sequenceName", sequenceName).withLong("value", v))
+    val doc = EnhancedDocument.builder()
+      .putString("sequenceName", sequenceName)
+      .putNumber("value", v)
+      .build()
+    sequenceTable.putItem(doc)
   }
 }

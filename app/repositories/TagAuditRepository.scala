@@ -1,6 +1,7 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
+import software.amazon.awssdk.services.dynamodb.model._
 import model.TagAudit
 import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, Duration, ReadableDuration}
@@ -16,27 +17,54 @@ object TagAuditRepository {
   }
 
   def getAuditTrailForTag(tagId: Long): List[TagAudit] = {
-    Dynamo.tagAuditTable.query("tagId", tagId).asScala.map(TagAudit.fromItem).toList
+    val request = QueryRequest.builder()
+      .tableName(Dynamo.tagAuditTable.tableName)
+      .keyConditionExpression("tagId = :tagId")
+      .expressionAttributeValues(Map(":tagId" -> AttributeValue.builder().n(tagId.toString).build()).asJava)
+      .build()
+
+    val response = Dynamo.client.query(request)
+    response.items().asScala.map(item => TagAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item))).toList
   }
 
   def getRecentAuditOfTagOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(31)): List[TagAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
-    Dynamo.tagAuditTable.getIndex("operation-date-index")
-      .query("operation", operation, new RangeKeyCondition("date").ge(from))
-      .asScala
-      .map(TagAudit.fromItem)
+
+    val request = QueryRequest.builder()
+      .tableName(Dynamo.tagAuditTable.tableName)
+      .indexName("operation-date-index")
+      .keyConditionExpression("#op = :operation AND #dt >= :from")
+      .expressionAttributeNames(Map("#op" -> "operation", "#dt" -> "date").asJava)
+      .expressionAttributeValues(Map(
+        ":operation" -> AttributeValue.builder().s(operation).build(),
+        ":from" -> AttributeValue.builder().n(from.toString).build()
+      ).asJava)
+      .build()
+
+    val response = Dynamo.client.query(request)
+    response.items().asScala
+      .map(item => TagAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item)))
       .filterNot(audit => audit.user == "simon.byford@guardian.co.uk")
       .toList
   }
 
   def getAuditsOfTagOperationsSince(operation: String, since: Long): List[TagAudit] = {
-    Dynamo.tagAuditTable.getIndex("operation-date-index")
-      .query("operation", operation, new RangeKeyCondition("date").ge(since))
-      .asScala
-      .map(TagAudit.fromItem).toList
+    val request = QueryRequest.builder()
+      .tableName(Dynamo.tagAuditTable.tableName)
+      .indexName("operation-date-index")
+      .keyConditionExpression("#op = :operation AND #dt >= :since")
+      .expressionAttributeNames(Map("#op" -> "operation", "#dt" -> "date").asJava)
+      .expressionAttributeValues(Map(
+        ":operation" -> AttributeValue.builder().s(operation).build(),
+        ":since" -> AttributeValue.builder().n(since.toString).build()
+      ).asJava)
+      .build()
+
+    val response = Dynamo.client.query(request)
+    response.items().asScala.map(item => TagAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item))).toList
   }
 
-  def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().asScala.map(TagAudit.fromItem).toList
+  def loadAllAudits: List[TagAudit] = Dynamo.tagAuditTable.scan().map(TagAudit.fromItem).toList
 
   val lastModifiedTags: Long => List[TagAudit] = since => loadAllAudits
     .filter(x => x.operation == "updated" && x.date.getMillis > since)

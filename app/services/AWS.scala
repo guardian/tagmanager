@@ -1,17 +1,13 @@
 package services
 
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider
+
 import java.nio.ByteBuffer
-
-// AWS SDK 1 - kept for DynamoDB, Kinesis, CloudWatch (to be migrated in future PRs)
-import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.util.EC2MetadataUtils
-
-// AWS SDK 2 - migrated services
+import software.amazon.awssdk.imds.Ec2MetadataClient
 import software.amazon.awssdk.auth.credentials.{ProfileCredentialsProvider => SdkV2ProfileCredentialsProvider}
 import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.regions.{Region => SdkV2Region}
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.ec2.Ec2Client
 import software.amazon.awssdk.services.ec2.model.{DescribeTagsRequest, Filter}
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient
@@ -32,13 +28,8 @@ import scala.jdk.CollectionConverters._
 
 object AWS {
 
-  // SDK 1 region
-  lazy val region = Region getRegion Regions.EU_WEST_1
-
-  // SDK 2 region
   lazy val regionV2 = SdkV2Region.EU_WEST_1
 
-  // SDK 2 EC2 client
   lazy val EC2Client = Ec2Client.builder()
     .region(regionV2)
     .build()
@@ -60,7 +51,6 @@ object AWS {
     .region(regionV2)
     .build()
 
-  // SDK 2 S3 client
   lazy val s3Client: S3Client = S3Client.builder()
     .region(regionV2)
     .build()
@@ -74,15 +64,23 @@ object AWS {
         .build())
       .build()
   }
-
   lazy val frontendStaticFilesS3Client = S3Client.builder()
     .credentialsProvider(frontendCredentialsProvider.getOrElse(SdkV2ProfileCredentialsProvider.create("frontend")))
     .region(regionV2)
     .build()
+
+  lazy val credentialsProvider = DefaultCredentialsProvider
+    .builder()
+    .profileName("composer")
+    .build()
 }
 
 trait AwsInstanceTags {
-  lazy val instanceId = Option(EC2MetadataUtils.getInstanceId)
+  private lazy val metadataClient = Ec2MetadataClient.create()
+
+  lazy val instanceId: Option[String] = scala.util.Try(
+    metadataClient.get("/latest/meta-data/instance-id").asString()
+  ).toOption.filter(_.nonEmpty)
 
   def readTag(tagName: String) = {
     instanceId.flatMap { id =>
@@ -101,27 +99,23 @@ trait AwsInstanceTags {
 }
 
 object Dynamo {
-  lazy val client = AmazonDynamoDBClientBuilder
-    .standard()
-    .withRegion(AWS.region.getName)
+  lazy val client: DynamoDbClient = DynamoDbClient.builder()
+    .region(AWS.regionV2)
     .build()
-  lazy val dynamoDb = new DynamoDB(client)
 
-  lazy val tagTable = dynamoDb.getTable(Config().tagsTableName)
-  lazy val sectionTable = dynamoDb.getTable(Config().sectionsTableName)
-  lazy val sponsorshipTable = dynamoDb.getTable(Config().sponsorshipTableName)
-  lazy val sequenceTable = dynamoDb.getTable(Config().sequenceTableName)
-  lazy val jobTable = dynamoDb.getTable(Config().jobTableName)
-  lazy val tagAuditTable = dynamoDb.getTable(Config().tagAuditTableName)
-  lazy val sectionAuditTable = dynamoDb.getTable(Config().sectionAuditTableName)
-  lazy val appAuditTable = dynamoDb.getTable(Config().appAuditTableName)
-  lazy val pillarTable = dynamoDb.getTable(Config().pillarsTableName)
-  lazy val pillarAuditTable = dynamoDb.getTable(Config().pillarsAuditTableName)
-
-  lazy val reindexProgressTable = dynamoDb.getTable(Config().reindexProgressTableName)
-
-  lazy val clusterStatusTable = dynamoDb.getTable(Config().clusterStatusTableName)
-  lazy val referencesTypeTable = dynamoDb.getTable(Config().referencesTypeTableName)
+  lazy val tagTable = DynamoTable.create(client, Config().tagsTableName)
+  lazy val sectionTable = DynamoTable.create(client, Config().sectionsTableName)
+  lazy val sponsorshipTable = DynamoTable.create(client, Config().sponsorshipTableName)
+  lazy val sequenceTable = DynamoTable.create(client, Config().sequenceTableName)
+  lazy val jobTable = DynamoTable.create(client, Config().jobTableName)
+  lazy val tagAuditTable = DynamoTable.create(client, Config().tagAuditTableName)
+  lazy val sectionAuditTable = DynamoTable.create(client, Config().sectionAuditTableName)
+  lazy val appAuditTable = DynamoTable.create(client, Config().appAuditTableName)
+  lazy val pillarTable = DynamoTable.create(client, Config().pillarsTableName)
+  lazy val pillarAuditTable = DynamoTable.create(client, Config().pillarsAuditTableName)
+  lazy val reindexProgressTable = DynamoTable.create(client, Config().reindexProgressTableName)
+  lazy val clusterStatusTable = DynamoTable.create(client, Config().clusterStatusTableName)
+  lazy val referencesTypeTable = DynamoTable.create(client, Config().referencesTypeTableName)
 }
 
 object SQS {

@@ -1,6 +1,7 @@
 package repositories
 
-import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
+import software.amazon.awssdk.services.dynamodb.model._
 import model.SectionAudit
 import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, Duration, ReadableDuration}
@@ -18,14 +19,31 @@ object SectionAuditRepository {
   }
 
   def getAuditTrailForSection(sectionId: Long): List[SectionAudit] = {
-    Dynamo.sectionAuditTable.query("sectionId", sectionId).asScala.map(SectionAudit.fromItem).toList
+    val request = QueryRequest.builder()
+      .tableName(Dynamo.sectionAuditTable.tableName)
+      .keyConditionExpression("sectionId = :sectionId")
+      .expressionAttributeValues(Map(":sectionId" -> AttributeValue.builder().n(sectionId.toString).build()).asJava)
+      .build()
+
+    val response = Dynamo.client.query(request)
+    response.items().asScala.map(item => SectionAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item))).toList
   }
 
   def getRecentAuditOfSectionOperation(operation: String, timePeriod: ReadableDuration = Duration.standardDays(7)): List[SectionAudit] = {
     val from = new DateTime().minus(timePeriod).getMillis
-    Dynamo.sectionAuditTable.getIndex("operation-date-index")
-      .query("operation", operation, new RangeKeyCondition("date").ge(from))
-      .asScala
-      .map(SectionAudit.fromItem).toList
+
+    val request = QueryRequest.builder()
+      .tableName(Dynamo.sectionAuditTable.tableName)
+      .indexName("operation-date-index")
+      .keyConditionExpression("#op = :operation AND #dt >= :from")
+      .expressionAttributeNames(Map("#op" -> "operation", "#dt" -> "date").asJava)
+      .expressionAttributeValues(Map(
+        ":operation" -> AttributeValue.builder().s(operation).build(),
+        ":from" -> AttributeValue.builder().n(from.toString).build()
+      ).asJava)
+      .build()
+
+    val response = Dynamo.client.query(request)
+    response.items().asScala.map(item => SectionAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item))).toList
   }
 }

@@ -1,6 +1,6 @@
 package model
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import helpers.XmlHelpers._
 import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
@@ -9,6 +9,7 @@ import play.api.Logging
 import play.api.libs.json.{JsValue, Json, JsPath, Format}
 import com.gu.tagmanagement.{Section => ThriftSection}
 import repositories.SponsorshipRepository
+import services.DynamoJsonConversions
 
 import scala.util.control.NonFatal
 import scala.xml.Node
@@ -27,7 +28,7 @@ case class Section(
                     activeSponsorships: List[Long] = Nil
                     ) {
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 
   def asThrift = ThriftSection(
     id            = id,
@@ -62,10 +63,10 @@ object Section extends Logging {
 
   implicit val sectionFormat: Format[Section] = Jsonx.formatCaseClassUseDefaults[Section]
 
-  def fromItem(item: Item) = try{
-    Json.parse(item.toJSON).as[Section]
+  def fromItem(item: EnhancedDocument): Section = try{
+    Json.parse(item.toJson()).as[Section]
   } catch {
-    case NonFatal(e) => logger.error(s"failed to load section ${item.toJSON}", e); throw e
+    case NonFatal(e) => logger.error(s"failed to load section ${item.toJson()}", e); throw e
 
   }
 

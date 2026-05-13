@@ -2,7 +2,7 @@ package repositories
 
 import java.util.concurrent.atomic.AtomicReference
 
-import com.amazonaws.services.dynamodbv2.document.{Item, ScanFilter}
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import model.Tag
 import org.apache.commons.lang3.StringUtils
 import play.api.Logging
@@ -14,7 +14,7 @@ import scala.jdk.CollectionConverters._
 
 object TagRepository extends Logging {
   def getTag(id: Long) = {
-    Option(Dynamo.tagTable.getItem("id", id)).map(Tag.fromItem)
+    Dynamo.tagTable.getItem("id", id).map(Tag.fromItem)
   }
 
   def upsertTag(tag: Tag) = {
@@ -31,12 +31,12 @@ object TagRepository extends Logging {
   }
 
   def scanSearch(criteria: TagSearchCriteria) = {
-    Dynamo.tagTable.scan(criteria.asFilters: _*).asScala.map { item =>
-      item.getString("internalName")
+    Dynamo.tagTable.scan().map { item =>
+      EnhancedDocument.fromAttributeValueMap(item.toMap).getString("internalName")
     }
   }
 
-  def loadAllTags = Dynamo.tagTable.scan().asScala.map(Tag.fromItem)
+  def loadAllTags = Dynamo.tagTable.scan().map(Tag.fromItem)
 
   def allTagIter = Dynamo.tagTable.scan()
 }
@@ -158,13 +158,6 @@ case class TagSearchCriteria(
       t.trackingInformation.map(_.trackingType.toLowerCase == subType) orElse
       t.paidContentInformation.map(_.paidContentType.toLowerCase == subType)
     ).getOrElse(false)
-  }
-
-
-  def asFilters = {
-    Seq() ++
-      q.map{query => new ScanFilter("internalName").beginsWith(query)} ++
-      types.map{ts => new ScanFilter("type").in(ts: _*)}
   }
 }
 

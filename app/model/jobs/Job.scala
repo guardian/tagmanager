@@ -1,6 +1,6 @@
 package model.jobs
 
-import com.amazonaws.services.dynamodbv2.document.Item
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import ai.x.play.json.Jsonx
@@ -10,6 +10,7 @@ import model.{AppAudit, Tag, TagAudit}
 import repositories._
 import helpers.JodaDateTimeFormat._
 import org.joda.time.{DateTime, DateTimeZone}
+import services.DynamoJsonConversions
 
 import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
@@ -83,14 +84,14 @@ case class Job(
     }
   }
 
-  def toItem = Item.fromJSON(Json.toJson(this).toString())
+  def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 }
 
 object Job {
   implicit val jobFormat: Format[Job] = Jsonx.formatCaseClassUseDefaults[Job]
 
-  def fromItem(item: Item): Job = try {
-      Json.parse(item.toJSON).as[Job]
+  def fromItem(item: EnhancedDocument): Job = try {
+      Json.parse(item.toJson()).as[Job]
     } catch {
       case NonFatal(e) => {
         println(e.printStackTrace())
