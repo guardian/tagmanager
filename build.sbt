@@ -19,7 +19,7 @@ scalacOptions ++= Seq(
 
 lazy val awsSdk2Version = "2.42.5"
 
-val pandaVersion = "16.0.1"
+val pandaVersion = "19.0.0"
 lazy val dependencies = Seq(
   "software.amazon.awssdk" % "ec2" % awsSdk2Version,
   "software.amazon.awssdk" % "s3" % awsSdk2Version,
@@ -37,8 +37,8 @@ lazy val dependencies = Seq(
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "18.0",
-  "com.gu" %% "content-api-client-default" % "27.0.0",
-  "com.gu" %% "tags-thrift-schema" % "2.8.6",
+  "com.gu" %% "content-api-client-default" % "42.0.1",
+  "com.gu" %% "tags-thrift-schema" % "2.8.7",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
