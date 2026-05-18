@@ -44,7 +44,6 @@ object TagAuditRepository {
     val response = Dynamo.client.query(request)
     response.items().asScala
       .map(item => TagAudit.fromItem(EnhancedDocument.fromAttributeValueMap(item)))
-      .filterNot(audit => audit.user == "simon.byford@guardian.co.uk")
       .toList
   }
 
