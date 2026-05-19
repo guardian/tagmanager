@@ -1,5 +1,6 @@
 export const trackingTagTypes = [
   {name: 'Commissioning Desk', value: 'commissioningdesk'},
   {name: 'Platform Functional', value: 'platformfunctional'},
-  {name: 'Audience', value: 'audience'}
+  {name: 'Audience', value: 'audience'},
+  {name: 'Video', value: 'video'},
 ];
