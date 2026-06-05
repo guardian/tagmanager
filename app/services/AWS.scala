@@ -51,8 +51,14 @@ object AWS {
     .region(regionV2)
     .build()
 
+  lazy val credentialsProvider = DefaultCredentialsProvider
+    .builder()
+    .profileName("composer")
+    .build()
+
   lazy val s3Client: S3Client = S3Client.builder()
     .region(regionV2)
+    .credentialsProvider(credentialsProvider)
     .build()
 
   private lazy val frontendCredentialsProvider = Config().frontendBucketWriteRole.map { role =>
@@ -67,11 +73,6 @@ object AWS {
   lazy val frontendStaticFilesS3Client = S3Client.builder()
     .credentialsProvider(frontendCredentialsProvider.getOrElse(SdkV2ProfileCredentialsProvider.create("frontend")))
     .region(regionV2)
-    .build()
-
-  lazy val credentialsProvider = DefaultCredentialsProvider
-    .builder()
-    .profileName("composer")
     .build()
 }
 
