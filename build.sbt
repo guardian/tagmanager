@@ -55,6 +55,15 @@ lazy val dependencies = Seq(
 
 dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
 
+excludeDependencies ++= Seq(
+  ExclusionRule("net.sourceforge.htmlunit", "htmlunit"),
+  ExclusionRule("net.sourceforge.htmlunit", "htmlunit-core-js"),
+  ExclusionRule("net.sourceforge.htmlunit", "htmlunit-cssparser"),
+  ExclusionRule("net.sourceforge.htmlunit", "htmlunit-xpath"),
+  ExclusionRule("net.sourceforge.htmlunit", "neko-htmlunit"),
+  ExclusionRule("org.seleniumhq.selenium", "htmlunit-driver"),
+)
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
   .settings(Defaults.coreDefaultSettings: _*)
   .settings(
