@@ -60,7 +60,7 @@
     "ts-morph": "^27.0.2",
     "typescript": "^6.0.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "3.11.3"
+    "webpack-dev-server": "5.2.5"
   },
   "repository": {
     "type": "git",
