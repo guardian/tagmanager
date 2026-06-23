@@ -12,7 +12,7 @@
     "@guardian/prosemirror-editor": "^0.3.0",
     "ajv": "^6.12.3",
     "babel-loader": "^8.2.5",
-    "css-loader": "^3.6.0",
+    "css-loader": "^7.1.4",
     "expose-loader": "^4.1.0",
     "lodash.debounce": "^3.1.1",
     "lodash.startcase": "^4.4.0",
