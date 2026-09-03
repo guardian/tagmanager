@@ -94,6 +94,7 @@ case class Tag(
       case KeywordType.PLACE => ThriftKeywordType.Place
       case KeywordType.OTHER => ThriftKeywordType.Other
     },
+    commercialInformation = commercialInformation.map(_.asThrift)
   )
 
   // in this limited format for inCopy to consume
@@ -303,6 +304,7 @@ object DenormalisedTag{
     expired = t.expired,
     adBlockingLevel = t.adBlockingLevel,
     contributionBlockingLevel = t.contributionBlockingLevel,
-    keywordType = t.keywordType
+    keywordType = t.keywordType,
+    commercialInformation = t.commercialInformation
   )
 }
