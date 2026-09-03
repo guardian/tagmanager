@@ -13,6 +13,7 @@ import services.DynamoJsonConversions
 import scala.util.control.NonFatal
 import scala.xml.Node
 
+//LOOK
 case class Tag(
                 id: Long,
                 path: String,
@@ -45,12 +46,13 @@ case class Tag(
                 adBlockingLevel: Option[BlockingLevel],
                 contributionBlockingLevel: Option[BlockingLevel],
                 keywordType: Option[KeywordType],
+                commercialInformation: Option[CommercialInformation],
                 var updatedAt: Long = 0L
 ) {
 
   def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 
-  def asThrift = ThriftTag(
+  def asThrift = ThriftTag( //update - translation from what is local to what is transported making sure it forms the right format
     id                = id,
     path              = path,
     pageId            = pageId,
@@ -92,6 +94,7 @@ case class Tag(
       case KeywordType.PLACE => ThriftKeywordType.Place
       case KeywordType.OTHER => ThriftKeywordType.Other
     },
+    commercialInformation = commercialInformation.map(_.asThrift)
   )
 
   // in this limited format for inCopy to consume
@@ -150,9 +153,9 @@ object Tag extends Logging {
     )
   }
 
-  def fromJson(json: JsValue) = json.as[Tag]
+  def fromJson(json: JsValue) = json.as[Tag] //JS encoder
 
-  def apply(thriftTag: ThriftTag): Tag =
+  def apply(thriftTag: ThriftTag): Tag = //opposite from above
     Tag(
       id                = thriftTag.id,
       path              = thriftTag.path,
@@ -184,7 +187,8 @@ object Tag extends Logging {
       expired = thriftTag.expired,
       adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
       contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
-      keywordType = thriftTag.keywordType.map(tLevel => KeywordType.withName(tLevel.name))
+      keywordType = thriftTag.keywordType.map(tLevel => KeywordType.withName(tLevel.name)),
+      commercialInformation = thriftTag.commercialInformation.map(CommercialInformation(_))
     )
 }
 
@@ -222,6 +226,7 @@ case class DenormalisedTag (
   adBlockingLevel: Option[BlockingLevel],
   contributionBlockingLevel: Option[BlockingLevel],
   keywordType: Option[KeywordType] = None,
+  commercialInformation: Option[CommercialInformation] = None
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
@@ -257,12 +262,13 @@ case class DenormalisedTag (
       expired = expired,
       adBlockingLevel = adBlockingLevel,
       contributionBlockingLevel = contributionBlockingLevel,
-      keywordType = keywordType
+      keywordType = keywordType,
+      commercialInformation = commercialInformation
     )
     (tag, sponsorship)
   }
 }
-
+//translate for a thrift tag to a tag in
 object DenormalisedTag{
 
   implicit val tagFormat: OFormat[DenormalisedTag] = Jsonx.formatCaseClassUseDefaults[DenormalisedTag]
@@ -298,6 +304,7 @@ object DenormalisedTag{
     expired = t.expired,
     adBlockingLevel = t.adBlockingLevel,
     contributionBlockingLevel = t.contributionBlockingLevel,
-    keywordType = t.keywordType
+    keywordType = t.keywordType,
+    commercialInformation = t.commercialInformation
   )
 }
