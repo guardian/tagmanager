@@ -46,7 +46,7 @@ case class Tag(
                 adBlockingLevel: Option[BlockingLevel],
                 contributionBlockingLevel: Option[BlockingLevel],
                 keywordType: Option[KeywordType],
-                commercialInformation: Option[CommercialInformation],
+                commercialInformation: Option[CommercialInformation] = None,
                 var updatedAt: Long = 0L
 ) {
 
