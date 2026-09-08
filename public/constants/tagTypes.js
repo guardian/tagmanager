@@ -66,3 +66,9 @@ export const campaign = {
     displayName: 'Campaign',
     pathPrefix: 'campaign'
 };
+
+export const commercial = {
+  name: 'Commercial',
+  displayName: 'Commercial',
+  pathPrefix: 'commercial'
+};

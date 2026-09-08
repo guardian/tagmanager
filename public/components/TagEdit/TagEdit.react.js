@@ -14,7 +14,7 @@ import NewspaperBookInfoEdit from './formComponents/newspaperbook/NewspaperBookI
 import PaidContentInfoEdit from './formComponents/paidcontent/PaidContentInfoEdit.react';
 import TrackingInfoEdit from './formComponents/tracking/TrackingInformation.react.js';
 import CampaignInfoEdit from './formComponents/campaigns/CampaignInformation.react.js';
-
+import CommercialInfoEdit from './formComponents/commercial/CommercialInformation.react.js';
 
 import * as tagTypes from '../../constants/tagTypes';
 
@@ -117,6 +117,10 @@ export default class TagEdit extends React.Component {
       return <CampaignInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable} />;
     }
 
+    renderCommercialFields() {
+        return <CommercialInfoEdit tag={this.props.tag} updateTag={this.props.updateTag} tagEditable={this.props.tagEditable} />;
+    }
+
     renderTagTypeSpecificFields() {
 
       if (!this.props.tag.type) {
@@ -153,6 +157,10 @@ export default class TagEdit extends React.Component {
 
       if (this.props.tag.type === tagTypes.campaign.name) {
         return this.renderCampaignFields();
+      }
+
+      if (this.props.tag.type === tagTypes.commercial.name) {
+          return this.renderCommercialFields();
       }
 
       return false;
