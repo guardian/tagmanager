@@ -85,7 +85,8 @@ case class CreateTagCommand(
                       createMicrosite: Boolean = false,
                       adBlockingLevel: Option[BlockingLevel] = None,
                       contributionBlockingLevel: Option[BlockingLevel] = None,
-                           keywordType: Option[KeywordType] = None,
+                      keywordType: Option[KeywordType] = None,
+                      commercialInformation: Option[CommercialInformation] = None
                            ) extends Command with Logging {
 
   type T = Tag
@@ -135,6 +136,7 @@ case class CreateTagCommand(
     val tagSubType: Option[String] =  `type` match {
       case "Tracking" => trackingInformation.map(_.trackingType)
       case "Campaign" => campaignInformation.map(_.campaignType)
+      case "Commercial" => commercialInformation.map(_.commercialType)
       case _ => None
     }
 
@@ -183,6 +185,7 @@ case class CreateTagCommand(
       adBlockingLevel = adBlockingLevel,
       contributionBlockingLevel = contributionBlockingLevel,
       keywordType = keywordType,
+      commercialInformation = commercialInformation
     )
 
     val result = TagRepository.upsertTag(tag)

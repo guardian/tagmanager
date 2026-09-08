@@ -40,6 +40,7 @@ object TagTestUtils {
       contributionBlockingLevel = tContributionBlockingLevel,
       updatedAt = tUpdatedAt,
       keywordType = None,
+      commercialInformation = None
     )
   }
 
