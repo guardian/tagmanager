@@ -23,10 +23,6 @@ Parameters:
   AMI:
     Description: AMI id
     Type: String
-  GuardianIP:
-    Description: Ip range for the office
-    Type: String
-    Default: 77.91.248.0/21
   CertificateArn:
     Description: ARN of the SSL certificate for this service
     Type: String
@@ -236,10 +232,6 @@ Resources:
       GroupDescription: tag manager Application servers
       VpcId: !Ref 'VpcId'
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 9000
-        ToPort: 9000
-        CidrIp: !Ref 'GuardianIP'
       - IpProtocol: tcp
         FromPort: 9000
         ToPort: 9000
