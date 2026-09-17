@@ -1,8 +1,5 @@
 package controllers
 
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
@@ -43,10 +40,7 @@ class HyperMediaApi(
     Action {
       val tag = Try(idOrPath.toLong).toOption match {
         case Some(id) => TagRepository.getTag(id)
-        case None     => {
-          val path = URLDecoder.decode(idOrPath, StandardCharsets.UTF_8.name())
-          TagLookupCache.getTagByPath(path)
-        }
+        case None     => TagLookupCache.getTagByPath(idOrPath)
       }
 
       tag.map(tag => Ok(Json.toJson(EntityResponse(TagEntity(tag)))))
