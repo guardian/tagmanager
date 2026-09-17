@@ -77,7 +77,7 @@ POST           /reindex/pillars                                        controlle
 GET            /reindex/pillars                                        controllers.Reindex.getPillarReindexProgress()
 
 
-# Hypmedia API
+# Hypermedia API
 GET            /hyper                                                  controllers.HyperMediaApi.hyper()
 GET            /hyper/tags                                             controllers.HyperMediaApi.tags()
 GET            /hyper/tags/:id/sponsorships                            controllers.HyperMediaApi.tagSponsorships(id: Long)
