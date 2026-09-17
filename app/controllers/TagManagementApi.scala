@@ -19,6 +19,7 @@ import play.api.libs.ws.WSClient
 import services.Config.conf
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class TagManagementApi(
   val wsClient: WSClient,
@@ -31,11 +32,15 @@ class TagManagementApi(
     with PanDomainAuthActions
     with Logging {
 
-  def getTag(id: Long) = APIAuthAction {
+  def getTag(idOrPath: String) = APIAuthAction {
+    val tag = Try(idOrPath.toLong).toOption match {
+      case Some(id) => TagRepository.getTag(id)
+      case None     => TagRepository.getTagByPath(idOrPath)
+    }
 
-    TagRepository.getTag(id).map{ tag =>
-      Ok(Json.toJson(DenormalisedTag(tag)))
-    }.getOrElse(NotFound)
+    tag
+      .map(tag => Ok(Json.toJson(DenormalisedTag(tag))))
+      .getOrElse(NotFound)
   }
 
   def updateTag(id: Long) =
