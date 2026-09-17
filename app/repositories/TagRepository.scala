@@ -17,10 +17,6 @@ object TagRepository extends Logging {
     Dynamo.tagTable.getItem("id", id).map(Tag.fromItem)
   }
 
-   def getTagByPath(path: String) = {
-    Dynamo.tagTable.getItemByStringKey("path", path).map(Tag.fromItem)
-  }
-
   def upsertTag(tag: Tag) = {
     try {
       Dynamo.tagTable.putItem(tag.toItem)
@@ -206,5 +202,9 @@ object TagLookupCache {
 
   def getTag(tagId: Long): Option[Tag] = {
     allTags.get().find(_.id == tagId)
+  }
+
+  def getTagByPath(path: String): Option[Tag] = {
+    allTags.get().find(_.path == path)
   }
 }

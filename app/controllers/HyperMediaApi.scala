@@ -45,7 +45,7 @@ class HyperMediaApi(
         case Some(id) => TagRepository.getTag(id)
         case None     => {
           val path = URLDecoder.decode(idOrPath, StandardCharsets.UTF_8.name())
-          TagRepository.getTagByPath(path)
+          TagLookupCache.getTagByPath(path)
         }
       }
 
