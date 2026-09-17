@@ -39,14 +39,15 @@ class HyperMediaApi(
     }
   }
 
-  def tag(id: String) = CORSable(conf.corsableDomains: _*) {
+  def tag(idOrPath: String) = CORSable(conf.corsableDomains: _*) {
     Action {
-      val tag = Try(id.toLong).toOption
-        .flatMap(TagRepository.getTag)
-        .orElse {
-          val path = URLDecoder.decode(id, StandardCharsets.UTF_8.name())
+      val tag = Try(idOrPath.toLong).toOption match {
+        case Some(id) => TagRepository.getTag(id)
+        case None     => {
+          val path = URLDecoder.decode(idOrPath, StandardCharsets.UTF_8.name())
           TagRepository.getTagByPath(path)
         }
+      }
 
       tag.map(tag => Ok(Json.toJson(EntityResponse(TagEntity(tag)))))
         .getOrElse(NotFound)
