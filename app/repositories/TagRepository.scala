@@ -17,6 +17,10 @@ object TagRepository extends Logging {
     Dynamo.tagTable.getItem("id", id).map(Tag.fromItem)
   }
 
+   def getTagByPath(path: String) = {
+    Dynamo.tagTable.getItemByStringKey("path", path).map(Tag.fromItem)
+  }
+
   def upsertTag(tag: Tag) = {
     try {
       Dynamo.tagTable.putItem(tag.toItem)

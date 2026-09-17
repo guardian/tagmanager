@@ -1,5 +1,11 @@
 package controllers
 
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+
+import scala.concurrent.ExecutionContext
+import scala.util.Try
+
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model._
 import play.api.libs.json._
@@ -10,7 +16,6 @@ import helpers.CORSable
 import play.api.Logging
 import play.api.libs.ws.WSClient
 
-import scala.concurrent.ExecutionContext
 
 class HyperMediaApi(
   val wsClient: WSClient,
@@ -34,11 +39,17 @@ class HyperMediaApi(
     }
   }
 
-  def tag(id: Long) = CORSable(conf.corsableDomains: _*) {
+  def tag(id: String) = CORSable(conf.corsableDomains: _*) {
     Action {
-      TagRepository.getTag(id).map { tag =>
-        Ok(Json.toJson(EntityResponse(TagEntity(tag))))
-      }.getOrElse(NotFound)
+      val tag = Try(id.toLong).toOption
+        .flatMap(TagRepository.getTag)
+        .orElse {
+          val path = URLDecoder.decode(id, StandardCharsets.UTF_8.name())
+          TagRepository.getTagByPath(path)
+        }
+
+      tag.map(tag => Ok(Json.toJson(EntityResponse(TagEntity(tag)))))
+        .getOrElse(NotFound)
     }
   }
 
