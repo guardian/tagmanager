@@ -50,7 +50,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
       tagUpdateConsumer.start()
       tagCacheSynchroniser.set(Some(tagUpdateConsumer))
     } catch {
-      case he: HeartbeatException => logger.error("failed to register in the cluster, will try again next heartbeat")
+      case he: HeartbeatException => logger.error("failed to register in the cluster, will try again next heartbeat", he)
       case NonFatal(e) => {
         logger.error("failed to start sync", e)
         pause
