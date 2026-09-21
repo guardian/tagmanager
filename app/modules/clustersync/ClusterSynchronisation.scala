@@ -35,12 +35,12 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
 
   def initialise: Unit = {
     try {
+      logger.info("loading tag cache")
+      TagLookupCache.refresh
+
       logger.info("starting sync components...")
       val ns = NodeStatusRepository.register()
       reservation.set(Some(ns))
-
-      logger.info("loading tag cache")
-      TagLookupCache.refresh
 
       val appName = s"tag-cache-syncroniser-${Config().aws.stage}-${ns.nodeId}"
       logger.info(s"Starting tag sync kinesis consumer with appName: $appName")
@@ -50,7 +50,7 @@ class ClusterSynchronisation @Inject() (lifecycle: ApplicationLifecycle) extends
       tagUpdateConsumer.start()
       tagCacheSynchroniser.set(Some(tagUpdateConsumer))
     } catch {
-      case he: HeartbeatException => logger.error("failed to register in the cluster, will try again next heartbeat")
+      case he: HeartbeatException => logger.error("failed to register in the cluster, will try again next heartbeat", he)
       case NonFatal(e) => {
         logger.error("failed to start sync", e)
         pause
