@@ -203,4 +203,8 @@ object TagLookupCache {
   def getTag(tagId: Long): Option[Tag] = {
     allTags.get().find(_.id == tagId)
   }
+
+  def getTagByPath(path: String): Option[Tag] = {
+    allTags.get().find(_.path == path)
+  }
 }

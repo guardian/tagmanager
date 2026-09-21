@@ -1,5 +1,8 @@
 package controllers
 
+import scala.concurrent.ExecutionContext
+import scala.util.Try
+
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model._
 import play.api.libs.json._
@@ -10,7 +13,6 @@ import helpers.CORSable
 import play.api.Logging
 import play.api.libs.ws.WSClient
 
-import scala.concurrent.ExecutionContext
 
 class HyperMediaApi(
   val wsClient: WSClient,
@@ -34,11 +36,15 @@ class HyperMediaApi(
     }
   }
 
-  def tag(id: Long) = CORSable(conf.corsableDomains: _*) {
+  def tag(idOrPath: String) = CORSable(conf.corsableDomains: _*) {
     Action {
-      TagRepository.getTag(id).map { tag =>
-        Ok(Json.toJson(EntityResponse(TagEntity(tag))))
-      }.getOrElse(NotFound)
+      val tag = Try(idOrPath.toLong).toOption match {
+        case Some(id) => TagRepository.getTag(id)
+        case None     => TagLookupCache.getTagByPath(idOrPath)
+      }
+
+      tag.map(tag => Ok(Json.toJson(EntityResponse(TagEntity(tag)))))
+        .getOrElse(NotFound)
     }
   }
 
