@@ -182,6 +182,7 @@ class DevConfig extends Config {
   override def corsablePostDomains: Seq[String] = Seq(
     targetingDomain
   )
+  override def pathManagerUrl: String = "https://pathmanager.local.dev-gutools.co.uk/"
 }
 
 class CodeConfig extends Config {
