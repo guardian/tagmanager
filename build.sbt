@@ -4,7 +4,7 @@ name := "tag-manager"
 
 version := "1.0"
 
-lazy val scalaVer = "2.13.18"
+lazy val scalaVer = "3.9.0"
 
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
