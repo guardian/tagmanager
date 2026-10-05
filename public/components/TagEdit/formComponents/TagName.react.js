@@ -124,6 +124,12 @@ export default class TagNameEdit extends React.Component {
       return 'campaign/' + campaignTypeName + '/';
     }
 
+    // Commercial Type Exception
+    if (this.props.tag.type === tagTypes.commercial.name) {
+      const commercialTypeName = this.props.tag.commercialInformation && this.props.tag.commercialInformation.commercialType ? this.props.tag.commercialInformation.commercialType.toLowerCase() : '...';
+      return 'commercial/' + commercialTypeName + '/';
+    }
+
     // Paid content with sub type of hosted exception
 
     if (this.props.tag.type === tagTypes.paidContent.name
