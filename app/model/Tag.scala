@@ -13,7 +13,6 @@ import services.DynamoJsonConversions
 import scala.util.control.NonFatal
 import scala.xml.Node
 
-//LOOK
 case class Tag(
                 id: Long,
                 path: String,
@@ -52,7 +51,7 @@ case class Tag(
 
   def toItem: EnhancedDocument = DynamoJsonConversions.jsonToDocument(Json.toJson(this))
 
-  def asThrift = ThriftTag( //update - translation from what is local to what is transported making sure it forms the right format
+  def asThrift = ThriftTag(
     id                = id,
     path              = path,
     pageId            = pageId,
@@ -153,9 +152,9 @@ object Tag extends Logging {
     )
   }
 
-  def fromJson(json: JsValue) = json.as[Tag] //JS encoder
+  def fromJson(json: JsValue) = json.as[Tag]
 
-  def apply(thriftTag: ThriftTag): Tag = //opposite from above
+  def apply(thriftTag: ThriftTag): Tag =
     Tag(
       id                = thriftTag.id,
       path              = thriftTag.path,
@@ -268,7 +267,6 @@ case class DenormalisedTag (
     (tag, sponsorship)
   }
 }
-//translate for a thrift tag to a tag in
 object DenormalisedTag{
 
   implicit val tagFormat: OFormat[DenormalisedTag] = Jsonx.formatCaseClassUseDefaults[DenormalisedTag]
