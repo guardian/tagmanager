@@ -12,6 +12,8 @@ object TagPathCalculator {
 
     val sectionPathPrefix = loadedSection.map(_.wordsForUrl + "/").getOrElse("")
 
+    val commercialTagPrefix = (commercialType: String) => { if (commercialType == "iab-content-taxonomy") "iab" else commercialType }
+
     (tagType.toLowerCase, tagSubType.map(_.toLowerCase)) match {
       case ("contenttype", _) => s"$slug"
       case ("tone", _) => s"tone/$slug"
@@ -21,7 +23,7 @@ object TagPathCalculator {
       case ("tracking", trackingType) => s"tracking/${trackingType.getOrElse("")}/$slug"
       case ("campaign", campaignType) => s"campaign/${campaignType.getOrElse("")}/$slug"
       case ("paidcontent", Some("hostedcontent")) => s"advertiser-content/$slug"
-      case ("commercial", commercialType) => s"commercial/${commercialType.getOrElse("")}/$slug"
+      case ("commercial", commercialType) => s"commercial/${commercialTagPrefix(commercialType.getOrElse(""))}/$slug"
       case (_, _) => sectionPathPrefix + slug
     }
   }
