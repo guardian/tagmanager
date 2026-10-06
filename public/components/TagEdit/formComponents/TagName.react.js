@@ -131,9 +131,11 @@ export default class TagNameEdit extends React.Component {
       if (commercialTypeName === 'iab-content-taxonomy') {
         const { taxonomyCode = '', modelId = '' } = this.props.tag.commercialInformation.iabTaxonomyInformation || {};
         if (!!modelId && !!taxonomyCode) {
-          return `commercial/${commercialTypeName}/${modelId}/tax-${taxonomyCode}/`;
+          return `commercial/iab/${modelId}/${taxonomyCode}/`;
         } else if (!!taxonomyCode) {
-          return `commercial/${commercialTypeName}/tax-${taxonomyCode}/`;
+          return `commercial/iab/${taxonomyCode}/`;
+        } else {
+          return `commercial/iab/`;
         }
       }
 
@@ -238,7 +240,7 @@ export default class TagNameEdit extends React.Component {
             <div className={classNames.slug.link}></div>
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
             <label>Path</label>
-            <div className="tag-edit__linked-field__input-container">
+            <div className="tag-edit__linked-field__input-container slug-input">
               <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : <a href={`https:\/\/theguardian.com/${this.props.tag.path}`} target="_blank" rel="noopener noreferrer">{this.props.tag.path}</a>}</span>
               {!this.props.pathLocked ? <input type="text"
                                           value={this.props.tag.slug}
