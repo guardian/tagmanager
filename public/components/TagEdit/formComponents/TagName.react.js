@@ -127,19 +127,11 @@ export default class TagNameEdit extends React.Component {
     // Commercial Type Exception
     if (this.props.tag.type === tagTypes.commercial.name) {
       const commercialTypeName = this.props.tag.commercialInformation && this.props.tag.commercialInformation.commercialType ? this.props.tag.commercialInformation.commercialType.toLowerCase() : '...';
-
       if (commercialTypeName === 'iab-content-taxonomy') {
-        const { taxonomyCode = '', modelId = '' } = this.props.tag.commercialInformation.iabTaxonomyInformation || {};
-        if (!!modelId && !!taxonomyCode) {
-          return `commercial/iab/${modelId}/${taxonomyCode}/`;
-        } else if (!!taxonomyCode) {
-          return `commercial/iab/${taxonomyCode}/`;
-        } else {
           return `commercial/iab/`;
-        }
+      } else {
+        return 'commercial/' + commercialTypeName + '/';
       }
-
-      return 'commercial/' + commercialTypeName + '/';
     }
 
     // Paid content with sub type of hosted exception
