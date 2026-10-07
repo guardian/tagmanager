@@ -124,6 +124,16 @@ export default class TagNameEdit extends React.Component {
       return 'campaign/' + campaignTypeName + '/';
     }
 
+    // Commercial Type Exception
+    if (this.props.tag.type === tagTypes.commercial.name) {
+      const commercialTypeName = this.props.tag.commercialInformation && this.props.tag.commercialInformation.commercialType ? this.props.tag.commercialInformation.commercialType.toLowerCase() : '...';
+      if (commercialTypeName === 'iab-content-taxonomy') {
+          return `commercial/iab/`;
+      } else {
+        return 'commercial/' + commercialTypeName + '/';
+      }
+    }
+
     // Paid content with sub type of hosted exception
 
     if (this.props.tag.type === tagTypes.paidContent.name
@@ -222,7 +232,7 @@ export default class TagNameEdit extends React.Component {
             <div className={classNames.slug.link}></div>
             <div className={classNames.slug.lock} onClick={this.toggleSlugLock.bind(this)}></div>
             <label>Path</label>
-            <div className="tag-edit__linked-field__input-container">
+            <div className="tag-edit__linked-field__input-container slug-input">
               <span>{!this.props.pathLocked ? this.getPathPrefixForSection() : <a href={`https:\/\/theguardian.com/${this.props.tag.path}`} target="_blank" rel="noopener noreferrer">{this.props.tag.path}</a>}</span>
               {!this.props.pathLocked ? <input type="text"
                                           value={this.props.tag.slug}
