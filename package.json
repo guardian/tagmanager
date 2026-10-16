@@ -65,5 +65,13 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/guardian/tagmanager"
+  },
+  "overrides": {
+    "@xmldom/xmldom": {
+      "@xmldom/xmldom": "0.9.12"
+    },
+    "svg-sprite": {
+      "@xmldom/xmldom": "0.9.12"
+    }
   }
 }
