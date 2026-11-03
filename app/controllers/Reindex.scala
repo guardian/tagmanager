@@ -1,5 +1,6 @@
 package controllers
 
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import model.command.CommandError._
 import model.command.{ReindexPillarsCommand, ReindexSectionsCommand, ReindexTagsCommand}
 import play.api.Logging
@@ -11,14 +12,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class Reindex(
   val wsClient: WSClient,
-  override val controllerComponents: ControllerComponents
+  override val controllerComponents: ControllerComponents,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
 )(
   implicit ec: ExecutionContext
 )
   extends BaseController
-  with Logging {
+  with Logging
+    with PanDomainAuthActions
+   {
 
-  def reindexTags = Action.async { req =>
+  def reindexTags = AuthAction.async { req =>
     implicit val username: Option[String] = None // unfortunately we don't have a username available
     ReindexProgressRepository.isTagReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
@@ -33,7 +37,7 @@ class Reindex(
     }
   }
 
-  def reindexSections = Action.async { req =>
+  def reindexSections = AuthAction.async { req =>
     implicit val username: Option[String] = None // unfortunately we don't have a username available
     ReindexProgressRepository.isSectionReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
@@ -48,7 +52,7 @@ class Reindex(
     }
   }
 
-  def reindexPillars = Action.async { req =>
+  def reindexPillars = AuthAction.async { req =>
     implicit val username: Option[String] = None // unfortunately we don't have a username available
     ReindexProgressRepository.isPillarReindexInProgress.flatMap { reindexing =>
       if (reindexing) {
@@ -63,7 +67,7 @@ class Reindex(
     }
   }
 
-  def getPillarReindexProgress = Action.async { req =>
+  def getPillarReindexProgress = AuthAction.async { req =>
     ReindexProgressRepository.getPillarReindexProgress.map { maybeProgress =>
       maybeProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
@@ -73,7 +77,7 @@ class Reindex(
     }
   }
 
-  def getTagReindexProgress = Action.async { req =>
+  def getTagReindexProgress = AuthAction.async { req =>
     ReindexProgressRepository.getTagReindexProgress.map{ maybeProgress =>
       maybeProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
@@ -83,7 +87,7 @@ class Reindex(
     }
   }
 
-  def getSectionReindexProgress = Action.async { req =>
+  def getSectionReindexProgress = AuthAction.async { req =>
     ReindexProgressRepository.getSectionReindexProgress.map{ maybeProgress =>
       maybeProgress.map { progress =>
         Ok(progress.toCapiForm().toJson)
