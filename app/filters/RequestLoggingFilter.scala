@@ -31,7 +31,7 @@ class RequestLoggingFilter(implicit val mat: Materializer, ec: ExecutionContext)
       else
         requestHeader.withHeaders(
           requestHeader.headers.replace(
-            RequestLoggingFilter.requestIdHeader -> UUID.randomUUID().toString
+            RequestLoggingFilter.requestIdHeader -> s"tagmanager-${UUID.randomUUID().toString}"
           )
         )
 
