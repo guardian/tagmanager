@@ -8,6 +8,7 @@ import play.api.BuiltInComponentsFromContext
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc.EssentialFilter
 import play.api.routing.Router
+import filters.RequestLoggingFilter
 import play.filters.HttpFiltersComponents
 import router.Routes
 import services._
@@ -23,7 +24,7 @@ class AppComponents(context: Context, config: Config)
   override def httpFilters: Seq[EssentialFilter] =
     super.httpFilters
       .filterNot(allowedHostsFilter ==)
-      .filterNot(csrfFilter ==)
+      .filterNot(csrfFilter ==) :+ new RequestLoggingFilter
 
   new ClusterSynchronisation(context.lifecycle)
   new JobRunner(context.lifecycle)
