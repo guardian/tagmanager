@@ -42,7 +42,7 @@ class AppComponents(context: Context, config: Config)
     new controllers.TagManagementApi(wsClient, controllerComponents, panDomainSettings),
     new controllers.Reindex(wsClient, controllerComponents, config.reindexApiKey),
     new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings),
-    new controllers.ReadOnlyApi(wsClient, controllerComponents),
+    new controllers.ReadOnlyApi(wsClient, controllerComponents, panDomainSettings),
     new controllers.Login(wsClient, controllerComponents, panDomainSettings),
     new controllers.Management(wsClient, controllerComponents),
     assets,

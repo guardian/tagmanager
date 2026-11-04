@@ -6,20 +6,25 @@ import play.api.Logging
 import play.api.libs.ws.WSClient
 import play.api.mvc.{BaseController, ControllerComponents}
 import repositories._
+import com.gu.pandahmac.HMACAuthActions
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
+import com.gu.pandomainauth.model.AuthenticatedUser
 
 import scala.concurrent.ExecutionContext
 import scala.xml.Node
 
 class ReadOnlyApi(
   val wsClient: WSClient,
-  override val controllerComponents: ControllerComponents
+  override val controllerComponents: ControllerComponents,
+  override val panDomainSettings: PanDomainAuthSettingsRefresher
 )(
   implicit ec: ExecutionContext
 )
   extends BaseController
+  with PanDomainAuthActions
   with Logging {
 
-  def getTagsAsXml() = Action {
+  def getTagsAsXml() = APIHMACAuthAction {
     val tags = TagLookupCache.allTags
 
     val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s).toMap
@@ -30,7 +35,7 @@ class ReadOnlyApi(
       </tags>)
   }
 
-  def getSectionsAsXml() = Action {
+  def getSectionsAsXml() = APIHMACAuthAction {
     val sections = SectionRepository.loadAllSections
 
     //Lack of a Section in TagManager was previously represented as a "Global" section.
@@ -52,7 +57,7 @@ class ReadOnlyApi(
     </sections>)
   }
 
-  def tagAsXml(id: Long) = Action {
+  def tagAsXml(id: Long) = APIHMACAuthAction {
 
     val sections: Map[Long, Section] = SectionRepository.loadAllSections.map(s => s.id -> s).toMap
 
@@ -64,7 +69,7 @@ class ReadOnlyApi(
     }.getOrElse(NotFound)
   }
 
-  def mergesAsXml(since: Long) = Action {
+  def mergesAsXml(since: Long) = APIHMACAuthAction {
     val merges = TagAuditRepository.getMerges.map { job =>
       Merge(job)
     }.filter(_.date.getMillis > since)
@@ -75,7 +80,7 @@ class ReadOnlyApi(
     )
   }
 
-  def deletesAsXml(since: Long) = Action {
+  def deletesAsXml(since: Long) = APIHMACAuthAction {
     val deletes = TagAuditRepository.getAuditsOfTagOperationsSince("deleted", since).map({
       audit => Delete(audit)
     }).sortBy(_.date.getMillis)
@@ -87,7 +92,7 @@ class ReadOnlyApi(
     )
   }
 
-  def createsAsXml(since: Long) = Action {
+  def createsAsXml(since: Long) = APIHMACAuthAction {
     val audits = TagAuditRepository.getAuditsOfTagOperationsSince("created", since).map({
       audit => Create(audit.tagId, audit.date)
     }).sortBy(_.date.getMillis)
@@ -110,7 +115,7 @@ class ReadOnlyApi(
     Ok(ret)
   }
 
-  def modifiedAsXml(since: Long) = Action {
+  def modifiedAsXml(since: Long) = APIHMACAuthAction {
     import helpers.XmlHelpers._
 
     import scala.xml.Node
