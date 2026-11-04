@@ -40,7 +40,7 @@ class AppComponents(context: Context, config: Config)
     httpErrorHandler,
     new controllers.App(wsClient, controllerComponents, panDomainSettings),
     new controllers.TagManagementApi(wsClient, controllerComponents, panDomainSettings),
-    new controllers.Reindex(wsClient, controllerComponents, panDomainSettings),
+    new controllers.Reindex(wsClient, controllerComponents, config.reindexApiKey),
     new controllers.HyperMediaApi(wsClient, controllerComponents, panDomainSettings),
     new controllers.ReadOnlyApi(wsClient, controllerComponents),
     new controllers.Login(wsClient, controllerComponents, panDomainSettings),

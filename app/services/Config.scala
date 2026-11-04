@@ -31,6 +31,7 @@ sealed trait Config {
   def capiPreviewRole: String = getRequiredStringProperty("capi.preview.role")
 
   def hmacSecret: String = getRequiredStringProperty("hmac.secret")
+  def reindexApiKey: String = getRequiredStringProperty("reindex.apiKey")
 
   def pathManagerUrl: String = getRequiredStringProperty("pathmanager.url")
 
