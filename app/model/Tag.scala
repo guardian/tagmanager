@@ -45,6 +45,7 @@ case class Tag(
                 adBlockingLevel: Option[BlockingLevel],
                 contributionBlockingLevel: Option[BlockingLevel],
                 keywordType: Option[KeywordType],
+                commercialInformation: Option[CommercialInformation] = None,
                 var updatedAt: Long = 0L
 ) {
 
@@ -92,6 +93,7 @@ case class Tag(
       case KeywordType.PLACE => ThriftKeywordType.Place
       case KeywordType.OTHER => ThriftKeywordType.Other
     },
+    commercialInformation = commercialInformation.map(_.asThrift)
   )
 
   // in this limited format for inCopy to consume
@@ -184,7 +186,8 @@ object Tag extends Logging {
       expired = thriftTag.expired,
       adBlockingLevel =  thriftTag.adBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
       contributionBlockingLevel =  thriftTag.contributionBlockingLevel.map(tLevel => BlockingLevel.withName(tLevel.name)),
-      keywordType = thriftTag.keywordType.map(tLevel => KeywordType.withName(tLevel.name))
+      keywordType = thriftTag.keywordType.map(tLevel => KeywordType.withName(tLevel.name)),
+      commercialInformation = thriftTag.commercialInformation.map(CommercialInformation(_))
     )
 }
 
@@ -222,6 +225,7 @@ case class DenormalisedTag (
   adBlockingLevel: Option[BlockingLevel],
   contributionBlockingLevel: Option[BlockingLevel],
   keywordType: Option[KeywordType] = None,
+  commercialInformation: Option[CommercialInformation] = None
   ) {
 
   def normalise(): (Tag, Option[Sponsorship]) = {
@@ -257,12 +261,12 @@ case class DenormalisedTag (
       expired = expired,
       adBlockingLevel = adBlockingLevel,
       contributionBlockingLevel = contributionBlockingLevel,
-      keywordType = keywordType
+      keywordType = keywordType,
+      commercialInformation = commercialInformation
     )
     (tag, sponsorship)
   }
 }
-
 object DenormalisedTag{
 
   implicit val tagFormat: OFormat[DenormalisedTag] = Jsonx.formatCaseClassUseDefaults[DenormalisedTag]
@@ -298,6 +302,7 @@ object DenormalisedTag{
     expired = t.expired,
     adBlockingLevel = t.adBlockingLevel,
     contributionBlockingLevel = t.contributionBlockingLevel,
-    keywordType = t.keywordType
+    keywordType = t.keywordType,
+    commercialInformation = t.commercialInformation
   )
 }
