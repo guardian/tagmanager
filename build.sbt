@@ -17,9 +17,9 @@ scalacOptions ++= Seq(
   "-feature"
 )
 
-lazy val awsSdk2Version = "2.42.5"
+lazy val awsSdk2Version = "2.57.9"
 
-val pandaVersion = "16.0.1"
+val pandaVersion = "22.2.0"
 lazy val dependencies = Seq(
   "software.amazon.awssdk" % "ec2" % awsSdk2Version,
   "software.amazon.awssdk" % "s3" % awsSdk2Version,
@@ -30,6 +30,10 @@ lazy val dependencies = Seq(
   "software.amazon.awssdk" % "dynamodb" % awsSdk2Version,
   "software.amazon.awssdk" % "dynamodb-enhanced" % awsSdk2Version,
   "software.amazon.awssdk" % "imds" % awsSdk2Version,
+  // Align SDK modules brought in by KCL's Glue Schema Registry dependencies.
+  "software.amazon.awssdk" % "glue" % awsSdk2Version,
+  "software.amazon.awssdk" % "apache-client" % awsSdk2Version,
+  "software.amazon.awssdk" % "url-connection-client" % awsSdk2Version,
   "software.amazon.kinesis" % "amazon-kinesis-client" % "3.4.1",
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "6.0.3",
@@ -52,8 +56,6 @@ lazy val dependencies = Seq(
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
   "com.madgag" %% "scala-collection-plus" % "0.11"
 )
-
-dependencyOverrides += "org.bouncycastle" % "bcprov-jdk15on" % "1.67"
 
 excludeDependencies ++= Seq(
   ExclusionRule("net.sourceforge.htmlunit", "htmlunit"),
