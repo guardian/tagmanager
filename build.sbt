@@ -40,7 +40,7 @@ lazy val dependencies = Seq(
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
-  "com.google.guava" % "guava" % "18.0",
+  "com.google.guava" % "guava" % "33.7.2-jre",
   "com.gu" %% "content-api-client-default" % "27.0.0",
   "com.gu" %% "tags-thrift-schema" % "2.8.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
@@ -56,6 +56,7 @@ lazy val dependencies = Seq(
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
   "com.madgag" %% "scala-collection-plus" % "0.11"
 )
+
 
 excludeDependencies ++= Seq(
   ExclusionRule("net.sourceforge.htmlunit", "htmlunit"),
