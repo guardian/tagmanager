@@ -21,8 +21,6 @@ module.exports = {
     mode: 'development',
     entry: {
         app: [
-            'webpack-dev-server/client?' + host,
-            'webpack/hot/dev-server',
             path.join(__dirname, '..', 'app.js')
         ]
     },
@@ -35,7 +33,7 @@ module.exports = {
         rules: [
             { 
                 test: require.resolve('react'), 
-                use: [{ loader: 'expose-loader', options: 'React' }]},
+                use: [{ loader: 'expose-loader', options: { exposes: 'React' } }]},
             {
               test:    /\.js$/,
               use: [{
@@ -48,11 +46,11 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loaders: ['style-loader', 'css-loader']
+                use: ['style-loader', 'css-loader']
             },
             {
                 test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader', 'sass-loader']
+                use: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
                 test: /\.(woff2?|ttf|eot|svg|gif)?(\?v=[0-9].[0-9].[0-9])?$/i,
@@ -63,9 +61,7 @@ module.exports = {
             }
           ]
     },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin()
-    ],
+    plugins: [],
     resolve: {
         modules: [
             path.join(__dirname, "src"),
