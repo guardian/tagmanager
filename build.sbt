@@ -42,7 +42,7 @@ lazy val dependencies = Seq(
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "33.7.2-jre",
   "com.gu" %% "content-api-client-default" % "27.0.0",
-  "com.gu" %% "tags-thrift-schema" % "2.8.6",
+  "com.gu" %% "tags-thrift-schema" % "2.8.8",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
@@ -60,7 +60,7 @@ lazy val dependencies = Seq(
 dependencyOverrides ++= Seq(
   "org.apache.thrift" % "libthrift" % "0.24.0",
   "org.xerial.snappy" % "snappy-java" % "1.1.10.9",
-  "com.squareup.wire" % "wire-runtime" % "6.4.5" 
+  "com.squareup.wire" % "wire-runtime" % "6.4.5"
 )
 
 excludeDependencies ++= Seq(
