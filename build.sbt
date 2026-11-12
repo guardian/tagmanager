@@ -34,15 +34,17 @@ lazy val dependencies = Seq(
   "software.amazon.awssdk" % "glue" % awsSdk2Version,
   "software.amazon.awssdk" % "apache-client" % awsSdk2Version,
   "software.amazon.awssdk" % "url-connection-client" % awsSdk2Version,
-  "software.amazon.kinesis" % "amazon-kinesis-client" % "3.4.1",
+  "software.amazon.kinesis" % "amazon-kinesis-client" % "3.5.4",
+  "software.amazon.glue" % "schema-registry-serde" % "2.0.2",
+  "org.xerial.snappy" % "snappy-java" % "1.1.10.9", // newer than the version Kafka (via Glue) brings in
   "com.gu" %% "pan-domain-auth-play_3-0" % pandaVersion,
   "com.gu" %% "editorial-permissions-client" % "6.0.3",
   ws, // for panda
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "com.squareup.okhttp3" % "okhttp" % "4.9.2",
   "com.google.guava" % "guava" % "33.7.2-jre",
-  "com.gu" %% "content-api-client-default" % "27.0.0",
-  "com.gu" %% "tags-thrift-schema" % "2.8.6",
+  "com.gu" %% "content-api-client-default" % "51.0.0",
+  "com.gu" %% "tags-thrift-schema" % "2.8.8",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "org.slf4j" % "slf4j-api" % "1.7.12",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.12",
@@ -53,14 +55,8 @@ lazy val dependencies = Seq(
   "com.typesafe.play" %% "play-json-joda" % "2.8.1",
   "org.apache.commons" % "commons-lang3" % "3.11",
   "org.apache.commons" % "commons-csv" % "1.12.0",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.22.4",
   "com.madgag" %% "scala-collection-plus" % "0.11"
-)
-
-dependencyOverrides ++= Seq(
-  "org.apache.thrift" % "libthrift" % "0.24.0",
-  "org.xerial.snappy" % "snappy-java" % "1.1.10.9",
-  "com.squareup.wire" % "wire-runtime" % "6.4.5" 
 )
 
 excludeDependencies ++= Seq(
