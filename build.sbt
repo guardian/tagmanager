@@ -57,6 +57,7 @@ lazy val dependencies = Seq(
   "com.madgag" %% "scala-collection-plus" % "0.11"
 )
 
+dependencyOverrides += "org.apache.thrift" % "libthrift" % "0.24.0"
 
 excludeDependencies ++= Seq(
   ExclusionRule("net.sourceforge.htmlunit", "htmlunit"),
