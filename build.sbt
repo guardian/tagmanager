@@ -58,8 +58,11 @@ lazy val dependencies = Seq(
 )
 
 dependencyOverrides ++= Seq(
+  // Override the transitive dependency version pulled in by com.gu:content-api-client-default_2.13.
   "org.apache.thrift" % "libthrift" % "0.24.0",
+  // Override the transitive dependency version pulled in by amazon-kinesis-client.
   "org.xerial.snappy" % "snappy-java" % "1.1.10.9",
+  // Override the transitive dependency version pulled in by amazon-kinesis-client.
   "com.squareup.wire" % "wire-runtime" % "6.4.5"
 )
 
