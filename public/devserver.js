@@ -14,25 +14,33 @@ var host = 'https://' + addr;
 // Webpack
 //
 
-var wpServer = new WebpackDevServer(webpack(wpConfig), {
-  contentBase:  wpConfig.output.path,
-  publicPath:   '/assets/build/',
-  hot:          true,
-  progress:     true,
-  noInfo:       true,
-  watchOptions: {
-    aggregateTimeout: 300,
-    poll:             1000
+var compiler = webpack(wpConfig);
+var wpServer = new WebpackDevServer({
+  host:         addr,
+  port:         port,
+  allowedHosts: 'all',
+  static:       {
+    directory: wpConfig.output.path
   },
-  quiet:   false,
+  devMiddleware: {
+    publicPath: '/assets/build/'
+  },
+  hot:        true,
+  watchFiles: {
+    paths: ['public/**/*'],
+    options: {
+      aggregateTimeout: 300,
+      poll:             1000
+    }
+  },
   headers: {
     'X-Custom-Header': 'yes',
     'Access-Control-Allow-Origin' : '*'
   },
-  stats:   {
-    colors: true
+  client: {
+    progress: true
   }
-});
+}, compiler);
 
 //
 // Exports
@@ -40,6 +48,6 @@ var wpServer = new WebpackDevServer(webpack(wpConfig), {
 
 //wpServer.use('/public', express.static('public'));
 
-wpServer.listen(port, addr, function() {
+wpServer.startCallback(function() {
     console.log('WebpackDevServer listening on port %d', port);
 });
