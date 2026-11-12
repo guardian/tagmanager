@@ -59,7 +59,8 @@ lazy val dependencies = Seq(
 
 dependencyOverrides ++= Seq(
   "org.apache.thrift" % "libthrift" % "0.24.0",
-  "org.xerial.snappy" % "snappy-java" % "1.1.10.9"
+  "org.xerial.snappy" % "snappy-java" % "1.1.10.9",
+  "com.squareup.wire" % "wire-runtime" % "6.4.5" 
 )
 
 excludeDependencies ++= Seq(
