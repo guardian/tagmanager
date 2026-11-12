@@ -49,7 +49,7 @@
     "css-loader": "^3.6.0",
     "expose-loader": "^4.1.0",
     "mini-css-extract-plugin": "^1.6.2",
-    "sass": "^1.55.0",
+    "sass": "^1.108.2",
     "sass-loader": "^8.0.2",
     "style-loader": "^2.0.0",
     "svg-sprite": "^2.0.2",
