@@ -54,7 +54,7 @@ lazy val dependencies = Seq(
   "org.apache.commons" % "commons-lang3" % "3.11",
   "org.apache.commons" % "commons-csv" % "1.12.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
-  "com.madgag" %% "scala-collection-plus" % "0.11"
+  "com.madgag" %% "scala-collection-plus" % "1.0.0"
 )
 
 dependencyOverrides ++= Seq(
